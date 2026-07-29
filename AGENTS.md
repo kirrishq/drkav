@@ -1,0 +1,24 @@
+# Рабочие правила для drkav
+
+- Проект — frontend-first редизайн сайта drkav.ru на Next.js App Router и TypeScript.
+- Работайте в отдельных ветках; не изменяйте `main` напрямую.
+- Не выполняйте `git commit`, `git push`, merge, а также изменения production, DNS или реальных интеграций без явного подтверждения владельца проекта.
+- Сохраняйте существующие SEO-URL максимально. Удаляйте суффикс `.html` только после проверки прямого 301-редиректа для каждого URL.
+- UI-компоненты не должны зависеть от конкретной CMS. Доступ к будущему контенту должен идти через интерфейс `ContentRepository` из `@drkav/content-contracts`.
+- Не используйте реальные персональные или медицинские данные пациентов в коде, тестовых данных, документации и примерах.
+- Не подключайте CMS, amoCRM, аналитику, базу данных, Docker или хостинг без отдельного решения.
+- Не добавляйте GPL/AGPL-зависимости. Перед добавлением зависимости оценивайте её необходимость и лицензию.
+- UI components live in `packages/ui`.
+- UI must not depend on a CMS or data-fetching implementation.
+- Application pages must reuse `packages/ui` components.
+- Do not copy reusable Tailwind class lists into pages.
+- Use shared design tokens instead of arbitrary visual values.
+- Use typed variants for supported component variants and sizes.
+- Reusable component documentation lives on the internal `/design-system` page.
+- Storybook is not configured in the current phase.
+- Components are added one at a time in controlled tasks.
+- Do not create speculative components.
+- Server Components are the default.
+- Use Client Components only for isolated interactive behavior.
+- English is used for component names, variants, states, props, API and code.
+- Russian is used for usage descriptions, explanations and team rules.

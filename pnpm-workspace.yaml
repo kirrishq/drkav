@@ -1,0 +1,8 @@
+packages:
+  - apps/*
+  - packages/*
+
+# pnpm 11 requires explicit approval for dependency build scripts.
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
