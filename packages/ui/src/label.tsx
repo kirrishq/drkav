@@ -39,7 +39,7 @@ export function Label({
           <span className="sr-only">Обязательное поле</span>
         </>
       ) : optional ? (
-        <span className="type-body-sm font-normal text-muted">Необязательно</span>
+        <span className="type-text-sm font-normal text-muted">Необязательно</span>
       ) : null}
     </label>
   );

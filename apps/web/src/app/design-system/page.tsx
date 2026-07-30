@@ -4,13 +4,18 @@ import type { ReactNode, SVGProps } from "react";
 import {
   Button,
   Checkbox,
+  RecordCard,
   FormDescription,
   FormField,
   FormMessage,
+  FeatureLinkCard,
   Input,
   Label,
+  PageIntro,
   Radio,
   RadioButton,
+  TextLink,
+  VideoCard,
 } from "@drkav/ui";
 import { PhoneInput } from "@drkav/ui/phone-input";
 
@@ -49,34 +54,44 @@ const typographyRoles = [
     description: "Крупный акцентный текст hero-блока.",
   },
   {
-    name: "type-heading-1",
+    name: "type-h1",
     sample: "Заголовок страницы",
     description: "Главный заголовок h1, один на страницу.",
   },
   {
-    name: "type-heading-2",
+    name: "type-h2",
     sample: "Заголовок раздела",
     description: "Основные смысловые секции страницы.",
   },
   {
-    name: "type-heading-3",
+    name: "type-h3",
     sample: "Заголовок группы",
     description: "Группы карточек и вложенные блоки.",
   },
   {
-    name: "type-body-lg",
+    name: "type-h4",
+    sample: "Заголовок карточки или компактного блока",
+    description: "Четвёртый уровень заголовков и самостоятельные карточки.",
+  },
+  {
+    name: "type-text-xl",
     sample: "Крупный вводный текст помогает быстро понять содержание страницы.",
     description: "Лид, вступление и важные пояснения.",
   },
   {
-    name: "type-body",
+    name: "type-text-base",
     sample: "Основной текст для материалов, описаний и интерфейсного контента.",
     description: "Базовый стиль длинного и интерфейсного текста.",
   },
   {
-    name: "type-body-sm",
+    name: "type-text-sm",
     sample: "Вспомогательный текст и компактные пояснения.",
     description: "Подписи, метаданные и вторичная информация.",
+  },
+  {
+    name: "type-text-xs",
+    sample: "Короткие метаданные и дата",
+    description: "Самая компактная текстовая роль для вторичной информации.",
   },
   {
     name: "type-label",
@@ -275,16 +290,16 @@ function Section({
     >
       <div className="mb-8 max-w-reading">
         <p className="type-overline text-accent">
-          {["button", "input", "checkbox", "radio", "radio-button"].includes(id)
+          {["button", "text-link", "page-intro", "record-card", "input", "checkbox", "radio", "radio-button"].includes(id)
             ? "Components"
             : id === "overview"
               ? "System"
               : "Foundations"}
         </p>
-        <h2 className="type-heading-2 mt-2 text-primary">
+        <h2 className="type-h2 mt-2 text-primary">
           {title}
         </h2>
-        <p className="type-body mt-3 text-secondary">{description}</p>
+        <p className="type-text-base mt-3 text-secondary">{description}</p>
       </div>
       {children}
     </section>
@@ -300,7 +315,7 @@ function Subsection({
 }) {
   return (
     <div className="mt-10 first:mt-0">
-      <h3 className="type-heading-3 text-primary">{title}</h3>
+      <h3 className="type-h3 text-primary">{title}</h3>
       <div className="mt-4">{children}</div>
     </div>
   );
@@ -336,7 +351,7 @@ export default function DesignSystemPage() {
       <header className="border-b border-border bg-surface">
         <div className="mx-auto flex max-w-wide items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <p className="type-label text-primary">drkav / Design System</p>
-          <p className="type-body-sm text-secondary">Internal documentation</p>
+          <p className="type-text-sm text-secondary">Internal documentation</p>
         </div>
       </header>
 
@@ -366,6 +381,105 @@ export default function DesignSystemPage() {
                 </div>
               ))}
             </div>
+          </Section>
+
+          <Section
+            description="FeatureLinkCard — карточка-навигация с изображением, подписью и общей стрелкой интерактивных карточек. Изображение мягко увеличивается при наведении и фокусе."
+            id="feature-link-card"
+            title="Feature Link Card"
+          >
+            <Subsection title="Usage">
+              <div className="max-w-md">
+                <FeatureLinkCard
+                  href="#feature-link-card"
+                  imageAlt="Доктор читает книгу"
+                  imageSrc="/images/about-pages/book.png"
+                  title="Книга «Боль двенадцати женщин»"
+                />
+              </div>
+              <CodeBlock>{`import { FeatureLinkCard } from "@drkav/ui";
+
+<FeatureLinkCard
+  href="/obo-mne/book"
+  imageSrc="/images/about-pages/book.png"
+  imageAlt="Доктор читает книгу"
+  title="Книга «Боль двенадцати женщин»"
+  variant="square"
+/>
+
+<FeatureLinkCard
+  href="https://example.com"
+  imageSrc="/images/education/masterclass.png"
+  imageAlt="Мастер-класс"
+  title="Онлайн мастер-классы"
+  description="Практика и разборы методик"
+  variant="wide"
+/>`}</CodeBlock>
+            </Subsection>
+
+            <Subsection title="Accessibility">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
+                <li>Карточка выводится ссылкой и доступна с клавиатуры.</li>
+                <li>Передавайте осмысленный alt для информационного изображения.</li>
+                <li>Стрелка скрыта от скринридера как декоративный элемент.</li>
+              </ul>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="VideoCard показывает превью видеозаписи и открывает встроенный плеер в модальном окне."
+            id="video-card"
+            title="Video Card"
+          >
+            <Subsection title="Usage">
+              <div className="max-w-md">
+                <VideoCard
+                  location="Санкт-Петербург"
+                  posterAlt="Превью выступления"
+                  posterSrc="/images/speaking-videos/spb.jpg"
+                  title="VI Всероссийский съезд герниологов"
+                  videoSrc="https://drkav.ru/videos/conferences/spb.mp4"
+                  year="2023"
+                />
+              </div>
+              <CodeBlock>{`import { VideoCard } from "@drkav/ui";
+
+<VideoCard
+  location="Санкт-Петербург"
+  year="2023"
+  title="VI Всероссийский съезд герниологов"
+  posterSrc="/images/speaking-videos/spb.jpg"
+  posterAlt="Превью выступления"
+  videoSrc="https://example.com/video.mp4"
+/>`}</CodeBlock>
+            </Subsection>
+
+            <Subsection title="Accessibility">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
+                <li>Кнопка превью сообщает скринридеру название видеозаписи.</li>
+                <li>Плеер открывается в модальном окне, которое можно закрыть кнопкой, кликом по фону или клавишей Esc.</li>
+              </ul>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="TextLink — единый текстовый линк для содержимого: заметный, доступный с клавиатуры и независимый от конкретного роутера."
+            id="text-link"
+            title="Text Link"
+          >
+            <Subsection title="Example">
+              <p className="type-text-base text-primary">
+                Подробнее об операции <TextLink href="/operacii/diastaz-myshc-zhivota">«Диастаз без шрамов»</TextLink>.
+              </p>
+            </Subsection>
+
+            <Subsection title="Usage">
+              <CodeBlock>{`import { TextLink } from "@drkav/ui";
+
+<TextLink href="/operacii/diastaz-myshc-zhivota">
+  «Диастаз без шрамов»
+</TextLink>`}</CodeBlock>
+            </Subsection>
           </Section>
 
           <Section
@@ -400,7 +514,7 @@ export default function DesignSystemPage() {
                 <div className="border-b border-border pb-5 last:border-0 last:pb-0" key={name}>
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <code className="type-code text-accent">{name}</code>
-                    <span className="type-body-sm text-muted">{description}</span>
+                    <span className="type-text-sm text-muted">{description}</span>
                   </div>
                   <p className={`mt-2 text-primary ${name}`}>{sample}</p>
                 </div>
@@ -438,6 +552,7 @@ export default function DesignSystemPage() {
                   ["reading", "46rem"],
                   ["content", "72rem"],
                   ["wide", "90rem"],
+                  ["sidebar", "15rem"],
                   ["sm / md", "40rem / 48rem"],
                   ["lg / xl", "64rem / 80rem"],
                 ].map(([token, value]) => (
@@ -446,7 +561,7 @@ export default function DesignSystemPage() {
                     key={token}
                   >
                     <code className="type-code text-primary">{token}</code>
-                    <p className="type-body-sm mt-1 text-secondary">{value}</p>
+                    <p className="type-text-sm mt-1 text-secondary">{value}</p>
                   </div>
                 ))}
               </div>
@@ -495,7 +610,7 @@ export default function DesignSystemPage() {
           >
             <ExamplePanel>
               <Button variant="secondary">Hover or press</Button>
-              <p className="type-body-sm text-secondary">
+              <p className="type-text-sm text-secondary">
                 duration-fast · ease-standard · motion-reduce
               </p>
             </ExamplePanel>
@@ -523,7 +638,7 @@ export default function DesignSystemPage() {
             title="Button"
           >
             <Subsection title="Overview">
-              <p className="type-body max-w-reading text-secondary">
+              <p className="type-text-base max-w-reading text-secondary">
                 Используйте Button для явного пользовательского действия. В одном
                 смысловом блоке должен быть один доминирующий primary action.
               </p>
@@ -561,12 +676,16 @@ export default function DesignSystemPage() {
                 <Button variant="outline">
                   focus-visible
                 </Button>
+                <Button selected variant="outline">
+                  selected
+                </Button>
                 <Button disabled>disabled</Button>
                 <Button loading>loading</Button>
               </ExamplePanel>
-              <p className="type-body-sm mt-3 text-secondary">
+              <p className="type-text-sm mt-3 text-secondary">
                 Hover и active проверяются непосредственно указателем; focus-visible —
-                клавишей Tab. Disabled и loading нативно блокируют взаимодействие.
+                клавишей Tab. Selected выделяет текущий outline-пункт навигации.
+                Disabled и loading нативно блокируют взаимодействие.
               </p>
             </Subsection>
 
@@ -591,14 +710,14 @@ export default function DesignSystemPage() {
                 <Button loading>Отправка</Button>
                 <Button aria-label="Отправка" loading size="icon" variant="secondary" />
               </ExamplePanel>
-              <p className="type-body-sm mt-3 text-secondary">
+              <p className="type-text-sm mt-3 text-secondary">
                 Индикатор расположен поверх исходного содержимого, поэтому размер
                 кнопки не меняется. Устанавливаются disabled и aria-busy.
               </p>
             </Subsection>
 
             <Subsection title="Accessibility">
-              <ul className="type-body-sm list-disc space-y-2 pl-5 text-secondary">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
                 <li>Используется нативный button и все стандартные attributes.</li>
                 <li>Icon-only API требует доступное имя через aria-label.</li>
                 <li>Минимальная интерактивная высота подходит для mobile.</li>
@@ -615,6 +734,10 @@ export default function DesignSystemPage() {
   Отправка
 </Button>
 
+<Button variant="outline" selected aria-current="page">
+  Акции
+</Button>
+
 <Button variant="ghost" size="icon" aria-label="Закрыть">
   <CloseIcon />
 </Button>`}</CodeBlock>
@@ -622,16 +745,16 @@ export default function DesignSystemPage() {
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
               <div className="rounded-lg border border-border bg-surface p-5">
-                <h3 className="type-heading-3 text-primary">Do</h3>
-                <ul className="type-body-sm mt-3 list-disc space-y-2 pl-5 text-secondary">
+                <h3 className="type-h3 text-primary">Do</h3>
+                <ul className="type-text-sm mt-3 list-disc space-y-2 pl-5 text-secondary">
                   <li>Один главный CTA в смысловом блоке.</li>
                   <li>Понятный текст действия и подходящий size.</li>
                   <li>Loading во время отправки формы.</li>
                 </ul>
               </div>
               <div className="rounded-lg border border-border bg-surface-muted p-5">
-                <h3 className="type-heading-3 text-primary">Don’t</h3>
-                <ul className="type-body-sm mt-3 list-disc space-y-2 pl-5 text-secondary">
+                <h3 className="type-h3 text-primary">Don’t</h3>
+                <ul className="type-text-sm mt-3 list-disc space-y-2 pl-5 text-secondary">
                   <li>Несколько primary рядом без иерархии.</li>
                   <li>Слишком длинная подпись или icon-only без aria-label.</li>
                   <li>Только визуальный disabled без нативного attribute.</li>
@@ -642,7 +765,7 @@ export default function DesignSystemPage() {
 
             <Subsection title="API">
               <div className="overflow-x-auto rounded-lg border border-border bg-surface">
-                <table className="type-body-sm w-full border-collapse text-left">
+                <table className="type-text-sm w-full border-collapse text-left">
                   <thead className="bg-surface-muted text-primary">
                     <tr>
                       <th className="type-label px-4 py-3">Prop</th>
@@ -667,6 +790,11 @@ export default function DesignSystemPage() {
                       <td className="px-4 py-3"><code>false</code></td>
                     </tr>
                     <tr>
+                      <td className="px-4 py-3"><code>selected</code></td>
+                      <td className="px-4 py-3"><code>boolean</code></td>
+                      <td className="px-4 py-3"><code>false</code></td>
+                    </tr>
+                    <tr>
                       <td className="px-4 py-3"><code>disabled</code></td>
                       <td className="px-4 py-3"><code>boolean</code></td>
                       <td className="px-4 py-3"><code>false</code></td>
@@ -679,6 +807,99 @@ export default function DesignSystemPage() {
                   </tbody>
                 </table>
               </div>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="PageIntro задаёт единый первый экран для статических контентных страниц: крошки, название и краткое описание. Он не зависит от Next.js или источника контента."
+            id="page-intro"
+            title="Page Intro"
+          >
+            <Subsection title="Example">
+              <div className="overflow-hidden rounded-lg border border-border bg-background shadow-subtle">
+                <PageIntro
+                  as="div"
+                  breadcrumbs={[
+                    { href: "/", label: "Главная" },
+                    { label: "Портфолио" },
+                  ]}
+                  description="Краткое описание помогает посетителю сразу понять назначение страницы."
+                  title="Портфолио пластических операций"
+                />
+              </div>
+            </Subsection>
+
+            <Subsection title="Usage">
+              <CodeBlock>{`import { PageIntro } from "@drkav/ui";
+
+<PageIntro
+  breadcrumbs={[
+    { href: "/", label: "Главная" },
+    { label: "Портфолио" },
+  ]}
+  title="Портфолио пластических операций"
+  description="Краткое описание страницы."
+/>`}</CodeBlock>
+            </Subsection>
+
+            <Subsection title="Accessibility">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
+                <li>Крошки размечены навигацией с доступным названием.</li>
+                <li>Текущая страница получает <code>aria-current=&quot;page&quot;</code>.</li>
+                <li>Заголовок всегда выводится как единственный <code>h1</code> страницы.</li>
+              </ul>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="RecordCard показывает структурированную запись любого типа. Пустые детали не занимают место, а href превращает карточку в ссылку со стрелкой и интерактивными состояниями."
+            id="record-card"
+            title="Record Card"
+          >
+            <Subsection title="Variants">
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                <RecordCard
+                  details={[
+                    { value: "Лечебное дело" },
+                    { tone: "secondary", value: "Базовое образование" },
+                  ]}
+                  meta="2009"
+                  title="Саратовский государственный медицинский университет им. В.И. Разумовского"
+                />
+                <RecordCard
+                  details={[{ value: "Подробнее о публикации" }]}
+                  href="#record-card"
+                  meta="2026"
+                  title="Интерактивная запись"
+                />
+                <RecordCard title="Запись без дополнительных строк" />
+              </div>
+            </Subsection>
+
+            <Subsection title="Usage">
+              <CodeBlock>{`import { RecordCard } from "@drkav/ui";
+
+<RecordCard
+  title="Медицинский университет"
+  meta="2015"
+  details={[
+    { value: "Хирургия" },
+    { value: "Повышение квалификации", tone: "secondary" },
+  ]}
+/>
+
+<RecordCard
+  href="/obo-mne/diplomy-i-licenzii"
+  title="Документ об образовании"
+/>`}</CodeBlock>
+            </Subsection>
+
+            <Subsection title="Accessibility">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
+                <li>Без href карточка выводится как семантическая статья.</li>
+                <li>С href карточка выводится как ссылка и получает заметный focus-visible.</li>
+                <li>Стрелка — декоративный признак ссылки и скрыта от скринридера.</li>
+              </ul>
             </Subsection>
           </Section>
 
@@ -763,7 +984,7 @@ export default function DesignSystemPage() {
                   <PhoneInput name="masked-phone" />
                 </FormField>
               </FieldGrid>
-              <p className="type-body-sm mt-3 text-secondary">
+              <p className="type-text-sm mt-3 text-secondary">
                 PhoneInput нормализует 8 или 7 в префикс +7, удаляет буквы и
                 ограничивает номер десятью национальными цифрами.
               </p>
@@ -814,7 +1035,7 @@ export default function DesignSystemPage() {
                   />
                 </FormField>
               </FieldGrid>
-              <p className="type-body-sm mt-3 text-secondary">
+              <p className="type-text-sm mt-3 text-secondary">
                 Hover проверяется указателем, focus-visible — клавишей Tab. Focus
                 ring остаётся заметным и в validation states.
               </p>
@@ -868,7 +1089,7 @@ export default function DesignSystemPage() {
             </Subsection>
 
             <Subsection title="Validation">
-              <p className="type-body mb-4 max-w-reading text-secondary">
+              <p className="type-text-base mb-4 max-w-reading text-secondary">
                 Браузер проверяет обязательность, длину, формат email и допустимый
                 формат телефона через нативные HTML constraints. После проверки
                 формы результат передаётся в контролируемые status и message;
@@ -1020,14 +1241,14 @@ export default function DesignSystemPage() {
                   </FormMessage>
                 </div>
               </FieldGrid>
-              <p className="type-body-sm mt-3 text-secondary">
+              <p className="type-text-sm mt-3 text-secondary">
                 Иконки размещаются композицией вокруг Input. Базовый компонент
                 остаётся нативным и не получает декоративных props.
               </p>
             </Subsection>
 
             <Subsection title="Accessibility">
-              <ul className="type-body-sm list-disc space-y-2 pl-5 text-secondary">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
                 <li>Важное поле всегда получает видимый Label, связанный через htmlFor.</li>
                 <li>FormField передаёт required и disabled непосредственно в Input.</li>
                 <li>Error устанавливает aria-invalid и связывает message через aria-describedby.</li>
@@ -1081,7 +1302,7 @@ import { PhoneInput } from "@drkav/ui/phone-input";
             </Subsection>
 
             <Subsection title="Usage rules">
-              <ul className="type-body-sm list-disc space-y-2 pl-5 text-secondary">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
                 <li>Всегда используйте видимый label для важных полей.</li>
                 <li>Placeholder не заменяет label.</li>
                 <li>Текст ошибки должен объяснять, как исправить значение.</li>
@@ -1093,7 +1314,7 @@ import { PhoneInput } from "@drkav/ui/phone-input";
             </Subsection>
 
             <Subsection title="API">
-              <p className="type-body max-w-reading text-secondary">
+              <p className="type-text-base max-w-reading text-secondary">
                 Input принимает стандартные InputHTMLAttributes и ref. PhoneInput
                 добавляет маску российского номера. FormField добавляет только
                 композиционные props: id, label, description, message, status,
@@ -1172,7 +1393,7 @@ import { PhoneInput } from "@drkav/ui/phone-input";
             </Subsection>
 
             <Subsection title="Accessibility">
-              <ul className="type-body-sm list-disc space-y-2 pl-5 text-secondary">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
                 <li>Checkbox остаётся нативным input type=&quot;checkbox&quot;.</li>
                 <li>Каждый контрол получает видимый Label и уникальный id.</li>
                 <li>Checked и disabled доступны скринридерам без дополнительных ролей.</li>
@@ -1337,7 +1558,7 @@ import { PhoneInput } from "@drkav/ui/phone-input";
             </Subsection>
 
             <Subsection title="Accessibility">
-              <ul className="type-body-sm list-disc space-y-2 pl-5 text-secondary">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
                 <li>Внутри остаётся нативный radio, а не button с имитацией состояния.</li>
                 <li>Текст является доступным именем; декоративная иконка скрыта через aria-hidden.</li>
                 <li>Одинаковый name обеспечивает выбор только одного канала.</li>

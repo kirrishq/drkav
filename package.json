@@ -8,7 +8,8 @@
   "packageManager": "pnpm@11.9.0",
   "scripts": {
     "dev": "pnpm --filter @drkav/web dev",
-    "lint": "eslint apps packages --max-warnings=0",
+    "check:styles": "node scripts/check-no-css-modules.mjs",
+    "lint": "pnpm check:styles && eslint apps packages --max-warnings=0",
     "typecheck": "tsc -p apps/web/tsconfig.json --noEmit && tsc -p packages/ui/tsconfig.json --noEmit && tsc -p packages/content-contracts/tsconfig.json --noEmit",
     "build": "pnpm --filter @drkav/web build"
   },

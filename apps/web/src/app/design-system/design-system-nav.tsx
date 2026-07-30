@@ -25,6 +25,11 @@ const navigation = [
     label: "Components",
     items: [
       { id: "button", label: "Button" },
+      { id: "text-link", label: "Text Link" },
+      { id: "page-intro", label: "Page Intro" },
+      { id: "record-card", label: "Record Card" },
+      { id: "feature-link-card", label: "Feature Link Card" },
+      { id: "video-card", label: "Video Card" },
       { id: "input", label: "Input" },
       { id: "checkbox", label: "Checkbox" },
       { id: "radio", label: "Radio" },
@@ -55,7 +60,7 @@ function NavigationLinks({ activeId }: { activeId: string }) {
                     <a
                       aria-current={isActive ? "location" : undefined}
                       className={cn(
-                        "focus-ring type-body-sm -ml-px block rounded-r-md border-l px-3 py-1.5 transition-colors duration-fast",
+                        "focus-ring type-text-sm -ml-px block rounded-r-md border-l px-3 py-1.5 transition-colors duration-fast",
                         isActive
                           ? "border-accent font-semibold text-primary"
                           : "border-transparent text-secondary hover:text-primary",

@@ -1,1 +1,7 @@
 @import "@drkav/ui/styles.css";
+@import "../styles/about-page.css";
+@import "../styles/contribution-page.css";
+@import "../styles/education-page.css";
+@import "../styles/book-page.css";
+@import "../styles/site-header.css";
+@import "../styles/home-page.css";

@@ -1,0 +1,6 @@
+@layer components {
+  .site-logo__image {
+    width: var(--space-28);
+    height: auto;
+  }
+}

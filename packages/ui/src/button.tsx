@@ -24,6 +24,10 @@ export const buttonVariants = cva(
           "bg-transparent text-primary hover:bg-surface-muted active:bg-border",
         link: "bg-transparent text-accent underline-offset-4 hover:underline active:text-accent-hover",
       },
+      selected: {
+        false: "",
+        true: "",
+      },
       size: {
         sm: "min-h-10 rounded-md px-3",
         md: "min-h-11 rounded-md px-4",
@@ -31,7 +35,16 @@ export const buttonVariants = cva(
         icon: "size-11 rounded-md",
       },
     },
+    compoundVariants: [
+      {
+        className:
+          "border-accent bg-accent-soft text-accent hover:border-accent-hover hover:bg-accent-soft active:bg-accent-soft",
+        selected: true,
+        variant: "outline",
+      },
+    ],
     defaultVariants: {
+      selected: false,
       variant: "primary",
       size: "md",
     },
@@ -54,6 +67,7 @@ type SharedButtonProps = NativeButtonProps & {
   className?: string;
   disabled?: boolean;
   loading?: boolean;
+  selected?: boolean;
   variant?: ButtonVariant;
 };
 
@@ -101,6 +115,7 @@ export function Button({
   className,
   disabled = false,
   loading = false,
+  selected = false,
   size = "md",
   type = "button",
   variant = "primary",
@@ -111,7 +126,7 @@ export function Button({
   return (
     <button
       aria-busy={loading || undefined}
-      className={cn(buttonVariants({ variant, size }), className)}
+      className={cn(buttonVariants({ selected, variant, size }), className)}
       disabled={disabled || loading}
       type={type}
       {...props}

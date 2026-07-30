@@ -21,7 +21,7 @@ export function FormDescription({
   return (
     <p
       className={cn(
-        "type-body-sm text-secondary",
+        "type-text-sm text-secondary",
         "group-data-[disabled=true]/field:text-muted",
         className,
       )}
@@ -73,7 +73,7 @@ export function FormMessage({
   return (
     <p
       className={cn(
-        "type-body-sm flex items-start gap-1.5 text-secondary",
+        "type-text-sm flex items-start gap-1.5 text-secondary",
         status === "error" && "text-error",
         status === "success" && "text-success",
         "group-data-[disabled=true]/field:text-muted",
