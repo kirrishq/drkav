@@ -1,0 +1,130 @@
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+
+import { cn } from "./lib/cn";
+
+export type RecordCardDetail = {
+  tone?: "primary" | "secondary";
+  value: string;
+};
+
+type RecordCardBaseProps = {
+  className?: string;
+  details?: readonly RecordCardDetail[];
+  icon?: ReactNode;
+  meta?: string;
+  title: string;
+};
+
+type RecordCardLinkProps = RecordCardBaseProps &
+  Omit<ComponentPropsWithoutRef<"a">, "children" | "className" | "href"> & {
+    href: string;
+  };
+
+type RecordCardButtonProps = RecordCardBaseProps &
+  Omit<ComponentPropsWithoutRef<"button">, "children" | "className" | "type"> & {
+    onClick: NonNullable<ComponentPropsWithoutRef<"button">["onClick"]>;
+  };
+
+type RecordCardStaticProps = RecordCardBaseProps & {
+  href?: undefined;
+};
+
+export type RecordCardProps = RecordCardLinkProps | RecordCardButtonProps | RecordCardStaticProps;
+
+function isButtonRecordCard(props: RecordCardProps): props is RecordCardButtonProps {
+  return "onClick" in props && !("href" in props);
+}
+
+function ArrowUpRightIcon() {
+  return (
+    <svg aria-hidden="true" className="record-card__arrow-icon" fill="none" viewBox="0 0 24 24">
+      <path
+        d="M7 17 17 7m-7 0h7v7"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.75"
+      />
+    </svg>
+  );
+}
+
+function RecordCardContent({ details = [], icon, meta, title }: RecordCardBaseProps) {
+  const visibleDetails = details.filter((detail) => detail.value.trim().length > 0);
+
+  return (
+    <>
+      {icon || meta ? (
+        <div className="record-card__header">
+          {icon ? <span className="record-card__icon">{icon}</span> : <span />}
+          {meta ? <span className="record-card__meta">{meta}</span> : null}
+        </div>
+      ) : null}
+      <h3 className="record-card__title">{title}</h3>
+      {visibleDetails.length > 0 ? (
+        <ul className="record-card__details">
+          {visibleDetails.map((detail) => (
+            <li
+              className={cn("record-card__detail", detail.tone === "secondary" && "record-card__detail--secondary")}
+              key={`${detail.tone ?? "primary"}-${detail.value}`}
+            >
+              {detail.value}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </>
+  );
+}
+
+/**
+ * Compact card for a structured record. Empty detail values are omitted.
+ * Passing href makes the card an interactive link with a directional affordance.
+ */
+export function RecordCard(props: RecordCardProps) {
+  if ("href" in props && props.href) {
+    const { className, details, href, icon, meta, title, ...linkProps } = props;
+
+    return (
+      <a
+        className={cn("record-card", "record-card--interactive", className)}
+        href={href}
+        {...linkProps}
+      >
+        <RecordCardContent details={details} icon={icon} meta={meta} title={title} />
+        <span
+          aria-hidden="true"
+          className="record-card__arrow"
+        >
+          <ArrowUpRightIcon />
+        </span>
+      </a>
+    );
+  }
+
+  if (isButtonRecordCard(props)) {
+    const { className, details, icon, meta, onClick, title, ...buttonProps } = props;
+
+    return (
+      <button
+        className={cn("record-card", "record-card--interactive", className)}
+        onClick={onClick}
+        type="button"
+        {...buttonProps}
+      >
+        <RecordCardContent details={details} icon={icon} meta={meta} title={title} />
+        <span aria-hidden="true" className="record-card__arrow">
+          <ArrowUpRightIcon />
+        </span>
+      </button>
+    );
+  }
+
+  const { className, details, icon, meta, title } = props;
+
+  return (
+    <article className={cn("record-card", className)}>
+      <RecordCardContent details={details} icon={icon} meta={meta} title={title} />
+    </article>
+  );
+}

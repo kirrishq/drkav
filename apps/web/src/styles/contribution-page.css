@@ -1,0 +1,82 @@
+@layer components {
+  .contribution-patent__preview {
+    position: relative;
+    display: grid;
+    width: 100%;
+    aspect-ratio: var(--ratio-patent-preview);
+    max-height: var(--space-28);
+    margin-top: var(--space-5);
+    padding: 0;
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--accent);
+    border-radius: var(--radius-md);
+    background: var(--surface-inverse);
+    color: var(--text-inverse);
+    cursor: zoom-in;
+  }
+
+  .contribution-patent__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.54;
+  }
+
+  .contribution-patent__image:fullscreen {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--background);
+    opacity: 1;
+    cursor: zoom-out;
+  }
+
+  .contribution-patent__preview-label {
+    position: absolute;
+    align-self: center;
+    justify-self: center;
+    font-size: var(--type-label-size);
+    font-weight: var(--type-label-weight);
+    line-height: var(--type-label-line-height);
+  }
+
+  .contribution-patent__preview:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 var(--focus-ring-offset) var(--background), 0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width)) var(--accent);
+  }
+
+  .contribution-articles__grid {
+    margin-top: var(--space-5);
+  }
+
+  .contribution-articles {
+    margin-top: var(--space-5);
+  }
+
+  .contribution-articles__icon {
+    width: var(--space-8);
+    height: var(--space-8);
+    background-color: currentColor;
+    mask: center / contain no-repeat url("/icons/magazine.svg");
+    -webkit-mask: center / contain no-repeat url("/icons/magazine.svg");
+  }
+
+  .about-related-pages {
+    margin-top: var(--space-12);
+  }
+
+  .about-related-pages__title {
+    margin: 0;
+    font-size: var(--type-h2-size);
+    font-weight: var(--type-h2-weight);
+    letter-spacing: var(--type-h2-tracking);
+    line-height: var(--type-h2-line-height);
+  }
+
+  .about-related-pages__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+}

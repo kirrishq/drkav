@@ -1,0 +1,69 @@
+@layer components {
+  .education-project {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .education-project__image {
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+
+  .education-project__image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .education-project__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .education-project__paragraph {
+    margin: 0;
+    font-size: var(--type-text-base-size);
+    line-height: var(--type-text-base-line-height);
+    color: var(--text-primary);
+  }
+
+  .education-project__paragraph + .education-project__paragraph {
+    margin-top: var(--space-3);
+  }
+
+  .education-project__action {
+    margin-top: var(--space-4);
+  }
+
+  .education-formats {
+    margin-top: var(--space-12);
+  }
+
+  .education-formats__title {
+    margin: 0;
+    font-size: var(--type-h2-size);
+    font-weight: var(--type-h2-weight);
+    letter-spacing: var(--type-h2-tracking);
+    line-height: var(--type-h2-line-height);
+  }
+
+  .education-formats__grid {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  @media (min-width: 40rem) {
+    .education-project {
+      grid-template-columns: var(--container-profile-min) minmax(0, 1fr);
+    }
+
+    .education-formats__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}
