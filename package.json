@@ -8,10 +8,14 @@
   "packageManager": "pnpm@11.9.0",
   "scripts": {
     "dev": "pnpm --filter @drkav/web dev",
+    "dev:web": "pnpm --filter @drkav/web dev",
+    "dev:cms": "pnpm --filter @drkav/cms dev",
     "check:styles": "node scripts/check-no-css-modules.mjs",
     "lint": "pnpm check:styles && eslint apps packages --max-warnings=0",
     "typecheck": "tsc -p apps/web/tsconfig.json --noEmit && tsc -p packages/ui/tsconfig.json --noEmit && tsc -p packages/content-contracts/tsconfig.json --noEmit",
-    "build": "pnpm --filter @drkav/web build"
+    "build": "pnpm --filter @drkav/web build",
+    "build:web": "pnpm --filter @drkav/web build",
+    "build:cms": "pnpm --filter @drkav/cms build"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
