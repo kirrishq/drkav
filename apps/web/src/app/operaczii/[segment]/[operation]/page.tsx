@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { RegistryScaffoldPage } from "@/components/content-page/registry-scaffold-page";
-import { StaticPage } from "@/components/content-page/static-page";
-import { OperationContentRenderer } from "@/components/operation-content/operation-content-renderer";
+import {
+  CmsOperationPage,
+  getCmsOperationMetadata,
+} from "@/components/content-page/cms-operation-page";
 import {
   cmsMigratedOperationPaths,
   getCmsOperationByPath,
   isCmsMigratedOperationPath,
 } from "@/content/cms-migrated-operations";
 import { CmsInvalidResponseError } from "@/content/cms-errors";
-import { logCmsError } from "@/content/cms-logging";
 import { allPageRegistryItems, getPageByRoute, getPageMetadata } from "@/content/page-registry";
-import { toMetadata, toUnavailableMetadata } from "@/content/seo";
 
 type NestedOperationPageProps = {
   params: Promise<{ segment: string; operation: string }>;
@@ -36,11 +36,14 @@ export async function generateStaticParams() {
         item.route.split("/").filter(Boolean).length === 3,
     )
     .map((item) => paramsFromRoute(item.route));
-  const cmsParams = cmsMigratedOperationPaths.map(paramsFromRoute);
+  const nestedCmsPaths = cmsMigratedOperationPaths.filter(
+    (path) => path.split("/").filter(Boolean).length === 3,
+  );
+  const cmsParams = nestedCmsPaths.map(paramsFromRoute);
 
   if (process.env.NODE_ENV === "production") {
     await Promise.all(
-      cmsMigratedOperationPaths.map(async (path) => {
+      nestedCmsPaths.map(async (path) => {
         const content = await getCmsOperationByPath(path);
 
         if (!content) {
@@ -60,20 +63,7 @@ export async function generateMetadata({ params }: NestedOperationPageProps): Pr
   const route = routeFor(segment, operation);
 
   if (isCmsMigratedOperationPath(route)) {
-    let content: Awaited<ReturnType<typeof getCmsOperationByPath>>;
-
-    try {
-      content = await getCmsOperationByPath(route);
-    } catch (error) {
-      logCmsError("cms_metadata_fallback_rendered", error, route);
-      return toUnavailableMetadata(route);
-    }
-
-    if (!content) {
-      notFound();
-    }
-
-    return toMetadata(content.seo);
+    return getCmsOperationMetadata(route);
   }
 
   return getPageMetadata(route);
@@ -84,35 +74,7 @@ export default async function NestedOperationPage({ params }: NestedOperationPag
   const route = routeFor(segment, operation);
 
   if (isCmsMigratedOperationPath(route)) {
-    let content: Awaited<ReturnType<typeof getCmsOperationByPath>>;
-
-    try {
-      content = await getCmsOperationByPath(route);
-    } catch (error) {
-      logCmsError("cms_cold_request_failed", error, route);
-      throw error;
-    }
-
-    if (!content) {
-      notFound();
-    }
-
-    return (
-      <StaticPage
-        breadcrumbs={[
-          { href: "/", label: "Главная" },
-          { href: "/operaczii", label: "Операции" },
-          { label: content.heading },
-        ]}
-        description={content.heroDescription ?? ""}
-        title={content.heading}
-      >
-        <OperationContentRenderer
-          prices={content.prices}
-          sections={content.contentSections}
-        />
-      </StaticPage>
-    );
+    return <CmsOperationPage path={route} />;
   }
 
   const item = getPageByRoute(route);

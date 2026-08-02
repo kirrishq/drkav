@@ -14,8 +14,6 @@ export const headerMenu: readonly HeaderMenuItem[] = [
     label: "Обо мне",
     links: [
       { href: "/obo-mne", label: "Обо мне" },
-      { href: "/obo-mne/specializaciya", label: "Специализация" },
-      { href: "/obo-mne/obrazovanie", label: "Образование" },
       { href: "/obo-mne/publikacii", label: "Научная деятельность" },
       { href: "/obo-mne/vystupleniya", label: "Выступления" },
       {

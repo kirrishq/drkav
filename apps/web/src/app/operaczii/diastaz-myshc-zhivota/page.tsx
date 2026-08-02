@@ -1,18 +1,14 @@
-import { StaticPage } from "@/components/content-page/static-page";
-import { getPageMetadata } from "@/content/page-registry";
+import {
+  CmsOperationPage,
+  getCmsOperationMetadata,
+} from "@/components/content-page/cms-operation-page";
 
-export const metadata = getPageMetadata("/operaczii/diastaz-myshc-zhivota");
+const path = "/operaczii/diastaz-myshc-zhivota";
+
+export function generateMetadata() {
+  return getCmsOperationMetadata(path);
+}
 
 export default function DiastasisOperationPage() {
-  return (
-    <StaticPage
-      breadcrumbs={[
-        { href: "/", label: "Главная" },
-        { href: "/operaczii", label: "Операции" },
-        { label: "Диастаза без шрамов" },
-      ]}
-      description="Информация о хирургическом лечении диастаза прямых мышц живота."
-      title="Лечение диастаза прямых мышц живота"
-    />
-  );
+  return <CmsOperationPage path={path} />;
 }

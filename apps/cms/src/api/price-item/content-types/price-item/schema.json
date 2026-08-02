@@ -32,6 +32,11 @@
       "enum": ["fixed", "from", "range", "on-request", "included"],
       "required": true
     },
+    "priceLabel": {
+      "type": "string",
+      "required": false,
+      "maxLength": 80
+    },
     "amount": {
       "type": "integer",
       "required": false,

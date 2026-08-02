@@ -68,19 +68,6 @@ export const staticPages = [
     contentStatus: "partial",
   },
   {
-    internalName: "Образование",
-    pageKey: "about-education",
-    seo: {
-      metaTitle: "Образование и опыт — доктор Коробов",
-      metaDescription:
-        "Образование и профессиональный путь доктора Коробова: специализация, обучение, стаж, направления работы и подход к пациентам.",
-      canonicalPath: "/obo-mne/obrazovanie",
-      noIndex: false,
-    },
-    heading: "Образование",
-    contentStatus: "empty",
-  },
-  {
     internalName: "СМИ",
     pageKey: "about-media",
     seo: {

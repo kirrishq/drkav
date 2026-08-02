@@ -1,0 +1,80 @@
+{
+  "number": 37,
+  "sourceUrl": null,
+  "sourceCandidates": [],
+  "checkedAt": "2026-08-02T21:02:59.831Z",
+  "sourceStatus": {
+    "status": null,
+    "finalUrl": null,
+    "title": null,
+    "h1": null,
+    "checkedAt": null,
+    "extractedSections": 2,
+    "extractedPrices": 0
+  },
+  "canonicalPath": "/operaczii/muzhskaya-plastika/prorisovka-grudnykh-myshcz",
+  "name": "Прорисовка грудных мышц",
+  "slug": "prorisovka-grudnykh-myshcz",
+  "categoryKeys": [
+    "men",
+    "male-athletic-contouring"
+  ],
+  "seo": null,
+  "heroDescription": null,
+  "primaryAction": null,
+  "secondaryAction": null,
+  "contentSections": [
+    {
+      "__component": "operation.rich-text-section",
+      "sectionKey": "confirmed-price-description",
+      "anchor": null,
+      "heading": null,
+      "body": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "text": "Придание точености мышцам, как после серьезных тренировок в спортзале, 2 стороны (стоимость актуальна при комплексной липоскульптуре)"
+            }
+          ]
+        }
+      ],
+      "showInPageNavigation": false
+    },
+    {
+      "__component": "operation.price-section",
+      "sectionKey": "prices",
+      "anchor": "cost",
+      "heading": "Стоимость",
+      "intro": null,
+      "disclaimer": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "text": "Цены, указанные на сайте, являются ориентировочными. Окончательная стоимость определяется после консультации."
+            }
+          ]
+        }
+      ],
+      "showInPageNavigation": true
+    }
+  ],
+  "priceKeys": [
+    "live-price-34e20843fc0434e6"
+  ],
+  "publicationEligibility": {
+    "eligible": false,
+    "hasFullSource": false,
+    "hasSeo": false,
+    "hasContent": true,
+    "hasPrices": true
+  },
+  "warnings": [
+    "старый URL и SEO не найдены",
+    "missing confirmed live source; draft only",
+    "price associated from the general price by exact/strong name match; source page had no parsed price block"
+  ]
+}
