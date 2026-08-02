@@ -7,12 +7,25 @@ export type SeoData = Omit<RepositorySeoData, "noIndex"> & {
   noIndex?: boolean;
 };
 
+function getSiteUrl(): URL {
+  const value = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = new URL(value);
+
+  if (siteUrl.protocol !== "http:" && siteUrl.protocol !== "https:") {
+    throw new Error("NEXT_PUBLIC_SITE_URL must use HTTP or HTTPS.");
+  }
+
+  return siteUrl;
+}
+
 /** Keeps page content independent from Next.js and the future CMS response shape. */
 export function toMetadata(seo: SeoData): Metadata {
   return {
     title: seo.title,
     description: seo.description,
-    alternates: seo.canonicalPath ? { canonical: seo.canonicalPath } : undefined,
+    alternates: seo.canonicalPath
+      ? { canonical: new URL(seo.canonicalPath, getSiteUrl()).toString() }
+      : undefined,
     robots: seo.noIndex ? { index: false, follow: false } : undefined,
   };
 }

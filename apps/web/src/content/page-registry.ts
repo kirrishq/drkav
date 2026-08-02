@@ -4,7 +4,7 @@ import { toMetadata, type SeoData } from "./seo";
 
 export type PageRegistryItem = {
   key: string;
-  name: string;
+  name?: string;
   route: string;
   kind: "static" | "operation" | "listing" | "dynamic-template";
   section: string;
@@ -12,7 +12,8 @@ export type PageRegistryItem = {
   groups?: readonly string[];
   legacyRoutes?: readonly string[];
   seo?: SeoData;
-  contentStatus: "existing" | "partial" | "scaffold" | "cms-template";
+  contentStatus: "existing" | "partial" | "scaffold" | "cms" | "cms-template";
+  contentSource?: "registry" | "cms";
 };
 
 const page = (item: PageRegistryItem): PageRegistryItem => item;
@@ -208,7 +209,6 @@ export const pageRegistry = [
 
 const operationRegistry = [
   ["breast", "Маммопластика", "/operaczii/plastika-grudi", "Грудь", "Грудь главная", "Пластика груди: цены — DrKAV", "Пластика груди у DrKAV: стоимость, что входит в цену, варианты операций и что обсудить на консультации перед вмешательством.", ["/ceny/plastika-grudi.html", "/operacii/grud"], "partial"],
-  ["breast-augmentation", "Увеличение груди", "/operaczii/plastika-grudi/uvelichenie-grudi", "Грудь", "Пластика груди", "Увеличить грудь по низкой цене, увеличение груди в Москве | Артем Коробов", "Увеличить грудь по выгодной цене в Москве. Увеличение груди профессиональным пластическим хирургом Артемом Коробовым. Звоните!", ["/ceny/plastika-grudi/uvelichenie-grudi.html"], "scaffold"],
   ["breast-lift", "Подтяжка груди без имплантов", "/operaczii/plastika-grudi/podtyazhka-grudi-bez-implantov", "Грудь", "Пластика груди", "Подтяжка груди без имплантов по низкой цене в Москве | Артем Коробов", "Подтяжка груди без имплантов по выгодной цене в Москве. Операция по подтяжке груди без использования имплантов. Звоните!", ["/ceny/podtyazhka-grudi-bez-implantov.html", "/ceny/plastika-grudi/podtyazhka-grudi-bez-implantov.html"], "scaffold"],
   ["breast-reduction", "Уменьшение груди", "/operaczii/plastika-grudi/umenshenie-grudi", "Грудь", "Пластика груди", "Уменьшение груди по низкой цене в Москве у Артема Коробова", "Уменьшение груди хирургом Артемом Коробовым. Выгодная цена на операцию по уменьшению руди в Москве. Звоните!", ["/ceny/umenshenie-grudi.html", "/ceny/plastika-grudi/umenshenie-grudi.html", "/operaczii/umenshenie-grudi"], "scaffold"],
   ["breast-asymmetry", "Коррекция асимметрии груди", "/operaczii/plastika-grudi/asimmetriya-grudi", "Грудь", "Пластика груди", "Асимметрия груди - операция по исправлению асимметрии груди в Москве, низкая цена | Артем Коробов", "Операция по исправлению асимметрии груди пластическим хирургом Артемом Коробовым. Выгодная цена на коррекцию груди в Москве. Звоните!", ["/ceny/plastika-grudi/asimmetriya-grudi.html"], "scaffold"],
@@ -267,6 +267,18 @@ export const operationPages: readonly PageRegistryItem[] = operationRegistry.map
   contentStatus,
 }));
 
+const cmsOperationPages: readonly PageRegistryItem[] = [
+  page({
+    key: "operation-breast-augmentation",
+    route: "/operaczii/plastika-grudi/uvelichenie-grudi",
+    kind: "operation",
+    section: "Операции",
+    legacyRoutes: ["/ceny/plastika-grudi/uvelichenie-grudi.html"],
+    contentStatus: "cms",
+    contentSource: "cms",
+  }),
+];
+
 const patientAndTemplatePages: readonly PageRegistryItem[] = [
   page({ key: "patients", name: "Пациентам", route: "/pacientam", kind: "listing", section: "Пациентам", contentStatus: "partial" }),
   page({ key: "blog", name: "Блог доктора", route: "/pacientam/blog", kind: "listing", section: "Пациентам", contentStatus: "partial" }),
@@ -292,6 +304,7 @@ const patientAndTemplatePages: readonly PageRegistryItem[] = [
 export const allPageRegistryItems: readonly PageRegistryItem[] = [
   ...pageRegistry,
   ...operationPages,
+  ...cmsOperationPages,
   ...patientAndTemplatePages,
 ];
 

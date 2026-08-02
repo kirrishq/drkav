@@ -29,7 +29,7 @@ Strapi запускается отдельно:
 pnpm dev:cms
 ```
 
-Локальная CMS использует SQLite и доступна по адресу http://localhost:1337/admin. Локальные секреты, база SQLite, uploads и generated-файлы Strapi исключены из Git. Public API закрыты; страницы не подключены к CMS массово.
+Локальная CMS использует SQLite и доступна по адресу http://localhost:1337/admin. Локальные секреты, база SQLite, uploads и generated-файлы Strapi исключены из Git. Public role не имеет доступа к Content API; server-to-server запросы используют read-only API token.
 
 Seed выполняется только вручную и не входит в обычный запуск:
 
@@ -37,7 +37,13 @@ Seed выполняется только вручную и не входит в 
 pnpm --filter @drkav/cms seed
 ```
 
-UI не зависит от Strapi. Страницы получают CMS-контент только через `ContentRepository` из `@drkav/content-contracts`; прямые импорты Strapi SDK или Strapi-моделей в UI и страницы запрещены. Миграция выполняется постепенно, по одной безопасной вертикали.
+Для идемпотентного seed только первой CMS-вертикали «Увеличение груди» используйте:
+
+```bash
+pnpm --filter @drkav/cms seed:breast-augmentation
+```
+
+UI не зависит от Strapi. Страницы получают CMS-контент только через `ContentRepository` из `@drkav/content-contracts`; прямые импорты Strapi SDK или Strapi-моделей в UI и страницы запрещены. Сейчас через CMS подключена только операция `/operaczii/plastika-grudi/uvelichenie-grudi`; остальные операции продолжают использовать frontend registry.
 
 Внутренняя документация дизайн-системы доступна по адресу http://localhost:3000/design-system и не включается в публичную навигацию.
 
@@ -51,5 +57,7 @@ pnpm build:cms
 ```
 
 `pnpm build` остаётся алиасом сборки frontend. Production, hosting, DNS, Public API и реальные интеграции требуют отдельного подтверждения владельца проекта.
+
+`build:web` не требует запущенной CMS: первая CMS-операция исключена из статической генерации и загружается server-side во время запроса. Для её локального runtime нужны `STRAPI_API_URL` и `STRAPI_API_TOKEN` из `apps/web/.env.local`; пример находится в `apps/web/.env.example`.
 
 Подробнее об ограничениях проекта — в [docs/project-context.md](docs/project-context.md), о правилах внесения изменений — в [CONTRIBUTING.md](CONTRIBUTING.md).

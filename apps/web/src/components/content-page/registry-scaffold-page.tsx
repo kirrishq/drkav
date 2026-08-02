@@ -11,7 +11,7 @@ type RegistryScaffoldPageProps = {
 export function RegistryScaffoldPage({ route, parent }: RegistryScaffoldPageProps) {
   const item = getPageByRoute(route);
 
-  if (!item) {
+  if (!item?.name || item.contentSource === "cms") {
     notFound();
   }
 

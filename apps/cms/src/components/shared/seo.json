@@ -10,7 +10,7 @@
       "type": "string",
       "required": true,
       "minLength": 10,
-      "maxLength": 70
+      "maxLength": 80
     },
     "metaDescription": {
       "type": "text",

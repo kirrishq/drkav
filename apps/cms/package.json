@@ -9,6 +9,7 @@
     "dev": "strapi develop",
     "develop": "strapi develop",
     "seed": "node scripts/seed.js",
+    "seed:breast-augmentation": "node scripts/seed-breast-augmentation.js",
     "start": "strapi start",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",

@@ -4,6 +4,7 @@ export const seedSources = [
   "drkav [структура] (1).xlsx / структура сайта seo",
   "operaczii.xlsx / Sheet1",
   "apps/web/src/content/page-registry.ts",
+  "https://drkav.ru/ceny/plastika-grudi/uvelichenie-grudi.html",
 ];
 
 export const siteSettings = {
@@ -30,7 +31,7 @@ export const operationCategories = [
     key: "after-weight-loss",
     hasLandingPage: false,
   },
-  { name: "Грудь", key: "breast", hasLandingPage: false },
+  { name: "Пластика груди", key: "breast", hasLandingPage: false },
   { name: "Липофилинг", key: "lipofilling", hasLandingPage: false },
   {
     name: "Мужская атлетизация",
@@ -240,6 +241,23 @@ export const operations = [
     },
     categoryKeys: ["breast"],
     contentStatus: "partial",
+  },
+  {
+    internalName: "Увеличение груди",
+    slug: "uvelichenie-grudi",
+    canonicalPath: "/operaczii/plastika-grudi/uvelichenie-grudi",
+    heading: "Увеличение груди: аугментационная маммопластика",
+    heroDescription: "Наслаждайтесь собой и своим телом!",
+    seo: {
+      metaTitle:
+        "Увеличить грудь по низкой цене, увеличение груди в Москве | Артем Коробов",
+      metaDescription:
+        "Увеличить грудь по выгодной цене в Москве. Увеличение груди профессиональным пластическим хирургом Артемом Коробовым. Звоните!",
+      canonicalPath: "/operaczii/plastika-grudi/uvelichenie-grudi",
+      noIndex: false,
+    },
+    categoryKeys: ["breast"],
+    contentStatus: "empty",
   },
   {
     internalName: "Подтяжка груди без имплантов",
