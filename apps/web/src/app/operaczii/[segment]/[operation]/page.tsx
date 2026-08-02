@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { RegistryScaffoldPage } from "@/components/content-page/registry-scaffold-page";
 import { StaticPage } from "@/components/content-page/static-page";
+import { OperationContentRenderer } from "@/components/operation-content/operation-content-renderer";
 import {
   getCmsOperationByPath,
   isCmsMigratedOperationPath,
@@ -69,7 +70,12 @@ export default async function NestedOperationPage({ params }: NestedOperationPag
         ]}
         description={content.heroDescription ?? ""}
         title={content.heading}
-      />
+      >
+        <OperationContentRenderer
+          prices={content.prices}
+          sections={content.contentSections}
+        />
+      </StaticPage>
     );
   }
 

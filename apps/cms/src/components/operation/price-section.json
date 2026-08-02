@@ -1,0 +1,36 @@
+{
+  "collectionName": "components_operation_price_sections",
+  "info": {
+    "displayName": "Operation Price Section",
+    "description": "Placement and copy for the operation price list; monetary values live in Price Item"
+  },
+  "options": {},
+  "attributes": {
+    "sectionKey": {
+      "type": "string",
+      "required": true
+    },
+    "anchor": {
+      "type": "string",
+      "required": false
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "intro": {
+      "type": "blocks",
+      "required": false
+    },
+    "disclaimer": {
+      "type": "blocks",
+      "required": false
+    },
+    "showInPageNavigation": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  },
+  "config": {}
+}

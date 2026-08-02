@@ -8,11 +8,14 @@ export type SeoData = Omit<RepositorySeoData, "noIndex"> & {
 };
 
 function getSiteUrl(): URL {
-  const value = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const value =
+    process.env.SITE_URL ??
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    "http://localhost:3000";
   const siteUrl = new URL(value);
 
   if (siteUrl.protocol !== "http:" && siteUrl.protocol !== "https:") {
-    throw new Error("NEXT_PUBLIC_SITE_URL must use HTTP or HTTPS.");
+    throw new Error("SITE_URL must use HTTP or HTTPS.");
   }
 
   return siteUrl;

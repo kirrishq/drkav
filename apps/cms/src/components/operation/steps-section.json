@@ -1,0 +1,42 @@
+{
+  "collectionName": "components_operation_steps_sections",
+  "info": {
+    "displayName": "Operation Steps Section",
+    "description": "An ordered process section used only by operations"
+  },
+  "options": {},
+  "attributes": {
+    "sectionKey": {
+      "type": "string",
+      "required": true
+    },
+    "anchor": {
+      "type": "string",
+      "required": false
+    },
+    "heading": {
+      "type": "string",
+      "required": false
+    },
+    "intro": {
+      "type": "blocks",
+      "required": false
+    },
+    "steps": {
+      "type": "component",
+      "component": "operation.step",
+      "repeatable": true,
+      "required": true
+    },
+    "outro": {
+      "type": "blocks",
+      "required": false
+    },
+    "showInPageNavigation": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_operation_rich_text_sections",
+  "info": {
+    "displayName": "Operation Rich Text Section",
+    "description": "A bounded rich-text section used only by operations"
+  },
+  "options": {},
+  "attributes": {
+    "sectionKey": {
+      "type": "string",
+      "required": true
+    },
+    "anchor": {
+      "type": "string",
+      "required": false
+    },
+    "heading": {
+      "type": "string",
+      "required": false
+    },
+    "body": {
+      "type": "blocks",
+      "required": true
+    },
+    "showInPageNavigation": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  },
+  "config": {}
+}

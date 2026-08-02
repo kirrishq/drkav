@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_operation_steps",
+  "info": {
+    "displayName": "Operation Step",
+    "description": "One ordered step in an operation process"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": false
+    },
+    "sortOrder": {
+      "type": "integer",
+      "required": false,
+      "min": 0
+    }
+  },
+  "config": {}
+}
