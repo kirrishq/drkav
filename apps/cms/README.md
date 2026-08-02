@@ -1,61 +1,40 @@
-# 🚀 Getting started with Strapi
+# Локальная CMS drkav
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+`apps/cms` — локальное приложение Strapi 5.51.1 с SQLite для постепенной миграции контента drkav. Оно является частью среды разработки, но не описывает production-развёртывание.
 
-### `develop`
+## Запуск
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
+Из корня монорепозитория:
 
-```
-npm run develop
-# or
-yarn develop
+```bash
+pnpm dev:cms
 ```
 
-### `start`
+Админ-панель доступна по адресу http://localhost:1337/admin. Frontend запускается отдельно командой `pnpm dev:web`.
 
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
+Для сборки админ-панели:
 
-```
-npm run start
-# or
-yarn start
+```bash
+pnpm build:cms
 ```
 
-### `build`
+## Seed
 
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
+Seed запускается только вручную:
 
-```
-npm run build
-# or
-yarn build
+```bash
+pnpm --filter @drkav/cms seed
 ```
 
-## ⚙️ Deployment
+Команда не входит в `develop`, `start`, bootstrap или другие lifecycle-сценарии. Не запускайте её без явной необходимости в рамках конкретной задачи.
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
+## Архитектурные границы
 
-```
-yarn strapi deploy
-```
+- UI и страницы не импортируют Strapi SDK или Strapi-модели.
+- Страницы получают CMS-контент только через `ContentRepository` из `@drkav/content-contracts`.
+- Strapi-типы изолированы в адаптере `apps/web/src/content/strapi-content-repository.ts`.
+- Подключение страниц выполняется постепенно, по одной безопасной вертикали. Массового переключения страниц на CMS ещё не было.
+- Frontend page registry пока остаётся миграционным источником.
+- Public API закрыты. Их открытие, а также production, hosting, DNS, amoCRM, аналитика и другие реальные интеграции требуют отдельного подтверждения владельца проекта.
 
-## 📚 Learn more
-
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
-
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
-
-## ✨ Community
-
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
-
----
-
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+Локальные `.env`, SQLite в `.tmp`, uploads и generated-типы Strapi исключены из Git. Не добавляйте в репозиторий секреты или локальные runtime-данные.

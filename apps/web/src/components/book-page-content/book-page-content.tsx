@@ -1,4 +1,5 @@
 import { buttonVariants, cn } from "@drkav/ui";
+import Image from "next/image";
 
 const bookUrl = "https://book.drkav.ru/";
 
@@ -7,7 +8,7 @@ export function BookPageContent() {
     <>
       <section aria-label="О книге" className="book-page__story">
         <figure className="book-page__portrait">
-          <img alt="Доктор Коробов читает книгу в кресле" src="/images/about-pages/book.png" />
+          <Image alt="Доктор Коробов читает книгу в кресле" height={420} sizes="(min-width: 640px) 320px, 100vw" src="/images/about-pages/book.png" width={420} />
         </figure>
         <div className="content-card content-card--muted book-page__description">
           <p>На консультациях женщины рассказывают мне о своей жизни: у каждой своя боль и свое счастье, и я вижу следы этой истории на их телах.</p>
@@ -27,7 +28,7 @@ export function BookPageContent() {
           </a>
         </div>
         <figure className="book-page__mockup">
-          <img alt="Мокап книги «Боль двенадцати женщин»" src="/images/book/book-mockup.png" />
+          <Image alt="Мокап книги «Боль двенадцати женщин»" height={360} sizes="(min-width: 640px) 50vw, 100vw" src="/images/book/book-mockup.png" width={596} />
         </figure>
       </section>
     </>
