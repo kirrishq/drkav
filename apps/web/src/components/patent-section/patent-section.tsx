@@ -79,7 +79,7 @@ function PatentModal({ onClose }: { onClose: () => void }) {
           style={previewStyle}
           tabIndex={0}
         />
-        <Link className={cn(buttonVariants({ size: "md", variant: "primary" }), "patent-modal__operation-link")} href="/operacii/diastaz-myshc-zhivota">
+        <Link className={cn(buttonVariants({ size: "md", variant: "primary" }), "patent-modal__operation-link")} href="/operaczii/diastaz-myshc-zhivota">
           Подробнее об операции
         </Link>
       </div>

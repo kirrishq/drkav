@@ -22,12 +22,12 @@ const aboutPages = [
     title: "Дипломы и лицензии",
   },
   {
-    href: "/obo-mne/smi-i-proekty",
+    href: "/obo-mne/smi",
     imageSrc: "/images/about-pages/vistupleniya.png",
     title: "СМИ и проекты",
   },
   {
-    href: "/obo-mne/obuchenie",
+    href: "/obo-mne/neshkola",
     imageSrc: "/images/about-pages/book.png",
     title: "Обучение",
   },

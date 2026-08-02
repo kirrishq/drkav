@@ -469,14 +469,14 @@ export default function DesignSystemPage() {
           >
             <Subsection title="Example">
               <p className="type-text-base text-primary">
-                Подробнее об операции <TextLink href="/operacii/diastaz-myshc-zhivota">«Диастаз без шрамов»</TextLink>.
+                Подробнее об операции <TextLink href="/operaczii/diastaz-myshc-zhivota">«Диастаз без шрамов»</TextLink>.
               </p>
             </Subsection>
 
             <Subsection title="Usage">
               <CodeBlock>{`import { TextLink } from "@drkav/ui";
 
-<TextLink href="/operacii/diastaz-myshc-zhivota">
+<TextLink href="/operaczii/diastaz-myshc-zhivota">
   «Диастаз без шрамов»
 </TextLink>`}</CodeBlock>
             </Subsection>

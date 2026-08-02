@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "operation_categories",
+  "info": {
+    "singularName": "operation-category",
+    "pluralName": "operation-categories",
+    "displayName": "Operation Category",
+    "description": "Editorial and user-facing groups for operations"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "key": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "description": {
+      "type": "text",
+      "required": false
+    },
+    "hasLandingPage": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "landingPageKey": {
+      "type": "string",
+      "required": false
+    },
+    "operations": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::operation.operation",
+      "mappedBy": "categories"
+    }
+  },
+  "config": {}
+}

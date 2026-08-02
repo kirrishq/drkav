@@ -2,6 +2,9 @@ import { buttonVariants, cn } from "@drkav/ui";
 import Link from "next/link";
 
 import { SiteHeader } from "@/components/site-header/site-header";
+import { getPageMetadata } from "@/content/page-registry";
+
+export const metadata = getPageMetadata("/");
 
 export default function HomePage() {
   return (

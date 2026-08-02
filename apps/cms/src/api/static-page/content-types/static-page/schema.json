@@ -1,0 +1,64 @@
+{
+  "kind": "collectionType",
+  "collectionName": "static_pages",
+  "info": {
+    "singularName": "static-page",
+    "pluralName": "static-pages",
+    "displayName": "Static Page",
+    "description": "Content for a fixed frontend route bound by a stable pageKey"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "internalName": {
+      "type": "string",
+      "required": true
+    },
+    "pageKey": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "required": true
+    },
+    "heading": {
+      "type": "string",
+      "required": false
+    },
+    "heroDescription": {
+      "type": "text",
+      "required": false
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "primaryAction": {
+      "type": "component",
+      "component": "shared.action",
+      "repeatable": false,
+      "required": false
+    },
+    "secondaryAction": {
+      "type": "component",
+      "component": "shared.action",
+      "repeatable": false,
+      "required": false
+    },
+    "contentStatus": {
+      "type": "enumeration",
+      "enum": ["empty", "partial", "ready"],
+      "required": true,
+      "default": "empty"
+    }
+  },
+  "config": {}
+}

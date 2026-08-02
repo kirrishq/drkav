@@ -2,12 +2,9 @@ import { StaticPage } from "@/components/content-page/static-page";
 import { ContributionArticles } from "@/components/contribution-articles/contribution-articles";
 import { ContributionPatent } from "@/components/contribution-patent/contribution-patent";
 import { AboutRelatedPages } from "@/components/about-related-pages/about-related-pages";
+import { getPageMetadata } from "@/content/page-registry";
 
-export const metadata = {
-  title: "Вклад в медицину — доктор Коробов",
-  description:
-    "Профессиональные инициативы, исследования и развитие пластической хирургии.",
-};
+export const metadata = getPageMetadata("/obo-mne/publikacii");
 
 export default function ContributionPage() {
   return (

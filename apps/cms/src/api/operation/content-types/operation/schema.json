@@ -1,0 +1,76 @@
+{
+  "kind": "collectionType",
+  "collectionName": "operations",
+  "info": {
+    "singularName": "operation",
+    "pluralName": "operations",
+    "displayName": "Operation",
+    "description": "One operation record reused across multiple categories"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "internalName": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "internalName",
+      "required": true,
+      "unique": true
+    },
+    "canonicalPath": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "heroDescription": {
+      "type": "text",
+      "required": false
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "primaryAction": {
+      "type": "component",
+      "component": "shared.action",
+      "repeatable": false,
+      "required": false
+    },
+    "secondaryAction": {
+      "type": "component",
+      "component": "shared.action",
+      "repeatable": false,
+      "required": false
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "required": true
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::operation-category.operation-category",
+      "inversedBy": "operations"
+    },
+    "contentStatus": {
+      "type": "enumeration",
+      "enum": ["empty", "partial", "ready"],
+      "required": true,
+      "default": "empty"
+    }
+  },
+  "config": {}
+}

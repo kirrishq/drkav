@@ -8,6 +8,7 @@
     "console": "strapi console",
     "dev": "strapi develop",
     "develop": "strapi develop",
+    "seed": "node scripts/seed.js",
     "start": "strapi start",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",

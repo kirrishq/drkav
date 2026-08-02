@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_shared_actions",
+  "info": {
+    "displayName": "Action",
+    "description": "CMS-neutral link action using the supported UI button variants"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "href": {
+      "type": "string",
+      "required": true
+    },
+    "variant": {
+      "type": "enumeration",
+      "enum": ["primary", "secondary", "outline", "ghost", "link"],
+      "required": true,
+      "default": "primary"
+    },
+    "openInNewTab": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    }
+  },
+  "config": {}
+}
