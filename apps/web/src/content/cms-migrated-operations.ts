@@ -3,6 +3,7 @@ import "server-only";
 import { cache } from "react";
 
 import { createContentRepository } from "./content-repository";
+import { logCmsError } from "./cms-logging";
 
 export const cmsMigratedOperationPaths = [
   "/operaczii/plastika-grudi/uvelichenie-grudi",
@@ -17,9 +18,14 @@ export function isCmsMigratedOperationPath(
   return cmsMigratedOperationPaths.some((candidate) => candidate === path);
 }
 
-const loadCmsOperation = cache((path: CmsMigratedOperationPath) =>
-  createContentRepository().getOperationByPath(path),
-);
+const loadCmsOperation = cache(async (path: CmsMigratedOperationPath) => {
+  try {
+    return await createContentRepository().getOperationByPath(path);
+  } catch (error) {
+    logCmsError("cms_fetch_or_revalidation_failed", error, path);
+    throw error;
+  }
+});
 
 export function getCmsOperationByPath(path: CmsMigratedOperationPath) {
   return loadCmsOperation(path);

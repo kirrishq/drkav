@@ -58,6 +58,8 @@ pnpm build:cms
 
 `pnpm build` остаётся алиасом сборки frontend. Production, hosting, DNS, Public API и реальные интеграции требуют отдельного подтверждения владельца проекта.
 
-`build:web` не требует запущенной CMS: первая CMS-операция исключена из статической генерации и загружается server-side во время запроса. Для её локального runtime нужны `STRAPI_API_URL` и `STRAPI_API_TOKEN` из `apps/web/.env.local`; пример находится в `apps/web/.env.example`.
+Production-сборка `build:web` предварительно генерирует явно перечисленные CMS-операции и поэтому требует доступную Strapi, server-side read-only token и опубликованные записи. В development CMS-запросы не кэшируются; в production используется Next.js Data/Full Route Cache с TTL `CMS_REVALIDATE_SECONDS` (по умолчанию 3600 секунд) и сохранением last-known-good страницы при неудачной ревалидации. Для локальной настройки используйте `apps/web/.env.local`; пример без секретов находится в `apps/web/.env.example`.
+
+Production-требования, ограничения cold cache, media и multi-instance cache описаны в [docs/production-cms-checklist.md](docs/production-cms-checklist.md).
 
 Подробнее об ограничениях проекта — в [docs/project-context.md](docs/project-context.md), о правилах внесения изменений — в [CONTRIBUTING.md](CONTRIBUTING.md).

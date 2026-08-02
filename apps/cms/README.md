@@ -44,14 +44,18 @@ pnpm --filter @drkav/cms seed:breast-augmentation
 - Подключение страниц выполняется постепенно, по одной безопасной вертикали. Массового переключения страниц на CMS ещё не было.
 - Через Strapi подключена только операция `/operaczii/plastika-grudi/uvelichenie-grudi`. Для остальных операций frontend page registry остаётся миграционным источником.
 - Public role не имеет permissions на `operation` и `operation-category`. Зарегистрированный REST API доступен server-to-server через read-only API token.
-- `build:web` не требует запущенной CMS: CMS-операция рендерится динамически. Для runtime доступ к Strapi обязателен; сетевые ошибки не заменяются frontend fallback.
+- Production `build:web` предварительно генерирует явно перечисленные CMS-операции. Для сборки обязательны доступная Strapi, server-side read-only token и опубликованная запись; при ошибке integration или отсутствии записи deployment должен остановиться на failed build.
+- В development CMS-запросы используют `no-store`, чтобы опубликованные редакторские изменения появлялись сразу. В production Next.js Data/Full Route Cache использует `CMS_REVALIDATE_SECONDS` (default 3600, минимум 60) и tag `operation:<canonical-path>`.
+- Неудачная production-ревалидация не заменяет last-known-good документ. Route-level boundary подготовлен для ошибок, достигающих segment tree, и не показывает registry-контент или технические детали. Для раннего static/ISR 500, который Next.js 15.5.22 не передаёт segment boundary, добавлен статический branded 500-экран с `noindex`; такой экран не кэшируется как CMS-контент (см. production checklist).
 - Открытие Public permissions, а также production, hosting, DNS, amoCRM, аналитика и другие реальные интеграции требуют отдельного подтверждения владельца проекта.
 
 Локальные `.env`, SQLite в `.tmp`, uploads и generated-типы Strapi исключены из Git. Не добавляйте в репозиторий секреты или локальные runtime-данные.
 
 ## Read-only token для frontend
 
-В Strapi откройте **Settings → API Tokens**, создайте token типа **Read-only** и один раз скопируйте его в `apps/web/.env.local` как `STRAPI_API_TOKEN`. Там же задайте `STRAPI_API_URL=http://localhost:1337`. Не используйте префикс `NEXT_PUBLIC_` и не добавляйте `.env.local` в Git.
+В Strapi откройте **Settings → API Tokens**, создайте token типа **Read-only** и один раз скопируйте его в `apps/web/.env.local` как `STRAPI_API_TOKEN`. Там же задайте `STRAPI_API_URL=http://localhost:1337`. Не используйте префикс `NEXT_PUBLIC_` и не добавляйте `.env.local` в Git. Token следует ротировать по эксплуатационному регламенту или сразу после подозрения на компрометацию: создать новый read-only token, обновить server-side secret, проверить CMS-страницу и только затем отозвать старый token. Не выводите оба значения в логах.
+
+Полный production checklist, включая cache, media, multi-instance hosting, безопасные логи и будущую revalidation, находится в `docs/production-cms-checklist.md`.
 
 ## Проверка редакторского сценария
 

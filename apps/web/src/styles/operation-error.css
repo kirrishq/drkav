@@ -1,0 +1,17 @@
+@layer components {
+  .operation-error__actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .operation-error__action {
+    min-width: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .operation-error__actions {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+}

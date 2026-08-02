@@ -28,6 +28,10 @@
 - [x] Выбрать Strapi 5.51.1 для локальной разработки и добавить `apps/cms` с локальной SQLite.
 - [x] Подготовить CMS-neutral модели, `ContentRepository` и изолированный Strapi-адаптер.
 - [x] Подключить операцию «Увеличение груди» как первую безопасную вертикаль и проверить отсутствие draft/runtime fallback.
+- [x] Добавить production cache, build-time pre-generation, last-known-good и route error boundary для первой CMS-вертикали.
+- [x] Добавить совместимый branded HTTP 500 для ранней static/ISR ошибки, которую Next.js 15.5.22 не передаёт App Router segment boundary.
+- [ ] До production выбрать hosting/cache handler и внешний media provider; проверить tag revalidation на выбранной платформе.
+- [ ] После выбора hosting реализовать защищённый Publish webhook и внешний monitoring отдельными задачами.
 - [ ] Продолжать миграцию постепенно; не переключать страницы на CMS массово.
 - [ ] Проверить контент, доступность, производительность и SEO.
 - [ ] Отдельно согласовать Public API, production, hosting, DNS, amoCRM, аналитику, другие реальные интеграции и публикацию.

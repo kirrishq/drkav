@@ -18,6 +18,17 @@ import type {
   StaticPageContent,
 } from "@drkav/content-contracts";
 
+import {
+  getCmsFetchCacheOptions,
+  getOperationCacheTag,
+} from "./cms-cache";
+import {
+  CmsConfigurationError,
+  CmsInvalidResponseError,
+  CmsUnauthorizedError,
+  CmsUnavailableError,
+} from "./cms-errors";
+
 export type StrapiContentRepositoryOptions = {
   baseUrl: string;
   apiToken: string;
@@ -25,20 +36,13 @@ export type StrapiContentRepositoryOptions = {
   timeoutMs?: number;
 };
 
-export class StrapiIntegrationError extends Error {
-  constructor(message: string, options?: ErrorOptions) {
-    super(message, options);
-    this.name = "StrapiIntegrationError";
-  }
-}
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function requireRecord(value: unknown, label: string): Record<string, unknown> {
   if (!isRecord(value)) {
-    throw new StrapiIntegrationError(`Invalid Strapi response: ${label} must be an object.`);
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be an object.`);
   }
 
   return value;
@@ -46,7 +50,7 @@ function requireRecord(value: unknown, label: string): Record<string, unknown> {
 
 function requireString(value: unknown, label: string): string {
   if (typeof value !== "string" || value.length === 0) {
-    throw new StrapiIntegrationError(`Invalid Strapi response: ${label} must be a non-empty string.`);
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be a non-empty string.`);
   }
 
   return value;
@@ -62,7 +66,7 @@ function optionalString(value: unknown, label: string): string | undefined {
 
 function requireBoolean(value: unknown, label: string): boolean {
   if (typeof value !== "boolean") {
-    throw new StrapiIntegrationError(`Invalid Strapi response: ${label} must be a boolean.`);
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be a boolean.`);
   }
 
   return value;
@@ -74,7 +78,7 @@ function optionalNumber(value: unknown, label: string): number | undefined {
   }
 
   if (typeof value !== "number" || !Number.isFinite(value)) {
-    throw new StrapiIntegrationError(`Invalid Strapi response: ${label} must be a number.`);
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be a number.`);
   }
 
   return value;
@@ -84,7 +88,7 @@ function optionalInteger(value: unknown, label: string): number | undefined {
   const number = optionalNumber(value, label);
 
   if (number !== undefined && !Number.isInteger(number)) {
-    throw new StrapiIntegrationError(`Invalid Strapi response: ${label} must be an integer.`);
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be an integer.`);
   }
 
   return number;
@@ -92,7 +96,7 @@ function optionalInteger(value: unknown, label: string): number | undefined {
 
 function requireArray(value: unknown, label: string): unknown[] {
   if (!Array.isArray(value)) {
-    throw new StrapiIntegrationError(`Invalid Strapi response: ${label} must be an array.`);
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be an array.`);
   }
 
   return value;
@@ -128,7 +132,7 @@ function mapTextInline(value: unknown, label: string): RichTextInline {
       !url.startsWith("https://") &&
       !url.startsWith("http://")
     ) {
-      throw new StrapiIntegrationError(`Invalid Strapi response: ${label}.url is unsafe.`);
+      throw new CmsInvalidResponseError(`Invalid Strapi response: ${label}.url is unsafe.`);
     }
 
     return {
@@ -139,7 +143,7 @@ function mapTextInline(value: unknown, label: string): RichTextInline {
           const inline = mapTextInline(child, `${label}.children[${index}]`);
 
           if (inline.type !== "text") {
-            throw new StrapiIntegrationError(
+            throw new CmsInvalidResponseError(
               `Invalid Strapi response: ${label} cannot contain a nested link.`,
             );
           }
@@ -150,7 +154,7 @@ function mapTextInline(value: unknown, label: string): RichTextInline {
     };
   }
 
-  throw new StrapiIntegrationError(
+  throw new CmsInvalidResponseError(
     `Invalid Strapi response: ${label}.type ${type} is unsupported.`,
   );
 }
@@ -159,7 +163,7 @@ function mapListItem(value: unknown, label: string): RichTextListItem {
   const node = requireRecord(value, label);
 
   if (node.type !== "list-item") {
-    throw new StrapiIntegrationError(
+    throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${label}.type must be list-item.`,
     );
   }
@@ -192,7 +196,7 @@ function mapBlocks(value: unknown, label: string): readonly RichTextBlock[] {
       const level = optionalInteger(block.level, `${blockLabel}.level`);
 
       if (level === undefined || level < 2 || level > 6) {
-        throw new StrapiIntegrationError(
+        throw new CmsInvalidResponseError(
           `Invalid Strapi response: ${blockLabel}.level must be from 2 to 6.`,
         );
       }
@@ -211,7 +215,7 @@ function mapBlocks(value: unknown, label: string): readonly RichTextBlock[] {
       const format = requireString(block.format, `${blockLabel}.format`);
 
       if (format !== "ordered" && format !== "unordered") {
-        throw new StrapiIntegrationError(
+        throw new CmsInvalidResponseError(
           `Invalid Strapi response: ${blockLabel}.format is unsupported.`,
         );
       }
@@ -226,7 +230,7 @@ function mapBlocks(value: unknown, label: string): readonly RichTextBlock[] {
       };
     }
 
-    throw new StrapiIntegrationError(
+    throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${blockLabel}.type ${type} is unsupported.`,
     );
   });
@@ -247,7 +251,7 @@ function requireAnchor(value: unknown, label: string): string | undefined {
   const anchor = optionalString(value, label);
 
   if (anchor && !/^[a-z][a-z0-9-]*$/.test(anchor)) {
-    throw new StrapiIntegrationError(
+    throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${label} must be a lowercase HTML anchor.`,
     );
   }
@@ -260,7 +264,7 @@ function mapTextItem(value: unknown, label: string): OperationTextItem {
   const sortOrder = optionalInteger(item.sortOrder, `${label}.sortOrder`);
 
   if (sortOrder !== undefined && sortOrder < 0) {
-    throw new StrapiIntegrationError(
+    throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${label}.sortOrder must not be negative.`,
     );
   }
@@ -277,7 +281,7 @@ function mapStep(value: unknown, label: string): OperationStep {
   const sortOrder = optionalInteger(step.sortOrder, `${label}.sortOrder`);
 
   if (sortOrder !== undefined && sortOrder < 0) {
-    throw new StrapiIntegrationError(
+    throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${label}.sortOrder must not be negative.`,
     );
   }
@@ -370,7 +374,7 @@ function mapContentSection(
     };
   }
 
-  throw new StrapiIntegrationError(
+  throw new CmsInvalidResponseError(
     `Invalid Strapi response: unsupported operation section ${component}.`,
   );
 }
@@ -383,7 +387,7 @@ function validateUniqueSectionIdentifiers(
 
   for (const section of sections) {
     if (sectionKeys.has(section.sectionKey)) {
-      throw new StrapiIntegrationError(
+      throw new CmsInvalidResponseError(
         `Invalid Strapi response: duplicate sectionKey ${section.sectionKey}.`,
       );
     }
@@ -391,7 +395,7 @@ function validateUniqueSectionIdentifiers(
 
     if (section.anchor) {
       if (anchors.has(section.anchor)) {
-        throw new StrapiIntegrationError(
+        throw new CmsInvalidResponseError(
           `Invalid Strapi response: duplicate anchor ${section.anchor}.`,
         );
       }
@@ -419,7 +423,7 @@ function mapPrice(value: unknown, index: number): PriceItem | null {
     type !== "on-request" &&
     type !== "included"
   ) {
-    throw new StrapiIntegrationError(
+    throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${label}.priceType is unsupported.`,
     );
   }
@@ -430,7 +434,7 @@ function mapPrice(value: unknown, index: number): PriceItem | null {
   const amounts = [amount, minAmount, maxAmount];
 
   if (amounts.some((candidate) => candidate !== undefined && candidate <= 0)) {
-    throw new StrapiIntegrationError(
+    throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${label} contains a non-positive amount.`,
     );
   }
@@ -446,13 +450,13 @@ function mapPrice(value: unknown, index: number): PriceItem | null {
     ((type === "on-request" || type === "included") &&
       amounts.some((candidate) => candidate !== undefined))
   ) {
-    throw new StrapiIntegrationError(
+    throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${label} has inconsistent amounts.`,
     );
   }
 
   if (price.currency !== "RUB") {
-    throw new StrapiIntegrationError(
+    throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${label}.currency is unsupported.`,
     );
   }
@@ -461,7 +465,7 @@ function mapPrice(value: unknown, index: number): PriceItem | null {
     const date = optionalString(price[field], `${label}.${field}`);
 
     if (date && Number.isNaN(Date.parse(date))) {
-      throw new StrapiIntegrationError(
+      throw new CmsInvalidResponseError(
         `Invalid Strapi response: ${label}.${field} must be a date.`,
       );
     }
@@ -486,7 +490,7 @@ function requireContentStatus(
   label: string,
 ): OperationContent["contentStatus"] {
   if (value !== "empty" && value !== "partial" && value !== "ready") {
-    throw new StrapiIntegrationError(`Invalid Strapi response: ${label} is unsupported.`);
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} is unsupported.`);
   }
 
   return value;
@@ -506,7 +510,7 @@ function mapImage(
   const url = new URL(path, `${baseUrl}/`);
 
   if (url.protocol !== "http:" && url.protocol !== "https:") {
-    throw new StrapiIntegrationError(
+    throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${label}.url must use HTTP or HTTPS.`,
     );
   }
@@ -526,7 +530,7 @@ function requireCanonicalPath(value: unknown, label: string): string {
   const path = requireString(value, label);
 
   if (!path.startsWith("/") || path.includes("?") || path.includes("#")) {
-    throw new StrapiIntegrationError(
+    throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${label} must be an absolute site path.`,
     );
   }
@@ -560,7 +564,7 @@ function mapAction(value: unknown, label: string): ContentAction | undefined {
     variant !== "ghost" &&
     variant !== "link"
   ) {
-    throw new StrapiIntegrationError(`Invalid Strapi response: ${label}.variant is unsupported.`);
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label}.variant is unsupported.`);
   }
 
   return {
@@ -623,18 +627,28 @@ export class StrapiContentRepository implements ContentRepository {
     fetchImplementation = fetch,
     timeoutMs = 5_000,
   }: StrapiContentRepositoryOptions) {
-    const parsedBaseUrl = new URL(baseUrl);
+    let parsedBaseUrl: URL;
+
+    try {
+      parsedBaseUrl = new URL(baseUrl);
+    } catch {
+      throw new CmsConfigurationError(
+        "STRAPI_API_URL must be a valid absolute URL.",
+      );
+    }
 
     if (parsedBaseUrl.protocol !== "http:" && parsedBaseUrl.protocol !== "https:") {
-      throw new Error("STRAPI_API_URL must use HTTP or HTTPS.");
+      throw new CmsConfigurationError("STRAPI_API_URL must use HTTP or HTTPS.");
     }
 
     if (!apiToken) {
-      throw new Error("STRAPI_API_TOKEN is required for the closed Strapi API.");
+      throw new CmsConfigurationError(
+        "STRAPI_API_TOKEN is required for the closed CMS API.",
+      );
     }
 
     if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
-      throw new Error("Strapi timeout must be a positive number.");
+      throw new CmsConfigurationError("CMS timeout must be a positive number.");
     }
 
     this.baseUrl = parsedBaseUrl.toString().replace(/\/$/, "");
@@ -652,7 +666,11 @@ export class StrapiContentRepository implements ContentRepository {
     ]);
     params.set("filters[pageKey][$eq]", pageKey);
     this.populatePageFields(params);
-    const page = await this.getFirst("/api/static-pages", params);
+    const page = await this.getFirst(
+      "/api/static-pages",
+      params,
+      `static-page:${encodeURIComponent(pageKey)}`,
+    );
 
     if (!page) {
       return null;
@@ -702,7 +720,11 @@ export class StrapiContentRepository implements ContentRepository {
     params.set("populate[categories][fields][3]", "hasLandingPage");
     params.set("populate[categories][fields][4]", "landingPageKey");
     this.populateOperationContent(params);
-    const operation = await this.getFirst("/api/operations", params);
+    const operation = await this.getFirst(
+      "/api/operations",
+      params,
+      getOperationCacheTag(path),
+    );
 
     if (!operation) {
       return null;
@@ -722,12 +744,20 @@ export class StrapiContentRepository implements ContentRepository {
 
     validateUniqueSectionIdentifiers(contentSections);
 
+    const canonicalPath = requireCanonicalPath(
+      operation.canonicalPath,
+      "operation.canonicalPath",
+    );
+
+    if (canonicalPath !== path) {
+      throw new CmsInvalidResponseError(
+        "CMS returned an operation with an unexpected canonical path.",
+      );
+    }
+
     return {
       slug: requireString(operation.slug, "operation.slug"),
-      canonicalPath: requireCanonicalPath(
-        operation.canonicalPath,
-        "operation.canonicalPath",
-      ),
+      canonicalPath,
       heading: requireString(operation.heading, "operation.heading"),
       heroDescription: optionalString(
         operation.heroDescription,
@@ -885,6 +915,7 @@ export class StrapiContentRepository implements ContentRepository {
   private async getFirst(
     endpoint: string,
     params: URLSearchParams,
+    cacheTag: string,
   ): Promise<Record<string, unknown> | null> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
@@ -892,29 +923,43 @@ export class StrapiContentRepository implements ContentRepository {
       Accept: "application/json",
       Authorization: `Bearer ${this.apiToken}`,
     });
+    const cacheOptions = getCmsFetchCacheOptions(cacheTag);
     let response: Response;
 
     try {
       response = await this.fetchImplementation(
         `${this.baseUrl}${endpoint}?${params.toString()}`,
         {
-          cache: "no-store",
+          ...cacheOptions,
           headers,
           signal: controller.signal,
         },
       );
-    } catch (error) {
-      const message = controller.signal.aborted
-        ? "Strapi request timed out."
-        : "Strapi request failed before receiving a response.";
-      throw new StrapiIntegrationError(message, { cause: error });
+    } catch {
+      if (controller.signal.aborted) {
+        throw new CmsUnavailableError("CMS request timed out.", {
+          timedOut: true,
+        });
+      }
+
+      throw new CmsUnavailableError(
+        "CMS request failed before receiving a response.",
+      );
     } finally {
       clearTimeout(timeout);
     }
 
+    if (response.status === 401 || response.status === 403) {
+      throw new CmsUnauthorizedError();
+    }
+
+    if (response.status >= 500) {
+      throw new CmsUnavailableError();
+    }
+
     if (!response.ok) {
-      throw new StrapiIntegrationError(
-        `Strapi request failed with HTTP status ${response.status}.`,
+      throw new CmsInvalidResponseError(
+        "CMS returned an unexpected HTTP response.",
       );
     }
 
@@ -922,16 +967,14 @@ export class StrapiContentRepository implements ContentRepository {
 
     try {
       payload = await response.json();
-    } catch (error) {
-      throw new StrapiIntegrationError("Strapi returned invalid JSON.", {
-        cause: error,
-      });
+    } catch {
+      throw new CmsInvalidResponseError("CMS returned invalid JSON.");
     }
 
     const responseObject = requireRecord(payload, "response");
 
     if (!Array.isArray(responseObject.data)) {
-      throw new StrapiIntegrationError(
+      throw new CmsInvalidResponseError(
         "Invalid Strapi response: data must be an array.",
       );
     }
@@ -941,7 +984,7 @@ export class StrapiContentRepository implements ContentRepository {
     }
 
     if (responseObject.data.length > 1) {
-      throw new StrapiIntegrationError(
+      throw new CmsInvalidResponseError(
         "Strapi returned several records for a unique content path.",
       );
     }

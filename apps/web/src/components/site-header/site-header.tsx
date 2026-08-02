@@ -131,7 +131,7 @@ function DesktopSubmenu({
 }
 
 export function SiteHeader() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
   const submenuId = useId();
   const mobileMenuId = useId();
   const [openMenuHref, setOpenMenuHref] = useState<string | null>(null);
