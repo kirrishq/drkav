@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { ReactNode, SVGAttributes } from "react";
+import type { SVGAttributes } from "react";
 
 import {
   Button,
@@ -280,7 +280,7 @@ function Section({
   id,
   title,
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
   description: string;
   id: string;
   title: string;
@@ -312,7 +312,7 @@ function Subsection({
   children,
   title,
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
   title: string;
 }) {
   return (
@@ -323,7 +323,7 @@ function Subsection({
   );
 }
 
-function ExamplePanel({ children }: { children: ReactNode }) {
+function ExamplePanel({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-surface p-6 shadow-subtle">
       {children}
@@ -331,7 +331,7 @@ function ExamplePanel({ children }: { children: ReactNode }) {
   );
 }
 
-function FieldGrid({ children }: { children: ReactNode }) {
+function FieldGrid({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid gap-6 rounded-lg border border-border bg-surface p-5 shadow-subtle sm:grid-cols-2 sm:p-6">
       {children}
