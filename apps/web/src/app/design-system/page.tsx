@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { ReactNode, SVGProps } from "react";
+import type { ReactNode, SVGAttributes } from "react";
 
 import {
   Button,
@@ -138,7 +138,9 @@ const textConstraints = {
   pattern: ".{2,120}",
 } as const;
 
-function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
+type SvgIconProps = SVGAttributes<SVGSVGElement>;
+
+function ArrowRightIcon(props: SvgIconProps) {
   return (
     <svg
       aria-hidden="true"
@@ -157,7 +159,7 @@ function ArrowRightIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function CloseIcon(props: SVGProps<SVGSVGElement>) {
+function CloseIcon(props: SvgIconProps) {
   return (
     <svg
       aria-hidden="true"
@@ -175,7 +177,7 @@ function CloseIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function UserIcon(props: SVGProps<SVGSVGElement>) {
+function UserIcon(props: SvgIconProps) {
   return (
     <svg aria-hidden="true" fill="none" viewBox="0 0 20 20" {...props}>
       <circle cx="10" cy="6.5" r="3" stroke="currentColor" strokeWidth="1.5" />
@@ -189,7 +191,7 @@ function UserIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function PhoneIcon(props: SVGProps<SVGSVGElement>) {
+function PhoneIcon(props: SvgIconProps) {
   return (
     <svg aria-hidden="true" fill="none" viewBox="0 0 20 20" {...props}>
       <path
@@ -203,7 +205,7 @@ function PhoneIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function TelegramIcon(props: SVGProps<SVGSVGElement>) {
+function TelegramIcon(props: SvgIconProps) {
   return (
     <svg aria-hidden="true" fill="none" viewBox="0 0 20 20" {...props}>
       <path
@@ -217,7 +219,7 @@ function TelegramIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function MaxIcon(props: SVGProps<SVGSVGElement>) {
+function MaxIcon(props: SvgIconProps) {
   return (
     <svg aria-hidden="true" fill="none" viewBox="0 0 20 20" {...props}>
       <path
@@ -231,7 +233,7 @@ function MaxIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function SearchIcon(props: SVGProps<SVGSVGElement>) {
+function SearchIcon(props: SvgIconProps) {
   return (
     <svg aria-hidden="true" fill="none" viewBox="0 0 20 20" {...props}>
       <circle cx="8.75" cy="8.75" r="4.75" stroke="currentColor" strokeWidth="1.5" />
@@ -248,7 +250,7 @@ function SearchIcon(props: SVGProps<SVGSVGElement>) {
 function ValidationIcon({
   status,
   ...props
-}: SVGProps<SVGSVGElement> & { status: "error" | "success" }) {
+}: SvgIconProps & { status: "error" | "success" }) {
   return (
     <svg aria-hidden="true" fill="none" viewBox="0 0 20 20" {...props}>
       <circle cx="10" cy="10" r="7.25" stroke="currentColor" strokeWidth="1.5" />

@@ -3,7 +3,7 @@ import {
   type HTMLAttributes,
   type ReactElement,
   type ReactNode,
-  type SVGProps,
+  type SVGAttributes,
 } from "react";
 
 import type { InputProps, InputStatus } from "./input";
@@ -35,7 +35,7 @@ export type FormMessageProps = HTMLAttributes<HTMLParagraphElement> & {
   status?: FormFieldStatus;
 };
 
-function ErrorIcon(props: SVGProps<SVGSVGElement>) {
+function ErrorIcon(props: SVGAttributes<SVGSVGElement>) {
   return (
     <svg aria-hidden="true" fill="none" viewBox="0 0 20 20" {...props}>
       <circle cx="10" cy="10" r="7.25" stroke="currentColor" strokeWidth="1.5" />
@@ -49,7 +49,7 @@ function ErrorIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function SuccessIcon(props: SVGProps<SVGSVGElement>) {
+function SuccessIcon(props: SVGAttributes<SVGSVGElement>) {
   return (
     <svg aria-hidden="true" fill="none" viewBox="0 0 20 20" {...props}>
       <circle cx="10" cy="10" r="7.25" stroke="currentColor" strokeWidth="1.5" />
