@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import type React from "react";
 
 import "@/app/globals.css";
 
@@ -8,7 +7,7 @@ export const metadata: Metadata = {
   description: "Frontend-first редизайн сайта drkav.ru",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ru">
       <body>{children}</body>
