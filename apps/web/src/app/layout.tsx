@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Frontend-first редизайн сайта drkav.ru",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ru">
       <body>{children}</body>
