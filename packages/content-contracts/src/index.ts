@@ -162,6 +162,7 @@ export interface PriceItem {
   key: string;
   name: string;
   type: PriceType;
+  priceLabel?: string;
   amount?: number;
   minAmount?: number;
   maxAmount?: number;
@@ -180,6 +181,10 @@ function formatRubles(value: number): string {
 }
 
 export function formatPriceItem(price: PriceItem): string {
+  if (price.priceLabel) {
+    return price.priceLabel;
+  }
+
   const suffix = price.unitLabel ? ` ${price.unitLabel}` : "";
 
   switch (price.type) {

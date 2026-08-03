@@ -10,6 +10,8 @@
     "develop": "strapi develop",
     "seed": "node scripts/seed.js",
     "seed:breast-augmentation": "node scripts/seed-breast-augmentation.js",
+    "seed:operations": "node scripts/seed-operations.js",
+    "verify:operations": "node scripts/verify-operations.js",
     "start": "strapi start",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",

@@ -36,13 +36,25 @@ pnpm --filter @drkav/cms seed:breast-augmentation
 
 Он ищет операцию по `canonicalPath`, slug и существующим названиям, не перезаписывает непустые редакторские значения и не публикует автоматически найденный пользовательский draft. Новая валидная запись создаётся и публикуется; повторный запуск переиспользует тот же `documentId`.
 
+Идемпотентный импорт полного проверенного набора операций из versioned snapshots:
+
+```bash
+pnpm --filter @drkav/cms seed:operations
+```
+
+Команда использует только `src/seed-data/operations`, не обращается к live-сайту, переиспользует category/price keys и публикует только 36 записей с подтверждёнными источником, SEO, контентом и ценами. Неполная «Прорисовка грудных мышц» остаётся draft. Read-only проверка результата:
+
+```bash
+pnpm --filter @drkav/cms verify:operations
+```
+
 ## Архитектурные границы
 
 - UI и страницы не импортируют Strapi SDK или Strapi-модели.
 - Страницы получают CMS-контент только через `ContentRepository` из `@drkav/content-contracts`.
 - Strapi-типы изолированы в адаптере `apps/web/src/content/strapi-content-repository.ts`.
-- Подключение страниц выполняется постепенно, по одной безопасной вертикали. Массового переключения страниц на CMS ещё не было.
-- Через Strapi подключена только операция `/operaczii/plastika-grudi/uvelichenie-grudi`. Для остальных операций frontend page registry остаётся миграционным источником.
+- Через Strapi и CMS-neutral `ContentRepository` подключены 36 подтверждённых operation pages. Список зафиксирован в `apps/web/src/content/cms-migrated-operations.ts`.
+- Неполная `/operaczii/muzhskaya-plastika/prorisovka-grudnykh-myshcz` не входит в CMS allowlist и остаётся registry scaffold, пока не утверждены медицинский текст и SEO.
 - Public role не имеет permissions на `operation` и `operation-category`. Зарегистрированный REST API доступен server-to-server через read-only API token.
 - Production `build:web` предварительно генерирует явно перечисленные CMS-операции. Для сборки обязательны доступная Strapi, server-side read-only token и опубликованная запись; при ошибке integration или отсутствии записи deployment должен остановиться на failed build.
 - В development CMS-запросы используют `no-store`, чтобы опубликованные редакторские изменения появлялись сразу. В production Next.js Data/Full Route Cache использует `CMS_REVALIDATE_SECONDS` (default 3600, минимум 60) и tag `operation:<canonical-path>`.
