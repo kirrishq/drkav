@@ -334,7 +334,7 @@ export function SiteHeader() {
 
       <div
         className={cn(
-          "fixed inset-x-0 bottom-0 top-16 z-50 overflow-y-auto border-t border-border bg-surface lg:hidden",
+          "absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-var(--space-16))] overflow-y-auto border-t border-border bg-surface lg:hidden",
           mobileOpen ? "block" : "hidden",
         )}
         id={mobileMenuId}
