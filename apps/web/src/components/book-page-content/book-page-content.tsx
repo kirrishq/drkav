@@ -22,7 +22,7 @@ export function BookPageContent() {
 
       <section aria-labelledby="book-page-order-title" className="content-card content-card--spacious book-page__order">
         <div className="book-page__order-content">
-          <h2 className="book-page__order-title" id="book-page-order-title">Закажите бумажную версию книги и получите консультацию доктора Коробова бесплатно!</h2>
+          <h2 className="type-h2 book-page__order-title" id="book-page-order-title">Закажите бумажную версию книги и получите консультацию доктора Коробова бесплатно!</h2>
           <a className={cn(buttonVariants({ size: "sm", variant: "primary" }), "book-page__action")} href={bookUrl} rel="noreferrer" target="_blank">
             Забрать книгу и подарок
           </a>

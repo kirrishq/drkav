@@ -66,7 +66,7 @@ export function VideoCard({ className, location, posterAlt, posterSrc, title, vi
         </button>
         <div className="video-card__content">
           <p className="video-card__meta">{[location, year].filter(Boolean).join(", ")}</p>
-          <h3 className="video-card__title">{title}</h3>
+          <h3 className="card-title video-card__title">{title}</h3>
         </div>
       </article>
 
@@ -87,7 +87,7 @@ export function VideoCard({ className, location, posterAlt, posterSrc, title, vi
         >
           <div className="video-card__dialog-content">
             <div className="video-card__dialog-header">
-              <h2 className="video-card__dialog-title" id="video-card-dialog-title">{title}</h2>
+              <h2 className="type-h3 video-card__dialog-title" id="video-card-dialog-title">{title}</h2>
               <button aria-label="Закрыть видео" className="video-card__close" onClick={() => setIsOpen(false)} type="button">
                 <CloseIcon />
               </button>

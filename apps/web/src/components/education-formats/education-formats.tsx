@@ -28,7 +28,7 @@ const formats = [
 export function EducationFormats() {
   return (
     <section aria-labelledby="education-formats-title" className="education-formats">
-      <h2 className="education-formats__title" id="education-formats-title">Форматы обучения в НеШколе</h2>
+      <h2 className="type-h2 education-formats__title" id="education-formats-title">Форматы обучения в НеШколе</h2>
       <div className="education-formats__grid">
         {formats.map((format) => (
           <FeatureLinkCard

@@ -45,10 +45,6 @@
 
   .education-formats__title {
     margin: 0;
-    font-size: var(--type-h2-size);
-    font-weight: var(--type-h2-weight);
-    letter-spacing: var(--type-h2-tracking);
-    line-height: var(--type-h2-line-height);
   }
 
   .education-formats__grid {

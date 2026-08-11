@@ -13,7 +13,7 @@ export function PatientChecklist({ items }: { items: readonly PatientChecklistIt
         <li className="patient-checklist__item" key={item.title}>
           <span aria-hidden="true" className="patient-checklist__marker">✓</span>
           <div>
-            <h3 className="patient-checklist__title">{item.title}</h3>
+            <h3 className="card-title patient-checklist__title">{item.title}</h3>
             <p className="patient-checklist__description">{item.description}</p>
           </div>
         </li>

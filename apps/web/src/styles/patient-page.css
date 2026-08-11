@@ -34,12 +34,6 @@
     margin: 0;
   }
 
-  .patient-checklist__title {
-    font-size: var(--type-text-base-size);
-    font-weight: var(--type-label-weight);
-    line-height: var(--type-text-base-line-height);
-  }
-
   .patient-checklist__description {
     margin-top: var(--space-1);
     color: var(--text-secondary);

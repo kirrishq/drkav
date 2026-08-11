@@ -46,7 +46,7 @@ export function AboutRelatedPages({ currentHref }: { currentHref: string }) {
 
   return (
     <section aria-labelledby="about-related-pages-title" className="about-related-pages">
-      <h2 className="about-related-pages__title" id="about-related-pages-title">Больше о докторе Коробове А.В.</h2>
+      <h2 className="type-h2 about-related-pages__title" id="about-related-pages-title">Больше о докторе Коробове А.В.</h2>
       <div className="about-related-pages__grid">
         {adjacentPages.map((page) => (
           <FeatureLinkCard imageAlt="" imageSrc={page.imageSrc} key={page.href} href={page.href} title={page.title} variant="square" />

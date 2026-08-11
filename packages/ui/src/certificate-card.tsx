@@ -24,7 +24,7 @@ export function CertificateCard({ className, imageAlt, imageSrc, label, year }: 
         style={previewStyle}
       />
       <div className="certificate-card__content">
-        <h3 className="certificate-card__title record-card__title">{label}</h3>
+        <h3 className="card-title certificate-card__title record-card__title">{label}</h3>
         <p className="certificate-card__year record-card__meta">{year}</p>
       </div>
     </article>

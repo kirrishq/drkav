@@ -14,6 +14,7 @@ const navigation = [
     items: [
       { id: "colors", label: "Colors" },
       { id: "typography", label: "Typography" },
+      { id: "heading-system", label: "Heading system" },
       { id: "spacing", label: "Spacing" },
       { id: "radii", label: "Radii" },
       { id: "shadows", label: "Shadows" },

@@ -17,10 +17,6 @@
 
   .price-catalog__heading {
     margin: 0;
-    font-size: var(--type-h2-size);
-    font-weight: var(--type-h2-weight);
-    letter-spacing: var(--type-h2-tracking);
-    line-height: var(--type-h2-line-height);
     text-align: center;
   }
 
@@ -66,25 +62,19 @@
     margin: 0;
   }
 
-  .price-catalog__item-name {
-    font-size: var(--type-text-sm-size);
-    font-weight: var(--type-label-weight);
-    line-height: var(--type-text-sm-line-height);
-  }
-
   .price-catalog__item-description {
     margin-top: var(--space-1);
     color: var(--text-secondary);
-    font-size: var(--type-text-xs-size);
-    line-height: var(--type-text-xs-line-height);
+    font-size: var(--type-text-base-size);
+    line-height: var(--type-text-base-line-height);
   }
 
   .price-catalog__item-value {
     align-self: start;
     color: var(--text-primary);
-    font-size: var(--type-text-xs-size);
+    font-size: var(--type-text-base-size);
     font-weight: var(--type-label-weight);
-    line-height: var(--type-text-xs-line-height);
+    line-height: var(--type-text-base-line-height);
     text-align: right;
     white-space: nowrap;
   }
@@ -127,11 +117,6 @@
   }
 
   @media (min-width: 64rem) {
-    .price-catalog__item-name {
-      font-size: var(--type-text-base-size);
-      line-height: var(--type-text-base-line-height);
-    }
-
     .price-catalog__item-description {
       font-size: var(--type-text-sm-size);
       line-height: var(--type-text-sm-line-height);

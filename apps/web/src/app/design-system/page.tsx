@@ -632,6 +632,49 @@ export default function DesignSystemPage() {
           </Section>
 
           <Section
+            description="Заголовок состоит из общей типографической роли и контекстного класса только при необходимости. Так визуальная иерархия остаётся единой на всём сайте."
+            id="heading-system"
+            title="Heading system"
+          >
+            <Subsection title="Page and section headings">
+              <div className="grid gap-4 rounded-lg border border-border bg-surface p-6">
+                <h1 className="type-h1 text-primary">Заголовок страницы</h1>
+                <h2 className="type-h2 text-primary">Заголовок секции</h2>
+                <h3 className="type-h3 text-primary">Заголовок группы</h3>
+                <h4 className="type-h4 text-primary">Заголовок компактного блока</h4>
+              </div>
+              <p className="type-text-base mt-3 text-secondary">
+                Используйте класс, соответствующий визуальному уровню: <code className="type-code">type-h1</code>, <code className="type-h2">type-h2</code>, <code className="type-h3">type-h3</code> или <code className="type-h4">type-h4</code>. HTML-уровень <code className="type-code">h1–h4</code> выбирается по структуре документа и может отличаться от визуального размера.
+              </p>
+            </Subsection>
+
+            <Subsection title="Card titles">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <article className="rounded-md border border-border bg-surface p-4">
+                  <h3 className="card-title">Заголовок карточки</h3>
+                  <p className="type-text-base mt-2 text-secondary">Обычная карточка использует компактный уровень.</p>
+                </article>
+                <article className="rounded-md border border-border bg-surface p-4">
+                  <h3 className="card-title card-title--prominent">Заметный заголовок карточки</h3>
+                  <p className="type-text-base mt-2 text-secondary">Модификатор нужен только для поддержанного акцентного варианта.</p>
+                </article>
+              </div>
+              <p className="type-text-base mt-3 text-secondary">
+                Для повторяющихся карточек используйте <code className="type-code">card-title</code>. Если карточка по макету заметнее обычной, добавьте типизированный модификатор <code className="type-code">card-title--prominent</code>. Классы вроде <code className="type-code">blog-card__title</code> или <code className="type-code">price-catalog__item-name</code> могут задавать ширину, цвет и отступы контекста, но не дублируют типографику.
+              </p>
+            </Subsection>
+
+            <Subsection title="Context classes">
+              <div className="rounded-lg border border-border bg-surface p-6">
+                <h2 className="type-h2 max-w-reading text-primary">Контекстный класс ограничивает ширину, а не меняет роль</h2>
+              </div>
+              <p className="type-text-base mt-3 text-secondary">
+                Страница может добавлять уникальный класс для <code className="type-code">max-width</code>, <code className="type-code">margin</code>, цвета или поведения: например, <code className="type-code">home-hero__title</code>. Не создавайте новый класс только ради размера или начертания. Утилиты отступов допустимы в документационных и композиционных местах, но они не заменяют типизированную роль заголовка.
+              </p>
+            </Subsection>
+          </Section>
+
+          <Section
             description="Шаг 4px задаёт spacing scale. Containers и breakpoints ограничивают ширину чтения и сохраняют mobile-first поведение."
             id="spacing"
             title="Spacing"

@@ -41,7 +41,7 @@ export function OperationsCatalog({ groups }: OperationsCatalogProps) {
             )}
           </div>
           <div className="operations-catalog__content">
-            <h2 className="operations-catalog__title">{group.name}</h2>
+            <h2 className="type-h2 operations-catalog__title">{group.name}</h2>
             <div className="operations-catalog__links">
               {group.operations.map((operation, index) => (
                 <Link

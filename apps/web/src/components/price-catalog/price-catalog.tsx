@@ -99,7 +99,7 @@ const additionalPrices: readonly PriceEntry[] = [
 ];
 
 function PriceList({ entries }: { entries: readonly PriceEntry[] }) {
-  return <ul className="price-catalog__list">{entries.map((entry) => <li className="price-catalog__item" key={entry.name}><div><h3 className="price-catalog__item-name">{entry.name}</h3>{entry.description ? <p className="price-catalog__item-description">{entry.description}</p> : null}</div>{entry.price ? <p className="price-catalog__item-value">{entry.price}</p> : null}</li>)}</ul>;
+  return <ul className="price-catalog__list">{entries.map((entry) => <li className="price-catalog__item" key={entry.name}><div><h3 className="card-title price-catalog__item-name">{entry.name}</h3>{entry.description ? <p className="price-catalog__item-description">{entry.description}</p> : null}</div>{entry.price ? <p className="price-catalog__item-value">{entry.price}</p> : null}</li>)}</ul>;
 }
 
 function ConsultationCallout() {
@@ -107,7 +107,7 @@ function ConsultationCallout() {
 }
 
 function PriceSection({ accent, entries, title }: { accent?: string; entries: readonly PriceEntry[]; title: string }) {
-  return <section className="price-catalog__section"><h2 className="price-catalog__heading">{title}{accent ? <span> {accent}</span> : null}</h2><div className="price-catalog__panel"><PriceList entries={entries} /><ConsultationCallout /></div></section>;
+  return <section className="price-catalog__section"><h2 className="type-h2 price-catalog__heading">{title}{accent ? <span> {accent}</span> : null}</h2><div className="price-catalog__panel"><PriceList entries={entries} /><ConsultationCallout /></div></section>;
 }
 
 export function PriceCatalog() {
@@ -115,7 +115,7 @@ export function PriceCatalog() {
 
   return <div className="price-catalog">
     <section className="price-catalog__section">
-      <h2 className="price-catalog__heading">Стоимость операций для <span>женщин</span></h2>
+      <h2 className="type-h2 price-catalog__heading">Стоимость операций для <span>женщин</span></h2>
       <p className="price-catalog__note">В ряде случаев доктор также может помочь в коррекции неудовлетворительных результатов операций, выполненных другими хирургами в других клиниках. Стоимость таких случаев рассчитывается индивидуально.</p>
       <Tabs ariaLabel="Разделы стоимости операций для женщин" defaultTabId="abdomen" items={tabs} />
     </section>

@@ -22,7 +22,7 @@ export function BlogArticleContent({ article, showPublishedAt = true }: { articl
     <article className="blog-article">
       <header className="blog-article__header">
         <p className="blog-article__meta">{[article.categories.map((category) => category.name).join(" · "), showPublishedAt ? formatPublishedAt(article.publishedAt) : "", `${article.readingTimeMinutes} мин чтения`].filter(Boolean).join(" · ")}</p>
-        <h1 className="blog-article__title">{article.title}</h1>
+        <h1 className="type-h1 blog-article__title">{article.title}</h1>
         <p className="blog-article__lead">{article.excerpt}</p>
       </header>
 
@@ -45,14 +45,14 @@ export function BlogArticleContent({ article, showPublishedAt = true }: { articl
             {article.relatedOperations.map((operation) => (
               <Link className="blog-related-card blog-related-card--operation" href={operation.canonicalPath} key={operation.canonicalPath}>
                 <span className="blog-related-card__eyebrow">Операция</span>
-                <span className="blog-related-card__title">{operation.heading}</span>
+                <span className="card-title blog-related-card__title">{operation.heading}</span>
                 <ArrowIcon />
               </Link>
             ))}
             {article.relatedArticles.map((related) => (
               <Link className="blog-related-card" href={related.canonicalPath} key={related.slug}>
                 <span className="blog-related-card__eyebrow">Статья</span>
-                <span className="blog-related-card__title">{related.title}</span>
+                <span className="card-title blog-related-card__title">{related.title}</span>
                 <ArrowIcon />
               </Link>
             ))}

@@ -33,7 +33,7 @@ export function FeatureLinkCard({ className, description, href, imageAlt, imageS
       <img alt={imageAlt} className="feature-link-card__image" src={imageSrc} />
       <span className="feature-link-card__overlay" />
       <span className="feature-link-card__content">
-        <span className="feature-link-card__title">{title}</span>
+      <span className="card-title feature-link-card__title">{title}</span>
         {description ? <span className="feature-link-card__description">{description}</span> : null}
       </span>
       <span aria-hidden="true" className="record-card__arrow feature-link-card__arrow">

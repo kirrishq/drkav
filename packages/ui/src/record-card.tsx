@@ -60,7 +60,7 @@ function RecordCardContent({ details = [], icon, meta, title }: RecordCardBasePr
           {meta ? <span className="record-card__meta">{meta}</span> : null}
         </div>
       ) : null}
-      <h3 className="record-card__title">{title}</h3>
+      <h3 className="card-title record-card__title">{title}</h3>
       {visibleDetails.length > 0 ? (
         <ul className="record-card__details">
           {visibleDetails.map((detail) => (

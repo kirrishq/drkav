@@ -27,7 +27,7 @@
       rgb(25 26 31 / 0.96) 72%
     );
     color: rgb(255 255 255 / 0.36);
-    font-size: var(--type-text-xs-size);
+    font-size: var(--type-text-base-size);
   }
 
   .operations-catalog__media::after {
@@ -60,10 +60,6 @@
 
   .operations-catalog__title {
     margin: 0 0 var(--space-4);
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    font-weight: var(--type-h2-weight);
-    letter-spacing: var(--type-h2-tracking);
-    line-height: var(--type-h2-line-height);
   }
 
   .operations-catalog__links {
