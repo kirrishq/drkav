@@ -15,8 +15,7 @@
     "metaDescription": {
       "type": "text",
       "required": true,
-      "minLength": 50,
-      "maxLength": 200
+      "minLength": 50
     },
     "shareImage": {
       "type": "media",

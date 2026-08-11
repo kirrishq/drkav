@@ -4,6 +4,10 @@ export type {
   ButtonSize,
   ButtonVariant,
 } from "./button";
+export { Accordion } from "./accordion";
+export type { AccordionItem, AccordionProps } from "./accordion";
+export { BeforeAfterComparison } from "./before-after-comparison";
+export type { BeforeAfterComparisonProps } from "./before-after-comparison";
 export { Checkbox } from "./checkbox";
 export type { CheckboxProps } from "./checkbox";
 export { CertificateCard } from "./certificate-card";
@@ -43,5 +47,7 @@ export { RecordCard } from "./record-card";
 export type { RecordCardDetail, RecordCardProps } from "./record-card";
 export { TextLink } from "./text-link";
 export type { TextLinkProps } from "./text-link";
+export { Tabs } from "./tabs";
+export type { TabItem, TabsProps } from "./tabs";
 export { VideoCard } from "./video-card";
 export type { VideoCardProps } from "./video-card";

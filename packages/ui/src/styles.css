@@ -105,6 +105,9 @@
   --space-20: 5rem;
   --space-24: 6rem;
   --space-28: 7rem;
+  --space-32: 8rem;
+  --space-36: 9rem;
+  --space-40: 10rem;
   --space-80: 20rem;
   --space-96: 24rem;
 
@@ -486,6 +489,180 @@
 
   .page-intro__content {
     margin-top: var(--space-5);
+  }
+
+  .accordion {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .accordion__item {
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
+  }
+
+  .accordion__item:hover,
+  .accordion__item[open] {
+    border-color: var(--accent);
+  }
+
+  .accordion__summary {
+    display: flex;
+    min-height: var(--space-12);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    cursor: pointer;
+    padding: var(--space-3) var(--space-4);
+    color: var(--text-primary);
+    font-size: var(--type-text-base-size);
+    font-weight: var(--type-label-weight);
+    line-height: var(--type-text-base-line-height);
+    list-style: none;
+  }
+
+  .accordion__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .accordion__summary:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 var(--focus-ring-width) var(--accent);
+  }
+
+  .accordion__indicator {
+    display: inline-flex;
+    width: var(--space-7);
+    height: var(--space-7);
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    background: var(--accent-soft);
+    color: var(--accent);
+    transition: transform var(--duration-normal) var(--ease-standard), background-color var(--duration-normal) var(--ease-standard), color var(--duration-normal) var(--ease-standard);
+  }
+
+  .accordion__item[open] .accordion__indicator {
+    transform: rotate(180deg);
+    background: var(--accent);
+    color: var(--text-inverse);
+  }
+
+  .accordion__indicator-icon {
+    width: var(--space-4);
+    height: var(--space-4);
+  }
+
+  .accordion__content {
+    padding: 0 var(--space-4) var(--space-4);
+    color: var(--text-secondary);
+  }
+
+  .accordion__content p {
+    margin: 0;
+  }
+
+  .tabs {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .tabs__list {
+    display: flex;
+    gap: var(--space-2);
+    overflow-x: auto;
+    padding-bottom: var(--space-1);
+    scrollbar-width: thin;
+  }
+
+  .tabs__tab {
+    min-height: var(--space-9);
+    flex: none;
+    padding-inline: var(--space-3);
+    border: var(--border-width-default) solid var(--border-subtle);
+    border-radius: var(--radius-full);
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: var(--type-text-xs-size);
+    font-weight: var(--type-label-weight);
+    line-height: var(--type-text-xs-line-height);
+    transition: background-color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+  }
+
+  .tabs__tab:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+  }
+
+  .tabs__tab--active {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--text-inverse);
+  }
+
+  .tabs__tab:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 var(--focus-ring-offset) var(--background), 0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width)) var(--accent);
+  }
+
+  .before-after-comparison {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--surface-muted);
+  }
+
+  .before-after-comparison__image,
+  .before-after-comparison__before {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .before-after-comparison__image {
+    object-fit: cover;
+  }
+
+  .before-after-comparison__divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--border-width-default);
+    background: var(--surface);
+    pointer-events: none;
+  }
+
+  .before-after-comparison__handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    width: var(--space-10);
+    height: var(--space-10);
+    place-items: center;
+    border-radius: var(--radius-full);
+    background: var(--surface);
+    color: var(--text-primary);
+    font-size: var(--type-text-sm-size);
+    font-weight: var(--type-label-weight);
+    transform: translate(-50%, -50%);
+  }
+
+  .before-after-comparison__range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: ew-resize;
+    opacity: 0;
   }
 
   .record-card {

@@ -1,0 +1,27 @@
+@layer components {
+  .before-after-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+  .before-after-gallery__tile { position: relative; aspect-ratio: 1; overflow: hidden; padding: 0; border: 0; border-radius: var(--radius-lg); background: var(--surface-muted); cursor: pointer; }
+  .before-after-gallery__after, .before-after-gallery__before { object-fit: cover; }
+  .before-after-gallery__before { position: absolute; inset: 0 50% 0 0; overflow: hidden; }
+  .before-after-gallery__label, .before-after-gallery__viewed { position: absolute; left: var(--space-3); right: var(--space-3); bottom: var(--space-3); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); background: color-mix(in srgb, var(--surface) 92%, transparent); color: var(--text-primary); font-size: var(--type-text-xs-size); font-weight: var(--type-label-weight); line-height: var(--type-text-xs-line-height); text-align: center; }
+  .before-after-gallery__tile--viewed::after { position: absolute; inset: 0; background: color-mix(in srgb, var(--surface-inverse) 38%, transparent); content: ""; }
+  .before-after-gallery__viewed { z-index: 1; top: 50%; bottom: auto; transform: translateY(-50%); background: color-mix(in srgb, var(--surface-inverse) 72%, transparent); color: var(--text-inverse); text-align: center; }
+  .before-after-gallery__more { display: flex; justify-content: center; margin-top: var(--space-5); }
+  .before-after-gallery__tile:focus-visible { outline: none; box-shadow: 0 0 0 var(--focus-ring-offset) var(--background), 0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width)) var(--accent); }
+  .before-after-modal { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; padding: var(--space-4); background: color-mix(in srgb, var(--surface-inverse) 62%, transparent); opacity: 0; transition: opacity var(--duration-normal) var(--ease-standard); }
+  .before-after-modal--open { opacity: 1; }
+  .before-after-modal__panel { position: relative; width: min(100%, 44rem, calc((100dvh - var(--space-28)) * 0.8)); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-strong); overflow: hidden; transform: translate(var(--before-after-translate-x, 0), var(--before-after-translate-y, 0)) scale(var(--before-after-scale-x, .84), var(--before-after-scale-y, .84)); opacity: 0; transition: transform var(--duration-normal) var(--ease-standard), opacity var(--duration-normal) var(--ease-standard); }
+  .before-after-modal--open .before-after-modal__panel { transform: translate(0) scale(1); opacity: 1; }
+  .before-after-modal__close { position: absolute; z-index: 2; top: var(--space-3); right: var(--space-3); display: grid; width: var(--space-9); height: var(--space-9); place-items: center; border: 0; border-radius: var(--radius-full); background: var(--surface); color: var(--text-primary); cursor: pointer; }
+  .before-after-modal__close svg { width: var(--space-5); height: var(--space-5); }
+  .before-after-modal__navigation { position: absolute; z-index: 2; top: calc(50% - var(--space-10)); display: grid; width: var(--space-9); height: var(--space-9); place-items: center; border: 0; border-radius: var(--radius-full); background: color-mix(in srgb, var(--surface) 92%, transparent); color: var(--text-primary); cursor: pointer; }
+  .before-after-modal__navigation--previous { left: var(--space-3); }
+  .before-after-modal__navigation--next { right: var(--space-3); }
+  .before-after-modal__navigation:disabled { cursor: default; opacity: .45; }
+  .before-after-modal__navigation svg { width: var(--space-5); height: var(--space-5); }
+  .before-after-modal__content { display: grid; gap: var(--space-1); padding: var(--space-4); }
+  .before-after-modal__content p { margin: 0; color: var(--text-secondary); font-size: var(--type-text-xs-size); }
+  .before-after-modal__content a { color: var(--text-primary); font-size: var(--type-text-base-size); font-weight: var(--type-label-weight); }
+  @media (min-width: 48rem) { .before-after-gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .before-after-gallery { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+}

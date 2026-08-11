@@ -34,6 +34,9 @@ const navigation = [
       { id: "checkbox", label: "Checkbox" },
       { id: "radio", label: "Radio" },
       { id: "radio-button", label: "Radio Button" },
+      { id: "accordion", label: "Accordion" },
+      { id: "before-after-comparison", label: "Before / After Comparison" },
+      { id: "tabs", label: "Tabs" },
     ],
   },
 ] as const;

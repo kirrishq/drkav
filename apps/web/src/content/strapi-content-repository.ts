@@ -1,9 +1,17 @@
 import "server-only";
 
 import type {
+  BlogArticle,
+  BlogArticleSummary,
+  BlogCategorySummary,
+  BlogContentSection,
+  BlogIndexContent,
+  BeforeAfterCase,
   ContentAction,
   ContentRepository,
   ImageAsset,
+  OperationCatalogGroup,
+  OperationCatalogLink,
   OperationCategorySummary,
   OperationContent,
   OperationContentSection,
@@ -19,7 +27,13 @@ import type {
 } from "@drkav/content-contracts";
 
 import {
+  getBlogArticleCacheTag,
+  getBlogIndexCacheTag,
   getCmsFetchCacheOptions,
+  getBeforeAfterCasesCacheTag,
+  getConditionArticleCacheTag,
+  getConditionIndexCacheTag,
+  getOperationCatalogCacheTag,
   getOperationCacheTag,
 } from "./cms-cache";
 import {
@@ -527,6 +541,12 @@ function mapImage(
   };
 }
 
+function mapSiteImagePath(value: unknown, label: string): ImageAsset {
+  const url = requireCanonicalPath(value, label);
+
+  return { url };
+}
+
 function requireCanonicalPath(value: unknown, label: string): string {
   const path = requireString(value, label);
 
@@ -614,6 +634,139 @@ function mapCategory(value: unknown, index: number): OperationCategorySummary {
       `${label}.landingPageKey`,
     ),
   };
+}
+
+function mapCatalogLink(value: unknown, label: string): OperationCatalogLink {
+  const operation = requireRecord(value, label);
+
+  return {
+    canonicalPath: requireCanonicalPath(
+      operation.canonicalPath,
+      `${label}.canonicalPath`,
+    ),
+    heading: requireString(operation.heading, `${label}.heading`),
+  };
+}
+
+function mapCatalogGroup(
+  value: unknown,
+  index: number,
+  baseUrl: string,
+): OperationCatalogGroup {
+  const label = `operationCatalog[${index}]`;
+  const category = requireRecord(value, label);
+  const operations = requireArray(category.operations, `${label}.operations`)
+    .map((operation, operationIndex) =>
+      mapCatalogLink(operation, `${label}.operations[${operationIndex}]`),
+    );
+  const featuredOperation = mapCatalogLink(
+    category.featuredOperation,
+    `${label}.featuredOperation`,
+  );
+
+  return {
+    key: requireString(category.key, `${label}.key`),
+    name: requireString(category.name, `${label}.name`),
+    image: mapImage(category.catalogImage, baseUrl, `${label}.catalogImage`),
+    featuredOperation,
+    operations: [
+      featuredOperation,
+      ...operations.filter(
+        (operation) => operation.canonicalPath !== featuredOperation.canonicalPath,
+      ),
+    ],
+  };
+}
+
+function mapBlogCategory(value: unknown, index: number): BlogCategorySummary {
+  const label = `blog.categories[${index}]`;
+  const category = requireRecord(value, label);
+
+  return {
+    key: requireString(category.key, `${label}.key`),
+    name: requireString(category.name, `${label}.name`),
+  };
+}
+
+function mapBlogArticleSummary(
+  value: unknown,
+  index: number,
+  baseUrl: string,
+): BlogArticleSummary {
+  const label = `blog.articles[${index}]`;
+  const article = requireRecord(value, label);
+  const readingTimeMinutes = optionalInteger(
+    article.readingTimeMinutes,
+    `${label}.readingTimeMinutes`,
+  );
+
+  if (readingTimeMinutes === undefined || readingTimeMinutes < 1) {
+    throw new CmsInvalidResponseError(
+      `Invalid Strapi response: ${label}.readingTimeMinutes must be positive.`,
+    );
+  }
+
+  return {
+    slug: requireString(article.slug, `${label}.slug`),
+    canonicalPath: requireCanonicalPath(
+      article.canonicalPath,
+      `${label}.canonicalPath`,
+    ),
+    title: requireString(article.title, `${label}.title`),
+    excerpt: requireString(article.excerpt, `${label}.excerpt`),
+    cover: mapImage(article.cover, baseUrl, `${label}.cover`),
+    categories: article.categories === undefined
+      ? []
+      : requireArray(article.categories, `${label}.categories`).map(mapBlogCategory),
+    publishedAt: requireString(article.publishedAt, `${label}.publishedAt`),
+    readingTimeMinutes,
+    isFeatured: requireBoolean(article.isFeatured, `${label}.isFeatured`),
+  };
+}
+
+function mapBlogContentSection(value: unknown, index: number): BlogContentSection {
+  const label = `blog.contentSections[${index}]`;
+  const section = requireRecord(value, label);
+  const component = requireString(section.__component, `${label}.__component`);
+  const sectionKey = requireString(section.sectionKey, `${label}.sectionKey`);
+
+  if (component === "blog.rich-text-section") {
+    return {
+      type: "rich-text",
+      sectionKey,
+      heading: optionalString(section.heading, `${label}.heading`),
+      body: mapBlocks(section.body, `${label}.body`),
+    };
+  }
+
+  if (component === "blog.callout") {
+    return {
+      type: "callout",
+      sectionKey,
+      title: optionalString(section.title, `${label}.title`),
+      body: mapBlocks(section.body, `${label}.body`),
+    };
+  }
+
+  if (component === "blog.faq") {
+    return {
+      type: "faq",
+      sectionKey,
+      heading: optionalString(section.heading, `${label}.heading`),
+      items: requireArray(section.items, `${label}.items`).map((item, itemIndex) => {
+        const itemLabel = `${label}.items[${itemIndex}]`;
+        const faqItem = requireRecord(item, itemLabel);
+        return {
+          question: requireString(faqItem.question, `${itemLabel}.question`),
+          answer: requireString(faqItem.answer, `${itemLabel}.answer`),
+        };
+      }),
+    };
+  }
+
+  throw new CmsInvalidResponseError(
+    `Invalid Strapi response: unsupported blog section ${component}.`,
+  );
 }
 
 export class StrapiContentRepository implements ContentRepository {
@@ -788,6 +941,172 @@ export class StrapiContentRepository implements ContentRepository {
     };
   }
 
+  async getOperationCatalog(): Promise<readonly OperationCatalogGroup[]> {
+    const params = this.createPublishedParams([
+      "key",
+      "name",
+      "catalogOrder",
+    ]);
+    params.set("pagination[pageSize]", "20");
+    params.set("filters[showInCatalog][$eq]", "true");
+    params.set("sort[0]", "catalogOrder:asc");
+    params.set("populate[catalogImage][fields][0]", "url");
+    params.set("populate[catalogImage][fields][1]", "alternativeText");
+    params.set("populate[catalogImage][fields][2]", "width");
+    params.set("populate[catalogImage][fields][3]", "height");
+    ["canonicalPath", "heading", "catalogOrder"].forEach((field, index) => {
+      params.set(`populate[featuredOperation][fields][${index}]`, field);
+      params.set(`populate[operations][fields][${index}]`, field);
+    });
+    params.set("populate[operations][filters][publishedAt][$notNull]", "true");
+    params.set("populate[operations][sort][0]", "catalogOrder:asc");
+
+    const categories = await this.getMany(
+      "/api/operation-categories",
+      params,
+      getOperationCatalogCacheTag(),
+    );
+
+    return categories.map((category, index) =>
+      mapCatalogGroup(category, index, this.baseUrl),
+    );
+  }
+
+  async getBeforeAfterCases(): Promise<readonly BeforeAfterCase[]> {
+    const params = this.createPublishedParams([
+      "slug",
+      "title",
+      "beforeImagePath",
+      "afterImagePath",
+      "sortOrder",
+    ]);
+    params.set("pagination[pageSize]", "100");
+    params.set("sort[0]", "sortOrder:asc");
+    params.set("populate[operation][fields][0]", "canonicalPath");
+    params.set("populate[operation][fields][1]", "heading");
+
+    const cases = await this.getMany(
+      "/api/before-after-cases",
+      params,
+      getBeforeAfterCasesCacheTag(),
+    );
+
+    return cases.map((entry, index) => {
+      const label = `beforeAfterCases[${index}]`;
+      const item = requireRecord(entry, label);
+
+      return {
+        slug: requireString(item.slug, `${label}.slug`),
+        title: requireString(item.title, `${label}.title`),
+        beforeImage: mapSiteImagePath(item.beforeImagePath, `${label}.beforeImagePath`),
+        afterImage: mapSiteImagePath(item.afterImagePath, `${label}.afterImagePath`),
+        operation: mapCatalogLink(item.operation, `${label}.operation`),
+      };
+    });
+  }
+
+  async getBlogIndex(): Promise<BlogIndexContent> {
+    const categoryParams = this.createPublishedParams(["key", "name", "order"]);
+    categoryParams.set("pagination[pageSize]", "100");
+    categoryParams.set("sort[0]", "order:asc");
+    const articleParams = this.createArticleSummaryParams();
+    this.populateBlogSummaryFields(articleParams, true);
+
+    const [categories, articles] = await Promise.all([
+      this.getMany("/api/blog-categories", categoryParams, getBlogIndexCacheTag()),
+      this.getMany("/api/blog-articles", articleParams, getBlogIndexCacheTag()),
+    ]);
+
+    return {
+      categories: categories.map(mapBlogCategory),
+      articles: articles.map((article, index) =>
+        mapBlogArticleSummary(article, index, this.baseUrl),
+      ),
+    };
+  }
+
+  async getConditionIndex(): Promise<BlogIndexContent> {
+    const articleParams = this.createArticleSummaryParams();
+    articleParams.set("sort[0]", "sortOrder:asc");
+    this.populateBlogSummaryFields(articleParams, false);
+    const articles = await this.getMany(
+      "/api/condition-articles",
+      articleParams,
+      getConditionIndexCacheTag(),
+    );
+
+    return {
+      categories: [],
+      articles: articles.map((article, index) =>
+        mapBlogArticleSummary(article, index, this.baseUrl),
+      ),
+    };
+  }
+
+  async getBlogArticleBySlug(slug: string): Promise<BlogArticle | null> {
+    return this.getArticleBySlug(slug, {
+      endpoint: "/api/blog-articles",
+      cacheTag: getBlogArticleCacheTag(slug),
+      includeCategories: true,
+    });
+  }
+
+  async getConditionArticleBySlug(slug: string): Promise<BlogArticle | null> {
+    return this.getArticleBySlug(slug, {
+      endpoint: "/api/condition-articles",
+      cacheTag: getConditionArticleCacheTag(slug),
+      includeCategories: false,
+    });
+  }
+
+  private async getArticleBySlug(
+    slug: string,
+    source: { endpoint: string; cacheTag: string; includeCategories: boolean },
+  ): Promise<BlogArticle | null> {
+    const params = this.createPublishedParams([
+      "slug", "canonicalPath", "title", "excerpt", "readingTimeMinutes", "isFeatured", "publishedAt",
+    ]);
+    params.set("filters[slug][$eq]", slug);
+    this.populateBlogSummaryFields(params, source.includeCategories);
+    params.set("populate[seo][fields][0]", "metaTitle");
+    params.set("populate[seo][fields][1]", "metaDescription");
+    params.set("populate[seo][fields][2]", "canonicalPath");
+    params.set("populate[seo][fields][3]", "noIndex");
+    params.set("populate[seo][populate][shareImage][fields][0]", "url");
+    params.set("populate[contentSections][on][blog.rich-text-section][fields][0]", "sectionKey");
+    params.set("populate[contentSections][on][blog.rich-text-section][fields][1]", "heading");
+    params.set("populate[contentSections][on][blog.rich-text-section][fields][2]", "body");
+    params.set("populate[contentSections][on][blog.callout][fields][0]", "sectionKey");
+    params.set("populate[contentSections][on][blog.callout][fields][1]", "title");
+    params.set("populate[contentSections][on][blog.callout][fields][2]", "body");
+    params.set("populate[contentSections][on][blog.faq][fields][0]", "sectionKey");
+    params.set("populate[contentSections][on][blog.faq][fields][1]", "heading");
+    params.set("populate[contentSections][on][blog.faq][populate][items][fields][0]", "question");
+    params.set("populate[contentSections][on][blog.faq][populate][items][fields][1]", "answer");
+    this.populateRelatedBlogArticles(params, source.includeCategories);
+    params.set("populate[relatedOperations][fields][0]", "canonicalPath");
+    params.set("populate[relatedOperations][fields][1]", "heading");
+
+    const article = await this.getFirst(
+      source.endpoint,
+      params,
+      source.cacheTag,
+    );
+    if (!article) return null;
+
+    return {
+      ...mapBlogArticleSummary(article, 0, this.baseUrl),
+      seo: mapSeo(article.seo, this.baseUrl, "blog.seo"),
+      contentSections: requireArray(article.contentSections, "blog.contentSections").map(mapBlogContentSection),
+      relatedOperations: requireArray(article.relatedOperations, "blog.relatedOperations").map((operation, index) =>
+        mapCatalogLink(operation, `blog.relatedOperations[${index}]`),
+      ),
+      relatedArticles: requireArray(article.relatedArticles, "blog.relatedArticles").map((relatedArticle, index) =>
+        mapBlogArticleSummary(relatedArticle, index, this.baseUrl),
+      ),
+    };
+  }
+
   private createPublishedParams(fields: readonly string[]): URLSearchParams {
     const params = new URLSearchParams({
       "pagination[pageSize]": "2",
@@ -798,6 +1117,16 @@ export class StrapiContentRepository implements ContentRepository {
       params.set(`fields[${index}]`, field);
     });
 
+    return params;
+  }
+
+  private createArticleSummaryParams(): URLSearchParams {
+    const params = this.createPublishedParams([
+      "slug", "canonicalPath", "title", "excerpt", "readingTimeMinutes", "isFeatured", "publishedAt",
+    ]);
+    params.set("pagination[pageSize]", "100");
+    params.set("sort[0]", "isFeatured:desc");
+    params.set("sort[1]", "publishedAt:desc");
     return params;
   }
 
@@ -914,11 +1243,54 @@ export class StrapiContentRepository implements ContentRepository {
     params.set("populate[prices][filters][isActive][$eq]", "true");
   }
 
+  private populateBlogSummaryFields(params: URLSearchParams, includeCategories: boolean): void {
+    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+      params.set(`populate[cover][fields][${index}]`, field);
+    });
+    if (includeCategories) {
+      params.set("populate[categories][fields][0]", "key");
+      params.set("populate[categories][fields][1]", "name");
+    }
+  }
+
+  private populateRelatedBlogArticles(params: URLSearchParams, includeCategories: boolean): void {
+    ["slug", "canonicalPath", "title", "excerpt", "readingTimeMinutes", "isFeatured", "publishedAt"].forEach((field, index) => {
+      params.set(`populate[relatedArticles][fields][${index}]`, field);
+    });
+    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+      params.set(`populate[relatedArticles][populate][cover][fields][${index}]`, field);
+    });
+    if (includeCategories) {
+      params.set("populate[relatedArticles][populate][categories][fields][0]", "key");
+      params.set("populate[relatedArticles][populate][categories][fields][1]", "name");
+    }
+  }
+
   private async getFirst(
     endpoint: string,
     params: URLSearchParams,
     cacheTag: string,
   ): Promise<Record<string, unknown> | null> {
+    const records = await this.getMany(endpoint, params, cacheTag);
+
+    if (records.length === 0) {
+      return null;
+    }
+
+    if (records.length > 1) {
+      throw new CmsInvalidResponseError(
+        "Strapi returned several records for a unique content path.",
+      );
+    }
+
+    return records[0];
+  }
+
+  private async getMany(
+    endpoint: string,
+    params: URLSearchParams,
+    cacheTag: string,
+  ): Promise<Record<string, unknown>[]> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     const headers = new Headers({
@@ -981,16 +1353,8 @@ export class StrapiContentRepository implements ContentRepository {
       );
     }
 
-    if (responseObject.data.length === 0) {
-      return null;
-    }
-
-    if (responseObject.data.length > 1) {
-      throw new CmsInvalidResponseError(
-        "Strapi returned several records for a unique content path.",
-      );
-    }
-
-    return requireRecord(responseObject.data[0], "data[0]");
+    return responseObject.data.map((item, index) =>
+      requireRecord(item, `data[${index}]`),
+    );
   }
 }

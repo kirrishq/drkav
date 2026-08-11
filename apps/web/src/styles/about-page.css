@@ -479,7 +479,7 @@
 
     .about-navigation__desktop {
       position: sticky;
-      top: var(--space-6);
+      top: var(--space-40);
       display: block;
       align-self: start;
     }

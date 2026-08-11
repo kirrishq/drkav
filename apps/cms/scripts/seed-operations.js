@@ -100,6 +100,8 @@ async function upsertCategory(strapi, source) {
     description: source.description ?? null,
     hasLandingPage: source.hasLandingPage,
     landingPageKey: source.landingPageKey ?? null,
+    showInCatalog: source.showInCatalog ?? false,
+    catalogOrder: source.catalogOrder ?? null,
   };
   const document = existing
     ? await strapi.documents(OPERATION_CATEGORY_UID).update({ documentId: existing.documentId, data, status: "draft" })
@@ -160,6 +162,7 @@ async function upsertOperation(strapi, source, categoryIds, priceIds) {
     internalName: source.name,
     slug: source.slug,
     canonicalPath: source.canonicalPath,
+    catalogOrder: source.number,
     heading: source.name,
     categories: { set: source.categoryKeys.map((key) => categoryIds.get(key)) },
     prices: { set: source.priceKeys.map((key) => priceIds.get(key)) },
@@ -244,9 +247,11 @@ async function run() {
       priceIds.set(priceSource.key, price.document.documentId);
       result.prices[price.created ? "created" : "reused"] += 1;
     }
+    const operationIds = new Map();
     for (const source of operations) {
       try {
         const operation = await upsertOperation(strapi, source, categoryIds, priceIds);
+        operationIds.set(source.canonicalPath, operation.document.documentId);
         result.operations[operation.created ? "created" : "updated"] += 1;
         result.operations[source.publicationEligibility.eligible ? "published" : "draft"] += 1;
         strapi.log.info(
@@ -258,6 +263,30 @@ async function run() {
         result.failures.push({ canonicalPath: source.canonicalPath, message: error.message });
         strapi.log.error(`${source.canonicalPath}: ${error.message}`);
       }
+    }
+    for (const categorySource of catalog.categories) {
+      if (!categorySource.featuredOperationPath) continue;
+
+      const featuredOperationId = operationIds.get(
+        categorySource.featuredOperationPath,
+      );
+
+      if (!featuredOperationId) {
+        throw new Error(
+          `Category ${categorySource.key} references missing featured operation ${categorySource.featuredOperationPath}.`,
+        );
+      }
+
+      await strapi.documents(OPERATION_CATEGORY_UID).update({
+        documentId: categoryIds.get(categorySource.key),
+        data: { featuredOperation: featuredOperationId },
+        status: "draft",
+      });
+      await publishIfNeeded(
+        strapi,
+        OPERATION_CATEGORY_UID,
+        categoryIds.get(categorySource.key),
+      );
     }
     result.database = await databaseSummary(strapi);
     strapi.log.info(`OPERATIONS_SEED_RESULT ${JSON.stringify(result)}`);

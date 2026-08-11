@@ -1,0 +1,82 @@
+@layer components {
+  .patient-page-content,
+  .patient-checklist,
+  .patient-tests {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .patient-section {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .patient-checklist {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .patient-checklist__item {
+    display: grid;
+    grid-template-columns: var(--space-6) minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .patient-checklist__marker {
+    color: var(--accent);
+    font-weight: var(--type-label-weight);
+  }
+
+  .patient-checklist__title,
+  .patient-checklist__description,
+  .patient-faq__item p {
+    margin: 0;
+  }
+
+  .patient-checklist__title {
+    font-size: var(--type-text-base-size);
+    font-weight: var(--type-label-weight);
+    line-height: var(--type-text-base-line-height);
+  }
+
+  .patient-checklist__description {
+    margin-top: var(--space-1);
+    color: var(--text-secondary);
+  }
+
+  .patient-note {
+    margin: 0;
+    color: var(--text-secondary);
+  }
+
+  .patient-tests {
+    margin: 0;
+  }
+
+  .patient-tests__item {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    border: var(--border-width-default) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+
+  .patient-tests__name,
+  .patient-tests__validity {
+    margin: 0;
+  }
+
+  .patient-tests__validity {
+    color: var(--text-secondary);
+    font-size: var(--type-text-sm-size);
+    line-height: var(--type-text-sm-line-height);
+  }
+
+  @media (min-width: 48rem) {
+    .patient-tests {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}

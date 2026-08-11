@@ -102,7 +102,7 @@ function DesktopSubmenu({
       className="border-t border-border bg-surface"
       id={panelId}
     >
-      <div className="mx-auto grid max-w-wide grid-cols-4 gap-2 px-4 py-5 xl:grid-cols-5 xl:px-6">
+      <div className="mx-auto grid max-w-wide auto-rows-fr grid-cols-4 gap-2 px-4 py-5 xl:grid-cols-5 xl:px-6">
         {item.links.map((link, index) => {
           const selected = index === 0 || isCurrentPath(pathname, link.href);
 
@@ -116,6 +116,7 @@ function DesktopSubmenu({
                   variant: "outline",
                 }),
                 "min-h-12 justify-start whitespace-normal px-4 text-left",
+                index === 0 && "row-span-2",
                 selected && "font-semibold",
               )}
               href={link.href}
@@ -155,6 +156,23 @@ export function SiteHeader() {
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) {
+      return;
+    }
+
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalDocumentOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalDocumentOverflow;
+    };
+  }, [mobileOpen]);
 
   function toggleSubmenu(item: HeaderMenuItem) {
     setOpenMenuHref((current) => (current === item.href ? null : item.href));
@@ -263,17 +281,20 @@ export function SiteHeader() {
                       aria-expanded={menuOpen}
                       className={cn(
                         buttonVariants({
-                          selected,
+                          selected: !item.featured && selected,
                           size: "sm",
                           variant: "outline",
                         }),
-                        "w-full justify-between px-3",
+                        "w-full cursor-pointer justify-center px-8",
+                        item.featured && "text-accent hover:text-accent-hover",
                       )}
                       onClick={() => toggleSubmenu(item)}
                       type="button"
                     >
                       <span>{item.label}</span>
-                      <ChevronIcon open={menuOpen} />
+                      <span className="absolute right-3">
+                        <ChevronIcon open={menuOpen} />
+                      </span>
                     </button>
                   ) : (
                     <Link
@@ -282,11 +303,12 @@ export function SiteHeader() {
                       }
                       className={cn(
                         buttonVariants({
-                          selected,
+                          selected: !item.featured && selected,
                           size: "sm",
                           variant: "outline",
                         }),
                         "w-full",
+                        item.featured && "text-accent hover:text-accent-hover",
                       )}
                       href={item.href}
                     >
@@ -300,7 +322,7 @@ export function SiteHeader() {
         </nav>
       </div>
 
-      <div className="hidden lg:block">
+      <div className="absolute inset-x-0 top-full z-50 hidden shadow-subtle lg:block">
         {openMenu ? (
           <DesktopSubmenu
             item={openMenu}
@@ -312,7 +334,7 @@ export function SiteHeader() {
 
       <div
         className={cn(
-          "border-t border-border bg-surface lg:hidden",
+          "fixed inset-x-0 bottom-0 top-16 z-50 overflow-y-auto border-t border-border bg-surface lg:hidden",
           mobileOpen ? "block" : "hidden",
         )}
         id={mobileMenuId}
@@ -352,11 +374,12 @@ export function SiteHeader() {
                           aria-expanded={menuOpen}
                           className={cn(
                             buttonVariants({
-                              selected,
+                              selected: !item.featured && selected,
                               size: "md",
                               variant: "outline",
                             }),
-                            "w-full justify-between",
+                            "w-full cursor-pointer justify-between",
+                            item.featured && "text-accent hover:text-accent-hover",
                           )}
                           onClick={() => toggleSubmenu(item)}
                           type="button"
@@ -401,12 +424,13 @@ export function SiteHeader() {
                           isCurrentPath(pathname, item.href) ? "page" : undefined
                         }
                         className={cn(
-                          buttonVariants({
-                            selected,
-                            size: "md",
-                            variant: "outline",
-                          }),
-                          "w-full justify-start",
+                            buttonVariants({
+                              selected: !item.featured && selected,
+                              size: "md",
+                              variant: "outline",
+                            }),
+                            "w-full justify-start",
+                            item.featured && "text-accent hover:text-accent-hover",
                         )}
                         href={item.href}
                         onClick={closeMobileMenu}

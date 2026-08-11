@@ -1,0 +1,9 @@
+{
+  "collectionName": "components_blog_rich_text_sections",
+  "info": { "displayName": "Blog Rich Text Section" },
+  "attributes": {
+    "sectionKey": { "type": "string", "required": true },
+    "heading": { "type": "string", "required": false },
+    "body": { "type": "blocks", "required": true }
+  }
+}

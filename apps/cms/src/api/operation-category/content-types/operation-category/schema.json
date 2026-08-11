@@ -34,6 +34,26 @@
       "type": "string",
       "required": false
     },
+    "showInCatalog": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "catalogOrder": {
+      "type": "integer",
+      "required": false
+    },
+    "catalogImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "featuredOperation": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::operation.operation"
+    },
     "operations": {
       "type": "relation",
       "relation": "manyToMany",

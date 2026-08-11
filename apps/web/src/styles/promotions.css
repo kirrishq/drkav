@@ -1,0 +1,13 @@
+@layer components {
+  .promotions-catalog { display: grid; gap: var(--space-3); }
+  .promotions-catalog__card { display: flex; min-height: var(--space-28); flex-direction: column; padding: var(--space-5); border-radius: var(--radius-lg); background: var(--surface); }
+  .promotions-catalog__title { margin: 0; font-size: var(--type-heading-3-size); line-height: var(--type-heading-3-line-height); }
+  .promotions-catalog__subtitle { margin: var(--space-2) 0 0; color: var(--accent); font-size: var(--type-text-sm-size); font-weight: var(--type-label-weight); }
+  .promotions-catalog__description { display: grid; gap: var(--space-2); margin: var(--space-4) 0 var(--space-5); color: var(--text-secondary); }
+  .promotions-catalog__description p { margin: 0; }
+  .promotions-catalog__action { align-self: flex-start; margin-top: auto; }
+  .promotion-detail { display: grid; gap: var(--space-4); }
+  .promotion-detail__lead { margin: 0; color: var(--text-secondary); font-size: var(--type-text-lg-size); line-height: var(--type-text-lg-line-height); }
+  .promotion-detail__list { display: grid; gap: var(--space-2); margin: 0; padding-left: var(--space-5); color: var(--text-primary); }
+  @media (min-width: 48rem) { .promotions-catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+}

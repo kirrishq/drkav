@@ -121,7 +121,7 @@ export const pageRegistry = [
     kind: "listing",
     section: "Акции",
     legacyRoutes: ["/akcii.html"],
-    seo: { title: "Акции", description: "Специальные предложения на операции доктора Коробова А.В.", canonicalPath: "/akcii" },
+    seo: { title: "Акции и подарки от Артема Коробова", description: "Актуальные специальные предложения и подарки при записи на операции. Условия и возможность совмещения акций уточняйте у администратора.", canonicalPath: "/akcii" },
     contentStatus: "partial",
   }),
   page({
@@ -132,8 +132,8 @@ export const pageRegistry = [
     section: "Акции",
     legacyRoutes: ["/akcii/intimnaya-plastika-ili-lipofiling-ruk-v-podarok.html"],
     seo: {
-      title: "Специальные предложения на операции доктора Коробова А.В.",
-      description: "Интимная пластика или липофилинг рук в подарок | Акции",
+      title: "Интимная пластика или липофилинг рук в подарок",
+      description: "При записи на операцию в декабре — интимная пластика или липофилинг кистей рук в подарок, по показаниям врача.",
       canonicalPath: "/akcii/intimnaya-plastika-ili-lipofiling-ruk-v-podarok",
     },
     contentStatus: "scaffold",

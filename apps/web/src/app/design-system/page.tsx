@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import type { SVGAttributes } from "react";
 
 import {
+  Accordion,
+  BeforeAfterComparison,
   Button,
   Checkbox,
   RecordCard,
@@ -14,6 +16,7 @@ import {
   PageIntro,
   Radio,
   RadioButton,
+  Tabs,
   TextLink,
   VideoCard,
 } from "@drkav/ui";
@@ -292,7 +295,7 @@ function Section({
     >
       <div className="mb-8 max-w-reading">
         <p className="type-overline text-accent">
-          {["button", "text-link", "page-intro", "record-card", "input", "checkbox", "radio", "radio-button"].includes(id)
+          {["button", "text-link", "page-intro", "record-card", "input", "checkbox", "radio", "radio-button", "accordion"].includes(id)
             ? "Components"
             : id === "overview"
               ? "System"
@@ -460,6 +463,110 @@ export default function DesignSystemPage() {
               <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
                 <li>Кнопка превью сообщает скринридеру название видеозаписи.</li>
                 <li>Плеер открывается в модальном окне, которое можно закрыть кнопкой, кликом по фону или клавишей Esc.</li>
+              </ul>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="Accordion — нативный раскрывающийся список для коротких самостоятельных ответов."
+            id="accordion"
+            title="Accordion"
+          >
+            <Subsection title="Usage">
+              <div className="max-w-reading">
+                <Accordion
+                  items={[
+                    {
+                      question: "Как подготовиться к консультации?",
+                      answer: "Заранее сформулируйте цель обращения, подготовьте вопросы и сведения о здоровье, если они важны для консультации.",
+                    },
+                    {
+                      question: "Когда можно вернуться к привычной активности?",
+                      answer: "Сроки зависят от вида вмешательства и динамики восстановления; их определяет врач на контрольных осмотрах.",
+                    },
+                  ]}
+                />
+              </div>
+              <CodeBlock>{`import { Accordion } from "@drkav/ui";
+
+<Accordion
+  items={[
+    {
+      question: "Как подготовиться к консультации?",
+      answer: "Подготовьте вопросы и сведения о здоровье.",
+    },
+  ]}
+/>`}</CodeBlock>
+            </Subsection>
+
+            <Subsection title="Accessibility">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
+                <li>Использует нативные elements details и summary, доступные с клавиатуры.</li>
+                <li>Вопрос должен быть понятен без контекста ответа.</li>
+                <li>Для длинного материала используйте отдельную страницу, а не Accordion.</li>
+              </ul>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="Tabs переключают связанные компактные панели, не меняя страницу."
+            id="tabs"
+            title="Tabs"
+          >
+            <Subsection title="Usage">
+              <div className="max-w-reading">
+                <Tabs
+                  ariaLabel="Пример вкладок"
+                  items={[
+                    { id: "first", label: "Первый вариант", content: <p className="type-text-base text-secondary">Содержимое первой вкладки.</p> },
+                    { id: "second", label: "Второй вариант", content: <p className="type-text-base text-secondary">Содержимое второй вкладки.</p> },
+                  ]}
+                />
+              </div>
+              <CodeBlock>{`import { Tabs } from "@drkav/ui";
+
+<Tabs
+  ariaLabel="Варианты услуги"
+  items={[
+    { id: "first", label: "Первый вариант", content: <p>Содержимое</p> },
+  ]}
+/>`}</CodeBlock>
+            </Subsection>
+            <Subsection title="Accessibility">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
+                <li>Используйте короткие уникальные подписи вкладок.</li>
+                <li>Вкладки переключаются мышью, клавишами стрелок, Home и End.</li>
+              </ul>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="BeforeAfterComparison показывает два изображения с управляемым ползунком сравнения."
+            id="before-after-comparison"
+            title="Before / After Comparison"
+          >
+            <Subsection title="Usage">
+              <div className="max-w-md">
+                <BeforeAfterComparison
+                  afterAlt="После процедуры"
+                  afterImage="/images/before-after/placeholder-after.png"
+                  beforeAlt="До процедуры"
+                  beforeImage="/images/before-after/placeholder-before.png"
+                />
+              </div>
+              <CodeBlock>{`import { BeforeAfterComparison } from "@drkav/ui";
+
+<BeforeAfterComparison
+  beforeImage="/images/before.png"
+  beforeAlt="До процедуры"
+  afterImage="/images/after.png"
+  afterAlt="После процедуры"
+/>`}</CodeBlock>
+            </Subsection>
+            <Subsection title="Accessibility">
+              <ul className="type-text-sm list-disc space-y-2 pl-5 text-secondary">
+                <li>Укажите понятные альтернативные тексты для обоих состояний.</li>
+                <li>Ползунок доступен с клавиатуры как стандартный input range.</li>
               </ul>
             </Subsection>
           </Section>

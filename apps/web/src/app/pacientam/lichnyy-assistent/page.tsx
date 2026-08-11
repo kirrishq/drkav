@@ -1,7 +1,8 @@
+import { PatientChecklist, PatientSection } from "@/components/patient-content/patient-content";
 import { StaticPage } from "@/components/content-page/static-page";
 
 export const metadata = { title: "Ваш личный ассистент", description: "Организация консультаций, подготовки и коммуникации на каждом этапе." };
 
 export default function AssistantPage() {
-  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Ваш личный ассистент" }]} description="Как ассистент помогает организовать консультации, подготовку и коммуникацию на каждом этапе." title="Ваш личный ассистент" />;
+  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Ваш личный ассистент" }]} description="Ассистент сопровождает пациента в организационных вопросах до и после операции." title="Ваш личный ассистент"><PatientSection title="Поддержка на каждом этапе"><PatientChecklist items={[{ title: "Запись на консультацию", description: "Поможет выбрать удобные дату и время консультации." }, { title: "Подготовка информации", description: "Соберёт результаты обследований и другие данные, необходимые врачу." }, { title: "Подготовка к операции", description: "Направит памятки о подготовке, обследованиях и действиях перед операцией." }, { title: "Период восстановления", description: "Передаст инструкции по операции и восстановлению, поможет с организационными вопросами." }, { title: "Контрольные визиты", description: "В течение года после операции поможет согласовать перевязки и осмотры." }]} /></PatientSection></StaticPage>;
 }

@@ -43,9 +43,15 @@ function InlineContent({ children }: { children: readonly RichTextInline[] }) {
   return children.map((node, index) => <InlineNode key={index} node={node} />);
 }
 
-export function BlocksRenderer({ blocks }: { blocks: readonly RichTextBlock[] }) {
+export function BlocksRenderer({
+  blocks,
+  className = "operation-content__blocks",
+}: {
+  blocks: readonly RichTextBlock[];
+  className?: string;
+}) {
   return (
-    <div className="operation-content__blocks">
+    <div className={className}>
       {blocks.map((block, index) => {
         if (block.type === "paragraph") {
           return (

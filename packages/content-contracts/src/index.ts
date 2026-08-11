@@ -48,6 +48,27 @@ export interface OperationCategorySummary {
   landingPageKey?: string;
 }
 
+export interface OperationCatalogLink {
+  canonicalPath: string;
+  heading: string;
+}
+
+export interface OperationCatalogGroup {
+  key: string;
+  name: string;
+  image?: ImageAsset;
+  featuredOperation: OperationCatalogLink;
+  operations: readonly OperationCatalogLink[];
+}
+
+export interface BeforeAfterCase {
+  slug: string;
+  title: string;
+  beforeImage: ImageAsset;
+  afterImage: ImageAsset;
+  operation: OperationCatalogLink;
+}
+
 export type RichTextText = {
   type: "text";
   text: string;
@@ -225,10 +246,74 @@ export interface OperationContent {
   contentStatus: ContentStatus;
 }
 
+export interface BlogCategorySummary {
+  key: string;
+  name: string;
+}
+
+export interface BlogArticleSummary {
+  slug: string;
+  canonicalPath: string;
+  title: string;
+  excerpt: string;
+  cover?: ImageAsset;
+  categories: readonly BlogCategorySummary[];
+  publishedAt: string;
+  readingTimeMinutes: number;
+  isFeatured: boolean;
+}
+
+export interface BlogRichTextSection {
+  type: "rich-text";
+  sectionKey: string;
+  heading?: string;
+  body: readonly RichTextBlock[];
+}
+
+export interface BlogCalloutSection {
+  type: "callout";
+  sectionKey: string;
+  title?: string;
+  body: readonly RichTextBlock[];
+}
+
+export interface BlogFaqSection {
+  type: "faq";
+  sectionKey: string;
+  heading?: string;
+  items: readonly { question: string; answer: string }[];
+}
+
+export type BlogContentSection =
+  | BlogRichTextSection
+  | BlogCalloutSection
+  | BlogFaqSection;
+
+export interface BlogArticle extends BlogArticleSummary {
+  seo: SeoData;
+  contentSections: readonly BlogContentSection[];
+  relatedOperations: readonly OperationCatalogLink[];
+  relatedArticles: readonly BlogArticleSummary[];
+}
+
+export interface BlogIndexContent {
+  articles: readonly BlogArticleSummary[];
+  categories: readonly BlogCategorySummary[];
+}
+
+export type ConditionArticle = BlogArticle;
+export type ConditionIndexContent = BlogIndexContent;
+
 /**
  * CMS-agnostic boundary for future content sources.
  */
 export interface ContentRepository {
   getStaticPage(pageKey: string): Promise<StaticPageContent | null>;
   getOperationByPath(path: string): Promise<OperationContent | null>;
+  getOperationCatalog(): Promise<readonly OperationCatalogGroup[]>;
+  getBeforeAfterCases(): Promise<readonly BeforeAfterCase[]>;
+  getBlogIndex(): Promise<BlogIndexContent>;
+  getBlogArticleBySlug(slug: string): Promise<BlogArticle | null>;
+  getConditionIndex(): Promise<ConditionIndexContent>;
+  getConditionArticleBySlug(slug: string): Promise<ConditionArticle | null>;
 }

@@ -62,6 +62,30 @@ export function getOperationCacheTag(canonicalPath: string): string {
   return `operation:${normalizeCanonicalPath(canonicalPath)}`;
 }
 
+export function getOperationCatalogCacheTag(): string {
+  return "operation-catalog";
+}
+
+export function getBeforeAfterCasesCacheTag(): string {
+  return "before-after-cases";
+}
+
+export function getBlogIndexCacheTag(): string {
+  return "blog-index";
+}
+
+export function getBlogArticleCacheTag(slug: string): string {
+  return `blog:${slug}`;
+}
+
+export function getConditionIndexCacheTag(): string {
+  return "condition-index";
+}
+
+export function getConditionArticleCacheTag(slug: string): string {
+  return `condition:${slug}`;
+}
+
 export function getCmsFetchCacheOptions(cacheTag: string): CmsFetchCacheOptions {
   if (process.env.NODE_ENV === "development") {
     return { cache: "no-store" };

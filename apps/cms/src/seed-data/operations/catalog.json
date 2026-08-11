@@ -14,22 +14,34 @@
       "name": "Живот и талия",
       "key": "abdomen-and-waist",
       "hasLandingPage": true,
-      "landingPageKey": "operations-abdomen-waist"
+      "landingPageKey": "operations-abdomen-waist",
+      "showInCatalog": true,
+      "catalogOrder": 20,
+      "featuredOperationPath": "/operaczii/abdominoplastika"
     },
     {
       "name": "После родов",
       "key": "postpartum",
-      "hasLandingPage": false
+      "hasLandingPage": false,
+      "showInCatalog": true,
+      "catalogOrder": 40,
+      "featuredOperationPath": "/operaczii/plasticheskaya-hirurgiya-posle-rodov"
     },
     {
       "name": "После похудения",
       "key": "after-weight-loss",
-      "hasLandingPage": false
+      "hasLandingPage": false,
+      "showInCatalog": true,
+      "catalogOrder": 50,
+      "featuredOperationPath": "/operaczii/plasticheskaya-hirurgiya-posle-pohudeniya"
     },
     {
       "name": "Пластика груди",
       "key": "breast",
-      "hasLandingPage": false
+      "hasLandingPage": false,
+      "showInCatalog": true,
+      "catalogOrder": 10,
+      "featuredOperationPath": "/operaczii/plastika-grudi"
     },
     {
       "name": "Липофилинг",
@@ -39,12 +51,18 @@
     {
       "name": "Мужская атлетизация",
       "key": "male-athletic-contouring",
-      "hasLandingPage": false
+      "hasLandingPage": false,
+      "showInCatalog": true,
+      "catalogOrder": 80,
+      "featuredOperationPath": "/operaczii/muzhskaya-plastika"
     },
     {
       "name": "Коррекция фигуры",
       "key": "body-contouring",
-      "hasLandingPage": false
+      "hasLandingPage": false,
+      "showInCatalog": true,
+      "catalogOrder": 30,
+      "featuredOperationPath": "/operaczii/liposkulptura"
     },
     {
       "name": "Липоскульптура",
@@ -59,12 +77,18 @@
     {
       "name": "Интимная пластика",
       "key": "intimate-surgery",
-      "hasLandingPage": false
+      "hasLandingPage": false,
+      "showInCatalog": true,
+      "catalogOrder": 60,
+      "featuredOperationPath": "/operaczii/intimnaya-plastika"
     },
     {
       "name": "Без операции (РФ-лифтинг)",
       "key": "non-surgical-rf-lifting",
-      "hasLandingPage": false
+      "hasLandingPage": false,
+      "showInCatalog": true,
+      "catalogOrder": 70,
+      "featuredOperationPath": "/operaczii/rf-lifting"
     },
     {
       "name": "RF-лифтинг",

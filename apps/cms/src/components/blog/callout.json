@@ -1,0 +1,9 @@
+{
+  "collectionName": "components_blog_callouts",
+  "info": { "displayName": "Blog Callout" },
+  "attributes": {
+    "sectionKey": { "type": "string", "required": true },
+    "title": { "type": "string", "required": false },
+    "body": { "type": "blocks", "required": true }
+  }
+}
