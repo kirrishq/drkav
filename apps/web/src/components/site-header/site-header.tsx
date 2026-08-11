@@ -3,7 +3,7 @@
 import { buttonVariants, cn } from "@drkav/ui";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import {
   headerMenu,
@@ -137,6 +137,7 @@ export function SiteHeader() {
   const mobileMenuId = useId();
   const [openMenuHref, setOpenMenuHref] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mobileScrollY = useRef(0);
 
   const openMenu = headerMenu.find((item) => item.href === openMenuHref);
 
@@ -163,14 +164,25 @@ export function SiteHeader() {
     }
 
     const originalBodyOverflow = document.body.style.overflow;
+    const originalBodyPosition = document.body.style.position;
+    const originalBodyTop = document.body.style.top;
+    const originalBodyWidth = document.body.style.width;
     const originalDocumentOverflow = document.documentElement.style.overflow;
+    const scrollY = mobileScrollY.current;
 
     document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
     document.documentElement.style.overflow = "hidden";
 
     return () => {
       document.body.style.overflow = originalBodyOverflow;
+      document.body.style.position = originalBodyPosition;
+      document.body.style.top = originalBodyTop;
+      document.body.style.width = originalBodyWidth;
       document.documentElement.style.overflow = originalDocumentOverflow;
+      window.scrollTo(0, scrollY);
     };
   }, [mobileOpen]);
 
@@ -179,12 +191,18 @@ export function SiteHeader() {
   }
 
   function closeMobileMenu() {
+    mobileScrollY.current = 0;
     setMobileOpen(false);
     setOpenMenuHref(null);
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-surface">
+    <header
+      className={cn(
+        mobileOpen ? "fixed inset-x-0 top-0" : "sticky top-0",
+        "z-40 border-b border-border bg-surface",
+      )}
+    >
       <div className="mx-auto max-w-wide px-4 sm:px-6">
         <div className="flex min-h-16 items-center justify-between gap-3 lg:min-h-20">
           <SiteLogo onNavigate={closeMobileMenu} />
@@ -251,7 +269,11 @@ export function SiteHeader() {
               aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"}
               className={buttonVariants({ size: "icon", variant: "outline" })}
               onClick={() => {
-                setMobileOpen((current) => !current);
+                if (!mobileOpen) {
+                  mobileScrollY.current = window.scrollY;
+                }
+
+                setMobileOpen(!mobileOpen);
                 setOpenMenuHref(null);
               }}
               type="button"
@@ -334,7 +356,7 @@ export function SiteHeader() {
 
       <div
         className={cn(
-          "absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-var(--space-16))] overflow-y-auto border-t border-border bg-surface lg:hidden",
+          "fixed inset-x-0 bottom-0 top-16 z-50 overflow-y-auto border-t border-border bg-surface lg:hidden",
           mobileOpen ? "block" : "hidden",
         )}
         id={mobileMenuId}
