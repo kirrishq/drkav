@@ -1,6 +1,7 @@
 import type { ComponentPropsWithoutRef } from "react";
 
 import { cn } from "./lib/cn";
+import { ArrowUpRightIcon } from "./record-card";
 
 export type FeatureLinkCardProps = Omit<ComponentPropsWithoutRef<"a">, "children" | "className" | "href"> & {
   className?: string;
@@ -11,20 +12,6 @@ export type FeatureLinkCardProps = Omit<ComponentPropsWithoutRef<"a">, "children
   title: string;
   variant?: "square" | "wide";
 };
-
-function ArrowUpRightIcon() {
-  return (
-    <svg aria-hidden="true" className="record-card__arrow-icon" fill="none" viewBox="0 0 24 24">
-      <path
-        d="M7 17 17 7m-7 0h7v7"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.75"
-      />
-    </svg>
-  );
-}
 
 /** Image-first navigation card with the shared interactive-card arrow. */
 export function FeatureLinkCard({ className, description, href, imageAlt, imageSrc, title, variant = "wide", ...props }: FeatureLinkCardProps) {

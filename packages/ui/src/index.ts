@@ -14,6 +14,19 @@ export { CertificateCard } from "./certificate-card";
 export type { CertificateCardProps } from "./certificate-card";
 export { FeatureLinkCard } from "./feature-link-card";
 export type { FeatureLinkCardProps } from "./feature-link-card";
+export { FinalResultsSlider } from "./final-results-slider";
+export type {
+  FinalResultCard,
+  FinalResultsLink,
+  FinalResultsSliderProps,
+  FinalResultsTab,
+} from "./final-results-slider";
+export { OperationsCards } from "./operations-cards";
+export type {
+  OperationsCardItem,
+  OperationsCardLink,
+  OperationsCardsProps,
+} from "./operations-cards";
 export {
   FormDescription,
   FormField,
@@ -43,11 +56,17 @@ export { Radio } from "./radio";
 export type { RadioProps } from "./radio";
 export { RadioButton } from "./radio-button";
 export type { RadioButtonProps } from "./radio-button";
-export { RecordCard } from "./record-card";
+export { ArrowUpRightIcon, RecordCard } from "./record-card";
 export type { RecordCardDetail, RecordCardProps } from "./record-card";
+export { StatsStrip } from "./stats-strip";
+export type { StatsStripItem, StatsStripProps } from "./stats-strip";
+export { ReviewsSlider } from "./reviews-slider";
+export type { ReviewSliderItem, ReviewsSliderProps } from "./reviews-slider";
 export { TextLink } from "./text-link";
 export type { TextLinkProps } from "./text-link";
 export { Tabs } from "./tabs";
 export type { TabItem, TabsProps } from "./tabs";
 export { VideoCard } from "./video-card";
 export type { VideoCardProps } from "./video-card";
+export { VideoHighlights } from "./video-highlights";
+export type { VideoHighlight, VideoHighlightsProps } from "./video-highlights";

@@ -137,14 +137,69 @@ export function SiteHeader() {
   const mobileMenuId = useId();
   const [openMenuHref, setOpenMenuHref] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(true);
   const mobileScrollY = useRef(0);
+  const headerRef = useRef<HTMLElement | null>(null);
+  const lastScrollY = useRef(0);
+  const scrollFrame = useRef<number | null>(null);
+  const scrollStopTimer = useRef<number | null>(null);
 
   const openMenu = headerMenu.find((item) => item.href === openMenuHref);
 
   useEffect(() => {
     setMobileOpen(false);
     setOpenMenuHref(null);
+    setHeaderVisible(true);
   }, [pathname]);
+
+  useEffect(() => {
+    lastScrollY.current = window.scrollY;
+
+    function updateHeaderVisibility() {
+      scrollFrame.current = null;
+      const currentScrollY = window.scrollY;
+      const scrollDelta = currentScrollY - lastScrollY.current;
+
+      if (currentScrollY <= 0 || scrollDelta < -1) {
+        setHeaderVisible(true);
+      } else if (scrollDelta > 1 && !mobileOpen) {
+        setHeaderVisible(false);
+      }
+
+      lastScrollY.current = currentScrollY;
+    }
+
+    function handleScroll() {
+      if (scrollFrame.current === null) {
+        scrollFrame.current = window.requestAnimationFrame(updateHeaderVisibility);
+      }
+
+      if (scrollStopTimer.current !== null) {
+        window.clearTimeout(scrollStopTimer.current);
+      }
+
+      scrollStopTimer.current = window.setTimeout(() => {
+        setHeaderVisible(true);
+        scrollStopTimer.current = null;
+      }, 180);
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+
+      if (scrollFrame.current !== null) {
+        window.cancelAnimationFrame(scrollFrame.current);
+        scrollFrame.current = null;
+      }
+
+      if (scrollStopTimer.current !== null) {
+        window.clearTimeout(scrollStopTimer.current);
+        scrollStopTimer.current = null;
+      }
+    };
+  }, [mobileOpen]);
 
   useEffect(() => {
     function closeOnEscape(event: KeyboardEvent) {
@@ -157,6 +212,24 @@ export function SiteHeader() {
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, []);
+
+  useEffect(() => {
+    if (!openMenuHref) {
+      return;
+    }
+
+    function closeOnOutsidePointer(event: PointerEvent) {
+      const target = event.target;
+
+      if (target instanceof Node && !headerRef.current?.contains(target)) {
+        setOpenMenuHref(null);
+      }
+    }
+
+    document.addEventListener("pointerdown", closeOnOutsidePointer);
+    return () =>
+      document.removeEventListener("pointerdown", closeOnOutsidePointer);
+  }, [openMenuHref]);
 
   useEffect(() => {
     if (!mobileOpen) {
@@ -198,9 +271,11 @@ export function SiteHeader() {
 
   return (
     <header
+      ref={headerRef}
       className={cn(
         mobileOpen ? "fixed inset-x-0 top-0" : "sticky top-0",
-        "z-40 border-b border-border bg-surface",
+        headerVisible || mobileOpen ? "translate-y-0" : "-translate-y-full",
+        "z-40 border-b border-border bg-surface transition-transform duration-reveal ease-standard motion-reduce:transition-none",
       )}
     >
       <div className="mx-auto max-w-wide px-4 sm:px-6">
@@ -271,6 +346,7 @@ export function SiteHeader() {
               onClick={() => {
                 if (!mobileOpen) {
                   mobileScrollY.current = window.scrollY;
+                  setHeaderVisible(true);
                 }
 
                 setMobileOpen(!mobileOpen);

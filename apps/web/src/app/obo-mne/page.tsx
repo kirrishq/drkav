@@ -115,15 +115,30 @@ export default function AboutPage() {
 
                   <ul className="content-card__list">
                     {[
-                      "Один из первых в России применил SIME — безопасный липофилинг груди.",
-                      "Автор патентованного метода устранения диастаза без видимых шрамов.",
-                      "Лектор федеральных и международных конгрессов по пластической хирургии.",
-                      "Основатель обучающего проекта для пластических хирургов «EhellШкола».",
-                      "Автор романа «Боль двенадцати женщин».",
-                    ].map((item) => (
-                      <li className="content-card__list-item" key={item}>
+                      {
+                        content: <>Один из первых в России применил <strong>SIME</strong> — безопасный липофилинг груди.</>,
+                        key: "sime",
+                      },
+                      {
+                        content: <>Автор <strong>патентованного метода устранения диастаза</strong> без видимых шрамов.</>,
+                        key: "diastasis",
+                      },
+                      {
+                        content: <>Лектор <strong>федеральных и международных конгрессов</strong> по пластической хирургии.</>,
+                        key: "congresses",
+                      },
+                      {
+                        content: <>Основатель <strong>обучающего проекта для пластических хирургов «Не Школа»</strong>.</>,
+                        key: "not-school",
+                      },
+                      {
+                        content: <>Автор <strong>романа «Боль двенадцати женщин»</strong>.</>,
+                        key: "novel",
+                      },
+                    ].map(({ content, key }) => (
+                      <li className="content-card__list-item" key={key}>
                         <span aria-hidden="true" className="content-card__list-marker" />
-                        <span>{item}</span>
+                        <span>{content}</span>
                       </li>
                     ))}
                   </ul>

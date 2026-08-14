@@ -123,7 +123,7 @@
     display: inline-flex;
     min-height: var(--space-9);
     align-items: center;
-    gap: var(--space-1);
+    gap: var(--space-2);
     padding: var(--space-2) var(--space-3);
     border: var(--border-width-default) solid var(--border-subtle);
     border-radius: var(--radius-md);
@@ -139,6 +139,12 @@
   .doctor-profile__link:focus-visible {
     border-color: var(--accent);
     color: var(--accent);
+  }
+
+  .doctor-profile__link:hover .record-card__arrow--inline,
+  .doctor-profile__link:focus-visible .record-card__arrow--inline {
+    background: var(--accent);
+    color: var(--text-inverse);
   }
 
   .doctor-profile__link:focus-visible {

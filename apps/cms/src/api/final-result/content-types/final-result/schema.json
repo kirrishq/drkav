@@ -1,0 +1,19 @@
+{
+  "kind": "collectionType",
+  "collectionName": "final_results",
+  "info": {
+    "singularName": "final-result",
+    "pluralName": "final-results",
+    "displayName": "Final Result"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
+    "imagePath": { "type": "string", "required": true },
+    "imageAlt": { "type": "string" },
+    "sortOrder": { "type": "integer", "required": true, "min": 0 },
+    "operation": { "type": "relation", "relation": "manyToOne", "target": "api::operation.operation", "required": true },
+    "operationCategory": { "type": "relation", "relation": "manyToOne", "target": "api::operation-category.operation-category", "required": true }
+  }
+}

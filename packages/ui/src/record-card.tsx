@@ -12,16 +12,16 @@ type RecordCardBaseProps = {
   details?: readonly RecordCardDetail[];
   icon?: ReactNode;
   meta?: string;
-  title: string;
+  title: ReactNode;
 };
 
 type RecordCardLinkProps = RecordCardBaseProps &
-  Omit<ComponentPropsWithoutRef<"a">, "children" | "className" | "href"> & {
+  Omit<ComponentPropsWithoutRef<"a">, "children" | "className" | "href" | "title"> & {
     href: string;
   };
 
 type RecordCardButtonProps = RecordCardBaseProps &
-  Omit<ComponentPropsWithoutRef<"button">, "children" | "className" | "type"> & {
+  Omit<ComponentPropsWithoutRef<"button">, "children" | "className" | "title" | "type"> & {
     onClick: NonNullable<ComponentPropsWithoutRef<"button">["onClick"]>;
   };
 
@@ -35,7 +35,7 @@ function isButtonRecordCard(props: RecordCardProps): props is RecordCardButtonPr
   return "onClick" in props && !("href" in props);
 }
 
-function ArrowUpRightIcon() {
+export function ArrowUpRightIcon() {
   return (
     <svg aria-hidden="true" className="record-card__arrow-icon" fill="none" viewBox="0 0 24 24">
       <path

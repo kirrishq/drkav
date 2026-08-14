@@ -135,11 +135,6 @@
     color: var(--text-inverse);
   }
 
-  .operations-catalog__arrow-icon {
-    width: var(--space-4);
-    height: var(--space-4);
-  }
-
   @media (max-width: 48rem) {
     .operations-catalog__links {
       grid-template-columns: repeat(2, minmax(0, 1fr));

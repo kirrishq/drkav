@@ -1,27 +1,32 @@
-import { RecordCard, buttonVariants, cn } from "@drkav/ui";
+import { ArrowUpRightIcon, RecordCard, buttonVariants, cn } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
 
 const doctorHighlights = [
   {
     href: "/obo-mne#about-doctor",
-    title: "Один из первых в России применил SIME — безопасный липофилинг груди",
+    id: "sime",
+    title: <>Один из первых в России применил <strong>SIME</strong> — безопасный липофилинг груди</>,
   },
   {
     href: "/obo-mne#patents",
-    title: "Автор патентованного метода устранения диастаза без видимых шрамов",
+    id: "diastasis",
+    title: <>Автор <strong>патентованного метода устранения диастаза</strong> без видимых шрамов</>,
   },
   {
     href: "/obo-mne#qualifications",
-    title: "Лектор федеральных и международных конгрессов по пластической хирургии",
+    id: "congresses",
+    title: <>Лектор <strong>федеральных и международных конгрессов</strong> по пластической хирургии</>,
   },
   {
     href: "/obo-mne/neshkola",
-    title: "Основатель обучающего проекта для пластических хирургов «EhellШкола»",
+    id: "not-school",
+    title: <>Основатель <strong>обучающего проекта для пластических хирургов «Не Школа»</strong></>,
   },
   {
     href: "/obo-mne/book",
-    title: "Автор романа «Боль двенадцати женщин»",
+    id: "novel",
+    title: <>Автор <strong>романа «Боль двенадцати женщин»</strong></>,
   },
 ] as const;
 
@@ -74,7 +79,7 @@ export function DoctorProfile() {
             <RecordCard
               className="doctor-profile__highlight"
               href={highlight.href}
-              key={highlight.title}
+              key={highlight.id}
               title={highlight.title}
             />
           ))}
@@ -84,7 +89,9 @@ export function DoctorProfile() {
           {doctorLinks.map((link) => (
             <Link className="doctor-profile__link" href={link.href} key={link.href}>
               {link.label}
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true" className="record-card__arrow record-card__arrow--inline">
+                <ArrowUpRightIcon />
+              </span>
             </Link>
           ))}
         </nav>

@@ -34,8 +34,8 @@
     padding: var(--space-1) var(--space-3);
     border-radius: var(--radius-full);
     background: var(--surface-muted);
-    font-size: var(--type-text-base-size);
-    line-height: var(--type-text-base-line-height);
+    font-size: var(--type-badge-size);
+    line-height: var(--type-badge-line-height);
     color: var(--text-primary);
   }
 

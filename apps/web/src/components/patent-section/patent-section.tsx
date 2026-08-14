@@ -55,11 +55,16 @@ function PatentModal({ onClose }: { onClose: () => void }) {
         event.preventDefault();
         onClose();
       }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) {
+          onClose();
+        }
+      }}
       ref={dialogRef}
     >
       <div className="patent-modal__content">
         <div className="patent-modal__header">
-          <h2 className="patent-modal__title" id="patent-modal-title">{patentTitle}</h2>
+          <h2 className="type-h3 patent-modal__title" id="patent-modal-title">{patentTitle}</h2>
           <Button aria-label="Закрыть попап" onClick={onClose} size="icon" variant="ghost">
             <CloseIcon />
           </Button>

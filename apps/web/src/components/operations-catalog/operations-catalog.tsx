@@ -1,26 +1,11 @@
 import type { OperationCatalogGroup } from "@drkav/content-contracts";
+import { ArrowUpRightIcon } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
 
 type OperationsCatalogProps = {
   groups: readonly OperationCatalogGroup[];
 };
-
-function ArrowIcon() {
-  return (
-    <span aria-hidden="true" className="operations-catalog__arrow">
-      <svg className="operations-catalog__arrow-icon" fill="none" viewBox="0 0 24 24">
-        <path
-          d="M7 17 17 7m-7 0h7v7"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.75"
-        />
-      </svg>
-    </span>
-  );
-}
 
 export function OperationsCatalog({ groups }: OperationsCatalogProps) {
   return (
@@ -54,7 +39,9 @@ export function OperationsCatalog({ groups }: OperationsCatalogProps) {
                   key={operation.canonicalPath}
                 >
                   <span>{operation.heading}</span>
-                  <ArrowIcon />
+                  <span aria-hidden="true" className="operations-catalog__arrow">
+                    <ArrowUpRightIcon />
+                  </span>
                 </Link>
               ))}
             </div>

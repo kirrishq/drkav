@@ -69,6 +69,14 @@ export interface BeforeAfterCase {
   operation: OperationCatalogLink;
 }
 
+export interface FinalResult {
+  slug: string;
+  title: string;
+  image: ImageAsset;
+  categoryKey: string;
+  operation: OperationCatalogLink;
+}
+
 export type RichTextText = {
   type: "text";
   text: string;
@@ -312,6 +320,7 @@ export interface ContentRepository {
   getOperationByPath(path: string): Promise<OperationContent | null>;
   getOperationCatalog(): Promise<readonly OperationCatalogGroup[]>;
   getBeforeAfterCases(): Promise<readonly BeforeAfterCase[]>;
+  getFinalResults(): Promise<readonly FinalResult[]>;
   getBlogIndex(): Promise<BlogIndexContent>;
   getBlogArticleBySlug(slug: string): Promise<BlogArticle | null>;
   getConditionIndex(): Promise<ConditionIndexContent>;

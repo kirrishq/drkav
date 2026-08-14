@@ -9,6 +9,7 @@ import type {
   BeforeAfterCase,
   ContentAction,
   ContentRepository,
+  FinalResult,
   ImageAsset,
   OperationCatalogGroup,
   OperationCatalogLink,
@@ -35,6 +36,7 @@ import {
   getConditionIndexCacheTag,
   getOperationCatalogCacheTag,
   getOperationCacheTag,
+  getFinalResultsCacheTag,
 } from "./cms-cache";
 import {
   CmsConfigurationError,
@@ -1000,6 +1002,44 @@ export class StrapiContentRepository implements ContentRepository {
         title: requireString(item.title, `${label}.title`),
         beforeImage: mapSiteImagePath(item.beforeImagePath, `${label}.beforeImagePath`),
         afterImage: mapSiteImagePath(item.afterImagePath, `${label}.afterImagePath`),
+        operation: mapCatalogLink(item.operation, `${label}.operation`),
+      };
+    });
+  }
+
+  async getFinalResults(): Promise<readonly FinalResult[]> {
+    const params = this.createPublishedParams([
+      "slug",
+      "title",
+      "imagePath",
+      "imageAlt",
+      "sortOrder",
+    ]);
+    params.set("pagination[pageSize]", "100");
+    params.set("sort[0]", "sortOrder:asc");
+    params.set("populate[operation][fields][0]", "canonicalPath");
+    params.set("populate[operation][fields][1]", "heading");
+    params.set("populate[operationCategory][fields][0]", "key");
+
+    const results = await this.getMany(
+      "/api/final-results",
+      params,
+      getFinalResultsCacheTag(),
+    );
+
+    return results.map((entry, index) => {
+      const label = `finalResults[${index}]`;
+      const item = requireRecord(entry, label);
+      const category = requireRecord(item.operationCategory, `${label}.operationCategory`);
+
+      return {
+        slug: requireString(item.slug, `${label}.slug`),
+        title: requireString(item.title, `${label}.title`),
+        image: {
+          ...mapSiteImagePath(item.imagePath, `${label}.imagePath`),
+          alternativeText: optionalString(item.imageAlt, `${label}.imageAlt`),
+        },
+        categoryKey: requireString(category.key, `${label}.operationCategory.key`),
         operation: mapCatalogLink(item.operation, `${label}.operation`),
       };
     });

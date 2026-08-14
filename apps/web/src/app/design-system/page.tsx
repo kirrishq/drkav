@@ -11,14 +11,18 @@ import {
   FormField,
   FormMessage,
   FeatureLinkCard,
+  FinalResultsSlider,
+  OperationsCards,
   Input,
   Label,
   PageIntro,
   Radio,
   RadioButton,
+  StatsStrip,
   Tabs,
   TextLink,
   VideoCard,
+  VideoHighlights,
 } from "@drkav/ui";
 import { PhoneInput } from "@drkav/ui/phone-input";
 
@@ -295,7 +299,7 @@ function Section({
     >
       <div className="mb-8 max-w-reading">
         <p className="type-overline text-accent">
-          {["button", "text-link", "page-intro", "record-card", "input", "checkbox", "radio", "radio-button", "accordion"].includes(id)
+          {["button", "text-link", "page-intro", "record-card", "feature-link-card", "video-card", "stats-strip", "final-results-slider", "operations-cards", "video-highlights", "input", "checkbox", "radio", "radio-button", "accordion"].includes(id)
             ? "Components"
             : id === "overview"
               ? "System"
@@ -389,6 +393,187 @@ export default function DesignSystemPage() {
           </Section>
 
           <Section
+            description="OperationsCards показывает категории операций карточками и открывает по клику доступный список ссылок выбранной категории с кнопкой консультации."
+            id="operations-cards"
+            title="Operations Cards"
+          >
+            <Subsection title="Usage">
+              <OperationsCards
+                items={[
+                  {
+                    id: "breast",
+                    imageAlt: "Заглушка изображения категории пластики груди",
+                    imageSrc: "/images/before-after/placeholder-after.png",
+                    links: [
+                      { href: "/operaczii/plastika-grudi", label: "Пластика груди" },
+                      { href: "/operaczii/plastika-grudi/uvelichenie-grudi", label: "Увеличение груди" },
+                    ],
+                    title: "Пластика груди",
+                  },
+                  {
+                    id: "abdomen-and-waist",
+                    imageAlt: "Заглушка изображения категории живота и талии",
+                    imageSrc: "/images/before-after/placeholder-after.png",
+                    links: [{ href: "/operaczii/abdominoplastika", label: "Абдоминопластика" }],
+                    title: "Живот и талия",
+                  },
+                  {
+                    id: "body-contouring",
+                    imageAlt: "Заглушка изображения категории коррекции фигуры",
+                    imageSrc: "/images/before-after/placeholder-after.png",
+                    links: [{ href: "/operaczii/liposkulptura", label: "Липоскульптура" }],
+                    title: "Коррекция фигуры",
+                  },
+                ]}
+              />
+              <CodeBlock>{`import { OperationsCards } from "@drkav/ui";
+
+<OperationsCards
+  items={[{
+    id: "breast",
+    title: "Пластика груди",
+    imageSrc: "/images/operations/breast.jpg",
+    imageAlt: "Фоновое изображение категории",
+    links: [{ href: "/operaczii/plastika-grudi", label: "Пластика груди" }],
+  }]}
+/>`}</CodeBlock>
+            </Subsection>
+            <Subsection title="Interaction">
+              <p className="type-text-base text-secondary">
+                Карточка не ведёт сразу на одну операцию: она открывает список всех ссылок категории из каталога операций. Внизу попапа всегда размещается действие «Консультация».
+              </p>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="FinalResultsSlider показывает подборку финальных результатов с вкладками по категориям общего каталога операций и горизонтальной навигацией."
+            id="final-results-slider"
+            title="Final Results Slider"
+          >
+            <Subsection title="Usage">
+              <FinalResultsSlider
+                links={[
+                  { href: "/pacientam/portfolio", label: "Портфолио кейсов" },
+                  { href: "/pacientam/do-i-posle", label: "Фото до/после" },
+                ]}
+                items={[
+                  {
+                    href: "/operaczii/plastika-grudi/uvelichenie-grudi",
+                    id: "breast-1",
+                    imageAlt: "Демонстрационное изображение результата",
+                    imageSrc: "/images/before-after/placeholder-after.png",
+                    label: "Увеличение груди",
+                    tabId: "breast",
+                  },
+                  {
+                    href: "/operaczii/plastika-grudi/uvelichenie-grudi",
+                    id: "breast-2",
+                    imageAlt: "Демонстрационное изображение результата",
+                    imageSrc: "/images/before-after/placeholder-after.png",
+                    label: "Подтяжка груди",
+                    tabId: "breast",
+                  },
+                  {
+                    href: "/operaczii/abdominoplastika",
+                    id: "abdomen-1",
+                    imageAlt: "Демонстрационное изображение результата",
+                    imageSrc: "/images/before-after/placeholder-after.png",
+                    label: "Абдоминопластика",
+                    tabId: "abdomen-and-waist",
+                  },
+                  {
+                    href: "/operaczii/liposkulptura",
+                    id: "body-1",
+                    imageAlt: "Демонстрационное изображение результата",
+                    imageSrc: "/images/before-after/placeholder-after.png",
+                    label: "Липоскульптура",
+                    tabId: "body-contouring",
+                  },
+                ]}
+                tabs={[
+                  { id: "breast", label: "Пластика груди" },
+                  { id: "abdomen-and-waist", label: "Живот и талия" },
+                  { id: "body-contouring", label: "Коррекция фигуры" },
+                ]}
+              />
+              <CodeBlock>{`import { FinalResultsSlider } from "@drkav/ui";
+
+<FinalResultsSlider
+  tabs={[{ id: "breast", label: "Пластика груди" }]}
+  items={[{
+    id: "result-1",
+    tabId: "breast",
+    label: "Увеличение груди",
+    imageSrc: "/images/final-results/result-1.jpg",
+    imageAlt: "Финальный результат",
+  }]}
+/>`}</CodeBlock>
+            </Subsection>
+            <Subsection title="Content rules">
+              <p className="type-text-base text-secondary">
+                Вкладки передаются из общего каталога операций. Не создавайте отдельные локальные названия категорий для этого блока; новый результат связывается в CMS с операцией и одной категорией каталога.
+              </p>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="VideoHighlights — композиционный блок из зацикленных видеопревью, описаний и ссылки на полный раздел видео. Позиция описания задаётся типизированным вариантом."
+            id="video-highlights"
+            title="Video Highlights"
+          >
+            <Subsection title="Usage">
+              <VideoHighlights
+                ctaHref="#video-highlights"
+                items={[
+                  {
+                    contentPosition: "before",
+                    dialogVideoSrc: "https://drkav.ru/videos/homepage/video-1.mp4",
+                    description: "MOMMY MAKEOVER по версии Всероссийской премии «ХРУСТАЛЬНЫЙ ЛОТОС»",
+                    posterAlt: "Церемония премии",
+                    posterSrc: "/videos/doctor-award-poster.jpg",
+                    title: "Лучший хирург",
+                    videoSrc: "/videos/doctor-award.mp4",
+                    webmSrc: "/videos/doctor-award.webm",
+                  },
+                  {
+                    contentPosition: "after",
+                    dialogVideoSrc: "https://drkav.ru/videos/homepage/video-2.mp4",
+                    description: "Пластическая хирургия, эстетическая медицина и косметология",
+                    posterAlt: "Выступление доктора на конгрессе",
+                    posterSrc: "/videos/milanov-congress-poster.jpg",
+                    title: "XI Национальный конгресс имени Миланова",
+                    videoSrc: "/videos/milanov-congress.mp4",
+                    webmSrc: "/videos/milanov-congress.webm",
+                  },
+                ]}
+              />
+              <CodeBlock>{`import { VideoHighlights } from "@drkav/ui";
+
+<VideoHighlights
+  ctaHref="/obo-mne/vystupleniya"
+  items={[
+    {
+      contentPosition: "before",
+      dialogVideoSrc: "https://drkav.ru/videos/homepage/video-1.mp4",
+      title: "Лучший хирург",
+      description: "Описание события",
+      posterSrc: "/videos/doctor-award-poster.jpg",
+      posterAlt: "Церемония премии",
+      videoSrc: "/videos/doctor-award.mp4",
+      webmSrc: "/videos/doctor-award.webm",
+    },
+  ]}
+/>`}</CodeBlock>
+            </Subsection>
+
+            <Subsection title="Media">
+              <p className="type-text-base text-secondary">
+                На исходной странице эти превью сделаны зацикленными MP4-видео с JPG-постерами, а не GIF-файлами. В проект добавлены оригинальные локальные MP4, WebM и постеры; компонент использует их для autoplay-превью без звука.
+              </p>
+            </Subsection>
+          </Section>
+
+          <Section
             description="FeatureLinkCard — карточка-навигация с изображением, подписью и общей стрелкой интерактивных карточек. Изображение мягко увеличивается при наведении и фокусе."
             id="feature-link-card"
             title="Feature Link Card"
@@ -464,6 +649,37 @@ export default function DesignSystemPage() {
                 <li>Кнопка превью сообщает скринридеру название видеозаписи.</li>
                 <li>Плеер открывается в модальном окне, которое можно закрыть кнопкой, кликом по фону или клавишей Esc.</li>
               </ul>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="StatsStrip показывает несколько ключевых показателей в едином ряду и запускает счётчик при появлении блока в области просмотра."
+            id="stats-strip"
+            title="Stats Strip"
+          >
+            <Subsection title="Usage">
+              <StatsStrip
+                items={[
+                  { label: "Пациентов по рекомендациям", prefix: "~", suffix: "%", value: 85 },
+                  { label: "Довольных пациентов", prefix: "~", suffix: "%", value: 98 },
+                  { label: "Операций в год", suffix: "+", value: 350 },
+                  { label: "Брошенных пациентов", value: 0 },
+                ]}
+              />
+              <CodeBlock>{`import { StatsStrip } from "@drkav/ui";
+
+<StatsStrip
+  items={[
+    { label: "Пациентов по рекомендациям", prefix: "~", suffix: "%", value: 85 },
+    { label: "Операций в год", suffix: "+", value: 350 },
+  ]}
+/>`}</CodeBlock>
+            </Subsection>
+
+            <Subsection title="Motion and accessibility">
+              <p className="type-text-base text-secondary">
+                Значения начинают анимироваться от нуля, когда блок появляется на экране. При <code className="type-code">prefers-reduced-motion: reduce</code> итоговые значения показываются сразу. Передавайте число отдельно от <code className="type-code">prefix</code> и <code className="type-code">suffix</code>, чтобы компонент мог корректно анимировать значение.
+              </p>
             </Subsection>
           </Section>
 

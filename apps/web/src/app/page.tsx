@@ -1,13 +1,116 @@
-import { buttonVariants, cn } from "@drkav/ui";
+import { buttonVariants, cn, FinalResultsSlider, OperationsCards, ReviewsSlider, StatsStrip, VideoHighlights } from "@drkav/ui";
 import Link from "next/link";
 
 import { SiteHeader } from "@/components/site-header/site-header";
 import { DoctorProfile } from "@/components/doctor-profile/doctor-profile";
+import { getHomeFinalResults } from "@/content/home-final-results";
+import { homeReviews } from "@/content/home-reviews";
 import { getPageMetadata } from "@/content/page-registry";
+
+const homeStats = [
+  { label: "Пациентов по рекомендациям", prefix: "~", suffix: "%", value: 85 },
+  { label: "Довольных пациентов", prefix: "~", suffix: "%", value: 98 },
+  { label: "Операций в год", suffix: "+", value: 350 },
+  { label: "Брошенных пациентов", value: 0 },
+] as const;
+
+const homeVideoHighlights = [
+  {
+    contentPosition: "before",
+    dialogVideoSrc: "https://drkav.ru/videos/homepage/video-1.mp4",
+    description: "MOMMY MAKEOVER по версии Всероссийской премии «ХРУСТАЛЬНЫЙ ЛОТОС»",
+    posterAlt: "Церемония премии «Хрустальный лотос»",
+    posterSrc: "/videos/doctor-award-poster.jpg",
+    title: "Лучший хирург",
+    videoSrc: "/videos/doctor-award.mp4",
+    webmSrc: "/videos/doctor-award.webm",
+  },
+  {
+    contentPosition: "after",
+    dialogVideoSrc: "https://drkav.ru/videos/homepage/video-2.mp4",
+    description: "Пластическая хирургия, эстетическая медицина и косметология",
+    posterAlt: "Доктор Коробов выступает на Национальном конгрессе имени Миланова",
+    posterSrc: "/videos/milanov-congress-poster.jpg",
+    title: "XI Национальный конгресс имени Миланова",
+    videoSrc: "/videos/milanov-congress.mp4",
+    webmSrc: "/videos/milanov-congress.webm",
+  },
+] as const;
+
+const homeFinalResultFallbacks = [
+  { href: "/operaczii/abdominoplastika", id: "abdomen-and-waist", label: "Живот и талия" },
+  { href: "/operaczii/plasticheskaya-hirurgiya-posle-rodov", id: "postpartum", label: "После родов" },
+  { href: "/operaczii/plasticheskaya-hirurgiya-posle-pohudeniya", id: "after-weight-loss", label: "После похудения" },
+  { href: "/operaczii/plastika-grudi", id: "breast", label: "Пластика груди" },
+  { href: "/operaczii/muzhskaya-plastika", id: "male-athletic-contouring", label: "Мужская атлетизация" },
+  { href: "/operaczii/liposkulptura", id: "body-contouring", label: "Коррекция фигуры" },
+  { href: "/operaczii/intimnaya-plastika", id: "intimate-surgery", label: "Интимная пластика" },
+  { href: "/operaczii/rf-lifting", id: "non-surgical-rf-lifting", label: "Без операции (РФ-лифтинг)" },
+] as const;
+
+const homeOperationFallbackImages: Record<string, string> = {
+  "abdomen-and-waist": "/images/before-after/placeholder-after.png",
+  "after-weight-loss": "/images/before-after/placeholder-after.png",
+  "body-contouring": "/images/before-after/placeholder-after.png",
+  breast: "/images/before-after/placeholder-after.png",
+  "intimate-surgery": "/images/before-after/placeholder-after.png",
+  "male-athletic-contouring": "/images/before-after/placeholder-after.png",
+  "non-surgical-rf-lifting": "/images/before-after/placeholder-after.png",
+  postpartum: "/images/before-after/placeholder-after.png",
+};
 
 export const metadata = getPageMetadata("/");
 
-export default function HomePage() {
+export default async function HomePage() {
+  const finalResults = await getHomeFinalResults();
+  const resultTabs = finalResults.groups.length > 0
+    ? finalResults.groups.map((group) => ({ id: group.key, label: group.name }))
+    : homeFinalResultFallbacks.map(({ id, label }) => ({ id, label }));
+  const resultItems = resultTabs.flatMap((tab) => {
+    const cmsItems = finalResults.results.filter((result) => result.categoryKey === tab.id);
+
+    if (cmsItems.length > 0) {
+      return cmsItems.map((result) => ({
+        href: result.operation.canonicalPath,
+        id: result.slug,
+        imageAlt: result.image.alternativeText ?? `${result.title} — финальный результат`,
+        imageSrc: result.image.url,
+        label: result.title,
+        tabId: result.categoryKey,
+      }));
+    }
+
+    const fallback = homeFinalResultFallbacks.find((item) => item.id === tab.id);
+    const group = finalResults.groups.find((item) => item.key === tab.id);
+
+    return [{
+      href: group?.featuredOperation.canonicalPath ?? fallback?.href ?? "/operaczii",
+      id: `placeholder-${tab.id}`,
+      imageAlt: `Заглушка для результатов: ${tab.label}`,
+      imageSrc: "/images/before-after/placeholder-after.png",
+      label: tab.label,
+      tabId: tab.id,
+    }];
+  });
+  const operationItems = finalResults.groups.length > 0
+    ? finalResults.groups.map((group) => ({
+        id: group.key,
+        imageAlt: group.image?.alternativeText ?? `Иллюстрация: ${group.name}`,
+        imageSrc: group.image?.url ?? homeOperationFallbackImages[group.key],
+        links: group.operations.map((operation) => ({
+          href: operation.canonicalPath,
+          label: operation.heading,
+        })),
+        title: group.name,
+      }))
+    : homeFinalResultFallbacks.map((group) => ({
+        id: group.id,
+        imageAlt: `Заглушка: ${group.label}`,
+        imageSrc: homeOperationFallbackImages[group.id],
+        links: [{ href: group.href, label: group.label }],
+        title: group.label,
+      }));
+
   return (
     <>
       <SiteHeader />
@@ -29,7 +132,20 @@ export default function HomePage() {
             <div aria-label="Место для фотографии доктора" className="home-hero__photo-placeholder" role="img" />
           </div>
         </section>
+        <StatsStrip items={homeStats} />
+        <VideoHighlights ctaHref="/obo-mne/vystupleniya" items={homeVideoHighlights} />
         <DoctorProfile />
+        <FinalResultsSlider
+          links={[
+            { href: "/pacientam/portfolio", label: "Портфолио кейсов" },
+            { href: "/pacientam/do-i-posle", label: "Фото до/после" },
+            { href: "/otzyvy", label: "Отзывы пациентов" },
+          ]}
+          items={resultItems}
+          tabs={resultTabs}
+        />
+        <ReviewsSlider ctaHref="/pacientam/otzyvy" items={homeReviews} />
+        <OperationsCards items={operationItems} />
       </main>
     </>
   );
