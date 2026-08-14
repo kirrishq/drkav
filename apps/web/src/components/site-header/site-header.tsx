@@ -137,69 +137,16 @@ export function SiteHeader() {
   const mobileMenuId = useId();
   const [openMenuHref, setOpenMenuHref] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [headerVisible, setHeaderVisible] = useState(true);
   const mobileScrollY = useRef(0);
   const headerRef = useRef<HTMLElement | null>(null);
-  const lastScrollY = useRef(0);
-  const scrollFrame = useRef<number | null>(null);
-  const scrollStopTimer = useRef<number | null>(null);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
 
   const openMenu = headerMenu.find((item) => item.href === openMenuHref);
 
   useEffect(() => {
     setMobileOpen(false);
     setOpenMenuHref(null);
-    setHeaderVisible(true);
   }, [pathname]);
-
-  useEffect(() => {
-    lastScrollY.current = window.scrollY;
-
-    function updateHeaderVisibility() {
-      scrollFrame.current = null;
-      const currentScrollY = window.scrollY;
-      const scrollDelta = currentScrollY - lastScrollY.current;
-
-      if (currentScrollY <= 0 || scrollDelta < -1) {
-        setHeaderVisible(true);
-      } else if (scrollDelta > 1 && !mobileOpen) {
-        setHeaderVisible(false);
-      }
-
-      lastScrollY.current = currentScrollY;
-    }
-
-    function handleScroll() {
-      if (scrollFrame.current === null) {
-        scrollFrame.current = window.requestAnimationFrame(updateHeaderVisibility);
-      }
-
-      if (scrollStopTimer.current !== null) {
-        window.clearTimeout(scrollStopTimer.current);
-      }
-
-      scrollStopTimer.current = window.setTimeout(() => {
-        setHeaderVisible(true);
-        scrollStopTimer.current = null;
-      }, 180);
-    }
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-
-      if (scrollFrame.current !== null) {
-        window.cancelAnimationFrame(scrollFrame.current);
-        scrollFrame.current = null;
-      }
-
-      if (scrollStopTimer.current !== null) {
-        window.clearTimeout(scrollStopTimer.current);
-        scrollStopTimer.current = null;
-      }
-    };
-  }, [mobileOpen]);
 
   useEffect(() => {
     function closeOnEscape(event: KeyboardEvent) {
@@ -221,7 +168,11 @@ export function SiteHeader() {
     function closeOnOutsidePointer(event: PointerEvent) {
       const target = event.target;
 
-      if (target instanceof Node && !headerRef.current?.contains(target)) {
+      if (
+        target instanceof Node &&
+        !headerRef.current?.contains(target) &&
+        !mobileMenuRef.current?.contains(target)
+      ) {
         setOpenMenuHref(null);
       }
     }
@@ -270,15 +221,15 @@ export function SiteHeader() {
   }
 
   return (
-    <header
-      ref={headerRef}
-      className={cn(
-        mobileOpen ? "fixed inset-x-0 top-0" : "sticky top-0",
-        headerVisible || mobileOpen ? "translate-y-0" : "-translate-y-full",
-        "z-40 border-b border-border bg-surface transition-transform duration-reveal ease-standard motion-reduce:transition-none",
-      )}
-    >
-      <div className="mx-auto max-w-wide px-4 sm:px-6">
+    <>
+      <header
+        ref={headerRef}
+        className={cn(
+          mobileOpen ? "fixed inset-x-0 top-0" : "sticky top-0",
+          "z-40 border-b border-border bg-surface",
+        )}
+      >
+        <div className="mx-auto max-w-wide px-4 sm:px-6">
         <div className="flex min-h-16 items-center justify-between gap-3 lg:min-h-20">
           <SiteLogo onNavigate={closeMobileMenu} />
 
@@ -346,7 +297,6 @@ export function SiteHeader() {
               onClick={() => {
                 if (!mobileOpen) {
                   mobileScrollY.current = window.scrollY;
-                  setHeaderVisible(true);
                 }
 
                 setMobileOpen(!mobileOpen);
@@ -418,19 +368,22 @@ export function SiteHeader() {
             })}
           </ul>
         </nav>
-      </div>
+        </div>
 
-      <div className="absolute inset-x-0 top-full z-50 hidden shadow-subtle lg:block">
-        {openMenu ? (
-          <DesktopSubmenu
-            item={openMenu}
-            panelId={`${submenuId}-${openMenu.href.replaceAll("/", "-")}`}
-            pathname={pathname}
-          />
-        ) : null}
-      </div>
+        <div className="absolute inset-x-0 top-full z-50 hidden shadow-subtle lg:block">
+          {openMenu ? (
+            <DesktopSubmenu
+              item={openMenu}
+              panelId={`${submenuId}-${openMenu.href.replaceAll("/", "-")}`}
+              pathname={pathname}
+            />
+          ) : null}
+        </div>
+
+      </header>
 
       <div
+        ref={mobileMenuRef}
         className={cn(
           "fixed inset-x-0 bottom-0 top-16 z-50 overflow-y-auto border-t border-border bg-surface lg:hidden",
           mobileOpen ? "block" : "hidden",
@@ -543,6 +496,6 @@ export function SiteHeader() {
           </nav>
         </div>
       </div>
-    </header>
+    </>
   );
 }
