@@ -1,4 +1,4 @@
-import { buttonVariants } from "@drkav/ui";
+import { buttonVariants, ConsultationTrigger } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -83,9 +83,9 @@ export function SiteFooter() {
               <Image alt="Доктор Коробов" className="site-footer__logo" height={230} src="/images/branding/logo-white.png" width={560} />
             </Link>
             <p className="type-text-base site-footer__tagline">Пластический хирург Артём Владимирович Коробов</p>
-            <Link className={buttonVariants({ size: "md", variant: "primary" })} href="/konsultaciya">
+            <ConsultationTrigger className={buttonVariants({ size: "md", variant: "primary" })}>
               Записаться на консультацию
-            </Link>
+            </ConsultationTrigger>
             <div className="site-footer__contact-block">
               <a className="text-link site-footer__contact-link" href="tel:+74951514206">+7 495 151-42-06</a>
               <span className="type-text-base site-footer__contact-note">Администратор · 9:15–19:00, Пн–Пт</span>

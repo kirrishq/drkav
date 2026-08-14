@@ -1,4 +1,4 @@
-import { buttonVariants, cn, FinalResultsSlider, OperationsCards, ReviewsSlider, StatsStrip, VideoHighlights } from "@drkav/ui";
+import { buttonVariants, cn, ConsultationSection, ConsultationTrigger, FinalResultsSlider, OperationsCards, ReviewsSlider, StatsStrip, VideoHighlights } from "@drkav/ui";
 import Link from "next/link";
 
 import { SiteHeader } from "@/components/site-header/site-header";
@@ -125,7 +125,7 @@ export default async function HomePage() {
               <h1 className="type-h1 home-hero__title" id="home-hero-title">Пластический хирург Артём Владимирович Коробов</h1>
               <p className="home-hero__description">Специализируюсь на абдоминопластике, маммопластике, липоскульптуре, комплексном восстановлении фигуры и мужской атлетизации.</p>
               <div className="home-hero__actions">
-                <Link className={buttonVariants({ size: "md", variant: "primary" })} href="/konsultaciya">Записаться на консультацию</Link>
+                <ConsultationTrigger className={buttonVariants({ size: "md", variant: "primary" })}>Записаться на консультацию</ConsultationTrigger>
                 <Link className={cn(buttonVariants({ size: "md", variant: "outline" }), "home-hero__secondary-action")} href="/ceny">Услуги и цены</Link>
               </div>
             </div>
@@ -146,6 +146,7 @@ export default async function HomePage() {
         />
         <OperationsCards items={operationItems} />
         <ReviewsSlider ctaHref="/pacientam/otzyvy" items={homeReviews} />
+        <ConsultationSection />
       </main>
     </>
   );

@@ -5,6 +5,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 
 import { buttonVariants } from "./button";
+import { ConsultationTrigger } from "./consultation-form";
 import { cn } from "./lib/cn";
 import { ArrowUpRightIcon } from "./record-card";
 
@@ -24,7 +25,6 @@ export type OperationsCardItem = {
 export type OperationsCardsProps = {
   ariaLabel?: string;
   className?: string;
-  consultationHref?: string;
   items: readonly OperationsCardItem[];
 };
 
@@ -37,11 +37,9 @@ function CloseIcon() {
 }
 
 function OperationsDialog({
-  consultationHref,
   item,
   onClose,
 }: {
-  consultationHref: string;
   item: OperationsCardItem;
   onClose: () => void;
 }) {
@@ -96,9 +94,9 @@ function OperationsDialog({
             </a>
           ))}
         </div>
-        <a className={buttonVariants({ size: "md", variant: "primary" })} href={consultationHref}>
+        <ConsultationTrigger className={buttonVariants({ size: "md", variant: "primary" })}>
           Консультация
-        </a>
+        </ConsultationTrigger>
       </div>
     </dialog>
   );
@@ -108,7 +106,6 @@ function OperationsDialog({
 export function OperationsCards({
   ariaLabel = "Операции",
   className,
-  consultationHref = "/konsultaciya",
   items,
 }: OperationsCardsProps) {
   const [activeItem, setActiveItem] = useState<OperationsCardItem | null>(null);
@@ -137,7 +134,7 @@ export function OperationsCards({
           </button>
         ))}
       </div>
-      {activeItem ? <OperationsDialog consultationHref={consultationHref} item={activeItem} onClose={() => setActiveItem(null)} /> : null}
+      {activeItem ? <OperationsDialog item={activeItem} onClose={() => setActiveItem(null)} /> : null}
     </section>
   );
 }

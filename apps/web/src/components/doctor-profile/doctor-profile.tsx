@@ -1,4 +1,4 @@
-import { ArrowUpRightIcon, RecordCard, buttonVariants, cn } from "@drkav/ui";
+import { ArrowUpRightIcon, ConsultationTrigger, RecordCard, buttonVariants, cn } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -97,9 +97,9 @@ export function DoctorProfile() {
         </nav>
 
         <div className="doctor-profile__actions">
-          <Link className={cn(buttonVariants({ size: "md", variant: "primary" }), "doctor-profile__action")} href="/konsultaciya">
+          <ConsultationTrigger className={cn(buttonVariants({ size: "md", variant: "primary" }), "doctor-profile__action")}>
             Записаться на консультацию
-          </Link>
+          </ConsultationTrigger>
           <p className="doctor-profile__price-note">
             Узнайте стоимость операции<br />и план восстановления
           </p>

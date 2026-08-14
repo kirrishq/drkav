@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { Button, buttonVariants, cn, PageIntro } from "@drkav/ui";
+import { Button, buttonVariants, cn, ConsultationTrigger, PageIntro } from "@drkav/ui";
 
 import { SiteHeader } from "@/components/site-header/site-header";
 
@@ -29,12 +29,9 @@ export function OperationErrorFallback({ retry }: OperationErrorFallbackProps) {
           className="content-card operation-error__actions"
         >
           <Button onClick={retry}>Попробовать снова</Button>
-          <Link
-            className={cn(buttonVariants({ variant: "outline" }), "operation-error__action")}
-            href="/konsultaciya"
-          >
+          <ConsultationTrigger className={cn(buttonVariants({ variant: "outline" }), "operation-error__action")}>
             Записаться на консультацию
-          </Link>
+          </ConsultationTrigger>
           <Link
             className={cn(buttonVariants({ variant: "ghost" }), "operation-error__action")}
             href="/operaczii"

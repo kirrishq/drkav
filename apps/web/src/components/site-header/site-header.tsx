@@ -1,6 +1,6 @@
 "use client";
 
-import { buttonVariants, cn } from "@drkav/ui";
+import { buttonVariants, cn, ConsultationTrigger } from "@drkav/ui";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
@@ -252,12 +252,11 @@ export function SiteHeader() {
               </span>
               <span>+7 925 625-55-10</span>
             </Link>
-            <Link
+            <ConsultationTrigger
               className={buttonVariants({ size: "sm", variant: "primary" })}
-              href="/konsultaciya"
             >
               Консультация
-            </Link>
+            </ConsultationTrigger>
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
@@ -280,15 +279,14 @@ export function SiteHeader() {
             >
               +7 495 151-42-06
             </Link>
-            <Link
+            <ConsultationTrigger
               className={cn(
                 buttonVariants({ size: "sm", variant: "primary" }),
                 "hidden sm:inline-flex",
               )}
-              href="/konsultaciya"
             >
               Консультация
-            </Link>
+            </ConsultationTrigger>
             <button
               aria-controls={mobileMenuId}
               aria-expanded={mobileOpen}
@@ -398,13 +396,12 @@ export function SiteHeader() {
             >
               Администратор
             </Link>
-            <Link
+            <ConsultationTrigger
               className={buttonVariants({ size: "sm", variant: "primary" })}
-              href="/konsultaciya"
               onClick={closeMobileMenu}
             >
               Консультация
-            </Link>
+            </ConsultationTrigger>
           </div>
 
           <nav aria-label="Мобильная навигация" className="mt-3 sm:mt-0">

@@ -1,7 +1,6 @@
 "use client";
 
-import { Tabs, buttonVariants, cn } from "@drkav/ui";
-import Link from "next/link";
+import { ConsultationTrigger, Tabs, buttonVariants, cn } from "@drkav/ui";
 
 type PriceEntry = {
   description?: string;
@@ -103,7 +102,7 @@ function PriceList({ entries }: { entries: readonly PriceEntry[] }) {
 }
 
 function ConsultationCallout() {
-  return <div className="price-catalog__callout"><p>Запишитесь на консультацию, если у вас возникли вопросы</p><Link className={cn(buttonVariants({ size: "sm", variant: "primary" }))} href="/konsultaciya">Записаться</Link></div>;
+  return <div className="price-catalog__callout"><p>Запишитесь на консультацию, если у вас возникли вопросы</p><ConsultationTrigger className={cn(buttonVariants({ size: "sm", variant: "primary" }))}>Записаться</ConsultationTrigger></div>;
 }
 
 function PriceSection({ accent, entries, title }: { accent?: string; entries: readonly PriceEntry[]; title: string }) {

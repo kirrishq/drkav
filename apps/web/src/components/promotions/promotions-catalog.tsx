@@ -1,4 +1,4 @@
-import { buttonVariants, cn } from "@drkav/ui";
+import { buttonVariants, cn, ConsultationTrigger } from "@drkav/ui";
 import Link from "next/link";
 
 type Promotion = { title: string; subtitle?: string; description: readonly string[]; href: string };
@@ -13,5 +13,5 @@ const promotions: readonly Promotion[] = [
 ];
 
 export function PromotionsCatalog() {
-  return <div className="promotions-catalog">{promotions.map((promotion) => <article className="promotions-catalog__card" key={promotion.title}><h2 className="card-title card-title--prominent promotions-catalog__title">{promotion.title}</h2>{promotion.subtitle ? <p className="promotions-catalog__subtitle">{promotion.subtitle}</p> : null}<div className="promotions-catalog__description">{promotion.description.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div><Link className={cn(buttonVariants({ size: "sm", variant: "outline" }), "promotions-catalog__action")} href={promotion.href}>Подробнее</Link></article>)}</div>;
+  return <div className="promotions-catalog">{promotions.map((promotion) => <article className="promotions-catalog__card" key={promotion.title}><h2 className="card-title card-title--prominent promotions-catalog__title">{promotion.title}</h2>{promotion.subtitle ? <p className="promotions-catalog__subtitle">{promotion.subtitle}</p> : null}<div className="promotions-catalog__description">{promotion.description.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>{promotion.href === "/konsultaciya" ? <ConsultationTrigger className={cn(buttonVariants({ size: "sm", variant: "outline" }), "promotions-catalog__action")}>Подробнее</ConsultationTrigger> : <Link className={cn(buttonVariants({ size: "sm", variant: "outline" }), "promotions-catalog__action")} href={promotion.href}>Подробнее</Link>}</article>)}</div>;
 }

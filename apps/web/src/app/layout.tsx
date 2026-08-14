@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GeistMono, GeistSans } from "geist/font";
+import { ConsultationProvider } from "@drkav/ui";
 
 import "@/app/globals.css";
 import { RevealObserver } from "@/components/reveal/reveal-observer";
@@ -14,10 +15,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ru">
       <body className={`${GeistSans.variable} ${GeistMono.variable}`}>
-        <RevealObserver>
-          {children}
-          <SiteFooter />
-        </RevealObserver>
+        <ConsultationProvider>
+          <RevealObserver>
+            {children}
+            <SiteFooter />
+          </RevealObserver>
+        </ConsultationProvider>
       </body>
     </html>
   );

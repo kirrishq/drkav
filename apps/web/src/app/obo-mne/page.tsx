@@ -1,5 +1,4 @@
-import { Breadcrumbs, buttonVariants, cn, RecordCard } from "@drkav/ui";
-import Link from "next/link";
+import { Breadcrumbs, buttonVariants, cn, ConsultationTrigger, RecordCard } from "@drkav/ui";
 
 import { AboutSectionNavigation } from "@/components/about-page/about-section-navigation";
 import { AssociationSection } from "@/components/association-section/association-section";
@@ -143,9 +142,9 @@ export default function AboutPage() {
                     ))}
                   </ul>
 
-                  <Link className={cn(buttonVariants({ size: "sm", variant: "primary" }), "about-page__action")} href="/konsultaciya">
+                  <ConsultationTrigger className={cn(buttonVariants({ size: "sm", variant: "primary" }), "about-page__action")}>
                     Записаться на консультацию
-                  </Link>
+                  </ConsultationTrigger>
                 </div>
               </div>
             </section>

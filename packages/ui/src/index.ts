@@ -38,6 +38,8 @@ export type {
   FormFieldStatus,
   FormMessageProps,
 } from "./form-field";
+export { ConsultationForm, ConsultationProvider, ConsultationSection, ConsultationTrigger } from "./consultation-form";
+export type { ConsultationFormProps, ConsultationTriggerProps } from "./consultation-form";
 export { Input } from "./input";
 export type {
   InputProps,
@@ -56,6 +58,8 @@ export { Radio } from "./radio";
 export type { RadioProps } from "./radio";
 export { RadioButton } from "./radio-button";
 export type { RadioButtonProps } from "./radio-button";
+export { PhoneInput, formatRussianPhone } from "./phone-input";
+export type { PhoneInputProps } from "./phone-input";
 export { ArrowUpRightIcon, RecordCard } from "./record-card";
 export type { RecordCardDetail, RecordCardProps } from "./record-card";
 export { StatsStrip } from "./stats-strip";
