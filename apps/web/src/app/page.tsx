@@ -144,8 +144,8 @@ export default async function HomePage() {
           items={resultItems}
           tabs={resultTabs}
         />
-        <ReviewsSlider ctaHref="/pacientam/otzyvy" items={homeReviews} />
         <OperationsCards items={operationItems} />
+        <ReviewsSlider ctaHref="/pacientam/otzyvy" items={homeReviews} />
       </main>
     </>
   );

@@ -108,7 +108,10 @@ function ReviewDialog({
       top: body.style.top,
       width: body.style.width,
     };
-    const previousHtmlOverflow = html.style.overflow;
+    const previousHtmlStyles = {
+      overflow: html.style.overflow,
+      scrollBehavior: html.style.scrollBehavior,
+    };
 
     body.style.position = "fixed";
     body.style.top = `-${scrollY}px`;
@@ -117,6 +120,7 @@ function ReviewDialog({
     body.style.width = "100%";
     body.style.overflow = "hidden";
     html.style.overflow = "hidden";
+    html.style.scrollBehavior = "auto";
     dialog.showModal();
     window.scrollTo(0, scrollY);
 
@@ -132,8 +136,10 @@ function ReviewDialog({
       body.style.right = previousBodyStyles.right;
       body.style.top = previousBodyStyles.top;
       body.style.width = previousBodyStyles.width;
-      html.style.overflow = previousHtmlOverflow;
+      html.style.overflow = previousHtmlStyles.overflow;
+      html.style.scrollBehavior = "auto";
       window.scrollTo(0, scrollY);
+      html.style.scrollBehavior = previousHtmlStyles.scrollBehavior;
     };
   }, [initialScrollY]);
 

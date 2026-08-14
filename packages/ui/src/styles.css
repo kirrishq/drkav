@@ -1476,7 +1476,9 @@
   .reviews-slider__dialog {
     position: relative;
     width: min(100% - var(--space-8), var(--container-modal));
+    height: fit-content;
     max-height: calc(100% - var(--space-8));
+    overflow: hidden;
     overscroll-behavior: contain;
     margin: auto;
     padding: 0;
@@ -1496,7 +1498,7 @@
   .reviews-slider__dialog-content {
     display: grid;
     gap: var(--space-4);
-    max-height: inherit;
+    max-height: calc(100dvh - var(--space-8));
     overflow-y: auto;
     overscroll-behavior: contain;
     padding: var(--space-5);
@@ -1574,6 +1576,17 @@
 
   .reviews-slider__dialog-text {
     white-space: pre-line;
+  }
+
+  @media (max-width: 39.99rem) {
+    .reviews-slider__dialog {
+      width: calc(100% - var(--space-4));
+      max-height: calc(100dvh - var(--space-4));
+    }
+
+    .reviews-slider__dialog-content {
+      max-height: calc(100dvh - var(--space-4));
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
