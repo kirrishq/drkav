@@ -82,6 +82,20 @@ function PhoneIcon() {
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" strokeWidth="1.7" />
+      <path d="m15.5 15.5 4.2 4.2" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
 type MessengerKind = "telegram" | "max" | "whatsapp";
 
 function MessengerIcon({ kind }: { kind: MessengerKind }) {
@@ -314,6 +328,14 @@ export function SiteHeader() {
             </div>
 
             <div className="site-header__contacts hidden lg:flex">
+              <Link
+                aria-label="Поиск по сайту"
+                className={buttonVariants({ size: "icon", variant: "ghost" })}
+                href="/poisk"
+                title="Поиск по сайту"
+              >
+                <SearchIcon />
+              </Link>
               <div className="site-header__contact">
                 <span className="site-header__contact-label">Клиника</span>
                 <a className="site-header__contact-phone" href="tel:+74951514206">
@@ -373,6 +395,14 @@ export function SiteHeader() {
             >
               Консультация
             </ConsultationTrigger>
+            <Link
+              aria-label="Поиск по сайту"
+              className={buttonVariants({ size: "icon", variant: "ghost" })}
+              href="/poisk"
+              title="Поиск по сайту"
+            >
+              <SearchIcon />
+            </Link>
             <button
               aria-controls={mobileMenuId}
               aria-expanded={mobileOpen}
