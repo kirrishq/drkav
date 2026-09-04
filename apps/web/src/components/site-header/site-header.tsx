@@ -1,12 +1,15 @@
 "use client";
 
 import { buttonVariants, cn, ConsultationTrigger } from "@drkav/ui";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 
 import {
+  administratorContact,
   headerMenu,
+  headerSubmenuImages,
   type HeaderMenuItem,
 } from "@/components/site-header/header-config";
 import { SiteLogo } from "@/components/site-header/site-logo";
@@ -79,8 +82,74 @@ function PhoneIcon() {
   );
 }
 
+type MessengerKind = "telegram" | "max" | "whatsapp";
+
+function MessengerIcon({ kind }: { kind: MessengerKind }) {
+  if (kind === "telegram") {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="m20.7 4.2-2.9 15.1c-.2 1.1-.8 1.4-1.7.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.4-.1-.6-.6-.2L5.6 13.1.9 11.6c-1-.3-1-1 .2-1.5L19.4 3c.8-.3 1.5.2 1.3 1.2Z" />
+      </svg>
+    );
+  }
+
+  if (kind === "whatsapp") {
+    return (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.9L3.5 20.5l4.2-1.1A8.5 8.5 0 1 0 12 3.5Z" fill="none" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M8.7 8.2c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.7c.1.3.1.5-.1.7l-.5.6c.6 1.1 1.4 1.8 2.5 2.4l.6-.6c.2-.2.4-.2.7-.1l1.6.8c.3.1.4.3.3.6-.2.8-.8 1.4-1.5 1.5-1.1.2-2.8-.5-4.4-2.1-1.5-1.5-2.2-3.2-2-4.3.1-.5.4-.9.9-1.2Z" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  return <span aria-hidden="true" className="site-header__max-mark">M</span>;
+}
+
+function MessengerLink({
+  href,
+  kind,
+}: {
+  href: string;
+  kind: MessengerKind;
+}) {
+  const labels: Record<MessengerKind, string> = {
+    max: "Написать администратору в MAX",
+    telegram: "Написать администратору в Telegram",
+    whatsapp: "Написать администратору в WhatsApp",
+  };
+
+  return (
+    <a
+      aria-label={labels[kind]}
+      className="site-header__messenger"
+      href={href}
+      rel="noreferrer"
+      target="_blank"
+      title={labels[kind]}
+    >
+      <MessengerIcon kind={kind} />
+    </a>
+  );
+}
+
 function isCurrentPath(pathname: string, href: string) {
   return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
+}
+
+function isMenuItemSelected(
+  pathname: string,
+  item: HeaderMenuItem,
+  activeStandaloneHref?: string,
+) {
+  if (item.featured) {
+    return true;
+  }
+
+  if (!isCurrentPath(pathname, item.href)) {
+    return false;
+  }
+
+  return !item.links || !activeStandaloneHref;
 }
 
 function DesktopSubmenu({
@@ -102,27 +171,29 @@ function DesktopSubmenu({
       className="border-t border-border bg-surface"
       id={panelId}
     >
-      <div className="mx-auto grid max-w-wide auto-rows-fr grid-cols-4 gap-2 px-4 py-5 xl:grid-cols-5 xl:px-6">
+      <div className="site-header__submenu-grid mx-auto max-w-wide px-4 py-5 xl:px-6">
         {item.links.map((link, index) => {
           const selected = index === 0 || isCurrentPath(pathname, link.href);
+          const imageSrc = headerSubmenuImages[link.href] ?? headerSubmenuImages[item.href];
 
           return (
             <Link
               aria-current={isCurrentPath(pathname, link.href) ? "page" : undefined}
-              className={cn(
-                buttonVariants({
-                  selected: index === 0,
-                  size: "sm",
-                  variant: "outline",
-                }),
-                "min-h-12 justify-start whitespace-normal px-4 text-left",
-                index === 0 && "row-span-2",
-                selected && "font-semibold",
-              )}
+              className={cn("site-header__submenu-card", index === 0 && "site-header__submenu-card--primary", selected && "font-semibold")}
               href={link.href}
               key={link.href}
             >
-              {link.label}
+              {imageSrc ? (
+                <Image
+                  alt=""
+                  className="site-header__submenu-card-image"
+                  fill
+                  sizes="(min-width: 1280px) 18vw, 24vw"
+                  src={imageSrc}
+                />
+              ) : null}
+              <span className="site-header__submenu-card-overlay" />
+              <span className="site-header__submenu-card-label">{link.label}</span>
             </Link>
           );
         })}
@@ -142,6 +213,9 @@ export function SiteHeader() {
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
 
   const openMenu = headerMenu.find((item) => item.href === openMenuHref);
+  const activeStandaloneHref = headerMenu.find(
+    (item) => !item.links && isCurrentPath(pathname, item.href),
+  )?.href;
 
   useEffect(() => {
     setMobileOpen(false);
@@ -230,34 +304,46 @@ export function SiteHeader() {
         )}
       >
         <div className="mx-auto max-w-wide px-4 sm:px-6">
-        <div className="flex min-h-16 items-center justify-between gap-3 lg:min-h-20">
-          <SiteLogo onNavigate={closeMobileMenu} />
+          <div className="flex min-h-16 items-center justify-between gap-3 lg:min-h-20">
+            <div className="site-header__brand">
+              <SiteLogo onNavigate={closeMobileMenu} />
+              <div className="site-header__brand-meta">
+                <span className="site-header__descriptor">Пластический хирург, Москва</span>
+                <span className="site-header__address">г. Москва, ул. Большая Очаковская, 31</span>
+              </div>
+            </div>
 
-          <div className="hidden items-center gap-2 lg:flex">
-            <Link
-              className={buttonVariants({ size: "sm", variant: "secondary" })}
-              href="tel:+74951514206"
-            >
-              +7 495 151-42-06
-            </Link>
-            <Link
-              className={cn(
-                buttonVariants({ size: "sm", variant: "secondary" }),
-                "h-10 flex-col items-start gap-0 px-3 text-left leading-none",
-              )}
-              href="tel:+79256255510"
-            >
-              <span className="text-[0.625rem] font-normal text-secondary">
-                Администратор
-              </span>
-              <span>+7 925 625-55-10</span>
-            </Link>
-            <ConsultationTrigger
-              className={buttonVariants({ size: "sm", variant: "primary" })}
-            >
-              Консультация
-            </ConsultationTrigger>
-          </div>
+            <div className="site-header__contacts hidden lg:flex">
+              <div className="site-header__contact">
+                <span className="site-header__contact-label">Клиника</span>
+                <a className="site-header__contact-phone" href="tel:+74951514206">
+                  +7 495 151-42-06
+                </a>
+              </div>
+              <div className="site-header__contact">
+                <span className="site-header__contact-label">Администратор</span>
+                <div className="site-header__contact-row">
+                  <a
+                    aria-label={`Позвонить администратору: ${administratorContact.phone}`}
+                    className="site-header__contact-icon"
+                    href={administratorContact.telHref}
+                    title={`Позвонить администратору: ${administratorContact.phone}`}
+                  >
+                    <PhoneIcon />
+                  </a>
+                  <div className="site-header__messengers">
+                    <MessengerLink href={administratorContact.telegramHref} kind="telegram" />
+                    <MessengerLink href={administratorContact.maxHref} kind="max" />
+                    <MessengerLink href={administratorContact.whatsappHref} kind="whatsapp" />
+                  </div>
+                </div>
+              </div>
+              <ConsultationTrigger
+                className={buttonVariants({ size: "sm", variant: "primary" })}
+              >
+                Консультация
+              </ConsultationTrigger>
+            </div>
 
           <div className="flex items-center gap-2 lg:hidden">
             <Link
@@ -311,12 +397,15 @@ export function SiteHeader() {
           aria-label="Основная навигация"
           className="hidden border-t border-border py-2 lg:block"
         >
-          <ul className="grid grid-cols-8 gap-2">
+          <ul className="flex flex-wrap items-center gap-x-5 gap-y-1">
             {headerMenu.map((item) => {
               const hasSubmenu = Boolean(item.links);
               const menuOpen = openMenuHref === item.href;
-              const selected =
-                item.featured || isCurrentPath(pathname, item.href);
+              const selected = isMenuItemSelected(
+                pathname,
+                item,
+                activeStandaloneHref,
+              );
               const itemPanelId = `${submenuId}-${item.href.replaceAll("/", "-")}`;
 
               return (
@@ -329,18 +418,17 @@ export function SiteHeader() {
                         buttonVariants({
                           selected: !item.featured && selected,
                           size: "sm",
-                          variant: "outline",
+                          variant: "ghost",
                         }),
-                        "w-full cursor-pointer justify-center px-8",
+                        "w-fit cursor-pointer justify-start",
+                        selected && !item.featured && "bg-surface-muted font-semibold",
                         item.featured && "text-accent hover:text-accent-hover",
                       )}
                       onClick={() => toggleSubmenu(item)}
                       type="button"
                     >
                       <span>{item.label}</span>
-                      <span className="absolute right-3">
-                        <ChevronIcon open={menuOpen} />
-                      </span>
+                      <ChevronIcon open={menuOpen} />
                     </button>
                   ) : (
                     <Link
@@ -351,9 +439,10 @@ export function SiteHeader() {
                         buttonVariants({
                           selected: !item.featured && selected,
                           size: "sm",
-                          variant: "outline",
+                          variant: "ghost",
                         }),
-                        "w-full",
+                        "w-fit justify-start",
+                        selected && !item.featured && "bg-surface-muted font-semibold",
                         item.featured && "text-accent hover:text-accent-hover",
                       )}
                       href={item.href}
@@ -365,7 +454,7 @@ export function SiteHeader() {
               );
             })}
           </ul>
-        </nav>
+          </nav>
         </div>
 
         <div className="absolute inset-x-0 top-full z-50 hidden shadow-subtle lg:block">
@@ -377,7 +466,6 @@ export function SiteHeader() {
             />
           ) : null}
         </div>
-
       </header>
 
       <div
@@ -389,13 +477,31 @@ export function SiteHeader() {
         id={mobileMenuId}
       >
         <div className="mx-auto max-w-wide px-4 py-4 sm:px-6">
-          <div className="grid grid-cols-2 gap-2 sm:hidden">
-            <Link
-              className={buttonVariants({ size: "sm", variant: "secondary" })}
-              href="tel:+79256255510"
-            >
-              Администратор
-            </Link>
+          <div className="site-header__mobile-identity">
+            <span className="site-header__descriptor">Пластический хирург, Москва</span>
+            <span className="site-header__address">г. Москва, ул. Большая Очаковская, 31</span>
+          </div>
+          <div className="site-header__mobile-actions sm:hidden">
+            <div className="site-header__mobile-contact">
+              <div>
+                <span className="site-header__contact-label">Администратор</span>
+                <div className="site-header__contact-row">
+                  <a
+                    aria-label={`Позвонить администратору: ${administratorContact.phone}`}
+                    className="site-header__contact-icon"
+                    href={administratorContact.telHref}
+                    title={`Позвонить администратору: ${administratorContact.phone}`}
+                  >
+                    <PhoneIcon />
+                  </a>
+                  <div className="site-header__messengers">
+                    <MessengerLink href={administratorContact.telegramHref} kind="telegram" />
+                    <MessengerLink href={administratorContact.maxHref} kind="max" />
+                    <MessengerLink href={administratorContact.whatsappHref} kind="whatsapp" />
+                  </div>
+                </div>
+              </div>
+            </div>
             <ConsultationTrigger
               className={buttonVariants({ size: "sm", variant: "primary" })}
               onClick={closeMobileMenu}
@@ -409,8 +515,11 @@ export function SiteHeader() {
               {headerMenu.map((item) => {
                 const hasSubmenu = Boolean(item.links);
                 const menuOpen = openMenuHref === item.href;
-                const selected =
-                  item.featured || isCurrentPath(pathname, item.href);
+                const selected = isMenuItemSelected(
+                  pathname,
+                  item,
+                  activeStandaloneHref,
+                );
                 const itemPanelId = `${submenuId}-mobile-${item.href.replaceAll("/", "-")}`;
 
                 return (
@@ -424,9 +533,10 @@ export function SiteHeader() {
                             buttonVariants({
                               selected: !item.featured && selected,
                               size: "md",
-                              variant: "outline",
+                              variant: "ghost",
                             }),
-                            "w-full cursor-pointer justify-between",
+                            "w-fit cursor-pointer justify-start",
+                            selected && !item.featured && "bg-surface-muted font-semibold",
                             item.featured && "text-accent hover:text-accent-hover",
                           )}
                           onClick={() => toggleSubmenu(item)}
@@ -440,29 +550,44 @@ export function SiteHeader() {
                             className="mt-2 space-y-1 border-l-2 border-accent-soft pl-3"
                             id={itemPanelId}
                           >
-                            {item.links.map((link, index) => (
-                              <li key={link.href}>
-                                <Link
-                                  aria-current={
-                                    isCurrentPath(pathname, link.href)
-                                      ? "page"
-                                      : undefined
-                                  }
-                                  className={cn(
-                                    buttonVariants({
-                                      selected: index === 0,
-                                      size: "sm",
-                                      variant: "outline",
-                                    }),
-                                    "h-auto min-h-10 w-full justify-start whitespace-normal py-2 text-left",
-                                  )}
-                                  href={link.href}
-                                  onClick={closeMobileMenu}
-                                >
-                                  {link.label}
-                                </Link>
-                              </li>
-                            ))}
+                            {item.links.map((link, index) => {
+                              const imageSrc =
+                                headerSubmenuImages[link.href] ??
+                                headerSubmenuImages[item.href];
+
+                              return (
+                                <li key={link.href}>
+                                  <Link
+                                    aria-current={
+                                      isCurrentPath(pathname, link.href)
+                                        ? "page"
+                                        : undefined
+                                    }
+                                    className={cn(
+                                      "site-header__mobile-submenu-card",
+                                      index === 0 &&
+                                        "site-header__mobile-submenu-card--primary",
+                                    )}
+                                    href={link.href}
+                                    onClick={closeMobileMenu}
+                                  >
+                                    {imageSrc ? (
+                                      <Image
+                                        alt=""
+                                        className="site-header__mobile-submenu-card-image"
+                                        fill
+                                        sizes="96px"
+                                        src={imageSrc}
+                                      />
+                                    ) : null}
+                                    <span className="site-header__mobile-submenu-card-overlay" />
+                                    <span className="site-header__mobile-submenu-card-label">
+                                      {link.label}
+                                    </span>
+                                  </Link>
+                                </li>
+                              );
+                            })}
                           </ul>
                         ) : null}
                       </>
@@ -472,13 +597,14 @@ export function SiteHeader() {
                           isCurrentPath(pathname, item.href) ? "page" : undefined
                         }
                         className={cn(
-                            buttonVariants({
-                              selected: !item.featured && selected,
-                              size: "md",
-                              variant: "outline",
-                            }),
-                            "w-full justify-start",
-                            item.featured && "text-accent hover:text-accent-hover",
+                          buttonVariants({
+                            selected: !item.featured && selected,
+                            size: "md",
+                            variant: "ghost",
+                          }),
+                            "w-fit justify-start",
+                          selected && !item.featured && "bg-surface-muted font-semibold",
+                          item.featured && "text-accent hover:text-accent-hover",
                         )}
                         href={item.href}
                         onClick={closeMobileMenu}
