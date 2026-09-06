@@ -11,6 +11,7 @@ export const administratorContact = {
   maxHref: "https://max.ru/",
   whatsappHref:
     "https://wa.me/79256255510?text=%D0%9A%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8F",
+  emailHref: "mailto:admin@drkav.ru",
 } as const;
 
 export const headerSubmenuImages: Readonly<Record<string, string>> = {

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { GeistMono, GeistSans } from "geist/font";
-import { ConsultationProvider } from "@drkav/ui";
+import { ContactFab, ConsultationProvider } from "@drkav/ui";
 
 import "@/app/globals.css";
 import { RevealObserver } from "@/components/reveal/reveal-observer";
 import { SiteFooter } from "@/components/site-footer/site-footer";
+import { administratorContact } from "@/components/site-header/header-config";
 
 export const metadata: Metadata = {
   title: "drkav.ru — редизайн",
@@ -13,9 +15,41 @@ export const metadata: Metadata = {
 
 const themeBootstrapScript = `(() => {
   try {
-    const theme = window.localStorage.getItem("drkav-theme");
-    if (theme === "light" || theme === "dark") {
-      document.documentElement.dataset.theme = theme;
+    const storedTheme = window.localStorage.getItem("drkav-theme");
+    const theme = storedTheme === "light" || storedTheme === "dark"
+      ? storedTheme
+      : window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+
+    const root = document.documentElement;
+    root.dataset.theme = theme;
+
+    if (window.localStorage.getItem("drkav-low-vision") === "true") {
+      root.dataset.vision = "low-vision";
+    }
+
+    const storedVisionSettings = window.localStorage.getItem("drkav-low-vision-settings");
+
+    if (storedVisionSettings) {
+      try {
+        const settings = JSON.parse(storedVisionSettings);
+
+        if (settings && typeof settings === "object") {
+          if (["standard", "large", "extra-large"].includes(settings.fontSize)) {
+            root.dataset.visionFontSize = settings.fontSize;
+          }
+          if (["black-on-white", "white-on-black", "yellow-on-black"].includes(settings.palette)) {
+            root.dataset.visionPalette = settings.palette;
+          }
+          if (["standard", "large"].includes(settings.lineHeight)) {
+            root.dataset.visionLineHeight = settings.lineHeight;
+          }
+          if (["standard", "large"].includes(settings.letterSpacing)) {
+            root.dataset.visionLetterSpacing = settings.letterSpacing;
+          }
+        }
+      } catch {}
     }
   } catch {}
 })();`;
@@ -23,11 +57,60 @@ const themeBootstrapScript = `(() => {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ru" suppressHydrationWarning>
-      <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+      <head>
+        <Script
+          id="theme-bootstrap"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeBootstrapScript }}
+        />
+      </head>
       <body className={`${GeistSans.variable} ${GeistMono.variable}`}>
         <ConsultationProvider>
           <RevealObserver>
             {children}
+            <ContactFab
+              actions={[
+                {
+                  detail: "+7 495 151-42-06",
+                  href: "tel:+74951514206",
+                  kind: "phone",
+                  label: "Позвонить в клинику",
+                },
+                {
+                  detail: administratorContact.phone,
+                  href: administratorContact.telHref,
+                  kind: "phone",
+                  label: "Позвонить администратору",
+                },
+                {
+                  detail: "Написать в WhatsApp",
+                  external: true,
+                  href: administratorContact.whatsappHref,
+                  kind: "whatsapp",
+                  label: "WhatsApp",
+                },
+                {
+                  detail: "Написать в Telegram",
+                  external: true,
+                  href: administratorContact.telegramHref,
+                  kind: "telegram",
+                  label: "Telegram",
+                },
+                {
+                  detail: "Открыть мессенджер",
+                  external: true,
+                  href: administratorContact.maxHref,
+                  kind: "max",
+                  label: "MAX",
+                },
+                {
+                  detail: "admin@drkav.ru",
+                  href: administratorContact.emailHref,
+                  kind: "email",
+                  label: "Электронная почта",
+                },
+              ]}
+            />
             <SiteFooter />
           </RevealObserver>
         </ConsultationProvider>

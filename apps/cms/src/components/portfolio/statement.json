@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_portfolio_statements",
+  "info": { "displayName": "Portfolio Statement" },
+  "attributes": {
+    "sectionKey": { "type": "string", "required": true },
+    "text": { "type": "text", "required": true },
+    "tone": {
+      "type": "enumeration",
+      "enum": ["dark", "accent"],
+      "required": true,
+      "default": "dark"
+    }
+  }
+}

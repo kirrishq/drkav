@@ -64,8 +64,7 @@ export interface OperationCatalogGroup {
 export interface BeforeAfterCase {
   slug: string;
   title: string;
-  beforeImage: ImageAsset;
-  afterImage: ImageAsset;
+  image: ImageAsset;
   operation: OperationCatalogLink;
 }
 
@@ -116,10 +115,16 @@ export type RichTextList = {
   children: readonly RichTextListItem[];
 };
 
+export type RichTextImage = {
+  type: "image";
+  image: ImageAsset;
+};
+
 export type RichTextBlock =
   | RichTextParagraph
   | RichTextHeading
-  | RichTextList;
+  | RichTextList
+  | RichTextImage;
 
 export interface OperationSectionBase {
   sectionKey: string;
@@ -309,6 +314,94 @@ export interface BlogIndexContent {
   categories: readonly BlogCategorySummary[];
 }
 
+export interface PortfolioCaseSummary {
+  slug: string;
+  canonicalPath: string;
+  title: string;
+  excerpt: string;
+  caseLabel: string;
+  resultTerm: string;
+  procedureSummary: string;
+  tags: readonly string[];
+  cover: ImageAsset;
+  operations: readonly OperationCatalogLink[];
+  isFeatured: boolean;
+}
+
+export interface PortfolioMediaAsset extends ImageAsset {
+  mediaType: "image" | "video";
+  mime?: string;
+}
+
+export interface PortfolioRichTextSection {
+  type: "rich-text";
+  sectionKey: string;
+  eyebrow?: string;
+  heading?: string;
+  body: readonly RichTextBlock[];
+}
+
+export interface PortfolioStatementSection {
+  type: "statement";
+  sectionKey: string;
+  text: string;
+  tone: "dark" | "accent";
+}
+
+export interface PortfolioComparisonSection {
+  type: "comparison";
+  sectionKey: string;
+  heading?: string;
+  beforeImage: ImageAsset;
+  afterImage: ImageAsset;
+  beforeAlt: string;
+  afterAlt: string;
+  caption?: string;
+}
+
+export interface PortfolioTimelineStageSection {
+  type: "timeline-stage";
+  sectionKey: string;
+  term: string;
+  heading?: string;
+  body: readonly RichTextBlock[];
+  media: readonly PortfolioMediaAsset[];
+}
+
+export interface PortfolioGallerySection {
+  type: "gallery";
+  sectionKey: string;
+  heading?: string;
+  caption?: string;
+  images: readonly ImageAsset[];
+  presentation: "clinical" | "lifestyle";
+}
+
+export interface PortfolioQuoteSection {
+  type: "quote";
+  sectionKey: string;
+  text: string;
+  attribution?: string;
+  note?: string;
+}
+
+export type PortfolioContentSection =
+  | PortfolioRichTextSection
+  | PortfolioStatementSection
+  | PortfolioComparisonSection
+  | PortfolioTimelineStageSection
+  | PortfolioGallerySection
+  | PortfolioQuoteSection;
+
+export interface PortfolioCase extends PortfolioCaseSummary {
+  seo: SeoData;
+  contentSections: readonly PortfolioContentSection[];
+}
+
+export interface PortfolioIndexContent {
+  cases: readonly PortfolioCaseSummary[];
+}
+
 export type ConditionArticle = BlogArticle;
 export type ConditionIndexContent = BlogIndexContent;
 
@@ -323,6 +416,8 @@ export interface ContentRepository {
   getFinalResults(): Promise<readonly FinalResult[]>;
   getBlogIndex(): Promise<BlogIndexContent>;
   getBlogArticleBySlug(slug: string): Promise<BlogArticle | null>;
+  getPortfolioIndex(): Promise<PortfolioIndexContent>;
+  getPortfolioCaseBySlug(slug: string): Promise<PortfolioCase | null>;
   getConditionIndex(): Promise<ConditionIndexContent>;
   getConditionArticleBySlug(slug: string): Promise<ConditionArticle | null>;
 }

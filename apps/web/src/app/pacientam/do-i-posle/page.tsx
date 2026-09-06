@@ -7,5 +7,5 @@ export const metadata = getPageMetadata("/pacientam/do-i-posle");
 
 export default async function BeforeAfterPage() {
   const cases = await createContentRepository().getBeforeAfterCases();
-  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "До/после" }]} description="Примеры изменений после операций. Откройте карточку, чтобы сравнить иллюстрации с помощью ползунка и перейти к описанию операции." title="Результаты операций: до и после"><BeforeAfterGallery items={cases} /></StaticPage>;
+  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "До/после" }]} description="Фотографии результатов операций и примеры работ доктора Коробова." title="Результаты операций: до и после"><BeforeAfterGallery items={cases} /></StaticPage>;
 }

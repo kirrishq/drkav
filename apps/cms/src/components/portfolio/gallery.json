@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_portfolio_galleries",
+  "info": { "displayName": "Portfolio Gallery" },
+  "attributes": {
+    "sectionKey": { "type": "string", "required": true },
+    "heading": { "type": "string", "required": false },
+    "caption": { "type": "text", "required": false },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "required": true,
+      "allowedTypes": ["images"]
+    },
+    "presentation": {
+      "type": "enumeration",
+      "enum": ["clinical", "lifestyle"],
+      "required": true,
+      "default": "clinical"
+    }
+  }
+}

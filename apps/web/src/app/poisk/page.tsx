@@ -1,9 +1,13 @@
 import Link from "next/link";
 
-import { buttonVariants, cn } from "@drkav/ui";
+import { buttonVariants } from "@drkav/ui";
 
 import { StaticPage } from "@/components/content-page/static-page";
-import { allPageRegistryItems, type PageRegistryItem } from "@/content/page-registry";
+import {
+  getSearchResultDescription,
+  getSearchResultTitle,
+  searchPages,
+} from "@/components/site-search/search-index";
 
 export const metadata = {
   title: "Поиск по сайту — DrKAV",
@@ -12,46 +16,13 @@ export const metadata = {
 
 type SearchParams = Promise<{ q?: string | string[] }>;
 
-function normalize(value: string) {
-  return value.toLocaleLowerCase("ru-RU").replaceAll("ё", "е").trim();
-}
-
-function getSearchText(item: PageRegistryItem) {
-  return normalize(
-    [
-      item.name,
-      item.section,
-      item.group,
-      ...(item.groups ?? []),
-      item.seo?.title,
-      item.seo?.description,
-    ]
-      .filter(Boolean)
-      .join(" "),
-  );
-}
-
-function getResultTitle(item: PageRegistryItem) {
-  return item.name ?? item.seo?.title ?? item.route;
-}
-
-function getResultDescription(item: PageRegistryItem) {
-  return item.seo?.description ?? `${item.section} · ${item.route}`;
-}
-
 function getQuery(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] ?? "" : value ?? "";
 }
 
 export default async function SearchPage({ searchParams }: { searchParams: SearchParams }) {
   const query = getQuery((await searchParams).q).trim();
-  const normalizedQuery = normalize(query);
-  const searchablePages = allPageRegistryItems.filter(
-    (item) => !item.route.includes("["),
-  );
-  const results = normalizedQuery
-    ? searchablePages.filter((item) => getSearchText(item).includes(normalizedQuery))
-    : [];
+  const results = searchPages(query);
 
   return (
     <StaticPage
@@ -89,9 +60,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
                 <li className="site-search__result" key={item.route}>
                   <Link className="site-search__result-link" href={item.route}>
                     <span className="site-search__result-section">{item.section}</span>
-                    <span className="site-search__result-title">{getResultTitle(item)}</span>
-                    <span className="site-search__result-description">{getResultDescription(item)}</span>
-                    <span className={cn("site-search__result-route", "type-text-sm")}>{item.route}</span>
+                    <span className="site-search__result-title">{getSearchResultTitle(item)}</span>
+                    <span className="site-search__result-description">{getSearchResultDescription(item)}</span>
+                    <span className="site-search__result-route type-text-sm">{item.route}</span>
                   </Link>
                 </li>
               ))}

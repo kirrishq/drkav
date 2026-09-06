@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_portfolio_timeline_stages",
+  "info": { "displayName": "Portfolio Timeline Stage" },
+  "attributes": {
+    "sectionKey": { "type": "string", "required": true },
+    "term": { "type": "string", "required": true },
+    "heading": { "type": "string", "required": false },
+    "body": { "type": "blocks", "required": true },
+    "media": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images", "videos"]
+    }
+  }
+}

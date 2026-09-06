@@ -82,6 +82,14 @@ export function getBlogArticleCacheTag(slug: string): string {
   return `blog:${slug}`;
 }
 
+export function getPortfolioIndexCacheTag(): string {
+  return "portfolio-index";
+}
+
+export function getPortfolioCaseCacheTag(slug: string): string {
+  return `portfolio:${slug}`;
+}
+
 export function getConditionIndexCacheTag(): string {
   return "condition-index";
 }

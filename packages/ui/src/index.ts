@@ -40,6 +40,8 @@ export type {
 } from "./form-field";
 export { ConsultationForm, ConsultationProvider, ConsultationSection, ConsultationTrigger } from "./consultation-form";
 export type { ConsultationFormProps, ConsultationTriggerProps } from "./consultation-form";
+export { ContactFab } from "./contact-fab";
+export type { ContactActionKind, ContactFabAction, ContactFabProps } from "./contact-fab";
 export { Input } from "./input";
 export type {
   InputProps,

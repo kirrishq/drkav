@@ -7,7 +7,7 @@ const revealSelector = [
   "main > *",
   ".home-page > *",
   ".about-page__content > *",
-  ".page-intro__content > :not(.before-after-modal)",
+  ".page-intro__content > *",
   ".content-card__grid > *",
   ".about-related-pages__grid > *",
   ".education-formats__grid > *",
@@ -21,7 +21,7 @@ const revealSelector = [
   ".operations-catalog__group",
   ".promotions-catalog__card",
   ".price-catalog__item",
-  ".before-after-gallery__tile",
+  ".results-gallery__tile",
 ].join(",");
 
 const maxStaggerIndex = 8;

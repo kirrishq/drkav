@@ -18,9 +18,15 @@ import type {
   OperationContentSection,
   OperationStep,
   OperationTextItem,
+  PortfolioCase,
+  PortfolioCaseSummary,
+  PortfolioContentSection,
+  PortfolioIndexContent,
+  PortfolioMediaAsset,
   PriceItem,
   RichTextBlock,
   RichTextInline,
+  RichTextImage,
   RichTextListItem,
   RichTextText,
   SeoData,
@@ -37,6 +43,8 @@ import {
   getOperationCatalogCacheTag,
   getOperationCacheTag,
   getFinalResultsCacheTag,
+  getPortfolioCaseCacheTag,
+  getPortfolioIndexCacheTag,
 } from "./cms-cache";
 import {
   CmsConfigurationError,
@@ -192,7 +200,7 @@ function mapListItem(value: unknown, label: string): RichTextListItem {
   };
 }
 
-function mapBlocks(value: unknown, label: string): readonly RichTextBlock[] {
+function mapBlocks(value: unknown, label: string, baseUrl: string): readonly RichTextBlock[] {
   return requireArray(value, label).map((blockValue, index) => {
     const blockLabel = `${label}[${index}]`;
     const block = requireRecord(blockValue, blockLabel);
@@ -246,6 +254,15 @@ function mapBlocks(value: unknown, label: string): readonly RichTextBlock[] {
       };
     }
 
+    if (type === "image") {
+      const image: RichTextImage = {
+        type: "image",
+        image: requireImage(block.image, baseUrl, `${blockLabel}.image`),
+      };
+
+      return image;
+    }
+
     throw new CmsInvalidResponseError(
       `Invalid Strapi response: ${blockLabel}.type ${type} is unsupported.`,
     );
@@ -255,12 +272,13 @@ function mapBlocks(value: unknown, label: string): readonly RichTextBlock[] {
 function optionalBlocks(
   value: unknown,
   label: string,
+  baseUrl: string,
 ): readonly RichTextBlock[] | undefined {
   if (value === null || value === undefined) {
     return undefined;
   }
 
-  return mapBlocks(value, label);
+  return mapBlocks(value, label, baseUrl);
 }
 
 function requireAnchor(value: unknown, label: string): string | undefined {
@@ -323,6 +341,7 @@ function sortEditorialItems<T extends { sortOrder?: number }>(items: T[]): T[] {
 function mapContentSection(
   value: unknown,
   index: number,
+  baseUrl: string,
 ): OperationContentSection {
   const label = `operation.contentSections[${index}]`;
   const section = requireRecord(value, label);
@@ -341,7 +360,7 @@ function mapContentSection(
     return {
       ...base,
       type: "rich-text",
-      body: mapBlocks(section.body, `${label}.body`),
+      body: mapBlocks(section.body, `${label}.body`, baseUrl),
     };
   }
 
@@ -356,9 +375,9 @@ function mapContentSection(
     );
     const shared = {
       ...base,
-      intro: optionalBlocks(section.intro, `${label}.intro`),
+      intro: optionalBlocks(section.intro, `${label}.intro`, baseUrl),
       items,
-      outro: optionalBlocks(section.outro, `${label}.outro`),
+      outro: optionalBlocks(section.outro, `${label}.outro`, baseUrl),
     };
 
     return component === "operation.list-section"
@@ -370,13 +389,13 @@ function mapContentSection(
     return {
       ...base,
       type: "steps",
-      intro: optionalBlocks(section.intro, `${label}.intro`),
+      intro: optionalBlocks(section.intro, `${label}.intro`, baseUrl),
       steps: sortEditorialItems(
         requireArray(section.steps, `${label}.steps`).map((step, stepIndex) =>
           mapStep(step, `${label}.steps[${stepIndex}]`),
         ),
       ),
-      outro: optionalBlocks(section.outro, `${label}.outro`),
+      outro: optionalBlocks(section.outro, `${label}.outro`, baseUrl),
     };
   }
 
@@ -385,8 +404,8 @@ function mapContentSection(
       ...base,
       type: "price",
       heading: requireString(section.heading, `${label}.heading`),
-      intro: optionalBlocks(section.intro, `${label}.intro`),
-      disclaimer: optionalBlocks(section.disclaimer, `${label}.disclaimer`),
+      intro: optionalBlocks(section.intro, `${label}.intro`, baseUrl),
+      disclaimer: optionalBlocks(section.disclaimer, `${label}.disclaimer`, baseUrl),
     };
   }
 
@@ -540,6 +559,44 @@ function mapImage(
     ),
     width: optionalNumber(image.width, `${label}.width`),
     height: optionalNumber(image.height, `${label}.height`),
+  };
+}
+
+function requireImage(value: unknown, baseUrl: string, label: string): ImageAsset {
+  const image = mapImage(value, baseUrl, label);
+
+  if (!image) {
+    throw new CmsInvalidResponseError(
+      `Invalid Strapi response: ${label} is required.`,
+    );
+  }
+
+  return image;
+}
+
+function mapPortfolioMedia(
+  value: unknown,
+  baseUrl: string,
+  label: string,
+): PortfolioMediaAsset {
+  const media = requireRecord(value, label);
+  const mime = requireString(media.mime, `${label}.mime`);
+  const mediaType = mime.startsWith("image/")
+    ? "image"
+    : mime.startsWith("video/")
+      ? "video"
+      : undefined;
+
+  if (!mediaType) {
+    throw new CmsInvalidResponseError(
+      `Invalid Strapi response: ${label}.mime is unsupported.`,
+    );
+  }
+
+  return {
+    ...requireImage(value, baseUrl, label),
+    mediaType,
+    mime,
   };
 }
 
@@ -726,7 +783,7 @@ function mapBlogArticleSummary(
   };
 }
 
-function mapBlogContentSection(value: unknown, index: number): BlogContentSection {
+function mapBlogContentSection(value: unknown, index: number, baseUrl: string): BlogContentSection {
   const label = `blog.contentSections[${index}]`;
   const section = requireRecord(value, label);
   const component = requireString(section.__component, `${label}.__component`);
@@ -737,7 +794,7 @@ function mapBlogContentSection(value: unknown, index: number): BlogContentSectio
       type: "rich-text",
       sectionKey,
       heading: optionalString(section.heading, `${label}.heading`),
-      body: mapBlocks(section.body, `${label}.body`),
+      body: mapBlocks(section.body, `${label}.body`, baseUrl),
     };
   }
 
@@ -746,7 +803,7 @@ function mapBlogContentSection(value: unknown, index: number): BlogContentSectio
       type: "callout",
       sectionKey,
       title: optionalString(section.title, `${label}.title`),
-      body: mapBlocks(section.body, `${label}.body`),
+      body: mapBlocks(section.body, `${label}.body`, baseUrl),
     };
   }
 
@@ -769,6 +826,169 @@ function mapBlogContentSection(value: unknown, index: number): BlogContentSectio
   throw new CmsInvalidResponseError(
     `Invalid Strapi response: unsupported blog section ${component}.`,
   );
+}
+
+function mapPortfolioCaseSummary(
+  value: unknown,
+  index: number,
+  baseUrl: string,
+): PortfolioCaseSummary {
+  const label = `portfolio.cases[${index}]`;
+  const portfolioCase = requireRecord(value, label);
+  const tags = requireArray(portfolioCase.tags, `${label}.tags`).map(
+    (tag, tagIndex) => requireString(tag, `${label}.tags[${tagIndex}]`),
+  );
+
+  return {
+    slug: requireString(portfolioCase.slug, `${label}.slug`),
+    canonicalPath: requireCanonicalPath(
+      portfolioCase.canonicalPath,
+      `${label}.canonicalPath`,
+    ),
+    title: requireString(portfolioCase.title, `${label}.title`),
+    excerpt: requireString(portfolioCase.excerpt, `${label}.excerpt`),
+    caseLabel: requireString(portfolioCase.caseLabel, `${label}.caseLabel`),
+    resultTerm: requireString(portfolioCase.resultTerm, `${label}.resultTerm`),
+    procedureSummary: requireString(
+      portfolioCase.procedureSummary,
+      `${label}.procedureSummary`,
+    ),
+    tags,
+    cover: requireImage(portfolioCase.cover, baseUrl, `${label}.cover`),
+    operations: requireArray(
+      portfolioCase.operations,
+      `${label}.operations`,
+    ).map((operation, operationIndex) =>
+      mapCatalogLink(operation, `${label}.operations[${operationIndex}]`),
+    ),
+    isFeatured: requireBoolean(
+      portfolioCase.isFeatured,
+      `${label}.isFeatured`,
+    ),
+  };
+}
+
+function mapPortfolioContentSection(
+  value: unknown,
+  index: number,
+  baseUrl: string,
+): PortfolioContentSection {
+  const label = `portfolio.contentSections[${index}]`;
+  const section = requireRecord(value, label);
+  const component = requireString(section.__component, `${label}.__component`);
+  const sectionKey = requireString(section.sectionKey, `${label}.sectionKey`);
+
+  if (component === "portfolio.rich-text-section") {
+    return {
+      type: "rich-text",
+      sectionKey,
+      eyebrow: optionalString(section.eyebrow, `${label}.eyebrow`),
+      heading: optionalString(section.heading, `${label}.heading`),
+      body: mapBlocks(section.body, `${label}.body`, baseUrl),
+    };
+  }
+
+  if (component === "portfolio.statement") {
+    const tone = requireString(section.tone, `${label}.tone`);
+    if (tone !== "dark" && tone !== "accent") {
+      throw new CmsInvalidResponseError(
+        `Invalid Strapi response: ${label}.tone is unsupported.`,
+      );
+    }
+    return {
+      type: "statement",
+      sectionKey,
+      text: requireString(section.text, `${label}.text`),
+      tone,
+    };
+  }
+
+  if (component === "portfolio.comparison") {
+    return {
+      type: "comparison",
+      sectionKey,
+      heading: optionalString(section.heading, `${label}.heading`),
+      beforeImage: requireImage(
+        section.beforeImage,
+        baseUrl,
+        `${label}.beforeImage`,
+      ),
+      afterImage: requireImage(
+        section.afterImage,
+        baseUrl,
+        `${label}.afterImage`,
+      ),
+      beforeAlt: requireString(section.beforeAlt, `${label}.beforeAlt`),
+      afterAlt: requireString(section.afterAlt, `${label}.afterAlt`),
+      caption: optionalString(section.caption, `${label}.caption`),
+    };
+  }
+
+  if (component === "portfolio.timeline-stage") {
+    return {
+      type: "timeline-stage",
+      sectionKey,
+      term: requireString(section.term, `${label}.term`),
+      heading: optionalString(section.heading, `${label}.heading`),
+      body: mapBlocks(section.body, `${label}.body`, baseUrl),
+      media: requireArray(section.media, `${label}.media`).map(
+        (item, itemIndex) =>
+          mapPortfolioMedia(item, baseUrl, `${label}.media[${itemIndex}]`),
+      ),
+    };
+  }
+
+  if (component === "portfolio.gallery") {
+    const presentation = requireString(
+      section.presentation,
+      `${label}.presentation`,
+    );
+    if (presentation !== "clinical" && presentation !== "lifestyle") {
+      throw new CmsInvalidResponseError(
+        `Invalid Strapi response: ${label}.presentation is unsupported.`,
+      );
+    }
+    return {
+      type: "gallery",
+      sectionKey,
+      heading: optionalString(section.heading, `${label}.heading`),
+      caption: optionalString(section.caption, `${label}.caption`),
+      images: requireArray(section.images, `${label}.images`).map(
+        (image, imageIndex) =>
+          requireImage(image, baseUrl, `${label}.images[${imageIndex}]`),
+      ),
+      presentation,
+    };
+  }
+
+  if (component === "portfolio.quote") {
+    return {
+      type: "quote",
+      sectionKey,
+      text: requireString(section.text, `${label}.text`),
+      attribution: optionalString(section.attribution, `${label}.attribution`),
+      note: optionalString(section.note, `${label}.note`),
+    };
+  }
+
+  throw new CmsInvalidResponseError(
+    `Invalid Strapi response: unsupported portfolio section ${component}.`,
+  );
+}
+
+function validateUniquePortfolioSectionKeys(
+  sections: readonly PortfolioContentSection[],
+): void {
+  const sectionKeys = new Set<string>();
+
+  for (const section of sections) {
+    if (sectionKeys.has(section.sectionKey)) {
+      throw new CmsInvalidResponseError(
+        `Invalid Strapi response: duplicate portfolio sectionKey ${section.sectionKey}.`,
+      );
+    }
+    sectionKeys.add(section.sectionKey);
+  }
 }
 
 export class StrapiContentRepository implements ContentRepository {
@@ -893,7 +1113,7 @@ export class StrapiContentRepository implements ContentRepository {
     const contentSections = requireArray(
       operation.contentSections,
       "operation.contentSections",
-    ).map(mapContentSection);
+    ).map((section, index) => mapContentSection(section, index, this.baseUrl));
     const prices = requireArray(operation.prices, "operation.prices")
       .map(mapPrice)
       .filter((price): price is PriceItem => price !== null);
@@ -978,8 +1198,7 @@ export class StrapiContentRepository implements ContentRepository {
     const params = this.createPublishedParams([
       "slug",
       "title",
-      "beforeImagePath",
-      "afterImagePath",
+      "imagePath",
       "sortOrder",
     ]);
     params.set("pagination[pageSize]", "100");
@@ -1000,8 +1219,7 @@ export class StrapiContentRepository implements ContentRepository {
       return {
         slug: requireString(item.slug, `${label}.slug`),
         title: requireString(item.title, `${label}.title`),
-        beforeImage: mapSiteImagePath(item.beforeImagePath, `${label}.beforeImagePath`),
-        afterImage: mapSiteImagePath(item.afterImagePath, `${label}.afterImagePath`),
+        image: mapSiteImagePath(item.imagePath, `${label}.imagePath`),
         operation: mapCatalogLink(item.operation, `${label}.operation`),
       };
     });
@@ -1062,6 +1280,67 @@ export class StrapiContentRepository implements ContentRepository {
       articles: articles.map((article, index) =>
         mapBlogArticleSummary(article, index, this.baseUrl),
       ),
+    };
+  }
+
+  async getPortfolioIndex(): Promise<PortfolioIndexContent> {
+    const params = this.createPortfolioSummaryParams();
+    this.populatePortfolioSummaryFields(params);
+    const cases = await this.getMany(
+      "/api/portfolio-cases",
+      params,
+      getPortfolioIndexCacheTag(),
+    );
+
+    return {
+      cases: cases.map((portfolioCase, index) =>
+        mapPortfolioCaseSummary(portfolioCase, index, this.baseUrl),
+      ),
+    };
+  }
+
+  async getPortfolioCaseBySlug(slug: string): Promise<PortfolioCase | null> {
+    const params = this.createPublishedParams([
+      "slug",
+      "canonicalPath",
+      "title",
+      "excerpt",
+      "caseLabel",
+      "resultTerm",
+      "procedureSummary",
+      "tags",
+      "isFeatured",
+    ]);
+    params.set("filters[slug][$eq]", slug);
+    this.populatePortfolioSummaryFields(params);
+    params.set("populate[seo][fields][0]", "metaTitle");
+    params.set("populate[seo][fields][1]", "metaDescription");
+    params.set("populate[seo][fields][2]", "canonicalPath");
+    params.set("populate[seo][fields][3]", "noIndex");
+    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+      params.set(`populate[seo][populate][shareImage][fields][${index}]`, field);
+    });
+    this.populatePortfolioContent(params);
+
+    const portfolioCase = await this.getFirst(
+      "/api/portfolio-cases",
+      params,
+      getPortfolioCaseCacheTag(slug),
+    );
+    if (!portfolioCase) return null;
+
+    const contentSections = requireArray(
+      portfolioCase.contentSections,
+      "portfolio.contentSections",
+    ).map((section, index) =>
+      mapPortfolioContentSection(section, index, this.baseUrl),
+    );
+    validateUniquePortfolioSectionKeys(contentSections);
+
+    return {
+      ...mapPortfolioCaseSummary(portfolioCase, 0, this.baseUrl),
+      seo: mapSeo(portfolioCase.seo, this.baseUrl, "portfolio.seo"),
+      contentSections,
     };
   }
 
@@ -1137,7 +1416,7 @@ export class StrapiContentRepository implements ContentRepository {
     return {
       ...mapBlogArticleSummary(article, 0, this.baseUrl),
       seo: mapSeo(article.seo, this.baseUrl, "blog.seo"),
-      contentSections: requireArray(article.contentSections, "blog.contentSections").map(mapBlogContentSection),
+      contentSections: requireArray(article.contentSections, "blog.contentSections").map((section, index) => mapBlogContentSection(section, index, this.baseUrl)),
       relatedOperations: requireArray(article.relatedOperations, "blog.relatedOperations").map((operation, index) =>
         mapCatalogLink(operation, `blog.relatedOperations[${index}]`),
       ),
@@ -1167,6 +1446,25 @@ export class StrapiContentRepository implements ContentRepository {
     params.set("pagination[pageSize]", "100");
     params.set("sort[0]", "isFeatured:desc");
     params.set("sort[1]", "publishedAt:desc");
+    return params;
+  }
+
+  private createPortfolioSummaryParams(): URLSearchParams {
+    const params = this.createPublishedParams([
+      "slug",
+      "canonicalPath",
+      "title",
+      "excerpt",
+      "caseLabel",
+      "resultTerm",
+      "procedureSummary",
+      "tags",
+      "isFeatured",
+      "sortOrder",
+    ]);
+    params.set("pagination[pageSize]", "100");
+    params.set("sort[0]", "isFeatured:desc");
+    params.set("sort[1]", "sortOrder:asc");
     return params;
   }
 
@@ -1291,6 +1589,79 @@ export class StrapiContentRepository implements ContentRepository {
       params.set("populate[categories][fields][0]", "key");
       params.set("populate[categories][fields][1]", "name");
     }
+  }
+
+  private populatePortfolioSummaryFields(params: URLSearchParams): void {
+    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+      params.set(`populate[cover][fields][${index}]`, field);
+    });
+    params.set("populate[operations][fields][0]", "canonicalPath");
+    params.set("populate[operations][fields][1]", "heading");
+  }
+
+  private populatePortfolioContent(params: URLSearchParams): void {
+    ["sectionKey", "eyebrow", "heading", "body"].forEach((field, index) => {
+      params.set(
+        `populate[contentSections][on][portfolio.rich-text-section][fields][${index}]`,
+        field,
+      );
+    });
+    ["sectionKey", "text", "tone"].forEach((field, index) => {
+      params.set(
+        `populate[contentSections][on][portfolio.statement][fields][${index}]`,
+        field,
+      );
+    });
+    ["sectionKey", "heading", "beforeAlt", "afterAlt", "caption"].forEach(
+      (field, index) => {
+        params.set(
+          `populate[contentSections][on][portfolio.comparison][fields][${index}]`,
+          field,
+        );
+      },
+    );
+    ["beforeImage", "afterImage"].forEach((relation) => {
+      ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+        params.set(
+          `populate[contentSections][on][portfolio.comparison][populate][${relation}][fields][${index}]`,
+          field,
+        );
+      });
+    });
+    ["sectionKey", "term", "heading", "body"].forEach((field, index) => {
+      params.set(
+        `populate[contentSections][on][portfolio.timeline-stage][fields][${index}]`,
+        field,
+      );
+    });
+    ["url", "alternativeText", "width", "height", "mime"].forEach(
+      (field, index) => {
+        params.set(
+          `populate[contentSections][on][portfolio.timeline-stage][populate][media][fields][${index}]`,
+          field,
+        );
+      },
+    );
+    ["sectionKey", "heading", "caption", "presentation"].forEach(
+      (field, index) => {
+        params.set(
+          `populate[contentSections][on][portfolio.gallery][fields][${index}]`,
+          field,
+        );
+      },
+    );
+    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+      params.set(
+        `populate[contentSections][on][portfolio.gallery][populate][images][fields][${index}]`,
+        field,
+      );
+    });
+    ["sectionKey", "text", "attribution", "note"].forEach((field, index) => {
+      params.set(
+        `populate[contentSections][on][portfolio.quote][fields][${index}]`,
+        field,
+      );
+    });
   }
 
   private populateRelatedBlogArticles(params: URLSearchParams, includeCategories: boolean): void {

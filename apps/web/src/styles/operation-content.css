@@ -89,6 +89,14 @@
     padding-left: var(--space-6);
   }
 
+  .operation-content__block-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    object-fit: contain;
+  }
+
   .operation-content__item-copy {
     display: grid;
     gap: var(--space-1);
@@ -181,6 +189,10 @@
   }
 
   @media (min-width: 40rem) {
+    .operation-content__block-image {
+      max-width: var(--space-80);
+    }
+
     .operation-content__price-header {
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: start;

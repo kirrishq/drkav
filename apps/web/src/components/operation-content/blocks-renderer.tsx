@@ -5,6 +5,7 @@ import type {
   RichTextInline,
   RichTextText,
 } from "@drkav/content-contracts";
+import Image from "next/image";
 
 function TextMarks({ node }: { node: RichTextText }) {
   let content: ReactNode = node.text;
@@ -67,6 +68,21 @@ export function BlocksRenderer({
             <Heading className={`content-card__heading content-card__heading--h${Math.min(block.level, 4)}`} key={index}>
               <InlineContent>{block.children}</InlineContent>
             </Heading>
+          );
+        }
+
+        if (block.type === "image") {
+          return (
+            <Image
+              alt={block.image.alternativeText ?? ""}
+              className="operation-content__block-image"
+              height={block.image.height ?? 900}
+              key={index}
+              sizes="(min-width: 72rem) 50vw, 100vw"
+              src={block.image.url}
+              unoptimized
+              width={block.image.width ?? 1200}
+            />
           );
         }
 

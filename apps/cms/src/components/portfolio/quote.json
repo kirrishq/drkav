@@ -1,0 +1,10 @@
+{
+  "collectionName": "components_portfolio_quotes",
+  "info": { "displayName": "Portfolio Quote" },
+  "attributes": {
+    "sectionKey": { "type": "string", "required": true },
+    "text": { "type": "text", "required": true },
+    "attribution": { "type": "string", "required": false },
+    "note": { "type": "text", "required": false }
+  }
+}

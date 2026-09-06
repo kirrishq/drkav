@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "portfolio_cases",
+  "info": {
+    "singularName": "portfolio-case",
+    "pluralName": "portfolio-cases",
+    "displayName": "Portfolio Case"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "unique": true
+    },
+    "canonicalPath": { "type": "string", "required": true, "unique": true },
+    "excerpt": { "type": "text", "required": true },
+    "caseLabel": { "type": "string", "required": true },
+    "resultTerm": { "type": "string", "required": true },
+    "procedureSummary": { "type": "text", "required": true },
+    "tags": { "type": "json", "required": true, "default": [] },
+    "cover": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"]
+    },
+    "isFeatured": { "type": "boolean", "required": true, "default": false },
+    "sortOrder": { "type": "integer", "required": true, "min": 0 },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "required": true
+    },
+    "operations": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::operation.operation"
+    },
+    "contentSections": {
+      "type": "dynamiczone",
+      "components": [
+        "portfolio.rich-text-section",
+        "portfolio.statement",
+        "portfolio.comparison",
+        "portfolio.timeline-stage",
+        "portfolio.gallery",
+        "portfolio.quote"
+      ]
+    }
+  }
+}

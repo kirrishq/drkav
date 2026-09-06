@@ -1,8 +1,10 @@
 import { buttonVariants, cn, ConsultationSection, ConsultationTrigger, FinalResultsSlider, OperationsCards, ReviewsSlider, StatsStrip, VideoHighlights } from "@drkav/ui";
+import Image from "next/image";
 import Link from "next/link";
 
 import { SiteHeader } from "@/components/site-header/site-header";
 import { DoctorProfile } from "@/components/doctor-profile/doctor-profile";
+import { HomeSpaceBackground } from "@/components/home-space-background";
 import { getHomeFinalResults } from "@/content/home-final-results";
 import { homeReviews } from "@/content/home-reviews";
 import { getPageMetadata } from "@/content/page-registry";
@@ -116,6 +118,7 @@ export default async function HomePage() {
       <SiteHeader />
       <main className="home-page">
         <section aria-labelledby="home-hero-title" className="home-hero">
+          <HomeSpaceBackground />
           <div className="home-hero__content">
             <div className="home-hero__details">
               <div className="home-hero__badges">
@@ -129,7 +132,16 @@ export default async function HomePage() {
                 <Link className={cn(buttonVariants({ size: "md", variant: "outline" }), "home-hero__secondary-action")} href="/ceny">Услуги и цены</Link>
               </div>
             </div>
-            <div aria-label="Место для фотографии доктора" className="home-hero__photo-placeholder" role="img" />
+            <div className="home-hero__portrait">
+              <Image
+                alt="Артём Владимирович Коробов в белом халате"
+                className="home-hero__portrait-image"
+                fill
+                priority
+                sizes="(min-width: 80rem) 30rem, (min-width: 40rem) 36vw, 88vw"
+                src="/images/doctor-portrait.png"
+              />
+            </div>
           </div>
         </section>
         <StatsStrip items={homeStats} />

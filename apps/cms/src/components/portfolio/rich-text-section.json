@@ -1,0 +1,10 @@
+{
+  "collectionName": "components_portfolio_rich_text_sections",
+  "info": { "displayName": "Portfolio Rich Text Section" },
+  "attributes": {
+    "sectionKey": { "type": "string", "required": true },
+    "eyebrow": { "type": "string", "required": false },
+    "heading": { "type": "string", "required": false },
+    "body": { "type": "blocks", "required": true }
+  }
+}

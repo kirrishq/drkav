@@ -74,7 +74,7 @@
   .site-footer__link:focus-visible,
   .site-footer__legal-link:hover,
   .site-footer__legal-link:focus-visible {
-    color: var(--accent-soft);
+    color: var(--accent-hover);
   }
 
   .site-footer__navigation {
@@ -135,7 +135,7 @@
 
   .site-footer__social-link:hover,
   .site-footer__social-link:focus-visible {
-    border-color: var(--accent-soft);
+    border-color: var(--accent-hover);
     background: var(--accent);
     color: var(--text-inverse);
   }

@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_portfolio_comparisons",
+  "info": { "displayName": "Portfolio Comparison" },
+  "attributes": {
+    "sectionKey": { "type": "string", "required": true },
+    "heading": { "type": "string", "required": false },
+    "beforeImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"]
+    },
+    "afterImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"]
+    },
+    "beforeAlt": { "type": "string", "required": true },
+    "afterAlt": { "type": "string", "required": true },
+    "caption": { "type": "text", "required": false }
+  }
+}
