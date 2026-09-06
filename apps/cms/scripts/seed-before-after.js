@@ -6,8 +6,7 @@ const { compileStrapi, createStrapi } = require('@strapi/strapi');
 const CASE_UID = 'api::before-after-case.before-after-case';
 const OPERATION_UID = 'api::operation.operation';
 const imagePaths = {
-  beforeImagePath: '/images/before-after/placeholder-before.png',
-  afterImagePath: '/images/before-after/placeholder-after.png',
+  imagePath: '/images/before-after/placeholder-after.png',
 };
 
 const cases = [
