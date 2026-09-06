@@ -4,6 +4,18 @@
     height: auto;
   }
 
+  .site-logo__image--dark {
+    display: none;
+  }
+
+  html[data-theme="dark"] .site-logo__image--light {
+    display: none;
+  }
+
+  html[data-theme="dark"] .site-logo__image--dark {
+    display: block;
+  }
+
   .site-header__brand {
     display: flex;
     min-width: 0;

@@ -201,6 +201,29 @@
   --size-progress: 0.5rem;
 }
 
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: #15171b;
+  --surface: #202329;
+  --surface-muted: #2a2e36;
+  --surface-inverse: #0f1013;
+  --text-primary: #f4f6fa;
+  --text-secondary: #b6bdc9;
+  --text-muted: #8d96a6;
+  --text-inverse: #ffffff;
+  --text-inverse-muted: rgb(255 255 255 / 0.78);
+  --border-subtle: #3b424e;
+  --border-strong: #515a69;
+  --accent: #ff72b9;
+  --accent-hover: #ff9acb;
+  --accent-soft: #4a273b;
+  --success: #55c981;
+  --error: #ff8b83;
+  --overlay: rgb(0 0 0 / 0.72);
+  --rating-provider-background: #253c66;
+}
+
 @utility type-display {
   font-size: var(--type-display-size);
   font-weight: var(--type-display-weight);

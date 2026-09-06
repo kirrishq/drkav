@@ -96,7 +96,56 @@ function SearchIcon() {
   );
 }
 
+type Theme = "light" | "dark";
+
+function ThemeIcon({ theme }: { theme: Theme }) {
+  if (theme === "dark") {
+    return (
+      <svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 24 24">
+        <path
+          d="M20.2 15.4A8.5 8.5 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.7"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        d="M12 2.5v2M12 19.5v2M4.58 4.58l1.42 1.42M18 18l1.42 1.42M2.5 12h2M19.5 12h2M4.58 19.42 6 18M18 6l1.42-1.42"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.7"
+      />
+    </svg>
+  );
+}
+
 type MessengerKind = "telegram" | "max" | "whatsapp";
+
+const themeStorageKey = "drkav-theme";
+
+function ThemeToggle({ onToggle, theme }: { onToggle: () => void; theme: Theme }) {
+  const nextThemeLabel = theme === "dark" ? "светлую" : "тёмную";
+
+  return (
+    <button
+      aria-label={`Переключить на ${nextThemeLabel} тему`}
+      aria-pressed={theme === "dark"}
+      className={buttonVariants({ size: "icon", variant: "ghost" })}
+      onClick={onToggle}
+      title={`Переключить на ${nextThemeLabel} тему`}
+      type="button"
+    >
+      <ThemeIcon theme={theme} />
+    </button>
+  );
+}
 
 function MessengerIcon({ kind }: { kind: MessengerKind }) {
   if (kind === "telegram") {
@@ -222,6 +271,7 @@ export function SiteHeader() {
   const mobileMenuId = useId();
   const [openMenuHref, setOpenMenuHref] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [theme, setTheme] = useState<Theme>("light");
   const mobileScrollY = useRef(0);
   const headerRef = useRef<HTMLElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
@@ -230,6 +280,14 @@ export function SiteHeader() {
   const activeStandaloneHref = headerMenu.find(
     (item) => !item.links && isCurrentPath(pathname, item.href),
   )?.href;
+
+  useEffect(() => {
+    const currentTheme = document.documentElement.dataset.theme;
+
+    if (currentTheme === "dark" || currentTheme === "light") {
+      setTheme(currentTheme);
+    }
+  }, []);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -308,6 +366,19 @@ export function SiteHeader() {
     setOpenMenuHref(null);
   }
 
+  function toggleTheme() {
+    const nextTheme: Theme = theme === "dark" ? "light" : "dark";
+
+    document.documentElement.dataset.theme = nextTheme;
+    setTheme(nextTheme);
+
+    try {
+      window.localStorage.setItem(themeStorageKey, nextTheme);
+    } catch {
+      // Theme remains active for the current session when storage is unavailable.
+    }
+  }
+
   return (
     <>
       <header
@@ -328,6 +399,7 @@ export function SiteHeader() {
             </div>
 
             <div className="site-header__contacts hidden lg:flex">
+              <ThemeToggle onToggle={toggleTheme} theme={theme} />
               <Link
                 aria-label="Поиск по сайту"
                 className={buttonVariants({ size: "icon", variant: "ghost" })}
@@ -395,6 +467,7 @@ export function SiteHeader() {
             >
               Консультация
             </ConsultationTrigger>
+            <ThemeToggle onToggle={toggleTheme} theme={theme} />
             <Link
               aria-label="Поиск по сайту"
               className={buttonVariants({ size: "icon", variant: "ghost" })}

@@ -13,7 +13,23 @@ export function SiteLogo({ onNavigate }: SiteLogoProps) {
       href="/"
       onClick={onNavigate}
     >
-      <Image alt="" aria-hidden="true" className="site-logo__image" height={230} priority src="/images/branding/logo.png" width={560} />
+      <Image
+        alt=""
+        aria-hidden="true"
+        className="site-logo__image site-logo__image--light"
+        height={230}
+        priority
+        src="/images/branding/logo.png"
+        width={560}
+      />
+      <Image
+        alt=""
+        aria-hidden="true"
+        className="site-logo__image site-logo__image--dark"
+        height={230}
+        src="/images/branding/logo-white.png"
+        width={560}
+      />
     </Link>
   );
 }

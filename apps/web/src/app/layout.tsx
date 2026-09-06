@@ -11,9 +11,19 @@ export const metadata: Metadata = {
   description: "Frontend-first редизайн сайта drkav.ru",
 };
 
+const themeBootstrapScript = `(() => {
+  try {
+    const theme = window.localStorage.getItem("drkav-theme");
+    if (theme === "light" || theme === "dark") {
+      document.documentElement.dataset.theme = theme;
+    }
+  } catch {}
+})();`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ru">
+    <html lang="ru" suppressHydrationWarning>
+      <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
       <body className={`${GeistSans.variable} ${GeistMono.variable}`}>
         <ConsultationProvider>
           <RevealObserver>
