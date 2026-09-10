@@ -70,6 +70,8 @@ export { ReviewsSlider } from "./reviews-slider";
 export type { ReviewSliderItem, ReviewsSliderProps } from "./reviews-slider";
 export { TextLink } from "./text-link";
 export type { TextLinkProps } from "./text-link";
+export { Textarea } from "./textarea";
+export type { TextareaProps } from "./textarea";
 export { Tabs } from "./tabs";
 export type { TabItem, TabsProps } from "./tabs";
 export { VideoCard } from "./video-card";
