@@ -156,6 +156,20 @@ function BackIcon() {
   );
 }
 
+function ArrowIcon() {
+  return (
+    <svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 24 24">
+      <path
+        d="M7 17 17 7m-7 0h7v7"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.7"
+      />
+    </svg>
+  );
+}
+
 type MessengerKind = "telegram" | "max" | "whatsapp";
 
 const themeStorageKey = "drkav-theme";
@@ -603,6 +617,10 @@ function isCurrentPath(pathname: string, href: string) {
   return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
 }
 
+function isActivePage(pathname: string, href: string) {
+  return pathname.replace(/\/$/, "") === href.replace(/\/$/, "");
+}
+
 function isMenuItemSelected(
   pathname: string,
   item: HeaderMenuItem,
@@ -641,12 +659,19 @@ function DesktopSubmenu({
       <div className="site-header__submenu-grid mx-auto max-w-wide px-4 py-5 xl:px-6">
         {item.links.map((link, index) => {
           const selected = index === 0 || isCurrentPath(pathname, link.href);
+          const active = isActivePage(pathname, link.href);
           const imageSrc = headerSubmenuImages[link.href] ?? headerSubmenuImages[item.href];
 
           return (
             <Link
-              aria-current={isCurrentPath(pathname, link.href) ? "page" : undefined}
-              className={cn("site-header__submenu-card", index === 0 && "site-header__submenu-card--primary", selected && "font-semibold")}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "site-header__submenu-card",
+                !imageSrc && "site-header__submenu-card--gradient",
+                index === 0 && "site-header__submenu-card--primary",
+                active && "site-header__submenu-card--active",
+                selected && "font-semibold",
+              )}
               href={link.href}
               key={link.href}
             >
@@ -661,6 +686,9 @@ function DesktopSubmenu({
               ) : null}
               <span className="site-header__submenu-card-overlay" />
               <span className="site-header__submenu-card-label">{link.label}</span>
+              <span aria-hidden="true" className="site-header__submenu-card-arrow">
+                <ArrowIcon />
+              </span>
             </Link>
           );
         })}
@@ -1147,6 +1175,7 @@ export function SiteHeader() {
                 <h2 className="site-header__mobile-submenu-title">{openMenu.label}</h2>
                 <ul className="site-header__mobile-submenu-grid" aria-label={`Подразделы: ${openMenu.label}`}>
                   {openMenu.links.map((link, index) => {
+                    const active = isActivePage(pathname, link.href);
                     const imageSrc = headerSubmenuImages[link.href] ?? headerSubmenuImages[openMenu.href];
 
                     return (
@@ -1159,10 +1188,12 @@ export function SiteHeader() {
                         style={{ "--menu-index": index } as CSSProperties}
                       >
                         <Link
-                          aria-current={isCurrentPath(pathname, link.href) ? "page" : undefined}
+                          aria-current={active ? "page" : undefined}
                           className={cn(
                             "site-header__mobile-submenu-card",
+                            !imageSrc && "site-header__mobile-submenu-card--gradient",
                             index === 0 && "site-header__mobile-submenu-card--primary",
+                            active && "site-header__mobile-submenu-card--active",
                           )}
                           href={link.href}
                           onClick={closeMobileMenu}
@@ -1178,6 +1209,9 @@ export function SiteHeader() {
                           ) : null}
                           <span className="site-header__mobile-submenu-card-overlay" />
                           <span className="site-header__mobile-submenu-card-label">{link.label}</span>
+                          <span aria-hidden="true" className="site-header__mobile-submenu-card-arrow">
+                            <ArrowIcon />
+                          </span>
                         </Link>
                       </li>
                     );

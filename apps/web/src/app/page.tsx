@@ -7,6 +7,7 @@ import { DoctorProfile } from "@/components/doctor-profile/doctor-profile";
 import { HomeSpaceBackground } from "@/components/home-space-background";
 import { getHomeFinalResults } from "@/content/home-final-results";
 import { homeReviews } from "@/content/home-reviews";
+import { operationCategoryFallbackImages } from "@/content/operation-category-images";
 import { getPageMetadata } from "@/content/page-registry";
 
 const homeStats = [
@@ -50,17 +51,6 @@ const homeFinalResultFallbacks = [
   { href: "/operaczii/rf-lifting", id: "non-surgical-rf-lifting", label: "Без операции (РФ-лифтинг)" },
 ] as const;
 
-const homeOperationFallbackImages: Record<string, string> = {
-  "abdomen-and-waist": "/images/before-after/placeholder-after.png",
-  "after-weight-loss": "/images/before-after/placeholder-after.png",
-  "body-contouring": "/images/before-after/placeholder-after.png",
-  breast: "/images/before-after/placeholder-after.png",
-  "intimate-surgery": "/images/before-after/placeholder-after.png",
-  "male-athletic-contouring": "/images/before-after/placeholder-after.png",
-  "non-surgical-rf-lifting": "/images/before-after/placeholder-after.png",
-  postpartum: "/images/before-after/placeholder-after.png",
-};
-
 export const metadata = getPageMetadata("/");
 
 export default async function HomePage() {
@@ -98,7 +88,7 @@ export default async function HomePage() {
     ? finalResults.groups.map((group) => ({
         id: group.key,
         imageAlt: group.image?.alternativeText ?? `Иллюстрация: ${group.name}`,
-        imageSrc: group.image?.url ?? homeOperationFallbackImages[group.key],
+        imageSrc: group.image?.url ?? operationCategoryFallbackImages[group.key as keyof typeof operationCategoryFallbackImages],
         links: group.operations.map((operation) => ({
           href: operation.canonicalPath,
           label: operation.heading,
@@ -108,7 +98,7 @@ export default async function HomePage() {
     : homeFinalResultFallbacks.map((group) => ({
         id: group.id,
         imageAlt: `Заглушка: ${group.label}`,
-        imageSrc: homeOperationFallbackImages[group.id],
+        imageSrc: operationCategoryFallbackImages[group.id as keyof typeof operationCategoryFallbackImages],
         links: [{ href: group.href, label: group.label }],
         title: group.label,
       }));

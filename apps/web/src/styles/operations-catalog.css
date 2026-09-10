@@ -23,8 +23,8 @@
     padding: var(--space-4);
     background: linear-gradient(
       120deg,
-      rgb(255 74 168 / 0.18),
-      rgb(25 26 31 / 0.96) 72%
+      rgb(25 26 31 / 0.96),
+      rgb(255 74 168 / 0.18) 72%
     );
     color: rgb(255 255 255 / 0.36);
     font-size: var(--type-text-base-size);
@@ -35,8 +35,8 @@
     inset: 0;
     background: linear-gradient(
       120deg,
-      rgb(255 74 168 / 0.18),
-      rgb(25 26 31 / 0.96) 72%
+      rgb(25 26 31 / 0.96),
+      rgb(255 74 168 / 0.18) 72%
     );
     content: "";
   }
@@ -72,7 +72,7 @@
     display: flex;
     min-height: 3rem;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: var(--space-2);
     padding: var(--space-2) var(--space-3);
     border: var(--border-width-default) solid rgb(255 255 255 / 0.02);
@@ -81,7 +81,7 @@
     color: var(--text-inverse-muted);
     font-size: var(--type-text-sm-size);
     line-height: var(--type-text-sm-line-height);
-    text-align: center;
+    text-align: left;
     text-decoration: none;
     transition:
       background var(--duration-normal) var(--ease-standard),
@@ -124,15 +124,31 @@
     border-radius: var(--radius-full);
     background: var(--surface-muted);
     color: var(--text-primary);
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--space-1)));
     transition:
       color var(--duration-normal) var(--ease-standard),
-      background-color var(--duration-normal) var(--ease-standard);
+      background-color var(--duration-normal) var(--ease-standard),
+      opacity var(--duration-normal) var(--ease-standard),
+      transform var(--duration-normal) var(--ease-standard);
   }
 
   .operations-catalog__link:hover .operations-catalog__arrow,
   .operations-catalog__link:focus-visible .operations-catalog__arrow {
     background: var(--accent);
     color: var(--text-inverse);
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  @media (min-width: 64rem) {
+    .operations-catalog {
+      grid-template-columns: 1fr;
+    }
+
+    .operations-catalog__group {
+      min-height: calc(var(--space-96) + var(--space-8));
+    }
   }
 
   @media (max-width: 48rem) {

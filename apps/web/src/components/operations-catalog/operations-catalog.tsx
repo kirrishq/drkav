@@ -3,6 +3,8 @@ import { ArrowUpRightIcon } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
 
+import { operationCategoryFallbackImages } from "@/content/operation-category-images";
+
 type OperationsCatalogProps = {
   groups: readonly OperationCatalogGroup[];
 };
@@ -13,12 +15,12 @@ export function OperationsCatalog({ groups }: OperationsCatalogProps) {
       {groups.map((group) => (
         <section className="operations-catalog__group" key={group.key}>
           <div aria-hidden="true" className="operations-catalog__media">
-            {group.image ? (
+            {group.image || operationCategoryFallbackImages[group.key as keyof typeof operationCategoryFallbackImages] ? (
               <Image
                 alt=""
                 fill
                 sizes="100vw"
-                src={group.image.url}
+                src={group.image?.url ?? operationCategoryFallbackImages[group.key as keyof typeof operationCategoryFallbackImages]}
                 unoptimized
               />
             ) : (
