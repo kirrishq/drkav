@@ -4,18 +4,21 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BlocksRenderer } from "@/components/operation-content/blocks-renderer";
+import { PortfolioReveal } from "@/components/portfolio/portfolio-reveal";
 
 function PortfolioImage({ asset, className = "" }: { asset: ImageAsset; className?: string }) {
   return (
-    <Image
-      alt={asset.alternativeText ?? ""}
-      className={className}
-      height={asset.height ?? 900}
-      sizes="(min-width: 72rem) 72rem, 100vw"
-      src={asset.url}
-      unoptimized
-      width={asset.width ?? 1200}
-    />
+    <PortfolioReveal>
+      <Image
+        alt={asset.alternativeText ?? ""}
+        className={className}
+        height={asset.height ?? 900}
+        sizes="(min-width: 72rem) 72rem, 100vw"
+        src={asset.url}
+        unoptimized
+        width={asset.width ?? 1200}
+      />
+    </PortfolioReveal>
   );
 }
 
@@ -32,6 +35,12 @@ function PortfolioMedia({ asset }: { asset: PortfolioMediaAsset }) {
   return <PortfolioImage asset={asset} className="portfolio-case__stage-image" />;
 }
 
+function getOperationLabel(portfolioCase: PortfolioCaseSummary) {
+  return portfolioCase.operations.length > 0
+    ? portfolioCase.operations.map((operation) => operation.heading).join(" · ")
+    : portfolioCase.caseLabel;
+}
+
 function RelatedCaseCard({ portfolioCase }: { portfolioCase: PortfolioCaseSummary }) {
   return (
     <Link className="content-card portfolio-case__related-card" href={portfolioCase.canonicalPath}>
@@ -46,7 +55,7 @@ function RelatedCaseCard({ portfolioCase }: { portfolioCase: PortfolioCaseSummar
           width={portfolioCase.cover.width ?? 1200}
         />
       </span>
-      <span className="type-text-sm portfolio-case__related-meta">{portfolioCase.resultTerm}</span>
+      <span className="type-text-sm portfolio-case__related-meta">{getOperationLabel(portfolioCase)}</span>
       <span className="card-title portfolio-case__related-title">{portfolioCase.title}</span>
     </Link>
   );
@@ -64,6 +73,24 @@ export function PortfolioCaseContent({
       <header className="content-card content-card--intro portfolio-case__hero">
         <h1 className="content-card__heading content-card__heading--h1 portfolio-case__title">{portfolioCase.title}</h1>
         <p className="content-card__lead portfolio-case__lead">{portfolioCase.excerpt}</p>
+        <dl className="portfolio-case__facts">
+          <div>
+            <dt className="type-overline">Операция</dt>
+            <dd className="portfolio-case__operation-links">
+              {portfolioCase.operations.length > 0
+                ? portfolioCase.operations.map((operation) => <Link href={operation.canonicalPath} key={operation.canonicalPath}>{operation.heading}</Link>)
+                : portfolioCase.caseLabel}
+            </dd>
+          </div>
+          <div>
+            <dt className="type-overline">Результат через</dt>
+            <dd>{portfolioCase.resultTerm}</dd>
+          </div>
+          <div>
+            <dt className="type-overline">Выполнено</dt>
+            <dd>{portfolioCase.procedureSummary}</dd>
+          </div>
+        </dl>
       </header>
 
       <div className="portfolio-case__narrow">
