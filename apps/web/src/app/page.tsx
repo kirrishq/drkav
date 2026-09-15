@@ -1,9 +1,10 @@
-import { buttonVariants, cn, ConsultationSection, ConsultationTrigger, FinalResultsSlider, OperationsCards, ReviewsSlider, StatsStrip, VideoHighlights } from "@drkav/ui";
+import { AdministratorCta, buttonVariants, cn, ConsultationSection, ConsultationTrigger, FinalResultsSlider, OperationsCards, ReviewsSlider, StatsStrip, VideoHighlights } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
 
 import { SiteHeader } from "@/components/site-header/site-header";
 import { DoctorProfile } from "@/components/doctor-profile/doctor-profile";
+import { administratorContact } from "@/components/site-header/header-config";
 import { HomeSpaceBackground } from "@/components/home-space-background";
 import { getHomeFinalResults } from "@/content/home-final-results";
 import { homeReviews } from "@/content/home-reviews";
@@ -149,6 +150,13 @@ export default async function HomePage() {
         <OperationsCards items={operationItems} />
         <ReviewsSlider ctaHref="/pacientam/otzyvy" items={homeReviews} />
         <ConsultationSection />
+        <AdministratorCta
+          backgroundSrc="/images/home/administrator-cta-background.png"
+          ctaHref={administratorContact.whatsappHref}
+          ctaLabel="Написать Ольге"
+          description="Если нужно уточнить детали операции, формат консультации, свободные даты или просто задать вопрос, напишите Ольге. Она сориентирует и поможет организовать запись."
+          name="Ольга"
+        />
       </main>
     </>
   );

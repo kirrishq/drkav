@@ -1,15 +1,29 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import {
+  AdministratorCta,
+  OperationHero,
+  PromotionBanner,
+  VideoCard,
+  buttonVariants,
+  ConsultationTrigger,
+} from "@drkav/ui";
+
+import { DoctorProfile } from "@/components/doctor-profile/doctor-profile";
 import { OperationContentRenderer } from "@/components/operation-content/operation-content-renderer";
+import { administratorContact } from "@/components/site-header/header-config";
 import {
   getCmsOperationByPath,
   type CmsMigratedOperationPath,
 } from "@/content/cms-migrated-operations";
 import { logCmsError } from "@/content/cms-logging";
+import { getOperationPageEnhancement } from "@/content/operation-page-config";
+import { getOperationHeroLinks } from "@/content/operation-page-navigation";
 import { toMetadata, toUnavailableMetadata } from "@/content/seo";
 
 import { StaticPage } from "./static-page";
+import { SiteHeader } from "../site-header/site-header";
 
 export async function getCmsOperationMetadata(
   path: CmsMigratedOperationPath,
@@ -46,20 +60,162 @@ export async function CmsOperationPage({
     notFound();
   }
 
+  const enhancement = getOperationPageEnhancement(path);
+
+  if (!enhancement) {
+    return (
+      <StaticPage
+        breadcrumbs={[
+          { href: "/", label: "Главная" },
+          { href: "/operaczii", label: "Операции" },
+          { label: content.heading },
+        ]}
+        description={content.heroDescription ?? ""}
+        title={content.heading}
+      >
+        <OperationContentRenderer
+          prices={content.prices}
+          sections={content.contentSections}
+        />
+      </StaticPage>
+    );
+  }
+
+  const introSection = content.contentSections.find(
+    (section) => !section.heading && !section.showInPageNavigation,
+  );
+  const promotionSection = content.contentSections.find(
+    (section) => section.heading === "Операция в подарок",
+  );
+  const promotion = enhancement.promotion ?? (promotionSection
+    ? {
+        description: extractText(promotionSection.type === "rich-text" ? promotionSection.body : []),
+        href: "/akcii",
+        title: promotionSection.heading ?? "Операция в подарок",
+      }
+    : {
+        description: "Узнайте об актуальных предложениях для этой операции и условиях их получения на консультации.",
+        href: "/akcii",
+        title: "Актуальные предложения",
+      });
+  const promotionHeading = promotionSection?.heading ?? enhancement.promotion?.title;
+  const introText =
+    introSection?.type === "rich-text" ? extractText(introSection.body) : "";
+  const introDescription =
+    enhancement.heroDescription ?? (introText || content.heroDescription);
+  const leadSections = content.contentSections.filter(
+    (section) => !section.heading && !section.showInPageNavigation && section !== introSection,
+  );
+  const contentSections = content.contentSections.filter(
+    (section) =>
+      section.heading !== promotionHeading &&
+      (section.heading || section.showInPageNavigation),
+  );
+  const heroLinks = getOperationHeroLinks(contentSections);
+
   return (
-    <StaticPage
-      breadcrumbs={[
-        { href: "/", label: "Главная" },
-        { href: "/operaczii", label: "Операции" },
-        { label: content.heading },
-      ]}
-      description={content.heroDescription ?? ""}
-      title={content.heading}
-    >
-      <OperationContentRenderer
-        prices={content.prices}
-        sections={content.contentSections}
-      />
-    </StaticPage>
+    <>
+      <SiteHeader />
+      <main className="operation-page">
+        <OperationHero
+          backgroundSrc={enhancement.heroImageSrc}
+          breadcrumbs={getOperationBreadcrumbs(path, content.heading)}
+          description={introDescription}
+          links={heroLinks}
+          title={content.heading}
+        />
+        <div className="operation-page__content">
+          <OperationContentRenderer
+            prices={content.prices}
+            sections={leadSections}
+            showNavigation={false}
+          />
+          {promotion ? (
+            <PromotionBanner
+              description={promotion.description}
+              emphasis={"emphasis" in promotion ? promotion.emphasis : undefined}
+              href={promotion.href}
+              title={promotion.title}
+            />
+          ) : null}
+          {enhancement.video ? (
+            <section aria-labelledby="operation-video-title" className="content-card content-card--spacious operation-page__video">
+              <div>
+                <h2 className="content-card__heading content-card__heading--h2" id="operation-video-title">Видео об операции</h2>
+                <p className="operation-page__video-description">Посмотрите, как доктор рассказывает о маммопластике и вариантах коррекции груди.</p>
+              </div>
+              <VideoCard {...enhancement.video} location="Маммопластика" year="" />
+            </section>
+          ) : null}
+          <OperationContentRenderer
+            prices={content.prices}
+            sections={contentSections}
+            showNavigation={false}
+          />
+          <aside className="operation-page__consultation-bar">
+            <ConsultationStickyButton />
+          </aside>
+          <DoctorProfile />
+          <AdministratorCta
+            backgroundSrc="/images/home/administrator-cta-background.png"
+            ctaHref={administratorContact.whatsappHref}
+            ctaLabel="Написать Ольге"
+            description="Если нужно уточнить детали операции, формат консультации или свободные даты, напишите Ольге — она поможет с организацией записи."
+            name="Ольга"
+          />
+        </div>
+      </main>
+    </>
+  );
+}
+
+function extractText(value: unknown): string {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(extractText).filter(Boolean).join(" ");
+  }
+
+  if (value && typeof value === "object") {
+    if ("text" in value && typeof value.text === "string") {
+      return value.text;
+    }
+
+    if ("children" in value) {
+      return extractText(value.children);
+    }
+  }
+
+  return "";
+}
+
+const operationBreadcrumbCategories: Readonly<Record<string, { href: string; label: string }>> = {
+  "lipofiling": { href: "/operaczii/lipofiling", label: "Липофилинг" },
+  "liposkulptura": { href: "/operaczii/liposkulptura", label: "Коррекция фигуры" },
+  "liposakcziya": { href: "/operaczii/liposkulptura", label: "Коррекция фигуры" },
+  "muzhskaya-plastika": { href: "/operaczii/muzhskaya-plastika", label: "Мужчинам" },
+  "plastika-grudi": { href: "/operaczii/plastika-grudi", label: "Пластика груди" },
+  "rf-lifting": { href: "/operaczii/rf-lifting", label: "Без операции (РФ-лифтинг)" },
+};
+
+function getOperationBreadcrumbs(path: string, heading: string) {
+  const [, segment, operation] = path.split("/").filter(Boolean);
+  const category = operation ? operationBreadcrumbCategories[segment] : undefined;
+
+  return [
+    { href: "/", label: "Главная" },
+    { href: "/operaczii", label: "Операции" },
+    ...(category && category.href !== path ? [category] : []),
+    { label: heading },
+  ];
+}
+
+function ConsultationStickyButton() {
+  return (
+    <ConsultationTrigger className={buttonVariants({ size: "md", variant: "primary" })}>
+      Записаться на консультацию
+    </ConsultationTrigger>
   );
 }

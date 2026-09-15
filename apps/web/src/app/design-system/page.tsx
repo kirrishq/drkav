@@ -3,6 +3,7 @@ import type { SVGAttributes } from "react";
 
 import {
   Accordion,
+  AdministratorCta,
   BeforeAfterComparison,
   Button,
   Checkbox,
@@ -15,6 +16,8 @@ import {
   OperationsCards,
   Input,
   Label,
+  OperationHero,
+  PromotionBanner,
   PageIntro,
   Radio,
   RadioButton,
@@ -442,6 +445,76 @@ export default function DesignSystemPage() {
               <p className="type-text-base text-secondary">
                 Карточка не ведёт сразу на одну операцию: она открывает список всех ссылок категории из каталога операций. Внизу попапа всегда размещается действие «Консультация».
               </p>
+            </Subsection>
+          </Section>
+          <Section
+            description="AdministratorCta — сквозной CTA администратора со стеклянной карточкой поверх фонового изображения и внешней ссылкой на канал связи."
+            id="administrator-cta"
+            title="Administrator CTA"
+          >
+            <Subsection title="Usage">
+              <AdministratorCta
+                backgroundSrc="/images/home/administrator-cta-background.png"
+                ctaHref="https://example.com/administrator"
+                description="Помогает быстро выбрать формат связи и организовать следующий шаг."
+                name="Имя администратора"
+              />
+              <CodeBlock>{`import { AdministratorCta } from "@drkav/ui";
+
+<AdministratorCta
+  backgroundSrc="/images/home/administrator-cta-background.png"
+  ctaHref="https://example.com/administrator"
+  description="Описание помощи администратора"
+  name="Имя администратора"
+/>`}</CodeBlock>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="OperationHero — полноширинный hero операции с фоновым изображением, якорной навигацией по контенту и единственным CTA записи."
+            id="operation-hero"
+            title="Operation Hero"
+          >
+            <Subsection title="Usage">
+              <OperationHero
+                backgroundSrc="/images/operations/mammoplasty-hero.png"
+                description="Ваша грудь будет прекрасна! Вариант коррекции обсудим вместе с вами на консультации."
+                links={[
+                  { href: "#indications", label: "Показания" },
+                  { href: "#preparation", label: "Подготовка к операции" },
+                  { href: "#price", label: "Стоимость" },
+                ]}
+                title="Маммопластика"
+              />
+              <CodeBlock>{`import { OperationHero } from "@drkav/ui";
+
+<OperationHero
+  backgroundSrc="/images/operations/mammoplasty-hero.png"
+  description="Описание операции"
+  links={[{ href: "#indications", label: "Показания" }]}
+  title="Маммопластика"
+/>`}</CodeBlock>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="PromotionBanner — акцентный баннер ограниченного предложения с коротким описанием и ссылкой на условия."
+            id="promotion-banner"
+            title="Promotion Banner"
+          >
+            <Subsection title="Usage">
+              <PromotionBanner
+                description="Получите дополнительную процедуру при записи на операцию."
+                href="/akcii"
+                title="Операция в подарок"
+              />
+              <CodeBlock>{`import { PromotionBanner } from "@drkav/ui";
+
+<PromotionBanner
+  description="Описание предложения"
+  href="/akcii"
+  title="Операция в подарок"
+/>`}</CodeBlock>
             </Subsection>
           </Section>
 

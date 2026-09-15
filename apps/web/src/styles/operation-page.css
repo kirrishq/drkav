@@ -1,0 +1,77 @@
+@layer components {
+  .operation-page {
+    overflow-x: clip;
+  }
+
+  .operation-page__content {
+    display: grid;
+    width: 100%;
+    max-width: var(--container-wide);
+    gap: var(--space-8);
+    margin-inline: auto;
+    padding-inline: var(--space-4);
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-12);
+  }
+
+  .operation-page__content .stats-strip,
+  .operation-page__content .promotion-banner,
+  .operation-page__content .doctor-profile,
+  .operation-page__video {
+    width: 100%;
+    margin: 0;
+  }
+
+  .operation-page__video {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .operation-page__content > .administrator-cta {
+    width: 100%;
+    margin-inline: 0;
+  }
+
+  .operation-page__video-description {
+    margin: var(--space-2) 0 0;
+    color: var(--text-secondary);
+  }
+
+  .operation-page__video .video-card {
+    max-width: var(--container-reading);
+  }
+
+  .operation-page__consultation-bar {
+    position: sticky;
+    z-index: 20;
+    bottom: var(--space-4);
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: calc(var(--space-4) - var(--space-0-5)) 0 0;
+    padding: var(--space-0-5);
+    border-radius: var(--radius-lg);
+    background: transparent;
+    pointer-events: none;
+  }
+
+  .operation-page__consultation-bar > * {
+    pointer-events: auto;
+    box-shadow: var(--shadow-raised);
+  }
+
+  @media (min-width: 40rem) {
+    .operation-page__content {
+      padding-inline: var(--space-6);
+    }
+
+    .operation-page__consultation-bar {
+      width: 100%;
+    }
+
+    .operation-page__video {
+      grid-template-columns: minmax(0, 0.6fr) minmax(20rem, 1.4fr);
+      align-items: center;
+    }
+  }
+}

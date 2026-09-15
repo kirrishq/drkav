@@ -1,0 +1,60 @@
+import { useId, type ReactNode } from "react";
+
+import { buttonVariants } from "./button";
+import { cn } from "./lib/cn";
+
+export type AdministratorCtaProps = {
+  backgroundSrc: string;
+  ctaHref: string;
+  ctaLabel?: string;
+  description: ReactNode;
+  external?: boolean;
+  name: string;
+  role?: string;
+};
+
+/** Wide glassmorphism contact CTA for questions and help with arranging a visit. */
+export function AdministratorCta({
+  backgroundSrc,
+  ctaHref,
+  ctaLabel = "Написать Ольге",
+  description,
+  external = true,
+  name,
+  role = "Личный администратор",
+}: AdministratorCtaProps) {
+  const titleId = useId();
+
+  return (
+    <section aria-labelledby={titleId} className="administrator-cta">
+      {/* The background URL is runtime content, so it cannot be represented by a shared CSS token. */}
+      <div
+        aria-hidden="true"
+        className="administrator-cta__background"
+        style={{ backgroundImage: `url("${backgroundSrc}")` }}
+      />
+      <span aria-hidden="true" className="administrator-cta__scrim" />
+      <div className="administrator-cta__glass">
+        <div className="administrator-cta__identity">
+          <span aria-hidden="true" className="administrator-cta__avatar">О</span>
+          <div>
+            <p className="type-text-base administrator-cta__name">{name}</p>
+            <p className="type-text-base administrator-cta__role">{role}</p>
+          </div>
+        </div>
+        <div className="administrator-cta__copy">
+          <h2 className="type-h3 administrator-cta__title" id={titleId}>Есть вопрос или нужна помощь с записью?</h2>
+          <p className="type-text-base administrator-cta__description">{description}</p>
+        </div>
+        <a
+          className={cn(buttonVariants({ size: "md", variant: "primary" }), "administrator-cta__action")}
+          href={ctaHref}
+          rel={external ? "noreferrer" : undefined}
+          target={external ? "_blank" : undefined}
+        >
+          {ctaLabel}
+        </a>
+      </div>
+    </section>
+  );
+}

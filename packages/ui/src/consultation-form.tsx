@@ -14,6 +14,7 @@ import {
 
 import { Button, buttonVariants } from "./button";
 import { Checkbox } from "./checkbox";
+import { ContactActionIcon } from "./contact-fab";
 import { Input } from "./input";
 import { Label } from "./label";
 import { PhoneInput } from "./phone-input";
@@ -96,8 +97,7 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
             onChange={() => setConsultationFormat("clinic")}
             value="clinic"
           >
-            <span>Очно в клинике</span>
-            <span className="consultation-form__price">1 950 ₽</span>
+            Очно в клинике
           </RadioButton>
           <RadioButton
             checked={consultationFormat === "online"}
@@ -106,8 +106,7 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
             onChange={() => setConsultationFormat("online")}
             value="online"
           >
-            <span>Онлайн</span>
-            <span className="consultation-form__price">950 ₽</span>
+            Онлайн
           </RadioButton>
         </div>
       </fieldset>
@@ -116,17 +115,9 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
         <legend className="type-label consultation-form__legend">Удобный способ связи</legend>
         <div className="consultation-form__options consultation-form__options--contacts">
           <RadioButton
-            checked={contactMethod === "telegram"}
-            className="consultation-form__option"
-            name="contact-method"
-            onChange={() => setContactMethod("telegram")}
-            value="telegram"
-          >
-            Telegram
-          </RadioButton>
-          <RadioButton
             checked={contactMethod === "phone"}
             className="consultation-form__option"
+            icon={<ContactActionIcon kind="phone" />}
             name="contact-method"
             onChange={() => setContactMethod("phone")}
             value="phone"
@@ -134,8 +125,19 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
             Телефон
           </RadioButton>
           <RadioButton
+            checked={contactMethod === "telegram"}
+            className="consultation-form__option"
+            icon={<ContactActionIcon kind="telegram" />}
+            name="contact-method"
+            onChange={() => setContactMethod("telegram")}
+            value="telegram"
+          >
+            Telegram
+          </RadioButton>
+          <RadioButton
             checked={contactMethod === "max"}
             className="consultation-form__option"
+            icon={<ContactActionIcon kind="max" />}
             name="contact-method"
             onChange={() => setContactMethod("max")}
             value="max"
@@ -144,6 +146,10 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
           </RadioButton>
         </div>
       </fieldset>
+
+      <p className="type-text-base consultation-form__description">
+        Стоимость консультации: очно в клинике — <span className="consultation-form__price">1 950 ₽</span>, онлайн — <span className="consultation-form__price">950 ₽</span>.
+      </p>
 
       <div className="consultation-form__field">
         <Label htmlFor={contactId} required>Контакт для связи</Label>
@@ -186,14 +192,11 @@ export function ConsultationSection() {
     <section aria-labelledby="consultation-section-title" className="consultation-section">
       <div className="consultation-section__layout">
         <div className="consultation-section__content">
-          <p className="type-label consultation-section__eyebrow">Главный шаг</p>
           <h2 className="type-h2 consultation-section__title" id="consultation-section-title">Запись на консультацию</h2>
           <p className="type-text-base consultation-section__description">
             Выберите формат встречи и удобный способ связи — администратор поможет согласовать дату и ответит на организационные вопросы.
           </p>
           <ul className="consultation-section__details">
-            <li className="type-text-base consultation-section__detail">Очно в клинике — 1 950 ₽</li>
-            <li className="type-text-base consultation-section__detail">Онлайн — 950 ₽</li>
             <li className="type-text-base consultation-section__detail">После заявки администратор свяжется с вами</li>
           </ul>
         </div>
@@ -281,7 +284,6 @@ function ConsultationDialog({ onClose }: { onClose: () => void }) {
       <div className="consultation-dialog__content">
         <div className="consultation-dialog__header">
           <div>
-            <p className="type-label consultation-dialog__eyebrow">Главный шаг</p>
             <h2 className="type-h2 consultation-dialog__title" id={titleId}>Запись на консультацию</h2>
           </div>
           <button aria-label="Закрыть форму записи" className="consultation-dialog__close focus-ring" onClick={onClose} type="button">

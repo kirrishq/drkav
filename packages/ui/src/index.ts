@@ -4,6 +4,8 @@ export type {
   ButtonSize,
   ButtonVariant,
 } from "./button";
+export { AdministratorCta } from "./administrator-cta";
+export type { AdministratorCtaProps } from "./administrator-cta";
 export { Accordion } from "./accordion";
 export type { AccordionItem, AccordionProps } from "./accordion";
 export { BeforeAfterComparison } from "./before-after-comparison";
@@ -27,6 +29,10 @@ export type {
   OperationsCardLink,
   OperationsCardsProps,
 } from "./operations-cards";
+export { OperationHero } from "./operation-hero";
+export type { OperationHeroLink, OperationHeroProps } from "./operation-hero";
+export { PromotionBanner } from "./promotion-banner";
+export type { PromotionBannerProps } from "./promotion-banner";
 export {
   FormDescription,
   FormField,
@@ -41,6 +47,7 @@ export type {
 export { ConsultationForm, ConsultationProvider, ConsultationSection, ConsultationTrigger } from "./consultation-form";
 export type { ConsultationFormProps, ConsultationTriggerProps } from "./consultation-form";
 export { ContactFab } from "./contact-fab";
+export { ContactActionIcon } from "./contact-fab";
 export type { ContactActionKind, ContactFabAction, ContactFabProps } from "./contact-fab";
 export { Input } from "./input";
 export type {

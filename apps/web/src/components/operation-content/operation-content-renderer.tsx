@@ -10,6 +10,7 @@ import { BlocksRenderer } from "./blocks-renderer";
 type OperationContentRendererProps = {
   prices: readonly PriceItem[];
   sections: readonly OperationContentSection[];
+  showNavigation?: boolean;
 };
 
 function SectionHeading({
@@ -166,6 +167,7 @@ function SectionContent({
 export function OperationContentRenderer({
   prices,
   sections,
+  showNavigation = true,
 }: OperationContentRendererProps) {
   const navigation = sections.flatMap((section) =>
     section.showInPageNavigation && section.anchor && section.heading
@@ -175,7 +177,7 @@ export function OperationContentRenderer({
 
   return (
     <div className="operation-content">
-      {navigation.length > 0 ? (
+      {showNavigation && navigation.length > 0 ? (
         <nav
           aria-label="Навигация по разделам операции"
           className="operation-content__navigation content-card"

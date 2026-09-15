@@ -17,6 +17,7 @@ import {
   administratorContact,
   headerMenu,
   headerSubmenuImages,
+  type HeaderMenuLink,
   type HeaderMenuItem,
 } from "@/components/site-header/header-config";
 import { SiteLogo } from "@/components/site-header/site-logo";
@@ -617,6 +618,10 @@ function isCurrentPath(pathname: string, href: string) {
   return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
 }
 
+function isMenuLinkActive(pathname: string, link: HeaderMenuLink): boolean {
+  return isCurrentPath(pathname, link.href) || Boolean(link.links?.some((child) => isMenuLinkActive(pathname, child)));
+}
+
 function isActivePage(pathname: string, href: string) {
   return pathname.replace(/\/$/, "") === href.replace(/\/$/, "");
 }
@@ -639,14 +644,22 @@ function isMenuItemSelected(
 
 function DesktopSubmenu({
   item,
+  nestedItem,
+  onBack,
+  onOpenNested,
   pathname,
   panelId,
 }: {
   item: HeaderMenuItem;
+  nestedItem: HeaderMenuLink | null;
+  onBack: () => void;
+  onOpenNested: (link: HeaderMenuLink) => void;
   pathname: string;
   panelId: string;
 }) {
-  if (!item.links) {
+  const links = nestedItem?.links ?? item.links;
+
+  if (!links) {
     return null;
   }
 
@@ -656,25 +669,36 @@ function DesktopSubmenu({
       className="border-t border-border bg-surface"
       id={panelId}
     >
-      <div className="site-header__submenu-grid mx-auto max-w-wide px-4 py-5 xl:px-6">
-        {item.links.map((link, index) => {
-          const selected = index === 0 || isCurrentPath(pathname, link.href);
-          const active = isActivePage(pathname, link.href);
-          const imageSrc = headerSubmenuImages[link.href] ?? headerSubmenuImages[item.href];
-
-          return (
-            <Link
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "site-header__submenu-card",
-                !imageSrc && "site-header__submenu-card--gradient",
-                index === 0 && "site-header__submenu-card--primary",
-                active && "site-header__submenu-card--active",
-                selected && "font-semibold",
-              )}
-              href={link.href}
-              key={link.href}
+      <div className="site-header__submenu-panel mx-auto max-w-wide px-4 py-5 xl:px-6">
+        {nestedItem ? (
+          <div className="site-header__submenu-toolbar">
+            <button
+              className={cn(buttonVariants({ size: "sm", variant: "ghost" }), "w-fit justify-start")}
+              onClick={onBack}
+              type="button"
             >
+              <BackIcon />
+              <span>Все части тела</span>
+            </button>
+            <span className="site-header__submenu-title">{nestedItem.label}</span>
+          </div>
+        ) : null}
+        <div className="site-header__submenu-grid">
+          {links.map((link, index) => {
+          const selected = index === 0 || isMenuLinkActive(pathname, link);
+          const active = isActivePage(pathname, link.href);
+          const imageSrc = nestedItem
+            ? undefined
+            : headerSubmenuImages[link.href] ?? headerSubmenuImages[item.href];
+          const cardClassName = cn(
+            "site-header__submenu-card",
+            !imageSrc && "site-header__submenu-card--gradient",
+            index === 0 && "site-header__submenu-card--primary",
+            active && "site-header__submenu-card--active",
+            selected && "font-semibold",
+          );
+          const cardContent = (
+            <>
               {imageSrc ? (
                 <Image
                   alt=""
@@ -687,11 +711,33 @@ function DesktopSubmenu({
               <span className="site-header__submenu-card-overlay" />
               <span className="site-header__submenu-card-label">{link.label}</span>
               <span aria-hidden="true" className="site-header__submenu-card-arrow">
-                <ArrowIcon />
+                {link.links ? <ChevronIcon open={false} /> : <ArrowIcon />}
               </span>
-            </Link>
+            </>
           );
-        })}
+
+            return link.links ? (
+            <button
+              aria-haspopup="true"
+              className={cardClassName}
+              key={link.href}
+              onClick={() => onOpenNested(link)}
+              type="button"
+            >
+              {cardContent}
+            </button>
+          ) : (
+            <Link
+              aria-current={active ? "page" : undefined}
+              className={cardClassName}
+              href={link.href}
+              key={link.href}
+            >
+              {cardContent}
+            </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -706,6 +752,7 @@ export function SiteHeader() {
   const desktopVisionPanelId = useId();
   const mobileVisionPanelId = useId();
   const [openMenuHref, setOpenMenuHref] = useState<string | null>(null);
+  const [openNestedItem, setOpenNestedItem] = useState<HeaderMenuLink | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -721,6 +768,7 @@ export function SiteHeader() {
 
   const openMenu = headerMenu.find((item) => item.href === openMenuHref);
   const mobilePanelOpen = mobileOpen || searchOpen;
+  const mobileSubmenu = openNestedItem ?? openMenu;
   const activeStandaloneHref = headerMenu.find(
     (item) => !item.links && isCurrentPath(pathname, item.href),
   )?.href;
@@ -740,6 +788,7 @@ export function SiteHeader() {
   useEffect(() => {
     setMobileOpen(false);
     setOpenMenuHref(null);
+    setOpenNestedItem(null);
     setSearchOpen(false);
     setSearchQuery("");
   }, [pathname]);
@@ -749,6 +798,7 @@ export function SiteHeader() {
       if (event.key === "Escape") {
         setMobileOpen(false);
         setOpenMenuHref(null);
+        setOpenNestedItem(null);
         setSearchOpen(false);
       }
     }
@@ -812,6 +862,7 @@ export function SiteHeader() {
 
   function toggleSubmenu(item: HeaderMenuItem) {
     setSearchOpen(false);
+    setOpenNestedItem(null);
     setOpenMenuHref((current) => (current === item.href ? null : item.href));
   }
 
@@ -819,6 +870,7 @@ export function SiteHeader() {
     mobileScrollY.current = 0;
     setMobileOpen(false);
     setOpenMenuHref(null);
+    setOpenNestedItem(null);
     setSearchOpen(false);
   }
 
@@ -832,6 +884,7 @@ export function SiteHeader() {
         }
         setMobileOpen(false);
         setOpenMenuHref(null);
+        setOpenNestedItem(null);
       } else {
         mobileScrollY.current = 0;
       }
@@ -987,6 +1040,7 @@ export function SiteHeader() {
 
                 setMobileOpen(!mobileOpen);
                 setOpenMenuHref(null);
+                setOpenNestedItem(null);
               }}
               type="button"
             >
@@ -1086,12 +1140,15 @@ export function SiteHeader() {
         </div>
 
         <div className="absolute inset-x-0 top-full z-50 hidden shadow-subtle lg:block">
-          {openMenu ? (
-            <DesktopSubmenu
-              item={openMenu}
-              panelId={`${submenuId}-${openMenu.href.replaceAll("/", "-")}`}
-              pathname={pathname}
-            />
+        {openMenu ? (
+          <DesktopSubmenu
+            item={openMenu}
+            nestedItem={openNestedItem}
+            onBack={() => setOpenNestedItem(null)}
+            onOpenNested={setOpenNestedItem}
+            panelId={`${submenuId}-${openMenu.href.replaceAll("/", "-")}`}
+            pathname={pathname}
+          />
           ) : null}
         </div>
       </header>
@@ -1161,22 +1218,56 @@ export function SiteHeader() {
               ) : null}
 
               <nav aria-label="Мобильная навигация" className="mt-3 sm:mt-0">
-            {openMenu?.links ? (
+            {mobileSubmenu?.links ? (
               <div className="site-header__mobile-submenu-page" id={`${submenuId}-mobile-submenu`}>
                 <button
                   aria-label="Вернуться к разделам меню"
                   className={cn(buttonVariants({ size: "sm", variant: "ghost" }), "w-fit justify-start")}
-                  onClick={() => setOpenMenuHref(null)}
+                  onClick={() => {
+                    if (openNestedItem) {
+                      setOpenNestedItem(null);
+                    } else {
+                      setOpenMenuHref(null);
+                    }
+                  }}
                   type="button"
                 >
                   <BackIcon />
                   <span>Назад</span>
                 </button>
-                <h2 className="site-header__mobile-submenu-title">{openMenu.label}</h2>
-                <ul className="site-header__mobile-submenu-grid" aria-label={`Подразделы: ${openMenu.label}`}>
-                  {openMenu.links.map((link, index) => {
+                <h2 className="site-header__mobile-submenu-title">{mobileSubmenu.label}</h2>
+                <ul className="site-header__mobile-submenu-grid" aria-label={`Подразделы: ${mobileSubmenu.label}`}>
+                  {mobileSubmenu.links.map((link, index) => {
                     const active = isActivePage(pathname, link.href);
-                    const imageSrc = headerSubmenuImages[link.href] ?? headerSubmenuImages[openMenu.href];
+                    const imageSrc = openNestedItem
+                      ? undefined
+                      : headerSubmenuImages[link.href] ?? headerSubmenuImages[mobileSubmenu.href];
+                    const selected = isMenuLinkActive(pathname, link);
+                    const cardClassName = cn(
+                      "site-header__mobile-submenu-card",
+                      !imageSrc && "site-header__mobile-submenu-card--gradient",
+                      index === 0 && "site-header__mobile-submenu-card--primary",
+                      active && "site-header__mobile-submenu-card--active",
+                      selected && "font-semibold",
+                    );
+                    const cardContent = (
+                      <>
+                        {imageSrc ? (
+                          <Image
+                            alt=""
+                            className="site-header__mobile-submenu-card-image"
+                            fill
+                            sizes="(min-width: 40rem) 180px, 45vw"
+                            src={imageSrc}
+                          />
+                        ) : null}
+                        <span className="site-header__mobile-submenu-card-overlay" />
+                        <span className="site-header__mobile-submenu-card-label">{link.label}</span>
+                        <span aria-hidden="true" className="site-header__mobile-submenu-card-arrow">
+                          {link.links ? <ChevronIcon open={false} /> : <ArrowIcon />}
+                        </span>
+                      </>
+                    );
 
                     return (
                       <li
@@ -1187,32 +1278,26 @@ export function SiteHeader() {
                         key={link.href}
                         style={{ "--menu-index": index } as CSSProperties}
                       >
-                        <Link
-                          aria-current={active ? "page" : undefined}
-                          className={cn(
-                            "site-header__mobile-submenu-card",
-                            !imageSrc && "site-header__mobile-submenu-card--gradient",
-                            index === 0 && "site-header__mobile-submenu-card--primary",
-                            active && "site-header__mobile-submenu-card--active",
-                          )}
-                          href={link.href}
-                          onClick={closeMobileMenu}
-                        >
-                          {imageSrc ? (
-                            <Image
-                              alt=""
-                              className="site-header__mobile-submenu-card-image"
-                              fill
-                              sizes="(min-width: 40rem) 180px, 45vw"
-                              src={imageSrc}
-                            />
-                          ) : null}
-                          <span className="site-header__mobile-submenu-card-overlay" />
-                          <span className="site-header__mobile-submenu-card-label">{link.label}</span>
-                          <span aria-hidden="true" className="site-header__mobile-submenu-card-arrow">
-                            <ArrowIcon />
-                          </span>
-                        </Link>
+                        {link.links ? (
+                          <button
+                            aria-expanded={openNestedItem?.href === link.href}
+                            aria-haspopup="true"
+                            className={cardClassName}
+                            onClick={() => setOpenNestedItem(link)}
+                            type="button"
+                          >
+                            {cardContent}
+                          </button>
+                        ) : (
+                          <Link
+                            aria-current={active ? "page" : undefined}
+                            className={cardClassName}
+                            href={link.href}
+                            onClick={closeMobileMenu}
+                          >
+                            {cardContent}
+                          </Link>
+                        )}
                       </li>
                     );
                   })}

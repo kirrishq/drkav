@@ -24,7 +24,7 @@ export type ContactFabProps = {
   children?: ReactNode;
 };
 
-function ContactActionIcon({ kind }: { kind: ContactActionKind }) {
+export function ContactActionIcon({ kind }: { kind: ContactActionKind }) {
   const iconId = useId().replaceAll(":", "");
 
   if (kind === "phone") {
