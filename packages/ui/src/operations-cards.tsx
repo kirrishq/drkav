@@ -125,7 +125,15 @@ export function OperationsCards({
             onClick={() => setActiveItem(item)}
             type="button"
           >
-            {item.imageSrc ? <img alt="" className="operations-cards__image" src={item.imageSrc} /> : null}
+            {item.imageSrc ? (
+              <img
+                alt=""
+                className="operations-cards__image"
+                decoding="async"
+                loading="lazy"
+                src={item.imageSrc}
+              />
+            ) : null}
             <span aria-hidden="true" className="operations-cards__scrim" />
             <span className="operations-cards__card-title">{item.title}</span>
             <span aria-hidden="true" className="operations-cards__arrow operations-cards__card-arrow">

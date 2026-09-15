@@ -40,10 +40,53 @@ function CloseIcon() {
   );
 }
 
+function selectPreviewSource(video: HTMLVideoElement, item: VideoHighlight) {
+  if (item.webmSrc && video.canPlayType("video/webm")) {
+    return item.webmSrc;
+  }
+
+  return item.videoSrc;
+}
+
 function VideoHighlightItem({ item }: { item: VideoHighlight }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const previewVideoRef = useRef<HTMLVideoElement>(null);
   const dialogTitleId = useId();
   const [isOpen, setIsOpen] = useState(false);
+  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    const video = previewVideoRef.current;
+
+    if (!video) {
+      return;
+    }
+
+    const loadPreview = () => {
+      setPreviewSrc(selectPreviewSource(video, item));
+    };
+
+    if (!("IntersectionObserver" in window)) {
+      loadPreview();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) {
+          return;
+        }
+
+        loadPreview();
+        observer.disconnect();
+      },
+      { threshold: 0.01 },
+    );
+
+    observer.observe(video);
+
+    return () => observer.disconnect();
+  }, [item, item.videoSrc, item.webmSrc]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -79,15 +122,15 @@ function VideoHighlightItem({ item }: { item: VideoHighlight }) {
       <div className="video-highlights__media">
         <video
           aria-hidden="true"
-          autoPlay
+          autoPlay={previewSrc !== null}
           loop
           muted
           playsInline
           poster={item.posterSrc}
-          preload="metadata"
+          preload={previewSrc !== null ? "auto" : "none"}
+          ref={previewVideoRef}
+          src={previewSrc ?? undefined}
         >
-          {item.webmSrc ? <source src={item.webmSrc} type="video/webm" /> : null}
-          <source src={item.videoSrc} type="video/mp4" />
         </video>
         <span aria-hidden="true" className="video-highlights__play"><PlayIcon /></span>
       </div>
