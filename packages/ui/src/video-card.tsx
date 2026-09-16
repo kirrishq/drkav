@@ -9,6 +9,7 @@ export type VideoCardProps = {
   location: string;
   posterAlt: string;
   posterSrc: string;
+  showDetails?: boolean;
   title: string;
   videoSrc: string;
   year: string;
@@ -31,7 +32,16 @@ function CloseIcon() {
 }
 
 /** Preview card that opens a supplied video in an accessible modal player. */
-export function VideoCard({ className, location, posterAlt, posterSrc, title, videoSrc, year }: VideoCardProps) {
+export function VideoCard({
+  className,
+  location,
+  posterAlt,
+  posterSrc,
+  showDetails = true,
+  title,
+  videoSrc,
+  year,
+}: VideoCardProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -64,10 +74,12 @@ export function VideoCard({ className, location, posterAlt, posterSrc, title, vi
           <img alt={posterAlt} className="video-card__poster" src={posterSrc} />
           <span aria-hidden="true" className="video-card__play"><PlayIcon /></span>
         </button>
-        <div className="video-card__content">
-          <p className="video-card__meta">{[location, year].filter(Boolean).join(", ")}</p>
-          <h3 className="card-title video-card__title">{title}</h3>
-        </div>
+        {showDetails ? (
+          <div className="video-card__content">
+            <p className="video-card__meta">{[location, year].filter(Boolean).join(", ")}</p>
+            <h3 className="card-title video-card__title">{title}</h3>
+          </div>
+        ) : null}
       </article>
 
       {isOpen ? (

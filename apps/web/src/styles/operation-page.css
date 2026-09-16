@@ -14,6 +14,13 @@
     padding-bottom: var(--space-12);
   }
 
+  .operation-page__layout,
+  .operation-page__main {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-8);
+  }
+
   .operation-page__content .stats-strip,
   .operation-page__content .promotion-banner,
   .operation-page__content .doctor-profile,
@@ -23,22 +30,17 @@
   }
 
   .operation-page__video {
-    display: grid;
-    gap: var(--space-5);
-  }
-
-  .operation-page__content > .administrator-cta {
-    width: 100%;
-    margin-inline: 0;
-  }
-
-  .operation-page__video-description {
-    margin: var(--space-2) 0 0;
-    color: var(--text-secondary);
+    overflow: hidden;
+    border-radius: var(--radius-lg);
   }
 
   .operation-page__video .video-card {
     max-width: var(--container-reading);
+  }
+
+  .operation-page__main > .administrator-cta {
+    width: 100%;
+    margin-inline: 0;
   }
 
   .operation-page__consultation-bar {
@@ -68,10 +70,17 @@
     .operation-page__consultation-bar {
       width: 100%;
     }
+  }
 
-    .operation-page__video {
-      grid-template-columns: minmax(0, 0.6fr) minmax(20rem, 1.4fr);
-      align-items: center;
+  @media (min-width: 64rem) {
+    .operation-page__content {
+      padding-inline: var(--space-6);
+    }
+
+    .operation-page__layout {
+      grid-template-columns: var(--container-sidebar) minmax(0, 1fr);
+      align-items: start;
+      gap: var(--space-5);
     }
   }
 }

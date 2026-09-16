@@ -5,6 +5,7 @@ import {
   AdministratorCta,
   OperationHero,
   PromotionBanner,
+  SectionNavigation,
   VideoCard,
   buttonVariants,
   ConsultationTrigger,
@@ -19,7 +20,10 @@ import {
 } from "@/content/cms-migrated-operations";
 import { logCmsError } from "@/content/cms-logging";
 import { getOperationPageEnhancement } from "@/content/operation-page-config";
-import { getOperationHeroLinks } from "@/content/operation-page-navigation";
+import {
+  getOperationContentLinks,
+  getOperationHeroLinks,
+} from "@/content/operation-page-navigation";
 import { toMetadata, toUnavailableMetadata } from "@/content/seo";
 
 import { StaticPage } from "./static-page";
@@ -68,7 +72,7 @@ export async function CmsOperationPage({
         breadcrumbs={[
           { href: "/", label: "Главная" },
           { href: "/operaczii", label: "Операции" },
-          { label: content.heading },
+          { label: content.breadcrumbLabel ?? content.heading },
         ]}
         description={content.heroDescription ?? ""}
         title={content.heading}
@@ -112,6 +116,7 @@ export async function CmsOperationPage({
       (section.heading || section.showInPageNavigation),
   );
   const heroLinks = getOperationHeroLinks(contentSections);
+  const contentNavigation = getOperationContentLinks(contentSections);
 
   return (
     <>
@@ -119,50 +124,62 @@ export async function CmsOperationPage({
       <main className="operation-page">
         <OperationHero
           backgroundSrc={enhancement.heroImageSrc}
-          breadcrumbs={getOperationBreadcrumbs(path, content.heading)}
+          breadcrumbs={getOperationBreadcrumbs(
+            path,
+            content.heading,
+            content.breadcrumbLabel,
+          )}
           description={introDescription}
           links={heroLinks}
           title={content.heading}
         />
         <div className="operation-page__content">
-          <OperationContentRenderer
-            prices={content.prices}
-            sections={leadSections}
-            showNavigation={false}
-          />
-          {promotion ? (
-            <PromotionBanner
-              description={promotion.description}
-              emphasis={"emphasis" in promotion ? promotion.emphasis : undefined}
-              href={promotion.href}
-              title={promotion.title}
-            />
-          ) : null}
-          {enhancement.video ? (
-            <section aria-labelledby="operation-video-title" className="content-card content-card--spacious operation-page__video">
-              <div>
-                <h2 className="content-card__heading content-card__heading--h2" id="operation-video-title">Видео об операции</h2>
-                <p className="operation-page__video-description">Посмотрите, как доктор рассказывает о маммопластике и вариантах коррекции груди.</p>
-              </div>
-              <VideoCard {...enhancement.video} location="Маммопластика" year="" />
-            </section>
-          ) : null}
-          <OperationContentRenderer
-            prices={content.prices}
-            sections={contentSections}
-            showNavigation={false}
-          />
-          <aside className="operation-page__consultation-bar">
-            <ConsultationStickyButton />
-          </aside>
-          <DoctorProfile />
-          <AdministratorCta
-            backgroundSrc="/images/home/administrator-cta-background.png"
-            ctaHref={administratorContact.whatsappHref}
-            ctaLabel="Написать Ольге"
-            description="Если нужно уточнить детали операции, формат консультации или свободные даты, напишите Ольге — она поможет с организацией записи."
-            name="Ольга"
-          />
+          <div className="operation-page__layout">
+            {contentNavigation.length > 0 ? (
+              <SectionNavigation
+                ariaLabel={`Содержание страницы «${content.heading}»`}
+                className="operation-page__navigation"
+                items={contentNavigation}
+              />
+            ) : null}
+
+            <div className="operation-page__main">
+              <OperationContentRenderer
+                prices={content.prices}
+                sections={leadSections}
+                showNavigation={false}
+              />
+              {promotion ? (
+                <PromotionBanner
+                  description={promotion.description}
+                  emphasis={"emphasis" in promotion ? promotion.emphasis : undefined}
+                  href={promotion.href}
+                  title={promotion.title}
+                />
+              ) : null}
+              {enhancement.video ? (
+                <section aria-label="Видео об операции" className="operation-page__video">
+                  <VideoCard {...enhancement.video} location="Маммопластика" showDetails={false} year="" />
+                </section>
+              ) : null}
+              <OperationContentRenderer
+                prices={content.prices}
+                sections={contentSections}
+                showNavigation={false}
+              />
+              <aside className="operation-page__consultation-bar">
+                <ConsultationStickyButton />
+              </aside>
+              <DoctorProfile />
+              <AdministratorCta
+                backgroundSrc="/images/home/administrator-cta-background.png"
+                ctaHref={administratorContact.whatsappHref}
+                ctaLabel="Написать Ольге"
+                description="Если нужно уточнить детали операции, формат консультации или свободные даты, напишите Ольге — она поможет с организацией записи."
+                name="Ольга"
+              />
+            </div>
+          </div>
         </div>
       </main>
     </>
@@ -200,15 +217,21 @@ const operationBreadcrumbCategories: Readonly<Record<string, { href: string; lab
   "rf-lifting": { href: "/operaczii/rf-lifting", label: "Без операции (РФ-лифтинг)" },
 };
 
-function getOperationBreadcrumbs(path: string, heading: string) {
+function getOperationBreadcrumbs(
+  path: string,
+  heading: string,
+  breadcrumbLabel?: string,
+) {
   const [, segment, operation] = path.split("/").filter(Boolean);
-  const category = operation ? operationBreadcrumbCategories[segment] : undefined;
+  const category = operationBreadcrumbCategories[segment];
+  const currentLabel =
+    breadcrumbLabel ?? (category?.href === path ? category.label : heading);
 
   return [
     { href: "/", label: "Главная" },
     { href: "/operaczii", label: "Операции" },
-    ...(category && category.href !== path ? [category] : []),
-    { label: heading },
+    ...(operation && category && category.href !== path ? [category] : []),
+    { label: currentLabel },
   ];
 }
 

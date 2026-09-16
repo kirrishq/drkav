@@ -35,6 +35,10 @@
       "type": "string",
       "required": true
     },
+    "breadcrumbLabel": {
+      "type": "string",
+      "required": false
+    },
     "heroDescription": {
       "type": "text",
       "required": false

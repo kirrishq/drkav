@@ -3,6 +3,8 @@
 import { Button, cn, RecordCard } from "@drkav/ui";
 import { useState } from "react";
 
+import { QualificationIcon } from "../about-page/about-icons";
+
 type QualificationRecord = {
   title: string;
   year: string;
@@ -41,7 +43,7 @@ export function QualificationSection() {
         {qualifications.map((qualification) => (
           <RecordCard
             className="qualification-section__item"
-            icon={<span aria-hidden="true" className="qualification-section__icon" />}
+            icon={<QualificationIcon />}
             key={`${qualification.year}-${qualification.title}`}
             meta={qualification.year}
             title={qualification.title}

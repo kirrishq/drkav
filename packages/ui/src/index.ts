@@ -58,6 +58,11 @@ export { Label } from "./label";
 export type { LabelProps } from "./label";
 export { cn } from "./lib/cn";
 export { Breadcrumbs, PageIntro } from "./page-intro";
+export { SectionNavigation } from "./section-navigation";
+export type {
+  SectionNavigationItem,
+  SectionNavigationProps,
+} from "./section-navigation";
 export type {
   BreadcrumbItem,
   BreadcrumbsProps,

@@ -5,6 +5,11 @@ export type OperationHeroLink = {
   label: string;
 };
 
+export type OperationContentLink = {
+  id: string;
+  label: string;
+};
+
 type AnchorRule = {
   label: string;
   pattern: RegExp;
@@ -40,4 +45,16 @@ export function getOperationHeroLinks(
     usedLabels.add(rule.label);
     return [{ href: `#${section.anchor}`, label: rule.label }];
   }).slice(0, 6);
+}
+
+export function getOperationContentLinks(
+  sections: readonly OperationContentSection[],
+): readonly OperationContentLink[] {
+  return sections.flatMap((section) => {
+    if (!section.anchor || !section.heading) {
+      return [];
+    }
+
+    return [{ id: section.anchor, label: section.heading }];
+  });
 }

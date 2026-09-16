@@ -1,5 +1,7 @@
 import { RecordCard } from "@drkav/ui";
 
+import { AwardIcon } from "../about-page/about-icons";
+
 const awards = [
   { title: "TOP Beauty&fashion AWARD", year: "2022" },
   { title: "Лучший пластический хирург 2021 (Премия Хрустальный лотос)", year: "2021" },
@@ -13,7 +15,7 @@ export function AwardSection() {
         {awards.map((award) => (
           <RecordCard
             className="award-section__item"
-            icon={<span aria-hidden="true" className="award-section__icon" />}
+            icon={<AwardIcon />}
             key={`${award.year}-${award.title}`}
             meta={award.year}
             title={award.title}

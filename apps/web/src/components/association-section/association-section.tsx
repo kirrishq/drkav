@@ -1,5 +1,7 @@
 import { RecordCard } from "@drkav/ui";
 
+import { AssociationIcon } from "../about-page/about-icons";
+
 const associations = [
   "Российское общество хирургов",
   "International Society of Surgery",
@@ -14,7 +16,7 @@ export function AssociationSection() {
         {associations.map((association) => (
           <RecordCard
             className="association-section__item"
-            icon={<span aria-hidden="true" className="association-section__icon" />}
+            icon={<AssociationIcon />}
             key={association}
             title={association}
           />

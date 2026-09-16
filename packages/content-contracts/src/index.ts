@@ -248,6 +248,7 @@ export interface OperationContent {
   slug: string;
   canonicalPath: string;
   heading: string;
+  breadcrumbLabel?: string;
   heroDescription?: string;
   heroImage?: ImageAsset;
   primaryAction?: ContentAction;

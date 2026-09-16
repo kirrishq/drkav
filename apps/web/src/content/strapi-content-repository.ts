@@ -1085,6 +1085,7 @@ export class StrapiContentRepository implements ContentRepository {
       "slug",
       "canonicalPath",
       "heading",
+      "breadcrumbLabel",
       "heroDescription",
       "contentStatus",
     ]);
@@ -1135,6 +1136,10 @@ export class StrapiContentRepository implements ContentRepository {
       slug: requireString(operation.slug, "operation.slug"),
       canonicalPath,
       heading: requireString(operation.heading, "operation.heading"),
+      breadcrumbLabel: optionalString(
+        operation.breadcrumbLabel,
+        "operation.breadcrumbLabel",
+      ),
       heroDescription: optionalString(
         operation.heroDescription,
         "operation.heroDescription",
