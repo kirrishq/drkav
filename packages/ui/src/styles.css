@@ -2546,6 +2546,11 @@ html[data-vision="low-vision"] a {
     .reviews-slider__dots {
       display: none;
     }
+
+    .reviews-slider--viewport-edge .reviews-slider__viewport {
+      width: calc(100vw - (50vw - 50%));
+      padding-inline-end: var(--space-8);
+    }
   }
 
   .operations-cards {

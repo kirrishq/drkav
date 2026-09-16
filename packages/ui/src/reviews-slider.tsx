@@ -291,9 +291,32 @@ export function ReviewsSlider({
   }, [activeFilterId]);
 
   const scroll = (direction: "left" | "right") => {
-    viewportRef.current?.scrollBy({
+    const viewport = viewportRef.current;
+
+    if (!viewport) {
+      return;
+    }
+
+    const cards = Array.from(viewport.querySelectorAll<HTMLElement>(".reviews-slider__card"));
+    const viewportRect = viewport.getBoundingClientRect();
+    const firstFullyVisibleIndex = cards.findIndex((card) => card.getBoundingClientRect().left >= viewportRect.left - 1);
+    const currentStartIndex = firstFullyVisibleIndex >= 0 ? firstFullyVisibleIndex : 0;
+    const firstCard = cards[currentStartIndex];
+    const cardWidth = firstCard?.getBoundingClientRect().width ?? viewport.clientWidth;
+    const cardsPerPage = Math.max(1, Math.floor(viewport.clientWidth / Math.max(cardWidth, 1)));
+    const nextIndex = Math.min(
+      Math.max(currentStartIndex + (direction === "right" ? cardsPerPage : -cardsPerPage), 0),
+      cards.length - 1,
+    );
+    const nextCard = cards[nextIndex];
+
+    if (!nextCard) {
+      return;
+    }
+
+    viewport.scrollTo({
       behavior: "smooth",
-      left: direction === "left" ? -viewportRef.current.clientWidth * 0.82 : viewportRef.current.clientWidth * 0.82,
+      left: viewport.scrollLeft + nextCard.getBoundingClientRect().left - viewportRect.left,
     });
   };
 

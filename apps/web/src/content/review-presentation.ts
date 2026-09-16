@@ -23,13 +23,12 @@ export function getReviewFilters(
   const filters: ReviewSliderFilter[] = [];
   const seen = new Set<string>();
   const kindLabels = {
-    patient: "Пациенты",
     prodoctorov: "ПроДокторов",
     social: "Соцсети",
   } as const;
 
   for (const review of reviews) {
-    if (!seen.has(review.kind)) {
+    if (review.kind !== "patient" && !seen.has(review.kind)) {
       seen.add(review.kind);
       filters.push({ id: review.kind, label: kindLabels[review.kind] });
     }
