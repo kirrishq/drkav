@@ -3,9 +3,14 @@
 import { useEffect, useId, useState } from "react";
 
 import { cn } from "./lib/cn";
+import {
+  OperationSectionIcon,
+  type OperationSectionIconKey,
+} from "./operation-section-icon";
 
 export type SectionNavigationItem = {
   id: string;
+  icon?: OperationSectionIconKey;
   label: string;
 };
 
@@ -60,14 +65,22 @@ function SectionLinks({
                 href={`#${item.id}`}
                 onClick={onNavigate}
               >
-                {item.label}
+                <span className="section-navigation__icon">
+                  {item.icon ? <OperationSectionIcon icon={item.icon} /> : null}
+                </span>
+                <span className="section-navigation__label">{item.label}</span>
+                <span aria-hidden="true" className="section-navigation__icon" />
               </a>
             ) : (
               <span
                 aria-disabled="true"
                 className="section-navigation__link section-navigation__link--disabled"
               >
-                {item.label}
+                <span className="section-navigation__icon">
+                  {item.icon ? <OperationSectionIcon icon={item.icon} /> : null}
+                </span>
+                <span className="section-navigation__label">{item.label}</span>
+                <span aria-hidden="true" className="section-navigation__icon" />
               </span>
             )}
           </li>

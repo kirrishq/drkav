@@ -63,6 +63,15 @@ export type {
   SectionNavigationItem,
   SectionNavigationProps,
 } from "./section-navigation";
+export {
+  isOperationSectionIconKey,
+  operationSectionIconKeys,
+  OperationSectionIcon,
+} from "./operation-section-icon";
+export type {
+  OperationSectionIconKey,
+  OperationSectionIconProps,
+} from "./operation-section-icon";
 export type {
   BreadcrumbItem,
   BreadcrumbsProps,

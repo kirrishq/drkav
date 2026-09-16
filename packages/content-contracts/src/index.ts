@@ -130,6 +130,7 @@ export interface OperationSectionBase {
   sectionKey: string;
   anchor?: string;
   heading?: string;
+  iconKey?: string;
   showInPageNavigation: boolean;
 }
 

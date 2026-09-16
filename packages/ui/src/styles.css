@@ -1142,7 +1142,12 @@ html[data-vision="low-vision"] a {
   }
 
   .section-navigation__link {
-    display: block;
+    display: grid;
+    grid-template-columns: var(--space-5) minmax(0, 1fr) var(--space-5);
+    min-height: var(--space-10);
+    align-items: center;
+    justify-items: center;
+    gap: var(--space-2);
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius-md);
     font-size: var(--type-text-sm-size);
@@ -1151,6 +1156,26 @@ html[data-vision="low-vision"] a {
     text-align: center;
     text-decoration: none;
     transition: color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .section-navigation__icon {
+    display: inline-flex;
+    width: var(--space-5);
+    height: var(--space-5);
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+  }
+
+  .section-navigation__label {
+    min-width: 0;
+  }
+
+  .operation-section-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    flex: none;
   }
 
   .section-navigation__link:hover {

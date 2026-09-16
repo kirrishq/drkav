@@ -4,7 +4,10 @@ import type {
   PriceItem,
 } from "@drkav/content-contracts";
 import { formatPriceItem } from "@drkav/content-contracts";
+import type { OperationSectionIconKey } from "@drkav/ui";
+import { OperationSectionIcon } from "@drkav/ui";
 
+import { getOperationSectionIconKey } from "@/content/operation-page-navigation";
 import { BlocksRenderer } from "./blocks-renderer";
 
 type OperationContentRendererProps = {
@@ -15,9 +18,11 @@ type OperationContentRendererProps = {
 
 function SectionHeading({
   heading,
+  icon,
   level,
 }: {
   heading?: string;
+  icon?: OperationSectionIconKey;
   level: 2 | 3;
 }) {
   if (!heading) {
@@ -25,9 +30,15 @@ function SectionHeading({
   }
 
   return level === 2 ? (
-    <h2 className="content-card__heading content-card__heading--h2">{heading}</h2>
+    <h2 className="content-card__heading content-card__heading--h2 operation-content__heading">
+      {icon ? <OperationSectionIcon icon={icon} /> : null}
+      <span>{heading}</span>
+    </h2>
   ) : (
-    <h3 className="content-card__heading content-card__heading--h3">{heading}</h3>
+    <h3 className="content-card__heading content-card__heading--h3 operation-content__heading">
+      {icon ? <OperationSectionIcon icon={icon} /> : null}
+      <span>{heading}</span>
+    </h3>
   );
 }
 
@@ -101,11 +112,14 @@ function SectionContent({
   section: OperationContentSection;
 }) {
   const headingLevel = section.showInPageNavigation ? 2 : 3;
+  const icon = section.heading
+    ? getOperationSectionIconKey(section.iconKey ?? section.heading)
+    : undefined;
 
   if (section.type === "rich-text") {
     return (
       <>
-        <SectionHeading heading={section.heading} level={headingLevel} />
+        <SectionHeading heading={section.heading} icon={icon} level={headingLevel} />
         <BlocksRenderer blocks={section.body} />
       </>
     );
@@ -114,7 +128,7 @@ function SectionContent({
   if (section.type === "steps") {
     return (
       <>
-        <SectionHeading heading={section.heading} level={headingLevel} />
+        <SectionHeading heading={section.heading} icon={icon} level={headingLevel} />
         {section.intro ? <BlocksRenderer blocks={section.intro} /> : null}
         <ol className="operation-content__steps">
           {section.steps.map((step, index) => (
@@ -139,7 +153,7 @@ function SectionContent({
   if (section.type === "price") {
     return (
       <>
-        <SectionHeading heading={section.heading} level={headingLevel} />
+        <SectionHeading heading={section.heading} icon={icon} level={headingLevel} />
         {section.intro ? <BlocksRenderer blocks={section.intro} /> : null}
         <PriceList prices={prices} />
         {section.disclaimer ? (
@@ -153,7 +167,7 @@ function SectionContent({
 
   return (
     <>
-      <SectionHeading heading={section.heading} level={headingLevel} />
+      <SectionHeading heading={section.heading} icon={icon} level={headingLevel} />
       {section.intro ? <BlocksRenderer blocks={section.intro} /> : null}
       <TextItems
         checklist={section.type === "checklist"}

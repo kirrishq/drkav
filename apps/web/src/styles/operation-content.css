@@ -4,6 +4,19 @@
     gap: var(--space-5);
   }
 
+  .operation-content__heading {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .operation-content__heading > .operation-section-icon {
+    width: var(--space-6);
+    height: var(--space-6);
+    flex: none;
+    color: var(--accent);
+  }
+
   .operation-content__navigation {
     position: sticky;
     z-index: 30;

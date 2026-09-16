@@ -350,6 +350,7 @@ function mapContentSection(
     sectionKey: requireString(section.sectionKey, `${label}.sectionKey`),
     anchor: requireAnchor(section.anchor, `${label}.anchor`),
     heading: optionalString(section.heading, `${label}.heading`),
+    iconKey: optionalString(section.iconKey, `${label}.iconKey`),
     showInPageNavigation: requireBoolean(
       section.showInPageNavigation,
       `${label}.showInPageNavigation`,
@@ -1494,6 +1495,7 @@ export class StrapiContentRepository implements ContentRepository {
       "sectionKey",
       "anchor",
       "heading",
+      "iconKey",
       "showInPageNavigation",
     ];
     const sectionComponents = [
@@ -1514,7 +1516,7 @@ export class StrapiContentRepository implements ContentRepository {
     }
 
     params.set(
-      "populate[contentSections][on][operation.rich-text-section][fields][4]",
+      "populate[contentSections][on][operation.rich-text-section][fields][5]",
       "body",
     );
 
@@ -1523,11 +1525,11 @@ export class StrapiContentRepository implements ContentRepository {
       "operation.checklist-section",
     ]) {
       params.set(
-        `populate[contentSections][on][${component}][fields][4]`,
+        `populate[contentSections][on][${component}][fields][5]`,
         "intro",
       );
       params.set(
-        `populate[contentSections][on][${component}][fields][5]`,
+        `populate[contentSections][on][${component}][fields][6]`,
         "outro",
       );
       ["title", "text", "sortOrder"].forEach((field, index) => {
@@ -1539,11 +1541,11 @@ export class StrapiContentRepository implements ContentRepository {
     }
 
     params.set(
-      "populate[contentSections][on][operation.steps-section][fields][4]",
+      "populate[contentSections][on][operation.steps-section][fields][5]",
       "intro",
     );
     params.set(
-      "populate[contentSections][on][operation.steps-section][fields][5]",
+      "populate[contentSections][on][operation.steps-section][fields][6]",
       "outro",
     );
     ["title", "description", "sortOrder"].forEach((field, index) => {
@@ -1554,11 +1556,11 @@ export class StrapiContentRepository implements ContentRepository {
     });
 
     params.set(
-      "populate[contentSections][on][operation.price-section][fields][4]",
+      "populate[contentSections][on][operation.price-section][fields][5]",
       "intro",
     );
     params.set(
-      "populate[contentSections][on][operation.price-section][fields][5]",
+      "populate[contentSections][on][operation.price-section][fields][6]",
       "disclaimer",
     );
 

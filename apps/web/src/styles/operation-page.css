@@ -43,23 +43,14 @@
     margin-inline: 0;
   }
 
-  .operation-page__consultation-bar {
-    position: sticky;
-    z-index: 20;
-    bottom: var(--space-4);
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin: calc(var(--space-4) - var(--space-0-5)) 0 0;
-    padding: var(--space-0-5);
-    border-radius: var(--radius-lg);
-    background: transparent;
-    pointer-events: none;
+  .operation-page__consultation-cta {
+    display: grid;
+    gap: var(--space-5);
+    margin: 0;
   }
 
-  .operation-page__consultation-bar > * {
-    pointer-events: auto;
-    box-shadow: var(--shadow-raised);
+  .operation-page__consultation-cta p {
+    margin: 0;
   }
 
   @media (min-width: 40rem) {
@@ -67,8 +58,9 @@
       padding-inline: var(--space-6);
     }
 
-    .operation-page__consultation-bar {
-      width: 100%;
+    .operation-page__consultation-cta {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
     }
   }
 

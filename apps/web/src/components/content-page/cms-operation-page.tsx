@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import {
   AdministratorCta,
+  OperationSectionIcon,
   OperationHero,
   PromotionBanner,
   SectionNavigation,
@@ -116,7 +117,10 @@ export async function CmsOperationPage({
       (section.heading || section.showInPageNavigation),
   );
   const heroLinks = getOperationHeroLinks(contentSections);
-  const contentNavigation = getOperationContentLinks(contentSections);
+  const contentNavigation = [
+    ...getOperationContentLinks(contentSections),
+    { id: "operation-consultation", icon: "consultation" as const, label: "Консультация" },
+  ];
 
   return (
     <>
@@ -144,11 +148,13 @@ export async function CmsOperationPage({
             ) : null}
 
             <div className="operation-page__main">
-              <OperationContentRenderer
-                prices={content.prices}
-                sections={leadSections}
-                showNavigation={false}
-              />
+              {leadSections.length > 0 ? (
+                <OperationContentRenderer
+                  prices={content.prices}
+                  sections={leadSections}
+                  showNavigation={false}
+                />
+              ) : null}
               {promotion ? (
                 <PromotionBanner
                   description={promotion.description}
@@ -167,9 +173,26 @@ export async function CmsOperationPage({
                 sections={contentSections}
                 showNavigation={false}
               />
-              <aside className="operation-page__consultation-bar">
-                <ConsultationStickyButton />
-              </aside>
+              <section
+                className="content-card content-card--muted operation-page__consultation-cta"
+                id="operation-consultation"
+              >
+                <div>
+                  <p className="type-overline">Следующий шаг</p>
+                  <h2 className="content-card__heading content-card__heading--h2 operation-content__heading">
+                    <OperationSectionIcon icon="consultation" />
+                    <span>Обсудим ваш план операции</span>
+                  </h2>
+                  <p>
+                    На консультации разберём задачу, варианты коррекции, подготовку и стоимость.
+                  </p>
+                </div>
+                <ConsultationTrigger
+                  className={buttonVariants({ size: "md", variant: "primary" })}
+                >
+                  Записаться на консультацию
+                </ConsultationTrigger>
+              </section>
               <DoctorProfile />
               <AdministratorCta
                 backgroundSrc="/images/home/administrator-cta-background.png"
@@ -233,12 +256,4 @@ function getOperationBreadcrumbs(
     ...(operation && category && category.href !== path ? [category] : []),
     { label: currentLabel },
   ];
-}
-
-function ConsultationStickyButton() {
-  return (
-    <ConsultationTrigger className={buttonVariants({ size: "md", variant: "primary" })}>
-      Записаться на консультацию
-    </ConsultationTrigger>
-  );
 }
