@@ -272,12 +272,14 @@ function VisionToggle({
   onToggle,
   enabled,
   controlsId,
+  compact = false,
   mobile = false,
   panelOpen,
 }: {
   onToggle: () => void;
   enabled: boolean;
   controlsId: string;
+  compact?: boolean;
   mobile?: boolean;
   panelOpen: boolean;
 }) {
@@ -297,13 +299,16 @@ function VisionToggle({
         buttonVariants({ size: mobile ? "sm" : "icon", variant: "ghost" }),
         "site-header__vision-toggle",
         mobile && "site-header__vision-toggle--mobile",
+        compact && "site-header__vision-toggle--mobile-compact",
       )}
       onClick={onToggle}
       title={label}
       type="button"
     >
       <VisionIcon />
-      {mobile ? <span>Версия для слабовидящих</span> : null}
+      {mobile && !compact ? (
+        <span>{enabled ? "Выключить версию..." : "Включить версию для..."}</span>
+      ) : null}
     </button>
   );
 }
@@ -970,13 +975,15 @@ export function SiteHeader() {
             </div>
 
             <div className="site-header__contacts hidden lg:flex">
-              <ThemeToggle onToggle={toggleTheme} theme={theme} />
-              <VisionToggle
-                controlsId={desktopVisionPanelId}
-                enabled={lowVision}
-                onToggle={toggleVisionPanel}
-                panelOpen={visionPanelOpen}
-              />
+              <div className="site-header__utility-actions">
+                <ThemeToggle onToggle={toggleTheme} theme={theme} />
+                <VisionToggle
+                  controlsId={desktopVisionPanelId}
+                  enabled={lowVision}
+                  onToggle={toggleVisionPanel}
+                  panelOpen={visionPanelOpen}
+                />
+              </div>
               <div className="site-header__contact">
                 <span className="site-header__contact-label">Клиника</span>
                 <a className="site-header__contact-phone" href="tel:+74951514206">
@@ -1017,7 +1024,6 @@ export function SiteHeader() {
             >
               Консультация
             </ConsultationTrigger>
-            <ThemeToggle onToggle={toggleTheme} theme={theme} />
             <button
               aria-label="Поиск по сайту"
               aria-expanded={searchOpen}
@@ -1028,6 +1034,7 @@ export function SiteHeader() {
             >
               <SearchIcon />
             </button>
+            <ThemeToggle onToggle={toggleTheme} theme={theme} />
             <button
               aria-controls={mobileMenuId}
               aria-expanded={mobileOpen}
@@ -1161,7 +1168,7 @@ export function SiteHeader() {
         )}
         id={mobileMenuId}
       >
-        <div className="mx-auto max-w-wide px-4 py-4 sm:px-6">
+        <div className="site-header__mobile-menu-content mx-auto max-w-wide px-4 py-4 sm:px-6">
           {searchOpen ? (
             <SearchPanel
               inputId={mobileSearchInputId}
@@ -1199,6 +1206,7 @@ export function SiteHeader() {
               <div className="site-header__mobile-vision">
                 <VisionToggle
                   controlsId={mobileVisionPanelId}
+                  compact
                   enabled={lowVision}
                   mobile
                   onToggle={toggleVisionPanel}
