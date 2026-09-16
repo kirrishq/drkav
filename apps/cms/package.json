@@ -11,6 +11,7 @@
     "seed": "node scripts/seed.js",
     "seed:blog": "node scripts/seed-blog.js",
     "seed:before-after": "node scripts/seed-before-after.js",
+    "seed:reviews": "node scripts/seed-reviews.js",
     "seed:conditions": "node scripts/seed-conditions.js",
     "seed:breast-augmentation": "node scripts/seed-breast-augmentation.js",
     "seed:operations": "node scripts/seed-operations.js",

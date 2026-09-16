@@ -18,7 +18,11 @@
   .operation-page__main {
     display: grid;
     min-width: 0;
-    gap: var(--space-8);
+    gap: var(--space-5);
+  }
+
+  .operation-page__main > * {
+    margin-block: 0;
   }
 
   .operation-page__content .stats-strip,
@@ -30,17 +34,22 @@
   }
 
   .operation-page__video {
+    display: flex;
+    justify-content: center;
     overflow: hidden;
     border-radius: var(--radius-lg);
   }
 
   .operation-page__video .video-card {
+    width: 100%;
     max-width: var(--container-reading);
   }
 
   .operation-page__main > .administrator-cta {
     width: 100%;
     margin-inline: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
   }
 
   .operation-page__consultation-cta {
@@ -70,7 +79,7 @@
     }
 
     .operation-page__layout {
-      grid-template-columns: var(--container-sidebar) minmax(0, 1fr);
+      grid-template-columns: var(--container-operation-sidebar) minmax(0, 1fr);
       align-items: start;
       gap: var(--space-5);
     }

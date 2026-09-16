@@ -216,6 +216,58 @@
     background: var(--surface);
   }
 
+  .portfolio-index__list--compact {
+    gap: var(--space-5);
+    margin-top: 0;
+  }
+
+  .portfolio-index__list--compact .portfolio-index__card-link {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+
+  .portfolio-index__list--compact .portfolio-index__case-content {
+    gap: var(--space-2);
+  }
+
+  .portfolio-index__list--compact .portfolio-index__case-operation {
+    font-size: var(--type-badge-size);
+    font-weight: var(--type-overline-weight);
+    letter-spacing: var(--type-overline-tracking);
+    line-height: var(--type-badge-line-height);
+  }
+
+  .portfolio-index__list--compact .portfolio-index__case-title {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: var(--type-h4-size);
+    line-height: var(--type-h4-line-height);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .portfolio-index__list--compact .portfolio-index__excerpt {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .portfolio-index__list--compact .portfolio-index__procedure {
+    display: none;
+  }
+
+  .portfolio-index__list--compact .portfolio-index__case-link {
+    margin-top: var(--space-1);
+  }
+
+  @media (min-width: 64rem) {
+    .portfolio-index__list--compact {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
   .portfolio-case-page {
     width: min(100% - var(--space-8), var(--container-content));
     margin-inline: auto;

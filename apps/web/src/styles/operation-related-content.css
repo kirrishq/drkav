@@ -1,0 +1,72 @@
+@layer components {
+  .operation-related-content {
+    display: grid;
+    gap: var(--space-12);
+    overflow: hidden;
+  }
+
+  .operation-related-content__header,
+  .operation-related-content__section {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .operation-related-content__header {
+    max-width: var(--container-reading);
+  }
+
+  .operation-related-content__header p,
+  .operation-related-content__section-header h3 {
+    margin: 0;
+  }
+
+  .operation-related-content__header .type-overline {
+    color: var(--accent);
+  }
+
+  .operation-related-content__section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .operation-related-content .portfolio-index__list {
+    margin-top: 0;
+  }
+
+  .operation-related-content .reviews-slider {
+    width: calc(100% + (var(--space-5) * 2));
+    margin: 0 calc(-1 * var(--space-5));
+  }
+
+  .operation-related-content .reviews-slider__viewport {
+    margin-top: 0;
+    padding-inline: var(--space-5);
+    scroll-padding-inline: var(--space-5);
+  }
+
+  .operation-related-content .reviews-slider__controls--below {
+    justify-content: flex-end;
+    margin-top: var(--space-3);
+  }
+
+  @media (max-width: 39.99rem) {
+    .operation-related-content__section-header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .operation-related-content .reviews-slider {
+      width: calc(100% + (var(--space-8) * 2));
+      margin-inline: calc(-1 * var(--space-8));
+    }
+
+    .operation-related-content .reviews-slider__viewport {
+      padding-inline: var(--space-8);
+      scroll-padding-inline: var(--space-8);
+    }
+  }
+}

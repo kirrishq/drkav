@@ -78,10 +78,9 @@ export const headerMenu: readonly HeaderMenuItem[] = [
         ],
       },
       {
-        href: "/operaczii/zhivot-i-taliya",
+        href: "/operaczii/abdominoplastika",
         label: "Живот и талия",
         links: [
-          { href: "/operaczii/zhivot-i-taliya", label: "Живот и талия" },
           { href: "/operaczii/abdominoplastika", label: "Абдоминопластика" },
           { href: "/operaczii/diastaz-myshc-zhivota", label: "Диастаз мышц живота" },
         ],

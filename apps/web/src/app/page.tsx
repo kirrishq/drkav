@@ -10,6 +10,8 @@ import { getHomeFinalResults } from "@/content/home-final-results";
 import { homeReviews } from "@/content/home-reviews";
 import { operationCategoryFallbackImages } from "@/content/operation-category-images";
 import { getPageMetadata } from "@/content/page-registry";
+import { createContentRepository } from "@/content/content-repository";
+import { getReviewFilters, mapReviewsToSliderItems } from "@/content/review-presentation";
 
 const homeStats = [
   { label: "Пациентов по рекомендациям", prefix: "~", suffix: "%", value: 85 },
@@ -55,7 +57,12 @@ const homeFinalResultFallbacks = [
 export const metadata = getPageMetadata("/");
 
 export default async function HomePage() {
-  const finalResults = await getHomeFinalResults();
+  const [finalResults, cmsReviews] = await Promise.all([
+    getHomeFinalResults(),
+    createContentRepository().getReviews(),
+  ]);
+  const reviewItems = cmsReviews.length > 0 ? mapReviewsToSliderItems(cmsReviews) : homeReviews;
+  const reviewFilters = cmsReviews.length > 0 ? getReviewFilters(cmsReviews) : [];
   const resultTabs = finalResults.groups.length > 0
     ? finalResults.groups.map((group) => ({ id: group.key, label: group.name }))
     : homeFinalResultFallbacks.map(({ id, label }) => ({ id, label }));
@@ -148,7 +155,7 @@ export default async function HomePage() {
           tabs={resultTabs}
         />
         <OperationsCards items={operationItems} />
-        <ReviewsSlider ctaHref="/pacientam/otzyvy" items={homeReviews} />
+        <ReviewsSlider ctaHref="/pacientam/otzyvy" filters={reviewFilters} items={reviewItems} />
         <ConsultationSection />
         <AdministratorCta
           backgroundSrc="/images/home/administrator-cta-background.png"

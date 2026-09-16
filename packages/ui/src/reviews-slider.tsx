@@ -12,8 +12,16 @@ export type ReviewSliderItem = {
   imageAlt: string;
   imageSrc: string;
   label: string;
+  blurImage?: boolean;
+  filterIds?: readonly string[];
+  externalUrl?: string;
   source: string;
   text: string;
+};
+
+export type ReviewSliderFilter = {
+  id: string;
+  label: string;
 };
 
 export type ReviewsSliderProps = {
@@ -21,10 +29,32 @@ export type ReviewsSliderProps = {
   className?: string;
   ctaHref?: string;
   ctaLabel?: string;
+  controlsPlacement?: "header" | "below";
   description?: string;
+  filters?: readonly ReviewSliderFilter[];
   items: readonly ReviewSliderItem[];
+  showFooter?: boolean;
   title?: string;
 };
+
+function ReviewSliderControls({
+  onScroll,
+  placement,
+}: {
+  onScroll: (direction: "left" | "right") => void;
+  placement?: "below";
+}) {
+  return (
+    <div className={cn("reviews-slider__controls", placement === "below" && "reviews-slider__controls--below")}>
+      <Button aria-label="Предыдущие отзывы" className="reviews-slider__arrow" onClick={() => onScroll("left")} size="icon" variant="outline">
+        <ArrowIcon direction="left" />
+      </Button>
+      <Button aria-label="Следующие отзывы" className="reviews-slider__arrow" onClick={() => onScroll("right")} size="icon" variant="outline">
+        <ArrowIcon direction="right" />
+      </Button>
+    </div>
+  );
+}
 
 function ArrowIcon({ direction }: { direction: "left" | "right" }) {
   return (
@@ -188,6 +218,11 @@ function ReviewDialog({
         <img alt={item.imageAlt} className="reviews-slider__dialog-image" src={item.imageSrc} />
         <p className="type-text-sm reviews-slider__dialog-counter">{currentIndex + 1} из {items.length}</p>
         <p className="type-text-base reviews-slider__dialog-text">{item.text}</p>
+        {item.externalUrl ? (
+          <a className="text-link reviews-slider__dialog-link" href={item.externalUrl} rel="noreferrer" target="_blank">
+            Открыть источник отзыва
+          </a>
+        ) : null}
       </div>
     </dialog>
   );
@@ -199,14 +234,21 @@ export function ReviewsSlider({
   className,
   ctaHref,
   ctaLabel = "Все отзывы",
+  controlsPlacement = "header",
   description = "Реальные впечатления пациентов о результате и сопровождении после операции.",
+  filters = [],
   items,
+  showFooter = true,
   title = "Отзывы пациентов",
 }: ReviewsSliderProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const selectedScrollYRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState<ReviewSliderItem | null>(null);
+  const [activeFilterId, setActiveFilterId] = useState("all");
+  const visibleItems = activeFilterId === "all"
+    ? items
+    : items.filter((item) => item.filterIds?.includes(activeFilterId));
 
   const openReview = (item: ReviewSliderItem) => {
     selectedScrollYRef.current = window.scrollY;
@@ -241,7 +283,12 @@ export function ReviewsSlider({
     viewport.addEventListener("scroll", updateActiveIndex, { passive: true });
 
     return () => viewport.removeEventListener("scroll", updateActiveIndex);
-  }, [items]);
+  }, [visibleItems]);
+
+  useEffect(() => {
+    setActiveIndex(0);
+    viewportRef.current?.scrollTo({ behavior: "auto", left: 0 });
+  }, [activeFilterId]);
 
   const scroll = (direction: "left" | "right") => {
     viewportRef.current?.scrollBy({
@@ -264,23 +311,43 @@ export function ReviewsSlider({
 
   return (
     <section aria-label={ariaLabel} className={cn("reviews-slider", className)}>
-      <div className="reviews-slider__header">
-        <div>
-          <h2 className="type-h2 reviews-slider__title">{title}</h2>
-          <p className="type-text-base reviews-slider__description">{description}</p>
+      {title || description || controlsPlacement === "header" ? (
+        <div className="reviews-slider__header">
+          <div>
+            {title ? <h2 className="type-h2 reviews-slider__title">{title}</h2> : null}
+            {description ? <p className="type-text-base reviews-slider__description">{description}</p> : null}
+          </div>
+          {controlsPlacement === "header" ? <ReviewSliderControls onScroll={scroll} /> : null}
         </div>
-        <div className="reviews-slider__controls">
-          <Button aria-label="Предыдущие отзывы" className="reviews-slider__arrow" onClick={() => scroll("left")} size="icon" variant="outline">
-            <ArrowIcon direction="left" />
-          </Button>
-          <Button aria-label="Следующие отзывы" className="reviews-slider__arrow" onClick={() => scroll("right")} size="icon" variant="outline">
-            <ArrowIcon direction="right" />
-          </Button>
+      ) : null}
+      {filters.length > 0 ? (
+        <div aria-label="Фильтр отзывов" className="reviews-slider__filters" role="tablist">
+          <button
+            aria-selected={activeFilterId === "all"}
+            className={cn("reviews-slider__filter", activeFilterId === "all" && "reviews-slider__filter--active")}
+            onClick={() => setActiveFilterId("all")}
+            role="tab"
+            type="button"
+          >
+            Все отзывы
+          </button>
+          {filters.map((filter) => (
+            <button
+              aria-selected={activeFilterId === filter.id}
+              className={cn("reviews-slider__filter", activeFilterId === filter.id && "reviews-slider__filter--active")}
+              key={filter.id}
+              onClick={() => setActiveFilterId(filter.id)}
+              role="tab"
+              type="button"
+            >
+              {filter.label}
+            </button>
+          ))}
         </div>
-      </div>
+      ) : null}
       <div className="reviews-slider__viewport" ref={viewportRef}>
         <ul className="reviews-slider__track">
-          {items.map((item) => (
+          {visibleItems.map((item) => (
             <li className="reviews-slider__card" key={item.id}>
               <button
                 aria-haspopup="dialog"
@@ -289,7 +356,7 @@ export function ReviewsSlider({
                 onClick={() => openReview(item)}
                 type="button"
               >
-                <img alt={item.imageAlt} className="reviews-slider__image" loading="lazy" src={item.imageSrc} />
+                <img alt={item.imageAlt} className={cn("reviews-slider__image", item.blurImage !== false && "reviews-slider__image--blurred")} loading="lazy" src={item.imageSrc} />
                 <span className="reviews-slider__card-content">
                   <span className="type-text-xs reviews-slider__source">{item.source}</span>
                   <span className="type-h4 reviews-slider__card-label">{item.label}</span>
@@ -301,8 +368,9 @@ export function ReviewsSlider({
           ))}
         </ul>
       </div>
+      {controlsPlacement === "below" ? <ReviewSliderControls onScroll={scroll} placement="below" /> : null}
       <div aria-label="Навигация по отзывам" className="reviews-slider__dots">
-        {items.map((item, index) => (
+        {visibleItems.map((item, index) => (
           <button
             aria-current={activeIndex === index ? "true" : undefined}
             aria-label={`Перейти к отзыву ${index + 1}: ${item.label}`}
@@ -313,12 +381,14 @@ export function ReviewsSlider({
           />
         ))}
       </div>
-      <div className="reviews-slider__footer">
-        <span className="type-display reviews-slider__summary">{items.length}+</span>
-        <p className="type-text-base reviews-slider__summary-label">историй пациентов</p>
-        {ctaHref ? <a className={buttonVariants({ size: "sm", variant: "outline" })} href={ctaHref}>{ctaLabel}</a> : null}
-      </div>
-      {selectedItem ? <ReviewDialog initialScrollY={selectedScrollYRef.current} item={selectedItem} items={items} onClose={() => setSelectedItem(null)} onSelect={setSelectedItem} /> : null}
+      {showFooter ? (
+        <div className="reviews-slider__footer">
+          <span className="type-display reviews-slider__summary">{visibleItems.length}+</span>
+          <p className="type-text-base reviews-slider__summary-label">историй пациентов</p>
+          {ctaHref ? <a className={buttonVariants({ size: "sm", variant: "outline" })} href={ctaHref}>{ctaLabel}</a> : null}
+        </div>
+      ) : null}
+      {selectedItem ? <ReviewDialog initialScrollY={selectedScrollYRef.current} item={selectedItem} items={visibleItems} onClose={() => setSelectedItem(null)} onSelect={setSelectedItem} /> : null}
     </section>
   );
 }

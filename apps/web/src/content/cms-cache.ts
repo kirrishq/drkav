@@ -70,6 +70,10 @@ export function getBeforeAfterCasesCacheTag(): string {
   return "before-after-cases";
 }
 
+export function getReviewsCacheTag(): string {
+  return "reviews";
+}
+
 export function getFinalResultsCacheTag(): string {
   return "final-results";
 }

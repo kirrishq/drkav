@@ -112,7 +112,6 @@
       "amount": 360000,
       "unitLabel": null,
       "description": "Устранение диастаза и грыжи через пупочную ямку, БЕЗ дополнительных разрезов внизу живота Диастаз корректируется по всему протяжению, снизу и до верха. Можно скорректировать диастаз любой степени. По показаниям может быть устатовлена сетка",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -125,7 +124,6 @@
       "amount": 440000,
       "unitLabel": null,
       "description": "Коррекция передней брюшной стенки, удаление избытков кожи и жира. Подтяжка живота с перемещением пупка, ушиванием диастаза и пупочной грыжи. Восстановление эстетических пропорций живота",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -138,7 +136,6 @@
       "amount": 290000,
       "unitLabel": null,
       "description": "Ограниченная подтяжка и коррекция формы передней брюшной стенки без коррекции диастаза и ушивания пупочной грыжи",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -151,7 +148,6 @@
       "amount": 340000,
       "unitLabel": null,
       "description": "Ограниченная подтяжка и коррекция формы передней брюшной стенки с коррекцией диастаза и ушиванием пупочной грыжи",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -164,7 +160,6 @@
       "amount": 420000,
       "unitLabel": null,
       "description": "Увеличение размера груди путем установки имплантов. Стоимость имплантов ВКЛЮЧЕНА",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -177,7 +172,6 @@
       "amount": 470000,
       "unitLabel": null,
       "description": "Удаление имплантов и установка новых. Стоимость имплантов ВКЛЮЧЕНА",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -190,7 +184,6 @@
       "amount": 420000,
       "unitLabel": null,
       "description": "Подтяжка груди с удалением старых имплантов без установки новых",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -203,7 +196,6 @@
       "amount": 490000,
       "unitLabel": null,
       "description": "Подтяжка груди с установкой имплантов. Стоимость имплантов ВКЛЮЧЕНА",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -216,7 +208,6 @@
       "amount": 540000,
       "unitLabel": null,
       "description": "Любой вид подтяжки груди по показаниям с удалением импланта и установкой нового. Стоимость новых имплантатов включена",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -229,7 +220,6 @@
       "amount": 380000,
       "unitLabel": null,
       "description": "Любой вид подтяжки по показаниям",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -241,7 +231,6 @@
       "currency": "RUB",
       "unitLabel": null,
       "description": "Уменьшение груди на несколько размеров. Коррекция формы и положения молочных желез. Стоимость зависит от объема и сложности вмешательства",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -254,7 +243,6 @@
       "amount": 940000,
       "unitLabel": null,
       "description": "Подтяжка живота, лобка, боков, спины, ягодиц. Как правило рекомендуется после массивной потери веса, при существенном провисании кожи",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -267,7 +255,6 @@
       "amount": 320000,
       "unitLabel": null,
       "description": "Удаление лишней кожи, перераспределение тканей",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -280,7 +267,6 @@
       "amount": 320000,
       "unitLabel": null,
       "description": "Иссечении и подтяжка кожи внутренней поверхности бедер",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -293,7 +279,6 @@
       "amount": 320000,
       "unitLabel": null,
       "description": "Иссечении и подтяжка кожи внутренней поверхности бедер",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -306,7 +291,6 @@
       "amount": 30000,
       "unitLabel": null,
       "description": "Вибрационная липосакция. При проведении комплексных операций, липофилинге и липоскульптуре тела, стоимость липосакции рассчитывается исходя из количества зон (количество зон для каждого пациента индивидуально, и определяется хирургом на консультации)",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -318,7 +302,6 @@
       "currency": "RUB",
       "unitLabel": null,
       "description": "При проведении комплексных операций, липофилинге и липоскульптуре тела, стоимость липосакции рассчитывается исходя из количества зон (количество зон для каждого пациента индивидуально, и определяется хирургом на консультации)",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -331,7 +314,6 @@
       "amount": 80000,
       "unitLabel": null,
       "description": "Скульптура кубиков и косых мышц пресса (стоимость актуальна при комплексной липоскульптуре)",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -344,7 +326,6 @@
       "amount": 60000,
       "unitLabel": null,
       "description": "Придание точености мышцам, как после серьезных тренировок в спортзале, 2 стороны (стоимость актуальна при комплексной липоскульптуре)",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -357,7 +338,6 @@
       "amount": 180000,
       "unitLabel": null,
       "description": "Увеличение груди с использованием собственного жира. Позволяет наполнить недостающий объем груди с помощью локального введения собственных жировых клеток. Липосакция зон для забора жира оплачивается дополнительно",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -370,7 +350,6 @@
       "amount": 230000,
       "unitLabel": null,
       "description": "Позволяет округлить форму ягодиц, скорректировать западения, а так же увеличить размер. Липоскация зон для забора жира оплачивается отдельно",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -383,7 +362,6 @@
       "amount": 60000,
       "unitLabel": null,
       "description": "Применяется для локальной коррекции органиченных участков",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для женщин",
       "isActive": true
     },
     {
@@ -396,7 +374,6 @@
       "amount": 260000,
       "unitLabel": null,
       "description": "Устранение истинной гинекомастии периареолярным доступом / ложной гинекомастии",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для мужчин",
       "isActive": true
     },
     {
@@ -409,7 +386,6 @@
       "amount": 40000,
       "unitLabel": null,
       "description": "Придание точености мышцам, как после серьезных тренировок в спортзале, 2 стороны (стоимость актуальна при комплексной липоскульптуре)",
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость пластических операций для мужчин",
       "isActive": true
     },
     {
@@ -422,7 +398,6 @@
       "amount": 60000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -435,7 +410,6 @@
       "amount": 35000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -448,7 +422,6 @@
       "amount": 40000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -461,7 +434,6 @@
       "amount": 50000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -474,7 +446,6 @@
       "amount": 90000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -487,7 +458,6 @@
       "amount": 75000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -500,7 +470,6 @@
       "amount": 90000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -513,7 +482,6 @@
       "amount": 50000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -526,7 +494,6 @@
       "amount": 50000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -539,7 +506,6 @@
       "amount": 55000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -552,7 +518,6 @@
       "amount": 60000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -565,7 +530,6 @@
       "amount": 75000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -578,7 +542,6 @@
       "amount": 60000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -591,7 +554,6 @@
       "amount": 50000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -604,7 +566,6 @@
       "amount": 30000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -617,7 +578,6 @@
       "amount": 30000,
       "unitLabel": null,
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -630,7 +590,6 @@
       "amount": 30000,
       "unitLabel": "за зону",
       "description": null,
-      "note": "Источник: https://drkav.ru/ceny.html; раздел: Стоимость RF-лифтинга Morfeus 8",
       "isActive": true
     },
     {
@@ -643,7 +602,6 @@
       "currency": "RUB",
       "unitLabel": "за изолированную зону",
       "description": "Подбородок, галифе, вдовий горб и другие изолированные зоны.",
-      "note": "Источник: https://drkav.ru/ceny.html; позиция опубликована отдельной строкой вне карточек общего прайса.",
       "isActive": true
     }
   ],

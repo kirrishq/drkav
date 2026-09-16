@@ -23,6 +23,7 @@ import type {
   PortfolioContentSection,
   PortfolioIndexContent,
   PortfolioMediaAsset,
+  Review,
   PriceItem,
   RichTextBlock,
   RichTextInline,
@@ -32,6 +33,7 @@ import type {
   SeoData,
   StaticPageContent,
 } from "@drkav/content-contracts";
+import type { ReviewKind } from "@drkav/content-contracts";
 
 import {
   getBlogArticleCacheTag,
@@ -43,6 +45,7 @@ import {
   getOperationCatalogCacheTag,
   getOperationCacheTag,
   getFinalResultsCacheTag,
+  getReviewsCacheTag,
   getPortfolioCaseCacheTag,
   getPortfolioIndexCacheTag,
 } from "./cms-cache";
@@ -86,6 +89,36 @@ function optionalString(value: unknown, label: string): string | undefined {
   }
 
   return requireString(value, label);
+}
+
+function optionalHttpUrl(value: unknown, label: string): string | undefined {
+  const url = optionalString(value, label);
+
+  if (!url) {
+    return undefined;
+  }
+
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      throw new Error("Unsupported protocol");
+    }
+
+    return parsed.toString();
+  } catch {
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be an absolute HTTP(S) URL.`);
+  }
+}
+
+function requireHttpUrl(value: unknown, label: string): string {
+  const url = optionalHttpUrl(value, label);
+
+  if (!url) {
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be an absolute HTTP(S) URL.`);
+  }
+
+  return url;
 }
 
 function requireBoolean(value: unknown, label: string): boolean {
@@ -350,7 +383,6 @@ function mapContentSection(
     sectionKey: requireString(section.sectionKey, `${label}.sectionKey`),
     anchor: requireAnchor(section.anchor, `${label}.anchor`),
     heading: optionalString(section.heading, `${label}.heading`),
-    iconKey: optionalString(section.iconKey, `${label}.iconKey`),
     showInPageNavigation: requireBoolean(
       section.showInPageNavigation,
       `${label}.showInPageNavigation`,
@@ -1231,6 +1263,59 @@ export class StrapiContentRepository implements ContentRepository {
     });
   }
 
+  async getReviews(): Promise<readonly Review[]> {
+    const params = this.createPublishedParams([
+      "slug",
+      "title",
+      "text",
+      "source",
+      "kind",
+      "imageUrl",
+      "imageAlt",
+      "externalUrl",
+      "sortOrder",
+    ]);
+    params.set("pagination[pageSize]", "100");
+    params.set("sort[0]", "sortOrder:asc");
+    params.set("populate[operation][fields][0]", "canonicalPath");
+    params.set("populate[operation][fields][1]", "heading");
+
+    const reviews = await this.getMany(
+      "/api/reviews",
+      params,
+      getReviewsCacheTag(),
+    );
+
+    return reviews.map((entry, index) => {
+      const label = `reviews[${index}]`;
+      const item = requireRecord(entry, label);
+
+      const kind = requireString(item.kind, `${label}.kind`);
+
+      if (kind !== "patient" && kind !== "prodoctorov" && kind !== "social") {
+        throw new CmsInvalidResponseError(`Invalid Strapi response: ${label}.kind is unsupported.`);
+      }
+
+      const operation = item.operation === null || item.operation === undefined
+        ? undefined
+        : mapCatalogLink(item.operation, `${label}.operation`);
+
+      return {
+        slug: requireString(item.slug, `${label}.slug`),
+        title: requireString(item.title, `${label}.title`),
+        text: requireString(item.text, `${label}.text`),
+        source: requireString(item.source, `${label}.source`),
+        kind: kind as ReviewKind,
+        image: {
+          url: requireHttpUrl(item.imageUrl, `${label}.imageUrl`),
+          alternativeText: optionalString(item.imageAlt, `${label}.imageAlt`),
+        },
+        externalUrl: optionalHttpUrl(item.externalUrl, `${label}.externalUrl`),
+        operation,
+      };
+    });
+  }
+
   async getFinalResults(): Promise<readonly FinalResult[]> {
     const params = this.createPublishedParams([
       "slug",
@@ -1495,7 +1580,6 @@ export class StrapiContentRepository implements ContentRepository {
       "sectionKey",
       "anchor",
       "heading",
-      "iconKey",
       "showInPageNavigation",
     ];
     const sectionComponents = [

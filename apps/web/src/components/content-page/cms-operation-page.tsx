@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import type { RichTextBlock } from "@drkav/content-contracts";
 
 import {
   AdministratorCta,
-  OperationSectionIcon,
   OperationHero,
   PromotionBanner,
   SectionNavigation,
@@ -13,6 +13,8 @@ import {
 } from "@drkav/ui";
 
 import { DoctorProfile } from "@/components/doctor-profile/doctor-profile";
+import { OperationRelatedContent } from "@/components/operation-related-content/operation-related-content";
+import { BlocksRenderer } from "@/components/operation-content/blocks-renderer";
 import { OperationContentRenderer } from "@/components/operation-content/operation-content-renderer";
 import { administratorContact } from "@/components/site-header/header-config";
 import {
@@ -21,6 +23,7 @@ import {
 } from "@/content/cms-migrated-operations";
 import { logCmsError } from "@/content/cms-logging";
 import { getOperationPageEnhancement } from "@/content/operation-page-config";
+import { createContentRepository } from "@/content/content-repository";
 import {
   getOperationContentLinks,
   getOperationHeroLinks,
@@ -86,6 +89,22 @@ export async function CmsOperationPage({
     );
   }
 
+  const repository = createContentRepository();
+  const [beforeAfterCases, portfolioIndex, reviews] = await Promise.all([
+    repository.getBeforeAfterCases(),
+    repository.getPortfolioIndex(),
+    repository.getReviews(),
+  ]);
+  const relatedBeforeAfterCases = beforeAfterCases.filter(
+    (item) => item.operation.canonicalPath === path,
+  );
+  const relatedPortfolioCases = portfolioIndex.cases.filter((item) =>
+    item.operations.some((operation) => operation.canonicalPath === path),
+  );
+  const relatedReviews = reviews.filter(
+    (item) => item.operation?.canonicalPath === path,
+  );
+
   const introSection = content.contentSections.find(
     (section) => !section.heading && !section.showInPageNavigation,
   );
@@ -103,23 +122,29 @@ export async function CmsOperationPage({
         href: "/akcii",
         title: "Актуальные предложения",
       });
-  const promotionHeading = promotionSection?.heading ?? enhancement.promotion?.title;
   const introText =
     introSection?.type === "rich-text" ? extractText(introSection.body) : "";
+  const introBlocks =
+    introSection?.type === "rich-text" &&
+    introSection.body.length > 0 &&
+    !isPlaceholderIntro(introText)
+      ? introSection.body
+      : null;
   const introDescription =
-    enhancement.heroDescription ?? (introText || content.heroDescription);
-  const leadSections = content.contentSections.filter(
-    (section) => !section.heading && !section.showInPageNavigation && section !== introSection,
-  );
+    getShortIntro(
+      enhancement.heroDescription ??
+        getFirstParagraphText(introBlocks) ??
+        content.heroDescription,
+    );
   const contentSections = content.contentSections.filter(
     (section) =>
-      section.heading !== promotionHeading &&
-      (section.heading || section.showInPageNavigation),
+      section !== introSection &&
+      section !== promotionSection,
   );
   const heroLinks = getOperationHeroLinks(contentSections);
   const contentNavigation = [
     ...getOperationContentLinks(contentSections),
-    { id: "operation-consultation", icon: "consultation" as const, label: "Консультация" },
+    { id: "operation-consultation", label: "Консультация", variant: "accent" as const },
   ];
 
   return (
@@ -148,13 +173,6 @@ export async function CmsOperationPage({
             ) : null}
 
             <div className="operation-page__main">
-              {leadSections.length > 0 ? (
-                <OperationContentRenderer
-                  prices={content.prices}
-                  sections={leadSections}
-                  showNavigation={false}
-                />
-              ) : null}
               {promotion ? (
                 <PromotionBanner
                   description={promotion.description}
@@ -163,9 +181,14 @@ export async function CmsOperationPage({
                   title={promotion.title}
                 />
               ) : null}
+              {introBlocks ? (
+                <section className="content-card content-card--spacious operation-page__intro">
+                  <BlocksRenderer blocks={introBlocks} />
+                </section>
+              ) : null}
               {enhancement.video ? (
-                <section aria-label="Видео об операции" className="operation-page__video">
-                  <VideoCard {...enhancement.video} location="Маммопластика" showDetails={false} year="" />
+                <section aria-label="Видео об операции" className="content-card operation-page__video">
+                  <VideoCard {...enhancement.video} location={content.heading} showDetails={false} year="" />
                 </section>
               ) : null}
               <OperationContentRenderer
@@ -174,14 +197,13 @@ export async function CmsOperationPage({
                 showNavigation={false}
               />
               <section
-                className="content-card content-card--muted operation-page__consultation-cta"
+                className="content-card consultation-section consultation-section--compact operation-page__consultation-cta"
                 id="operation-consultation"
               >
-                <div>
+                <div className="consultation-section__content">
                   <p className="type-overline">Следующий шаг</p>
-                  <h2 className="content-card__heading content-card__heading--h2 operation-content__heading">
-                    <OperationSectionIcon icon="consultation" />
-                    <span>Обсудим ваш план операции</span>
+                  <h2 className="content-card__heading content-card__heading--h2 consultation-section__title">
+                    Обсудим ваш план операции
                   </h2>
                   <p>
                     На консультации разберём задачу, варианты коррекции, подготовку и стоимость.
@@ -193,6 +215,12 @@ export async function CmsOperationPage({
                   Записаться на консультацию
                 </ConsultationTrigger>
               </section>
+              <OperationRelatedContent
+                beforeAfterCases={relatedBeforeAfterCases}
+                operationHeading={content.heading}
+                portfolioCases={relatedPortfolioCases}
+                reviews={relatedReviews}
+              />
               <DoctorProfile />
               <AdministratorCta
                 backgroundSrc="/images/home/administrator-cta-background.png"
@@ -229,6 +257,42 @@ function extractText(value: unknown): string {
   }
 
   return "";
+}
+
+const placeholderIntro = "Наслаждайтесь собой и своим телом!";
+
+function isPlaceholderIntro(value: string): boolean {
+  return value.trim().replace(/\s+/g, " ").toLocaleLowerCase("ru-RU") ===
+    placeholderIntro.toLocaleLowerCase("ru-RU");
+}
+
+function getFirstParagraphText(
+  blocks: readonly RichTextBlock[] | null,
+): string | undefined {
+  const paragraph = blocks?.find((block) => block.type === "paragraph");
+
+  if (!paragraph || paragraph.type !== "paragraph") {
+    return undefined;
+  }
+
+  return extractText(paragraph.children);
+}
+
+function getShortIntro(value?: string): string | undefined {
+  const normalized = value?.replace(/\s+/g, " ").trim();
+
+  if (!normalized || isPlaceholderIntro(normalized)) {
+    return undefined;
+  }
+
+  const firstSentence = normalized.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? normalized;
+
+  if (firstSentence.length <= 220) {
+    return firstSentence;
+  }
+
+  const shortened = firstSentence.slice(0, 217).replace(/[\s,;:—-]+$/, "");
+  return `${shortened}…`;
 }
 
 const operationBreadcrumbCategories: Readonly<Record<string, { href: string; label: string }>> = {

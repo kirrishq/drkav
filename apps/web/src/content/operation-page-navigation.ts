@@ -1,6 +1,4 @@
 import type { OperationContentSection } from "@drkav/content-contracts";
-import type { OperationSectionIconKey } from "@drkav/ui";
-import { isOperationSectionIconKey } from "@drkav/ui";
 
 export type OperationHeroLink = {
   href: string;
@@ -9,7 +7,6 @@ export type OperationHeroLink = {
 
 export type OperationContentLink = {
   id: string;
-  icon: OperationSectionIconKey;
   label: string;
 };
 
@@ -58,46 +55,6 @@ export function getOperationContentLinks(
       return [];
     }
 
-    return [{
-      icon: getOperationSectionIconKey(section.iconKey ?? section.heading),
-      id: section.anchor,
-      label: section.heading,
-    }];
+    return [{ id: section.anchor, label: section.heading }];
   });
-}
-
-const iconRules: readonly { icon: OperationSectionIconKey; pattern: RegExp }[] = [
-  { icon: "promotion", pattern: /подар|акци/iu },
-  { icon: "price", pattern: /стоим|цен[аые]|сколько стоит|доступност/iu },
-  { icon: "additional-costs", pattern: /дополнительно оплач|дополнительн.*расход|наркоз|стационар/iu },
-  { icon: "included", pattern: /что входит|включен|состав стоимости/iu },
-  { icon: "contraindications", pattern: /противопоказ|риск/iu },
-  { icon: "implants", pattern: /имплант|аугментац/iu },
-  { icon: "indications", pattern: /показ|кому подходит|когда нужна|когда показана|почему женщины|почему мужчины|причины/iu },
-  { icon: "preparation", pattern: /подготов|консультац|обследован/iu },
-  { icon: "process", pattern: /как проходит|как проводится|этап|ход операции|хирургическое вмешательство/iu },
-  { icon: "types", pattern: /вид|вариант|метод|зон[аы]|коррекци/iu },
-  { icon: "results", pattern: /результат|эффект|до и после/iu },
-  { icon: "recovery", pattern: /восстанов|реабилитац/iu },
-  { icon: "benefits", pattern: /преимуществ|почему стоит|почему выбрать|отличи/iu },
-  { icon: "faq", pattern: /часто задаваем|вопрос/iu },
-  { icon: "technology", pattern: /технолог|принцип|как работает|суть/iu },
-];
-
-export function getOperationSectionIconKey(value?: string): OperationSectionIconKey {
-  if (value) {
-    const explicitKey = value.trim().toLowerCase();
-
-    if (isOperationSectionIconKey(explicitKey)) {
-      return explicitKey;
-    }
-
-    const rule = iconRules.find(({ pattern }) => pattern.test(value));
-
-    if (rule) {
-      return rule.icon;
-    }
-  }
-
-  return "information";
 }

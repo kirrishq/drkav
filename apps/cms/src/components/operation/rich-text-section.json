@@ -18,11 +18,6 @@
       "type": "string",
       "required": false
     },
-    "iconKey": {
-      "type": "string",
-      "required": false,
-      "enum": ["additional-costs", "benefits", "consultation", "contraindications", "faq", "included", "indications", "implants", "information", "preparation", "price", "process", "promotion", "recovery", "results", "technology", "types"]
-    },
     "body": {
       "type": "blocks",
       "required": true

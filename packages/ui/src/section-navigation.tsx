@@ -3,15 +3,11 @@
 import { useEffect, useId, useState } from "react";
 
 import { cn } from "./lib/cn";
-import {
-  OperationSectionIcon,
-  type OperationSectionIconKey,
-} from "./operation-section-icon";
 
 export type SectionNavigationItem = {
   id: string;
-  icon?: OperationSectionIconKey;
   label: string;
+  variant?: "default" | "accent";
 };
 
 export type SectionNavigationProps = {
@@ -61,26 +57,25 @@ function SectionLinks({
             {available ? (
               <a
                 aria-current={active ? "location" : undefined}
-                className={cn("section-navigation__link", active && "section-navigation__link--active")}
+                className={cn(
+                  "section-navigation__link",
+                  active && "section-navigation__link--active",
+                  item.variant === "accent" && "section-navigation__link--accent",
+                )}
                 href={`#${item.id}`}
                 onClick={onNavigate}
               >
-                <span className="section-navigation__icon">
-                  {item.icon ? <OperationSectionIcon icon={item.icon} /> : null}
-                </span>
-                <span className="section-navigation__label">{item.label}</span>
-                <span aria-hidden="true" className="section-navigation__icon" />
+                {item.label}
               </a>
             ) : (
               <span
                 aria-disabled="true"
-                className="section-navigation__link section-navigation__link--disabled"
+                className={cn(
+                  "section-navigation__link section-navigation__link--disabled",
+                  item.variant === "accent" && "section-navigation__link--accent",
+                )}
               >
-                <span className="section-navigation__icon">
-                  {item.icon ? <OperationSectionIcon icon={item.icon} /> : null}
-                </span>
-                <span className="section-navigation__label">{item.label}</span>
-                <span aria-hidden="true" className="section-navigation__icon" />
+                {item.label}
               </span>
             )}
           </li>

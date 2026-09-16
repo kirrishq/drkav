@@ -63,15 +63,6 @@ export type {
   SectionNavigationItem,
   SectionNavigationProps,
 } from "./section-navigation";
-export {
-  isOperationSectionIconKey,
-  operationSectionIconKeys,
-  OperationSectionIcon,
-} from "./operation-section-icon";
-export type {
-  OperationSectionIconKey,
-  OperationSectionIconProps,
-} from "./operation-section-icon";
 export type {
   BreadcrumbItem,
   BreadcrumbsProps,
@@ -88,7 +79,7 @@ export type { RecordCardDetail, RecordCardProps } from "./record-card";
 export { StatsStrip } from "./stats-strip";
 export type { StatsStripItem, StatsStripProps } from "./stats-strip";
 export { ReviewsSlider } from "./reviews-slider";
-export type { ReviewSliderItem, ReviewsSliderProps } from "./reviews-slider";
+export type { ReviewSliderFilter, ReviewSliderItem, ReviewsSliderProps } from "./reviews-slider";
 export { TextLink } from "./text-link";
 export type { TextLinkProps } from "./text-link";
 export { Textarea } from "./textarea";

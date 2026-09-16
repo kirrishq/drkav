@@ -26,7 +26,7 @@ function getOperationLabel(operations: PortfolioIndexContent["cases"][number]["o
   return operations.length > 0 ? operations.map((operation) => operation.heading).join(" · ") : fallback;
 }
 
-export function PortfolioIndex({ cases }: PortfolioIndexContent) {
+export function PortfolioIndex({ cases, variant = "default" }: PortfolioIndexContent & { variant?: "default" | "compact" }) {
   const [revealedCases, setRevealedCases] = useState<ReadonlySet<string>>(new Set());
 
   if (cases.length === 0) {
@@ -34,7 +34,7 @@ export function PortfolioIndex({ cases }: PortfolioIndexContent) {
   }
 
   return (
-    <div className="portfolio-index__list">
+    <div className={`portfolio-index__list${variant === "compact" ? " portfolio-index__list--compact" : ""}`}>
       {cases.map((portfolioCase, index) => (
         <article className="content-card content-card--spacious portfolio-index__case" key={portfolioCase.slug}>
           <Link className="portfolio-index__card-link" href={portfolioCase.canonicalPath}>
@@ -51,7 +51,7 @@ export function PortfolioIndex({ cases }: PortfolioIndexContent) {
             />
             </span>
             <div className="portfolio-index__case-content">
-              <p className="type-overline portfolio-index__case-operation">{getOperationLabel(portfolioCase.operations, portfolioCase.caseLabel)}</p>
+              <p className={variant === "compact" ? "portfolio-index__case-operation portfolio-index__case-operation--compact" : "type-overline portfolio-index__case-operation"}>{getOperationLabel(portfolioCase.operations, portfolioCase.caseLabel)}</p>
               <h2 className="card-title card-title--prominent portfolio-index__case-title">{portfolioCase.title}</h2>
               <p className="type-text-base portfolio-index__excerpt">{portfolioCase.excerpt}</p>
               <p className="type-text-sm portfolio-index__procedure"><span className="type-overline">Выполнено</span>{portfolioCase.procedureSummary}</p>

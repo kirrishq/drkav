@@ -68,6 +68,19 @@ export interface BeforeAfterCase {
   operation: OperationCatalogLink;
 }
 
+export type ReviewKind = "patient" | "prodoctorov" | "social";
+
+export interface Review {
+  slug: string;
+  title: string;
+  text: string;
+  source: string;
+  kind: ReviewKind;
+  image: ImageAsset;
+  externalUrl?: string;
+  operation?: OperationCatalogLink;
+}
+
 export interface FinalResult {
   slug: string;
   title: string;
@@ -130,7 +143,6 @@ export interface OperationSectionBase {
   sectionKey: string;
   anchor?: string;
   heading?: string;
-  iconKey?: string;
   showInPageNavigation: boolean;
 }
 
@@ -415,6 +427,7 @@ export interface ContentRepository {
   getOperationByPath(path: string): Promise<OperationContent | null>;
   getOperationCatalog(): Promise<readonly OperationCatalogGroup[]>;
   getBeforeAfterCases(): Promise<readonly BeforeAfterCase[]>;
+  getReviews(): Promise<readonly Review[]>;
   getFinalResults(): Promise<readonly FinalResult[]>;
   getBlogIndex(): Promise<BlogIndexContent>;
   getBlogArticleBySlug(slug: string): Promise<BlogArticle | null>;
