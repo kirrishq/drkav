@@ -1,6 +1,9 @@
-import { VideoCard } from "@drkav/ui";
+"use client";
 
-const videos = [
+import { Button, VideoCard, cn, type VideoCardProps } from "@drkav/ui";
+import { useState } from "react";
+
+const mediaVideos = [
   {
     location: "Интервью Ксении Собчак",
     posterAlt: "Превью интервью о липосакции",
@@ -19,13 +22,23 @@ const videos = [
   },
 ] as const;
 
-export function MediaVideoProjects() {
+export type MediaVideoProjectsProps = {
+  items?: readonly VideoCardProps[];
+  title?: string;
+  tone?: "muted" | "surface";
+};
+
+export function MediaVideoProjects({ items = mediaVideos, title = "Видео проекты", tone = "muted" }: MediaVideoProjectsProps) {
+  const [visibleCount, setVisibleCount] = useState(Math.min(3, items.length));
+  const visibleItems = items.slice(0, visibleCount);
+
   return (
-    <section aria-labelledby="media-video-projects-title" className="content-card content-card--muted content-section media-video-projects">
-      <h2 className="content-card__heading content-card__heading--h2" id="media-video-projects-title">Видео проекты</h2>
+    <section aria-labelledby="media-video-projects-title" className={cn("content-card content-section media-video-projects", tone === "muted" && "content-card--muted")}>
+      <h2 className="content-card__heading content-card__heading--h2" id="media-video-projects-title">{title}</h2>
       <div className="content-card__grid media-video-projects__grid">
-        {videos.map((video) => <VideoCard key={video.videoSrc} {...video} />)}
+        {visibleItems.map((video) => <VideoCard dialogItems={items} key={video.videoSrc} {...video} />)}
       </div>
+      {visibleCount < items.length ? <div className="media-video-projects__more"><Button onClick={() => setVisibleCount((count) => Math.min(count + 3, items.length))} variant="outline">Показать ещё</Button></div> : null}
     </section>
   );
 }

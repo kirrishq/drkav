@@ -49,6 +49,7 @@
   .operation-related-content .reviews-slider__controls--below {
     justify-content: flex-end;
     margin-top: var(--space-3);
+    padding-inline: var(--space-5);
   }
 
   @media (max-width: 39.99rem) {
@@ -67,6 +68,10 @@
     .operation-related-content .reviews-slider__viewport {
       padding-inline: var(--space-8);
       scroll-padding-inline: var(--space-8);
+    }
+
+    .operation-related-content .reviews-slider__controls--below {
+      padding-inline: var(--space-8);
     }
   }
 }

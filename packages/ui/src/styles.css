@@ -1849,6 +1849,7 @@ html[data-vision="low-vision"] a {
   }
 
   .video-card__dialog-content {
+    position: relative;
     display: grid;
     gap: var(--space-4);
     padding: var(--space-5);
@@ -1863,6 +1864,48 @@ html[data-vision="low-vision"] a {
 
   .video-card__dialog-title {
     margin: 0;
+  }
+
+  .video-card__navigation {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    display: grid;
+    width: var(--space-9);
+    height: var(--space-9);
+    place-items: center;
+    padding: 0;
+    border: var(--border-width-default) solid var(--border-subtle);
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    color: var(--text-primary);
+    cursor: pointer;
+    transform: translateY(-50%);
+  }
+
+  .video-card__navigation:hover,
+  .video-card__navigation:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .video-card__navigation--previous {
+    left: var(--space-3);
+  }
+
+  .video-card__navigation--next {
+    right: var(--space-3);
+  }
+
+  .video-card__navigation svg {
+    width: var(--space-5);
+    height: var(--space-5);
+  }
+
+  .media-video-projects__more {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-6);
   }
 
   .stats-strip {

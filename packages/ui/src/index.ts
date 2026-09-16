@@ -87,6 +87,6 @@ export type { TextareaProps } from "./textarea";
 export { Tabs } from "./tabs";
 export type { TabItem, TabsProps } from "./tabs";
 export { VideoCard } from "./video-card";
-export type { VideoCardProps } from "./video-card";
+export type { VideoCardItem, VideoCardProps } from "./video-card";
 export { VideoHighlights } from "./video-highlights";
 export type { VideoHighlight, VideoHighlightsProps } from "./video-highlights";
