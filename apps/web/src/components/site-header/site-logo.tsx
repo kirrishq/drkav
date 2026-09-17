@@ -18,7 +18,6 @@ export function SiteLogo({ onNavigate }: SiteLogoProps) {
         aria-hidden="true"
         className="site-logo__image site-logo__image--light"
         height={230}
-        priority
         src="/images/branding/logo.png"
         width={560}
       />

@@ -87,7 +87,7 @@ export default async function HomePage() {
       href: group?.featuredOperation.canonicalPath ?? fallback?.href ?? "/operaczii",
       id: `placeholder-${tab.id}`,
       imageAlt: `Заглушка для результатов: ${tab.label}`,
-      imageSrc: "/images/before-after/placeholder-after.png",
+      imageSrc: "/images/before-after/results-placeholder.svg",
       label: tab.label,
       tabId: tab.id,
     }];
@@ -136,7 +136,8 @@ export default async function HomePage() {
                 className="home-hero__portrait-image"
                 fill
                 priority
-                sizes="(min-width: 80rem) 30rem, (min-width: 40rem) 36vw, 88vw"
+                quality={75}
+                sizes="(min-width: 80rem) 30rem, (min-width: 40rem) 36vw, calc(100vw - 2rem)"
                 src="/images/doctor-portrait.png"
               />
             </div>

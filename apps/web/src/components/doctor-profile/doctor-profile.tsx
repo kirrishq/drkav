@@ -60,7 +60,7 @@ export function DoctorProfile() {
           alt="Артём Владимирович Коробов в белом халате"
           className="doctor-profile__portrait-image"
           fill
-          priority
+          loading="lazy"
           sizes="(min-width: 64rem) 18rem, (min-width: 48rem) 30vw, 100vw"
           src="/images/doctor-portrait.png"
         />

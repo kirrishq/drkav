@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1122 1402" role="img" aria-labelledby="title desc">
+  <title id="title">Результат операции</title>
+  <desc id="desc">Иллюстрация-заглушка до появления фотографии результата</desc>
+  <defs>
+    <linearGradient id="background" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f4f0f4"/>
+      <stop offset="1" stop-color="#d9d1dc"/>
+    </linearGradient>
+    <linearGradient id="silhouette" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#c7b8c9"/>
+      <stop offset="1" stop-color="#a391a7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1122" height="1402" fill="url(#background)"/>
+  <circle cx="561" cy="404" r="124" fill="url(#silhouette)"/>
+  <path d="M282 1151c20-266 116-432 279-432s259 166 279 432" fill="url(#silhouette)"/>
+  <path d="M360 1165h402" fill="none" stroke="#fff" stroke-linecap="round" stroke-opacity=".58" stroke-width="10"/>
+  <circle cx="561" cy="1242" r="10" fill="#fff" fill-opacity=".72"/>
+</svg>
