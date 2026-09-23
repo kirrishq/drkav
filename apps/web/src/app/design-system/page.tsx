@@ -5,6 +5,7 @@ import {
   Accordion,
   AdministratorCta,
   BeforeAfterComparison,
+  BenefitsStrip,
   Button,
   Checkbox,
   RecordCard,
@@ -302,7 +303,7 @@ function Section({
     >
       <div className="mb-8 max-w-reading">
         <p className="type-overline text-accent">
-          {["button", "text-link", "page-intro", "record-card", "feature-link-card", "video-card", "stats-strip", "final-results-slider", "operations-cards", "video-highlights", "input", "checkbox", "radio", "radio-button", "accordion"].includes(id)
+          {["button", "text-link", "page-intro", "record-card", "feature-link-card", "video-card", "stats-strip", "benefits-strip", "final-results-slider", "operations-cards", "video-highlights", "input", "checkbox", "radio", "radio-button", "accordion"].includes(id)
             ? "Components"
             : id === "overview"
               ? "System"
@@ -354,6 +355,15 @@ function CodeBlock({ children }: { children: string }) {
     <pre className="type-code overflow-x-auto rounded-lg border border-border bg-surface-inverse p-4 text-inverse">
       <code>{children}</code>
     </pre>
+  );
+}
+
+function BenefitDemoIcon() {
+  return (
+    <svg fill="none" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.75" />
+      <path d="m8.5 12 2.2 2.2 4.8-5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" />
+    </svg>
   );
 }
 
@@ -752,6 +762,37 @@ export default function DesignSystemPage() {
             <Subsection title="Motion and accessibility">
               <p className="type-text-base text-secondary">
                 Значения начинают анимироваться от нуля, когда блок появляется на экране. При <code className="type-code">prefers-reduced-motion: reduce</code> итоговые значения показываются сразу. Передавайте число отдельно от <code className="type-code">prefix</code> и <code className="type-code">suffix</code>, чтобы компонент мог корректно анимировать значение.
+              </p>
+            </Subsection>
+          </Section>
+
+          <Section
+            description="BenefitsStrip показывает короткие преимущества с иконками: на мобильных устройствах элементы располагаются по два в ряд, на широких экранах — в одну строку."
+            id="benefits-strip"
+            title="Benefits Strip"
+          >
+            <Subsection title="Usage">
+              <BenefitsStrip
+                items={[
+                  { icon: <BenefitDemoIcon />, label: "Премиальная клиника на Барвихе" },
+                  { icon: <BenefitDemoIcon />, label: "Максимальная безопасность" },
+                  { icon: <BenefitDemoIcon />, label: "Современная реабилитация с первого дня" },
+                  { icon: <BenefitDemoIcon />, label: "Операции любой сложности" },
+                ]}
+              />
+              <CodeBlock>{`import { BenefitsStrip } from "@drkav/ui";
+
+<BenefitsStrip
+  items={[
+    { icon: <ClinicIcon />, label: "Премиальная клиника на Барвихе" },
+    { icon: <SafetyIcon />, label: "Максимальная безопасность" },
+  ]}
+/>`}</CodeBlock>
+            </Subsection>
+
+            <Subsection title="Accessibility">
+              <p className="type-text-base text-secondary">
+                Иконки декоративны и скрыты от скринридера; каждый тезис остаётся доступен как текст внутри списка.
               </p>
             </Subsection>
           </Section>

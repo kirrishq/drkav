@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "builder_pages",
+  "info": {
+    "singularName": "builder-page",
+    "pluralName": "builder-pages",
+    "displayName": "Builder Page",
+    "description": "Pages composed from the controlled visual editor block library"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "internalName": {
+      "type": "string",
+      "required": true
+    },
+    "pageKey": {
+      "type": "uid",
+      "targetField": "internalName",
+      "required": true,
+      "unique": true
+    },
+    "canonicalPath": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "required": true
+    },
+    "theme": {
+      "type": "component",
+      "component": "shared.builder-theme",
+      "repeatable": false,
+      "required": true
+    },
+    "blocks": {
+      "type": "dynamiczone",
+      "components": [
+        "builder.hero",
+        "builder.rich-text",
+        "builder.callout",
+        "builder.faq"
+      ]
+    },
+    "contentStatus": {
+      "type": "enumeration",
+      "enum": ["empty", "partial", "ready"],
+      "required": true,
+      "default": "empty"
+    }
+  },
+  "config": {}
+}

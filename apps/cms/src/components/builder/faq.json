@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_builder_faqs",
+  "info": {
+    "displayName": "FAQ",
+    "description": "Frequently asked questions block"
+  },
+  "options": {},
+  "attributes": {
+    "blockKey": {
+      "type": "string",
+      "required": true
+    },
+    "heading": {
+      "type": "string"
+    },
+    "items": {
+      "type": "component",
+      "component": "builder.faq-item",
+      "repeatable": true,
+      "required": true
+    },
+    "hidden": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

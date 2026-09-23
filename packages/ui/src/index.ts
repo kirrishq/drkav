@@ -10,6 +10,8 @@ export { Accordion } from "./accordion";
 export type { AccordionItem, AccordionProps } from "./accordion";
 export { BeforeAfterComparison } from "./before-after-comparison";
 export type { BeforeAfterComparisonProps } from "./before-after-comparison";
+export { BenefitsStrip } from "./benefits-strip";
+export type { BenefitsStripItem, BenefitsStripProps } from "./benefits-strip";
 export { Checkbox } from "./checkbox";
 export type { CheckboxProps } from "./checkbox";
 export { CertificateCard } from "./certificate-card";

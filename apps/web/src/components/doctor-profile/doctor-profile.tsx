@@ -55,15 +55,17 @@ function DoctorRating() {
 export function DoctorProfile() {
   return (
     <section aria-labelledby="doctor-profile-title" className="doctor-profile">
-      <div className="doctor-profile__portrait">
-        <Image
-          alt="Артём Владимирович Коробов в белом халате"
-          className="doctor-profile__portrait-image"
-          fill
-          loading="lazy"
-          sizes="(min-width: 64rem) 18rem, (min-width: 48rem) 30vw, 100vw"
-          src="/images/doctor-portrait.png"
-        />
+      <div className="doctor-profile__visual">
+        <div className="doctor-profile__portrait">
+          <Image
+            alt="Артём Владимирович Коробов во время операции"
+            className="doctor-profile__portrait-image"
+            fill
+            loading="lazy"
+            sizes="(min-width: 64rem) 18rem, (min-width: 48rem) 30vw, 40vw"
+            src="/images/doctor-operating-room.png"
+          />
+        </div>
         <DoctorRating />
       </div>
 

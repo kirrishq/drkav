@@ -33,6 +33,7 @@ const navigation = [
       { id: "feature-link-card", label: "Feature Link Card" },
       { id: "video-card", label: "Video Card" },
       { id: "stats-strip", label: "Stats Strip" },
+      { id: "benefits-strip", label: "Benefits Strip" },
       { id: "final-results-slider", label: "Final Results Slider" },
       { id: "operations-cards", label: "Operations Cards" },
       { id: "administrator-cta", label: "Administrator CTA" },

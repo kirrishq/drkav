@@ -102,8 +102,15 @@ export function getConditionArticleCacheTag(slug: string): string {
   return `condition:${slug}`;
 }
 
-export function getCmsFetchCacheOptions(cacheTag: string): CmsFetchCacheOptions {
-  if (process.env.NODE_ENV === "development") {
+export function getBuilderPageCacheTag(canonicalPath: string): string {
+  return `builder-page:${normalizeCanonicalPath(canonicalPath)}`;
+}
+
+export function getCmsFetchCacheOptions(
+  cacheTag: string,
+  options: { noStore?: boolean } = {},
+): CmsFetchCacheOptions {
+  if (process.env.NODE_ENV === "development" || options.noStore) {
     return { cache: "no-store" };
   }
 

@@ -11,25 +11,90 @@
     color: var(--text-inverse);
   }
 
-  .home-hero::after {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background:
-      linear-gradient(90deg, color-mix(in srgb, var(--surface-inverse) 84%, transparent) 0%, color-mix(in srgb, var(--surface-inverse) 42%, transparent) 58%, transparent 100%),
-      linear-gradient(180deg, transparent 62%, color-mix(in srgb, var(--surface-inverse) 72%, transparent) 100%);
-    content: "";
-    pointer-events: none;
-  }
-
-  .home-hero__space {
+  .home-hero__operating-room {
     position: absolute;
     z-index: -2;
     inset: 0;
     display: block;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    background-color: var(--surface-inverse);
+    transform: scaleX(-1);
     pointer-events: none;
+  }
+
+  .home-hero__operating-room-base,
+  .home-hero__operating-room-reveal {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background-image: url("/images/home/operating-room-bw.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .home-hero__operating-room-base {
+    position: absolute;
+    z-index: 0;
+    filter: grayscale(1) blur(var(--space-1)) brightness(0.3) contrast(1.12);
+    transform: scale(1.03);
+  }
+
+  .home-hero__operating-room-dots {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(16, minmax(0, 1fr));
+    grid-template-rows: repeat(10, minmax(0, 1fr));
+    place-items: center;
+    padding: var(--space-4);
+  }
+
+  .home-hero__operating-room-dot {
+    display: block;
+    width: var(--space-1);
+    aspect-ratio: 1;
+    border-radius: var(--radius-full);
+    background: rgba(215, 215, 215, 0.42);
+    box-shadow: 0 0 var(--space-2) color-mix(in srgb, var(--surface-inverse) 56%, transparent);
+    opacity: 0.2;
+    transform: scale(0.5);
+  }
+
+  .home-hero__operating-room-reveal {
+    z-index: 3;
+    clip-path: inset(0 100% 0 0);
+    filter: grayscale(0.62) sepia(0.16) saturate(1.25) hue-rotate(290deg) brightness(1.04) contrast(1.15);
+    opacity: 0.94;
+  }
+
+  .home-hero__operating-room::after {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--surface-inverse) 86%, transparent) 0%, color-mix(in srgb, var(--surface-inverse) 46%, transparent) 54%, color-mix(in srgb, var(--surface-inverse) 20%, transparent) 100%),
+      linear-gradient(180deg, color-mix(in srgb, var(--surface-inverse) 28%, transparent) 0%, transparent 54%, color-mix(in srgb, var(--surface-inverse) 58%, transparent) 100%);
+    content: "";
+  }
+
+  .home-hero__operating-room-glow {
+    position: absolute;
+    z-index: 4;
+    inset: 0;
+    background: radial-gradient(
+      circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+      color-mix(in srgb, var(--accent) 72%, var(--surface) 28%) 0%,
+      color-mix(in srgb, var(--accent) 42%, transparent) var(--spotlight-soft-radius, 6%),
+      color-mix(in srgb, var(--accent) 16%, transparent) var(--spotlight-radius, 14%),
+      transparent var(--spotlight-wide-radius, 22%)
+    );
+    filter: blur(var(--space-3));
+    opacity: 0;
+    mix-blend-mode: screen;
   }
 
   .home-hero__content {
@@ -39,7 +104,7 @@
     width: min(100% - var(--space-8), var(--container-wide));
     gap: var(--space-6);
     margin-inline: auto;
-    padding-block: var(--space-8);
+    padding-block: var(--space-8) 0;
   }
 
   .home-hero__details {
@@ -75,8 +140,8 @@
   .home-hero__description {
     max-width: var(--container-reading);
     margin: var(--space-4) 0 0;
-    font-size: var(--type-text-xl-size);
-    line-height: var(--type-text-xl-line-height);
+    font-size: var(--type-text-base-size);
+    line-height: var(--type-text-base-line-height);
     color: var(--text-inverse-muted);
   }
 
@@ -92,16 +157,36 @@
 
   .home-hero__portrait {
     position: relative;
-    width: min(100%, calc(var(--space-80) + var(--space-12)));
-    aspect-ratio: 387 / 560;
+    width: min(100%, calc(var(--space-96) + var(--space-40)));
+    aspect-ratio: 804 / 980;
     justify-self: center;
   }
 
   .home-hero__portrait-image {
     object-fit: contain;
     filter: contrast(1.05) saturate(0.92);
-    mix-blend-mode: screen;
-    mask-image: radial-gradient(ellipse 74% 65% at 50% 45%, #000 50%, transparent 78%);
+    object-position: center bottom;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero__operating-room-glow {
+      opacity: 0.2;
+    }
+  }
+
+  @media (max-width: 39.99rem) {
+    .home-hero__operating-room-base,
+    .home-hero__operating-room-reveal {
+      background-position: center bottom;
+      background-size: auto 62%;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, transparent 32%, black 62%, black 100%);
+      mask-image: linear-gradient(180deg, transparent 0%, transparent 32%, black 62%, black 100%);
+    }
+
+    .home-hero__operating-room::after {
+      background:
+        linear-gradient(180deg, var(--surface-inverse) 0%, var(--surface-inverse) 32%, color-mix(in srgb, var(--surface-inverse) 38%, transparent) 62%, transparent 100%);
+    }
   }
 
   @media (min-width: 40rem) {
@@ -124,7 +209,7 @@
     }
 
     .home-hero__portrait {
-      width: min(100%, calc(var(--space-96) + var(--space-8)));
+      width: min(100%, calc(var(--space-96) + var(--space-40)));
     }
   }
 

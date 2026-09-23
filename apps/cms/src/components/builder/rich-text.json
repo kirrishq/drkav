@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_builder_rich_texts",
+  "info": {
+    "displayName": "Rich text",
+    "description": "Rich text content using the existing safe block format"
+  },
+  "options": {},
+  "attributes": {
+    "blockKey": {
+      "type": "string",
+      "required": true
+    },
+    "heading": {
+      "type": "string"
+    },
+    "body": {
+      "type": "json",
+      "required": true
+    },
+    "hidden": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_builder_callouts",
+  "info": {
+    "displayName": "Callout",
+    "description": "A highlighted explanatory block"
+  },
+  "options": {},
+  "attributes": {
+    "blockKey": {
+      "type": "string",
+      "required": true
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "json",
+      "required": true
+    },
+    "tone": {
+      "type": "enumeration",
+      "enum": ["default", "accent", "dark"],
+      "required": true,
+      "default": "default"
+    },
+    "hidden": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

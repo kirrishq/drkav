@@ -1,11 +1,11 @@
-import { AdministratorCta, buttonVariants, cn, ConsultationSection, ConsultationTrigger, FinalResultsSlider, OperationsCards, ReviewsSlider, StatsStrip, VideoHighlights } from "@drkav/ui";
+import { AdministratorCta, BenefitsStrip, buttonVariants, cn, ConsultationSection, ConsultationTrigger, FinalResultsSlider, OperationsCards, ReviewsSlider, VideoHighlights } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
 
 import { SiteHeader } from "@/components/site-header/site-header";
 import { DoctorProfile } from "@/components/doctor-profile/doctor-profile";
 import { administratorContact } from "@/components/site-header/header-config";
-import { HomeSpaceBackground } from "@/components/home-space-background";
+import { HomeOperatingRoomBackground } from "@/components/home-operating-room-background";
 import { getHomeFinalResults } from "@/content/home-final-results";
 import { homeReviews } from "@/content/home-reviews";
 import { operationCategoryFallbackImages } from "@/content/operation-category-images";
@@ -13,11 +13,45 @@ import { getPageMetadata } from "@/content/page-registry";
 import { createContentRepository } from "@/content/content-repository";
 import { getReviewFilters, mapReviewsToSliderItems } from "@/content/review-presentation";
 
-const homeStats = [
-  { label: "Пациентов по рекомендациям", prefix: "~", suffix: "%", value: 85 },
-  { label: "Довольных пациентов", prefix: "~", suffix: "%", value: 98 },
-  { label: "Операций в год", suffix: "+", value: 350 },
-  { label: "Брошенных пациентов", value: 0 },
+function ClinicIcon() {
+  return (
+    <svg fill="none" viewBox="0 0 24 24">
+      <path d="M4 20h16M6 20V8h12v12M9 8V5h6v3M9 12h2m2 0h2m-6 4h2m2 0h2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" />
+    </svg>
+  );
+}
+
+function SafetyIcon() {
+  return (
+    <svg fill="none" viewBox="0 0 24 24">
+      <path d="m12 3 7 3v5c0 4.5-2.8 7.8-7 10-4.2-2.2-7-5.5-7-10V6l7-3Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.75" />
+      <path d="m8.5 12 2.2 2.2 4.8-5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" />
+    </svg>
+  );
+}
+
+function RecoveryIcon() {
+  return (
+    <svg fill="none" viewBox="0 0 24 24">
+      <path d="M4.5 12a7.5 7.5 0 0 1 12.8-5.3L19 9m0-5v5h-5M19.5 12a7.5 7.5 0 0 1-12.8 5.3L5 15m0 5v-5h5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" />
+    </svg>
+  );
+}
+
+function ComplexityIcon() {
+  return (
+    <svg fill="none" viewBox="0 0 24 24">
+      <path d="m12 3 2.2 5.3L20 10.5l-5.8 2.2L12 18l-2.2-5.3L4 10.5l5.8-2.2L12 3Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.75" />
+      <path d="m19 16 .8 1.8L21.5 19l-1.7 1.2L19 22l-.8-1.8-1.7-1.2 1.7-1.2L19 16Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+const homeBenefits = [
+  { icon: <ClinicIcon />, label: "Премиальная клиника на Барвихе" },
+  { icon: <SafetyIcon />, label: "Максимальная безопасность: реанимация и дежурный реаниматолог" },
+  { icon: <RecoveryIcon />, label: "Современная реабилитация с первого дня после операции" },
+  { icon: <ComplexityIcon />, label: "Опыт и методики для операций любой сложности" },
 ] as const;
 
 const homeVideoHighlights = [
@@ -116,12 +150,13 @@ export default async function HomePage() {
       <SiteHeader />
       <main className="home-page">
         <section aria-labelledby="home-hero-title" className="home-hero">
-          <HomeSpaceBackground />
+          <HomeOperatingRoomBackground />
           <div className="home-hero__content">
             <div className="home-hero__details">
               <div className="home-hero__badges">
-                <span className="home-hero__badge">Пластический хирург</span>
                 <span className="home-hero__badge">Кандидат медицинских наук</span>
+                <span className="home-hero__badge">Автор патента и учебника</span>
+                <span className="home-hero__badge">16+ лет опыта</span>
               </div>
               <h1 className="type-h1 home-hero__title" id="home-hero-title">Пластический хирург Артём Владимирович Коробов</h1>
               <p className="home-hero__description">Специализируюсь на абдоминопластике, маммопластике, липоскульптуре, комплексном восстановлении фигуры и мужской атлетизации.</p>
@@ -132,18 +167,18 @@ export default async function HomePage() {
             </div>
             <div className="home-hero__portrait">
               <Image
-                alt="Артём Владимирович Коробов в белом халате"
+                alt="Артём Владимирович Коробов в чёрном костюме и белом медицинском халате, портрет по пояс"
                 className="home-hero__portrait-image"
                 fill
                 priority
                 quality={75}
                 sizes="(min-width: 80rem) 30rem, (min-width: 40rem) 36vw, calc(100vw - 2rem)"
-                src="/images/doctor-portrait.png"
+                src="/images/home/doctor-hero-suit-half.png"
               />
             </div>
           </div>
         </section>
-        <StatsStrip items={homeStats} />
+        <BenefitsStrip items={homeBenefits} />
         <VideoHighlights ctaHref="/obo-mne/vystupleniya" items={homeVideoHighlights} />
         <DoctorProfile />
         <FinalResultsSlider

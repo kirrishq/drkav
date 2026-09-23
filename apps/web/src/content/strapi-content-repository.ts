@@ -7,6 +7,11 @@ import type {
   BlogContentSection,
   BlogIndexContent,
   BeforeAfterCase,
+  BuilderBlock,
+  BuilderFont,
+  BuilderPage,
+  BuilderTheme,
+  ContentReadMode,
   ContentAction,
   ContentRepository,
   FinalResult,
@@ -40,6 +45,7 @@ import {
   getBlogIndexCacheTag,
   getCmsFetchCacheOptions,
   getBeforeAfterCasesCacheTag,
+  getBuilderPageCacheTag,
   getConditionArticleCacheTag,
   getConditionIndexCacheTag,
   getOperationCatalogCacheTag,
@@ -709,6 +715,168 @@ function mapSeo(value: unknown, baseUrl: string, label: string): SeoData {
   };
 }
 
+function requireHexColor(value: unknown, label: string): string {
+  const color = requireString(value, label);
+
+  if (!/^#[0-9a-f]{6}$/i.test(color)) {
+    throw new CmsInvalidResponseError(
+      `Invalid Strapi response: ${label} must be a six-digit hexadecimal color.`,
+    );
+  }
+
+  return color;
+}
+
+function requireBuilderFont(value: unknown, label: string): BuilderFont {
+  if (value !== "geist" && value !== "system") {
+    throw new CmsInvalidResponseError(
+      `Invalid Strapi response: ${label} is unsupported.`,
+    );
+  }
+
+  return value;
+}
+
+function mapBuilderTheme(value: unknown, label: string): BuilderTheme {
+  const theme = requireRecord(value, label);
+
+  return {
+    accentColor: requireHexColor(theme.accentColor, `${label}.accentColor`),
+    backgroundColor: requireHexColor(
+      theme.backgroundColor,
+      `${label}.backgroundColor`,
+    ),
+    textColor: requireHexColor(theme.textColor, `${label}.textColor`),
+    headingFont: requireBuilderFont(theme.headingFont, `${label}.headingFont`),
+    bodyFont: requireBuilderFont(theme.bodyFont, `${label}.bodyFont`),
+  };
+}
+
+function mapBuilderBlock(
+  value: unknown,
+  index: number,
+  baseUrl: string,
+): BuilderBlock {
+  const label = `builderPage.blocks[${index}]`;
+  const block = requireRecord(value, label);
+  const component = requireString(block.__component, `${label}.__component`);
+  const base = {
+    id: requireString(block.blockKey, `${label}.blockKey`),
+    hidden:
+      block.hidden === undefined
+        ? undefined
+        : requireBoolean(block.hidden, `${label}.hidden`),
+  };
+
+  if (component === "builder.hero") {
+    const align = requireString(block.align, `${label}.align`);
+
+    if (align !== "left" && align !== "center") {
+      throw new CmsInvalidResponseError(
+        `Invalid Strapi response: ${label}.align is unsupported.`,
+      );
+    }
+
+    return {
+      ...base,
+      type: "hero",
+      eyebrow: optionalString(block.eyebrow, `${label}.eyebrow`),
+      heading: requireString(block.heading, `${label}.heading`),
+      description: optionalString(block.description, `${label}.description`),
+      image: mapImage(block.image, baseUrl, `${label}.image`),
+      primaryAction: mapAction(block.primaryAction, `${label}.primaryAction`),
+      secondaryAction: mapAction(
+        block.secondaryAction,
+        `${label}.secondaryAction`,
+      ),
+      align,
+    };
+  }
+
+  if (component === "builder.rich-text") {
+    return {
+      ...base,
+      type: "rich-text",
+      heading: optionalString(block.heading, `${label}.heading`),
+      body: mapBlocks(block.body, `${label}.body`, baseUrl),
+    };
+  }
+
+  if (component === "builder.callout") {
+    const tone = requireString(block.tone, `${label}.tone`);
+
+    if (tone !== "default" && tone !== "accent" && tone !== "dark") {
+      throw new CmsInvalidResponseError(
+        `Invalid Strapi response: ${label}.tone is unsupported.`,
+      );
+    }
+
+    return {
+      ...base,
+      type: "callout",
+      title: optionalString(block.title, `${label}.title`),
+      body: mapBlocks(block.body, `${label}.body`, baseUrl),
+      tone,
+    };
+  }
+
+  if (component === "builder.faq") {
+    return {
+      ...base,
+      type: "faq",
+      heading: optionalString(block.heading, `${label}.heading`),
+      items: requireArray(block.items, `${label}.items`).map((item, itemIndex) => {
+        const itemLabel = `${label}.items[${itemIndex}]`;
+        const faqItem = requireRecord(item, itemLabel);
+
+        return {
+          question: requireString(faqItem.question, `${itemLabel}.question`),
+          answer: requireString(faqItem.answer, `${itemLabel}.answer`),
+        };
+      }),
+    };
+  }
+
+  throw new CmsInvalidResponseError(
+    `Invalid Strapi response: unsupported builder block ${component}.`,
+  );
+}
+
+function mapBuilderPage(
+  value: Record<string, unknown>,
+  baseUrl: string,
+): BuilderPage {
+  const blocks = requireArray(value.blocks, "builderPage.blocks").map(
+    (block, index) => mapBuilderBlock(block, index, baseUrl),
+  );
+  const blockIds = new Set<string>();
+
+  for (const block of blocks) {
+    if (blockIds.has(block.id)) {
+      throw new CmsInvalidResponseError(
+        `Invalid Strapi response: duplicate builder block id ${block.id}.`,
+      );
+    }
+    blockIds.add(block.id);
+  }
+
+  return {
+    pageKey: requireString(value.pageKey, "builderPage.pageKey"),
+    canonicalPath: requireCanonicalPath(
+      value.canonicalPath,
+      "builderPage.canonicalPath",
+    ),
+    internalName: requireString(value.internalName, "builderPage.internalName"),
+    seo: mapSeo(value.seo, baseUrl, "builderPage.seo"),
+    theme: mapBuilderTheme(value.theme, "builderPage.theme"),
+    blocks,
+    contentStatus: requireContentStatus(
+      value.contentStatus,
+      "builderPage.contentStatus",
+    ),
+  };
+}
+
 function mapCategory(value: unknown, index: number): OperationCategorySummary {
   const label = `operation.categories[${index}]`;
   const category = requireRecord(value, label);
@@ -1111,6 +1279,23 @@ export class StrapiContentRepository implements ContentRepository {
         "staticPage.contentStatus",
       ),
     };
+  }
+
+  async getBuilderPageByPath(
+    path: string,
+    mode: ContentReadMode = "published",
+  ): Promise<BuilderPage | null> {
+    const params = this.createBuilderPageParams(mode);
+    params.set("filters[canonicalPath][$eq]", path);
+    this.populateBuilderPage(params);
+    const page = await this.getFirst(
+      "/api/builder-pages",
+      params,
+      getBuilderPageCacheTag(path),
+      { noStore: mode === "draft" },
+    );
+
+    return page ? mapBuilderPage(page, this.baseUrl) : null;
   }
 
   async getOperationByPath(path: string): Promise<OperationContent | null> {
@@ -1530,6 +1715,21 @@ export class StrapiContentRepository implements ContentRepository {
     return params;
   }
 
+  private createBuilderPageParams(mode: ContentReadMode): URLSearchParams {
+    const params = new URLSearchParams({
+      "pagination[pageSize]": "2",
+      status: mode,
+    });
+
+    ["internalName", "pageKey", "canonicalPath", "contentStatus"].forEach(
+      (field, index) => {
+        params.set(`fields[${index}]`, field);
+      },
+    );
+
+    return params;
+  }
+
   private createArticleSummaryParams(): URLSearchParams {
     const params = this.createPublishedParams([
       "slug", "canonicalPath", "title", "excerpt", "readingTimeMinutes", "isFeatured", "publishedAt",
@@ -1573,6 +1773,78 @@ export class StrapiContentRepository implements ContentRepository {
     params.set("populate[heroImage][fields][3]", "height");
     params.set("populate[primaryAction]", "true");
     params.set("populate[secondaryAction]", "true");
+  }
+
+  private populateBuilderPage(params: URLSearchParams): void {
+    params.set("populate[seo][populate][shareImage][fields][0]", "url");
+    params.set(
+      "populate[seo][populate][shareImage][fields][1]",
+      "alternativeText",
+    );
+    params.set("populate[seo][populate][shareImage][fields][2]", "width");
+    params.set("populate[seo][populate][shareImage][fields][3]", "height");
+    params.set("populate[theme]", "true");
+
+    const commonFields = ["blockKey", "hidden"];
+    const components = [
+      "builder.hero",
+      "builder.rich-text",
+      "builder.callout",
+      "builder.faq",
+    ];
+
+    for (const component of components) {
+      commonFields.forEach((field, index) => {
+        params.set(
+          `populate[blocks][on][${component}][fields][${index}]`,
+          field,
+        );
+      });
+    }
+
+    ["eyebrow", "heading", "description", "align"].forEach((field, index) => {
+      params.set(
+        `populate[blocks][on][builder.hero][fields][${index + commonFields.length}]`,
+        field,
+      );
+    });
+    params.set("populate[blocks][on][builder.hero][populate][image]", "true");
+    params.set(
+      "populate[blocks][on][builder.hero][populate][primaryAction]",
+      "true",
+    );
+    params.set(
+      "populate[blocks][on][builder.hero][populate][secondaryAction]",
+      "true",
+    );
+
+    ["heading", "body"].forEach((field, index) => {
+      params.set(
+        `populate[blocks][on][builder.rich-text][fields][${index + commonFields.length}]`,
+        field,
+      );
+      params.set(
+        `populate[blocks][on][builder.callout][fields][${index + commonFields.length}]`,
+        field,
+      );
+    });
+    params.set(
+      "populate[blocks][on][builder.callout][fields][4]",
+      "tone",
+    );
+
+    params.set(
+      "populate[blocks][on][builder.faq][fields][2]",
+      "heading",
+    );
+    params.set(
+      "populate[blocks][on][builder.faq][populate][items][fields][0]",
+      "question",
+    );
+    params.set(
+      "populate[blocks][on][builder.faq][populate][items][fields][1]",
+      "answer",
+    );
   }
 
   private populateOperationContent(params: URLSearchParams): void {
@@ -1772,8 +2044,9 @@ export class StrapiContentRepository implements ContentRepository {
     endpoint: string,
     params: URLSearchParams,
     cacheTag: string,
+    options: { noStore?: boolean } = {},
   ): Promise<Record<string, unknown> | null> {
-    const records = await this.getMany(endpoint, params, cacheTag);
+    const records = await this.getMany(endpoint, params, cacheTag, options);
 
     if (records.length === 0) {
       return null;
@@ -1792,6 +2065,7 @@ export class StrapiContentRepository implements ContentRepository {
     endpoint: string,
     params: URLSearchParams,
     cacheTag: string,
+    options: { noStore?: boolean } = {},
   ): Promise<Record<string, unknown>[]> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
@@ -1799,7 +2073,7 @@ export class StrapiContentRepository implements ContentRepository {
       Accept: "application/json",
       Authorization: `Bearer ${this.apiToken}`,
     });
-    const cacheOptions = getCmsFetchCacheOptions(cacheTag);
+    const cacheOptions = getCmsFetchCacheOptions(cacheTag, options);
     let response: Response;
 
     try {

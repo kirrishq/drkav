@@ -1,5 +1,7 @@
 export type ContentStatus = "empty" | "partial" | "ready";
 
+export type ContentReadMode = "published" | "draft";
+
 export type ActionVariant =
   | "primary"
   | "secondary"
@@ -27,6 +29,102 @@ export interface ContentAction {
   href: string;
   variant: ActionVariant;
   openInNewTab: boolean;
+}
+
+export type BuilderFont = "geist" | "system";
+
+export interface BuilderTheme {
+  accentColor: string;
+  backgroundColor: string;
+  textColor: string;
+  headingFont: BuilderFont;
+  bodyFont: BuilderFont;
+}
+
+export interface BuilderBlockBase {
+  id: string;
+  hidden?: boolean;
+}
+
+export interface BuilderHeroBlock extends BuilderBlockBase {
+  type: "hero";
+  eyebrow?: string;
+  heading: string;
+  description?: string;
+  image?: ImageAsset;
+  primaryAction?: ContentAction;
+  secondaryAction?: ContentAction;
+  align: "left" | "center";
+}
+
+export interface BuilderRichTextBlock extends BuilderBlockBase {
+  type: "rich-text";
+  heading?: string;
+  body: readonly RichTextBlock[];
+}
+
+export interface BuilderCalloutBlock extends BuilderBlockBase {
+  type: "callout";
+  title?: string;
+  body: readonly RichTextBlock[];
+  tone: "default" | "accent" | "dark";
+}
+
+export interface BuilderFaqBlock extends BuilderBlockBase {
+  type: "faq";
+  heading?: string;
+  items: readonly {
+    question: string;
+    answer: string;
+  }[];
+}
+
+export type BuilderBlock =
+  | BuilderHeroBlock
+  | BuilderRichTextBlock
+  | BuilderCalloutBlock
+  | BuilderFaqBlock;
+
+export type BuilderBlockType = BuilderBlock["type"];
+
+export interface BuilderBlockDefinition {
+  type: BuilderBlockType;
+  label: string;
+  description: string;
+}
+
+/** The first controlled block library for pages created by the editor. */
+export const builderBlockDefinitions: readonly BuilderBlockDefinition[] = [
+  {
+    type: "hero",
+    label: "Первый экран",
+    description: "Заголовок, описание, изображение и основные действия.",
+  },
+  {
+    type: "rich-text",
+    label: "Текстовый блок",
+    description: "Заголовки, абзацы, списки, ссылки и изображения.",
+  },
+  {
+    type: "callout",
+    label: "Акцентный блок",
+    description: "Выделенное пояснение или важное сообщение.",
+  },
+  {
+    type: "faq",
+    label: "Вопросы и ответы",
+    description: "Раскрывающийся список вопросов и ответов.",
+  },
+] as const;
+
+export interface BuilderPage {
+  pageKey: string;
+  canonicalPath: string;
+  internalName: string;
+  seo: SeoData;
+  theme: BuilderTheme;
+  blocks: readonly BuilderBlock[];
+  contentStatus: ContentStatus;
 }
 
 export interface StaticPageContent {
@@ -424,6 +522,10 @@ export type ConditionIndexContent = BlogIndexContent;
  */
 export interface ContentRepository {
   getStaticPage(pageKey: string): Promise<StaticPageContent | null>;
+  getBuilderPageByPath(
+    path: string,
+    mode?: ContentReadMode,
+  ): Promise<BuilderPage | null>;
   getOperationByPath(path: string): Promise<OperationContent | null>;
   getOperationCatalog(): Promise<readonly OperationCatalogGroup[]>;
   getBeforeAfterCases(): Promise<readonly BeforeAfterCase[]>;

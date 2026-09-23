@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_shared_builder_themes",
+  "info": {
+    "displayName": "Builder theme",
+    "description": "Scoped design tokens available to the page editor"
+  },
+  "options": {},
+  "attributes": {
+    "accentColor": {
+      "type": "string",
+      "required": true,
+      "default": "#ff4aa8"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "required": true,
+      "default": "#eceef3"
+    },
+    "textColor": {
+      "type": "string",
+      "required": true,
+      "default": "#16171c"
+    },
+    "headingFont": {
+      "type": "enumeration",
+      "enum": ["geist", "system"],
+      "required": true,
+      "default": "geist"
+    },
+    "bodyFont": {
+      "type": "enumeration",
+      "enum": ["geist", "system"],
+      "required": true,
+      "default": "geist"
+    }
+  }
+}

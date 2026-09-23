@@ -1,0 +1,49 @@
+{
+  "collectionName": "components_builder_heroes",
+  "info": {
+    "displayName": "Hero",
+    "description": "First screen with heading, description, image and actions"
+  },
+  "options": {},
+  "attributes": {
+    "blockKey": {
+      "type": "string",
+      "required": true
+    },
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "primaryAction": {
+      "type": "component",
+      "component": "shared.action",
+      "repeatable": false
+    },
+    "secondaryAction": {
+      "type": "component",
+      "component": "shared.action",
+      "repeatable": false
+    },
+    "align": {
+      "type": "enumeration",
+      "enum": ["left", "center"],
+      "required": true,
+      "default": "left"
+    },
+    "hidden": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}
