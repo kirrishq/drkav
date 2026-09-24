@@ -1,0 +1,36 @@
+.legal-document-page .page-intro__content {
+  display: block;
+}
+
+.legal-document {
+  display: grid;
+  gap: var(--space-6);
+  max-width: var(--container-reading);
+  margin: var(--space-8) auto 0;
+}
+
+.legal-document__section {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.legal-document__paragraph {
+  margin: 0;
+  color: var(--text-secondary);
+  white-space: pre-line;
+}
+
+@media (max-width: 39.99rem) {
+  .legal-document {
+    margin-top: var(--space-6);
+  }
+
+  .legal-document__section {
+    padding: var(--space-4);
+  }
+}

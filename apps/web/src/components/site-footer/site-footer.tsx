@@ -25,7 +25,7 @@ const socialLinks = [
   { href: "https://t.me/drkav_official", kind: "telegram", label: "Telegram" },
   { href: "https://www.youtube.com/channel/UCyNisHCb9vYS6qLWlgK6lwg", kind: "youtube", label: "YouTube" },
   { href: "https://www.instagram.com/dr.kav/", kind: "instagram", label: "Instagram*" },
-  { href: "https://prodoctorov.ru/moskva/vrach/158087-korobov/", kind: "prodoctorov", label: "ProDoctorov" },
+  { href: "https://vk.com/publicdoctorkav", kind: "vk", label: "ВКонтакте" },
 ] as const;
 
 function FooterLinkList({ links }: { links: readonly HeaderMenuLink[] }) {
@@ -69,11 +69,17 @@ function SocialIcon({ kind }: { kind: (typeof socialLinks)[number]["kind"] }) {
     );
   }
 
-  return <span aria-hidden="true" className="site-footer__prodoctorov-icon">P</span>;
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M4.7 7.2h2.6c.1 4.1 1.8 5.9 3.1 6.3V7.2h2.5v3.5c1.3-.1 2.7-1.8 3.1-3.5h2.5c-.4 2.1-1.8 3.8-3 4.6 1.2.6 2.8 2.1 3.5 4.7h-2.7c-.5-1.6-1.8-2.9-3.4-3v3h-.4c-5.1 0-8-3.5-8.2-9.3Z" />
+    </svg>
+  );
 }
 
 /** Site-wide footer with current project navigation and original contact details. */
 export function SiteFooter() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="site-footer">
       <div className="site-footer__container">
@@ -125,7 +131,11 @@ export function SiteFooter() {
         </div>
 
         <div className="site-footer__socials">
-          <span className="type-label site-footer__heading">Мы в социальных сетях</span>
+          <div className="site-footer__social-legal">
+            <p className="type-text-xs site-footer__social-legal-line">ИП Коробов А.В. · ИНН 7702070139 · ОГРНИП 321645100059511</p>
+            <p className="type-text-xs site-footer__social-legal-line">© 2014–{currentYear} DrKAV. Все материалы сайта охраняются авторским правом.</p>
+            <p className="type-text-xs site-footer__social-legal-line">Meta Platforms Inc. признана экстремистской организацией и запрещена на территории РФ.</p>
+          </div>
           <div className="site-footer__social-links">
             {socialLinks.map((link) => (
               <a aria-label={link.label} className="site-footer__social-link" href={link.href} key={link.href} rel="noreferrer" target="_blank">
@@ -136,14 +146,13 @@ export function SiteFooter() {
         </div>
 
         <div className="site-footer__legal">
-          <div>
-            <p className="type-text-sm site-footer__legal-line">ИП Коробов А.В. · ИНН 7702070139 · ОГРНИП 321645100059511</p>
-            <p className="type-text-sm site-footer__legal-line">© 2014–2026 DrKAV. Все материалы сайта охраняются авторским правом.</p>
-            <p className="type-text-sm site-footer__legal-line">* Meta Platforms Inc. признана экстремистской организацией и запрещена на территории РФ.</p>
-          </div>
           <div className="site-footer__legal-links">
             <Link className="text-link site-footer__legal-link" href="/obo-mne/diplomy-i-licenzii">Лицензии и сертификаты</Link>
-            <a className="text-link site-footer__legal-link" href="https://drkav.ru/oferta.html" rel="noreferrer" target="_blank">Публичная оферта</a>
+            <Link className="text-link site-footer__legal-link" href="/oferta.html">Публичная оферта</Link>
+            <Link className="text-link site-footer__legal-link" href="/policy">Политика обработки персональных данных</Link>
+            <Link className="text-link site-footer__legal-link" href="/cookies">Согласие на обработку cookies</Link>
+            <Link className="text-link site-footer__legal-link" href="/consent">Согласие на обработку персональных данных</Link>
+            <Link className="text-link site-footer__legal-link" href="/consent-marketing">Согласие на рекламную рассылку</Link>
           </div>
         </div>
       </div>

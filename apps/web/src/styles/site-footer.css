@@ -1,4 +1,8 @@
 @layer components {
+  body:has(.home-page) .site-footer {
+    margin-top: 0;
+  }
+
   .site-footer {
     margin-top: var(--space-16);
     background: var(--surface-inverse);
@@ -158,12 +162,6 @@
     stroke: none;
   }
 
-  .site-footer__prodoctorov-icon {
-    font-size: var(--type-text-base-size);
-    font-weight: var(--type-label-weight);
-    line-height: 1;
-  }
-
   .site-footer__legal {
     display: grid;
     gap: var(--space-4);
@@ -177,6 +175,18 @@
     color: var(--text-inverse-muted);
   }
 
+  .site-footer__social-legal {
+    display: grid;
+    gap: var(--space-1);
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .site-footer__social-legal-line {
+    margin: 0;
+    color: var(--text-inverse-muted);
+  }
+
   .site-footer__legal-links {
     display: flex;
     flex-wrap: wrap;
@@ -184,8 +194,8 @@
   }
 
   .site-footer__legal-link {
-    font-size: var(--type-text-sm-size);
-    line-height: var(--type-text-sm-line-height);
+    font-size: var(--type-text-xs-size);
+    line-height: var(--type-text-xs-line-height);
   }
 
   @media (min-width: 40rem) {

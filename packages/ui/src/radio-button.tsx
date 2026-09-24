@@ -30,6 +30,7 @@ export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>(
           "border border-border-strong bg-surface px-4 text-primary shadow-subtle",
           "transition-colors duration-fast ease-standard hover:border-text-muted hover:bg-surface-muted",
           "peer-checked:border-accent peer-checked:bg-accent-soft",
+          "peer-checked:hover:border-accent peer-checked:hover:bg-accent-soft",
           "peer-focus-visible:ring-2 peer-focus-visible:ring-accent",
           "peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-background",
           "peer-disabled:cursor-not-allowed peer-disabled:border-border",

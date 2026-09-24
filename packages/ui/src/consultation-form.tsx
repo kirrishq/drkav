@@ -22,7 +22,7 @@ import { RadioButton } from "./radio-button";
 import { cn } from "./lib/cn";
 
 type ConsultationFormat = "clinic" | "online";
-type ContactMethod = "telegram" | "phone" | "max";
+type ContactMethod = "telegram" | "phone" | "max" | "whatsapp";
 
 type ConsultationDialogContextValue = {
   open: () => void;
@@ -51,7 +51,8 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
   const [submitted, setSubmitted] = useState(false);
 
   const nameId = `${idPrefix}-name`;
-  const contactId = `${idPrefix}-contact`;
+  const phoneId = `${idPrefix}-phone`;
+  const telegramUsernameId = `${idPrefix}-telegram-username`;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -87,6 +88,11 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
         <Input autoComplete="name" id={nameId} name="name" placeholder="Как к вам обращаться" required />
       </div>
 
+      <div className="consultation-form__field">
+        <Label htmlFor={phoneId} required>Телефон</Label>
+        <PhoneInput id={phoneId} name="phone" required />
+      </div>
+
       <fieldset className="consultation-form__fieldset">
         <legend className="type-label consultation-form__legend">Формат консультации</legend>
         <div className="consultation-form__options consultation-form__options--formats">
@@ -97,7 +103,7 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
             onChange={() => setConsultationFormat("clinic")}
             value="clinic"
           >
-            Очно в клинике
+            Очно — 1 950 ₽
           </RadioButton>
           <RadioButton
             checked={consultationFormat === "online"}
@@ -106,7 +112,7 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
             onChange={() => setConsultationFormat("online")}
             value="online"
           >
-            Онлайн
+            Онлайн — 950 ₽
           </RadioButton>
         </div>
       </fieldset>
@@ -122,7 +128,7 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
             onChange={() => setContactMethod("phone")}
             value="phone"
           >
-            Телефон
+            Позвонить
           </RadioButton>
           <RadioButton
             checked={contactMethod === "telegram"}
@@ -144,36 +150,38 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
           >
             MAX
           </RadioButton>
+          <RadioButton
+            checked={contactMethod === "whatsapp"}
+            className="consultation-form__option"
+            icon={<ContactActionIcon kind="whatsapp" />}
+            name="contact-method"
+            onChange={() => setContactMethod("whatsapp")}
+            value="whatsapp"
+          >
+            WhatsApp
+          </RadioButton>
         </div>
       </fieldset>
 
-      <p className="type-text-base consultation-form__description">
-        Стоимость консультации: очно в клинике — <span className="consultation-form__price">1 950 ₽</span>, онлайн — <span className="consultation-form__price">950 ₽</span>.
-      </p>
-
-      <div className="consultation-form__field">
-        <Label htmlFor={contactId} required>Контакт для связи</Label>
-        {contactMethod === "telegram" ? (
-          <Input
-            autoComplete="username"
-            id={contactId}
-            name="contact"
-            placeholder="Имя пользователя или телефон"
-            required
-          />
-        ) : (
-          <PhoneInput id={contactId} name="contact" required />
-        )}
-      </div>
+      {contactMethod === "telegram" ? (
+        <div className="consultation-form__field">
+          <Label htmlFor={telegramUsernameId}>Имя пользователя</Label>
+          <Input autoComplete="username" id={telegramUsernameId} name="telegram-username" placeholder="@username" />
+        </div>
+      ) : null}
 
       <div className="consultation-form__consents">
         <label className="consultation-form__consent">
           <Checkbox name="personal-data" required />
-          <span>Согласен на обработку персональных данных</span>
+          <span>Согласен на <a className="consultation-form__legal-link" href="/consent">обработку персональных данных</a></span>
         </label>
         <label className="consultation-form__consent">
           <Checkbox name="privacy-policy" required />
-          <span>Соглашаюсь с политикой конфиденциальности</span>
+          <span>Соглашаюсь с <a className="consultation-form__legal-link" href="/policy">политикой конфиденциальности</a></span>
+        </label>
+        <label className="consultation-form__consent">
+          <Checkbox name="marketing-consent" />
+          <span>Соглашаюсь на получение <a className="consultation-form__legal-link" href="/consent-marketing">рекламной и информационной рассылки</a></span>
         </label>
       </div>
 
@@ -192,6 +200,11 @@ export function ConsultationSection() {
     <section aria-labelledby="consultation-section-title" className="consultation-section">
       <div className="consultation-section__layout">
         <div className="consultation-section__content">
+          <div
+            aria-label="Доктор Коробов проводит консультацию"
+            className="consultation-section__visual"
+            role="img"
+          />
           <h2 className="type-h2 consultation-section__title" id="consultation-section-title">Запись на консультацию</h2>
           <p className="type-text-base consultation-section__description">
             Выберите формат встречи и удобный способ связи — администратор поможет согласовать дату и ответит на организационные вопросы.

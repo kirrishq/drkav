@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@drkav/ui";
+import { ProdoctorovRatingBanner } from "@/components/prodoctorov-rating-banner/prodoctorov-rating-banner";
 import { useEffect, useRef, useState } from "react";
 
 const ratings = [
@@ -45,16 +46,7 @@ export function RatingSection() {
     >
       <div className="rating-section__header">
         <h2 className="content-card__heading content-card__heading--h2">Рейтинг</h2>
-        <div className="rating-section__provider">
-          <div className="rating-section__provider-topline">
-            <p className="rating-section__provider-name"><span>ПРО</span>ДОКТОРОВ</p>
-            <span aria-label="Рейтинг 5 из 5" className="rating-section__stars">★★★★★</span>
-          </div>
-          <div className="rating-section__provider-bottomline">
-            <span>Коробов Артём Владимирович</span>
-            <span><strong>5.0</strong> Рейтинг на портале</span>
-          </div>
-        </div>
+        <ProdoctorovRatingBanner className="rating-section__provider" />
       </div>
       <dl className="rating-section__list">
         {ratings.map((rating) => (

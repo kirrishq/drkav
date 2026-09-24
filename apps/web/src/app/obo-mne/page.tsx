@@ -1,4 +1,5 @@
 import { Breadcrumbs, buttonVariants, cn, ConsultationTrigger, RecordCard } from "@drkav/ui";
+import Image from "next/image";
 
 import { AboutSectionNavigation } from "@/components/about-page/about-section-navigation";
 import { AssociationSection } from "@/components/association-section/association-section";
@@ -95,13 +96,14 @@ export default function AboutPage() {
             <section className="content-section" id="about-doctor">
               <div className="about-page__profile">
                 <figure className="about-page__portrait">
-                  <div className="about-page__portrait-placeholder">
-                    <svg aria-hidden="true" className="about-page__portrait-icon" fill="none" viewBox="0 0 80 80">
-                      <circle cx="40" cy="26" r="12" stroke="currentColor" strokeWidth="4" />
-                      <path d="M16 68c2.5-14 11-21 24-21s21.5 7 24 21" stroke="currentColor" strokeLinecap="round" strokeWidth="4" />
-                    </svg>
-                    <figcaption className="about-page__portrait-caption">Фотография доктора</figcaption>
-                  </div>
+                  <Image
+                    alt="Артём Владимирович Коробов"
+                    className="about-page__portrait-image"
+                    fill
+                    priority
+                    sizes="(min-width: 48rem) 36vw, 100vw"
+                    src="/images/about-pages/doctor-portrait-vest.png"
+                  />
                 </figure>
 
                 <div className="content-card content-card--spacious">

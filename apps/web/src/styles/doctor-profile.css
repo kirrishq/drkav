@@ -42,46 +42,6 @@
     align-self: stretch;
     width: 100%;
     height: 100%;
-    display: grid;
-    align-content: space-between;
-    gap: var(--space-1);
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-md);
-    background: var(--surface);
-    font-size: var(--type-text-xs-size);
-    line-height: var(--type-text-xs-line-height);
-  }
-
-  .doctor-profile__rating-topline,
-  .doctor-profile__rating-bottomline {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: var(--space-2);
-  }
-
-  .doctor-profile__rating-provider {
-    font-size: var(--type-overline-size);
-    font-weight: var(--type-overline-weight);
-    letter-spacing: var(--type-overline-tracking);
-  }
-
-  .doctor-profile__rating-provider span {
-    color: var(--accent);
-  }
-
-  .doctor-profile__stars {
-    color: var(--rating-star);
-    letter-spacing: var(--space-0-5);
-  }
-
-  .doctor-profile__rating-bottomline {
-    color: var(--text-secondary);
-  }
-
-  .doctor-profile__rating-bottomline strong {
-    color: var(--rating-star);
   }
 
   .doctor-profile__content {
@@ -202,6 +162,7 @@
     .doctor-profile__visual {
       position: relative;
       display: block;
+      height: 100%;
       grid-area: visual;
       overflow: hidden;
       border-radius: var(--radius-lg);
@@ -210,7 +171,8 @@
 
     .doctor-profile__portrait {
       min-height: 0;
-      aspect-ratio: 0.69;
+      height: 100%;
+      aspect-ratio: auto;
     }
 
     .doctor-profile__rating {
@@ -225,13 +187,6 @@
 
     .doctor-profile__content {
       padding: var(--space-6);
-    }
-
-    .doctor-profile__rating-topline,
-    .doctor-profile__rating-bottomline {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
     }
 
     .doctor-profile__highlights {

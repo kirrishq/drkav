@@ -1,0 +1,66 @@
+@layer components {
+  .prodoctorov-rating-banner {
+    display: grid;
+    align-content: space-between;
+    gap: var(--space-1);
+    box-sizing: border-box;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    background: linear-gradient(145deg, var(--surface) 0%, color-mix(in srgb, var(--surface) 82%, #9ddcff 18%) 100%);
+    color: var(--text-primary);
+    font-size: var(--type-text-xs-size);
+    line-height: var(--type-text-xs-line-height);
+    text-decoration: none;
+    transition: filter var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
+  }
+
+  .prodoctorov-rating-banner:hover,
+  .prodoctorov-rating-banner:focus-visible {
+    filter: brightness(1.03);
+    transform: translateY(calc(var(--space-0-5) * -1));
+  }
+
+  .prodoctorov-rating-banner:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 var(--focus-ring-offset) var(--surface-muted), 0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width)) var(--accent);
+  }
+
+  .prodoctorov-rating-banner__topline,
+  .prodoctorov-rating-banner__bottomline {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--space-2);
+  }
+
+  .prodoctorov-rating-banner__logo {
+    display: block;
+    width: min(100%, var(--space-28));
+    height: auto;
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  .prodoctorov-rating-banner__stars {
+    color: var(--rating-star);
+    letter-spacing: var(--space-0-5);
+  }
+
+  .prodoctorov-rating-banner__bottomline {
+    color: var(--text-secondary);
+  }
+
+  .prodoctorov-rating-banner__bottomline strong {
+    color: var(--rating-star);
+  }
+
+  @media (min-width: 40rem) {
+    .prodoctorov-rating-banner__topline,
+    .prodoctorov-rating-banner__bottomline {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}

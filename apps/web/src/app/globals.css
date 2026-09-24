@@ -7,6 +7,7 @@
 @import "../styles/search-page.css";
 @import "../styles/site-footer.css";
 @import "../styles/home-page.css";
+@import "../styles/prodoctorov-rating-banner.css";
 @import "../styles/doctor-profile.css";
 @import "../styles/operation-content.css";
 @import "../styles/operation-page.css";
@@ -20,5 +21,6 @@
 @import "../styles/promotions.css";
 @import "../styles/portfolio.css";
 @import "../styles/contacts-page.css";
+@import "../styles/legal-document.css";
 @import "../styles/page-builder.css";
 @import "../styles/page-builder-editor.css";

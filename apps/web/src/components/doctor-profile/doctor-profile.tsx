@@ -1,6 +1,7 @@
 import { ArrowUpRightIcon, ConsultationTrigger, RecordCard, buttonVariants, cn } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
+import { ProdoctorovRatingBanner } from "@/components/prodoctorov-rating-banner/prodoctorov-rating-banner";
 
 const doctorHighlights = [
   {
@@ -37,21 +38,6 @@ const doctorLinks = [
   { href: "/obo-mne/vystupleniya", label: "Видео" },
 ] as const;
 
-function DoctorRating() {
-  return (
-    <div aria-label="Рейтинг 5 из 5 на портале ПроДокторов" className="doctor-profile__rating">
-      <div className="doctor-profile__rating-topline">
-        <span className="doctor-profile__rating-provider"><span>ПРО</span>ДОКТОРОВ</span>
-        <span aria-hidden="true" className="doctor-profile__stars">★★★★★</span>
-      </div>
-      <div className="doctor-profile__rating-bottomline">
-        <span>Коробов Артём Владимирович</span>
-        <span><strong>5.0</strong> Рейтинг на портале</span>
-      </div>
-    </div>
-  );
-}
-
 export function DoctorProfile() {
   return (
     <section aria-labelledby="doctor-profile-title" className="doctor-profile">
@@ -66,7 +52,7 @@ export function DoctorProfile() {
             src="/images/doctor-operating-room.png"
           />
         </div>
-        <DoctorRating />
+        <ProdoctorovRatingBanner className="doctor-profile__rating" />
       </div>
 
       <div className="doctor-profile__content">

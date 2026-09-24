@@ -8,7 +8,7 @@
     position: sticky;
     z-index: 30;
     top: var(--space-20);
-    overflow-x: auto;
+    overflow: visible;
     padding-block: var(--space-3);
     border: var(--border-width-default) solid var(--border-subtle);
     box-shadow: var(--shadow-subtle);
@@ -16,9 +16,9 @@
 
   .operation-content__navigation ul {
     display: flex;
-    width: max-content;
-    min-width: 100%;
+    flex-wrap: wrap;
     gap: var(--space-2);
+    justify-content: flex-start;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -36,7 +36,6 @@
     font-weight: var(--type-label-weight);
     line-height: var(--type-text-sm-line-height);
     text-decoration: none;
-    white-space: nowrap;
     transition:
       border-color var(--duration-fast) var(--ease-standard),
       color var(--duration-fast) var(--ease-standard);

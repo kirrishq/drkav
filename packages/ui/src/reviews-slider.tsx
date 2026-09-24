@@ -408,7 +408,7 @@ export function ReviewsSlider({
         <div className="reviews-slider__footer">
           <span className="type-display reviews-slider__summary">{visibleItems.length}+</span>
           <p className="type-text-base reviews-slider__summary-label">историй пациентов</p>
-          {ctaHref ? <a className={buttonVariants({ size: "sm", variant: "outline" })} href={ctaHref}>{ctaLabel}</a> : null}
+          {ctaHref ? <a className={cn(buttonVariants({ size: "sm", variant: "outline" }), "reviews-slider__footer-action")} href={ctaHref}>{ctaLabel}</a> : null}
         </div>
       ) : null}
       {selectedItem ? <ReviewDialog initialScrollY={selectedScrollYRef.current} item={selectedItem} items={visibleItems} onClose={() => setSelectedItem(null)} onSelect={setSelectedItem} /> : null}
