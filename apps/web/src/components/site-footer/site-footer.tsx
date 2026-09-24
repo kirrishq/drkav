@@ -148,7 +148,7 @@ export function SiteFooter() {
         <div className="site-footer__legal">
           <div className="site-footer__legal-links">
             <Link className="text-link site-footer__legal-link" href="/obo-mne/diplomy-i-licenzii">Лицензии и сертификаты</Link>
-            <Link className="text-link site-footer__legal-link" href="/oferta.html">Публичная оферта</Link>
+            <Link className="text-link site-footer__legal-link" href="/oferta">Публичная оферта</Link>
             <Link className="text-link site-footer__legal-link" href="/policy">Политика обработки персональных данных</Link>
             <Link className="text-link site-footer__legal-link" href="/cookies">Согласие на обработку cookies</Link>
             <Link className="text-link site-footer__legal-link" href="/consent">Согласие на обработку персональных данных</Link>
