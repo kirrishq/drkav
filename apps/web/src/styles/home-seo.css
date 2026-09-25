@@ -1,0 +1,106 @@
+@layer components {
+  .home-seo {
+    width: min(100% - var(--space-8), var(--container-wide));
+    margin: var(--space-16) auto 0;
+    padding-bottom: var(--space-16);
+  }
+
+  .home-seo__heading {
+    display: grid;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+
+  .home-seo__eyebrow,
+  .home-seo__title,
+  .home-seo__intro {
+    margin: 0;
+  }
+
+  .home-seo__eyebrow {
+    color: var(--accent);
+    letter-spacing: 0.12em;
+  }
+
+  .home-seo__faq {
+    align-items: start;
+  }
+
+  .home-seo__article {
+    margin-top: var(--space-10);
+  }
+
+  .home-seo__intro-card {
+    display: grid;
+    gap: var(--space-6);
+    padding: var(--space-6);
+    border: var(--border-width-default) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-muted);
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .home-seo__intro-copy {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .home-seo__intro {
+    max-width: var(--container-reading);
+    color: var(--text-secondary);
+  }
+
+  .home-seo__long-answers {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .home-seo__long-content {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .home-seo__long-content p {
+    margin: 0;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+
+  .home-seo__long-content ul {
+    display: grid;
+    gap: var(--space-6);
+    margin: calc(var(--space-2) * -1) 0 0;
+    padding-left: var(--space-6);
+    list-style: disc;
+  }
+
+  .home-seo__list-card {
+    padding-block: var(--space-8);
+    padding-right: var(--space-6);
+    padding-left: var(--space-8);
+    border-radius: var(--radius-lg);
+    background: var(--background);
+    box-shadow: var(--shadow-subtle);
+  }
+
+  .home-seo__list-card li {
+    padding-left: var(--space-1);
+  }
+
+  @media (min-width: 40rem) {
+    .home-seo {
+      width: min(100% - var(--space-12), var(--container-wide));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .home-seo__faq {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-seo__intro-card {
+      grid-template-columns: minmax(0, 1.15fr) minmax(22rem, 0.85fr);
+      align-items: start;
+    }
+  }
+}

@@ -75,4 +75,14 @@
     gap: var(--space-3);
     margin-top: var(--space-4);
   }
+
+  .about-related-pages__grid .record-card {
+    height: 100%;
+  }
+
+  @media (max-width: 39.99rem) {
+    .about-related-pages__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
 }

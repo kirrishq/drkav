@@ -223,6 +223,7 @@ export async function CmsOperationPage({
               />
               <DoctorProfile />
               <AdministratorCta
+                avatarSrc="/images/home/administrator-avatar.png"
                 backgroundSrc="/images/home/administrator-cta-background.png"
                 ctaHref={administratorContact.whatsappHref}
                 ctaLabel="Написать Ольге"

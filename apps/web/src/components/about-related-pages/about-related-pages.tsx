@@ -1,34 +1,34 @@
-import { FeatureLinkCard } from "@drkav/ui";
+import { RecordCard } from "@drkav/ui";
 
 const aboutPages = [
   {
     href: "/obo-mne/book",
-    imageSrc: "/images/about-pages/book.png",
+    description: "Истории о людях и работе пластического хирурга.",
     title: "Книга «Боль двенадцати женщин»",
   },
   {
     href: "/obo-mne/publikacii",
-    imageSrc: "/images/about-pages/vistupleniya.png",
+    description: "Публикации и вклад в развитие пластической хирургии.",
     title: "Вклад в медицину",
   },
   {
     href: "/obo-mne/vystupleniya",
-    imageSrc: "/images/about-pages/vistupleniya.png",
+    description: "Доклады, конференции и образовательные события.",
     title: "Выступления",
   },
   {
     href: "/obo-mne/diplomy-i-licenzii",
-    imageSrc: "/images/about-pages/book.png",
+    description: "Образование, квалификация и лицензии врача.",
     title: "Дипломы и лицензии",
   },
   {
     href: "/obo-mne/smi",
-    imageSrc: "/images/about-pages/vistupleniya.png",
+    description: "Интервью, съёмки и экспертные комментарии.",
     title: "СМИ и проекты",
   },
   {
     href: "/obo-mne/neshkola",
-    imageSrc: "/images/about-pages/book.png",
+    description: "Обучение и наставничество для пластических хирургов.",
     title: "Обучение",
   },
 ] as const;
@@ -49,7 +49,7 @@ export function AboutRelatedPages({ currentHref }: { currentHref: string }) {
       <h2 className="type-h2 about-related-pages__title" id="about-related-pages-title">Больше о докторе Коробове А.В.</h2>
       <div className="about-related-pages__grid">
         {adjacentPages.map((page) => (
-          <FeatureLinkCard imageAlt="" imageSrc={page.imageSrc} key={page.href} href={page.href} title={page.title} variant="square" />
+          <RecordCard description={page.description} href={page.href} key={page.href} title={page.title} />
         ))}
       </div>
     </section>

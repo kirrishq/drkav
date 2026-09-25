@@ -6,6 +6,9 @@ import { SiteHeader } from "@/components/site-header/site-header";
 import { DoctorProfile } from "@/components/doctor-profile/doctor-profile";
 import { administratorContact } from "@/components/site-header/header-config";
 import { HomeOperatingRoomBackground } from "@/components/home-operating-room-background";
+import { HomeEditorialHighlights } from "@/components/home-editorial-highlights/home-editorial-highlights";
+import { HomeSeoBlocks } from "@/components/home-seo/home-seo-blocks";
+import { HomeSocialShowcase } from "@/components/home-social-showcase/home-social-showcase";
 import { getHomeFinalResults } from "@/content/home-final-results";
 import { homeReviews } from "@/content/home-reviews";
 import { operationCategoryFallbackImages } from "@/content/operation-category-images";
@@ -194,12 +197,16 @@ export default async function HomePage() {
         <ReviewsSlider ctaHref="/pacientam/otzyvy" filters={reviewFilters} items={reviewItems} />
         <ConsultationSection />
         <AdministratorCta
+          avatarSrc="/images/home/administrator-avatar.png"
           backgroundSrc="/images/home/administrator-cta-background.png"
           ctaHref={administratorContact.whatsappHref}
           ctaLabel="Написать Ольге"
           description="Если нужно уточнить детали операции, формат консультации, свободные даты или просто задать вопрос, напишите Ольге. Она сориентирует и поможет организовать запись."
           name="Ольга"
         />
+        <HomeSocialShowcase />
+        <HomeEditorialHighlights />
+        <HomeSeoBlocks />
       </main>
     </>
   );

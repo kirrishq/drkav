@@ -8,13 +8,6 @@ const aboutLinks = headerMenu.find((item) => item.href === "/obo-mne")?.links ??
 const operationLinks = headerMenu.find((item) => item.href === "/operaczii")?.links ?? [];
 const patientLinks = headerMenu.find((item) => item.href === "/pacientam")?.links ?? [];
 
-const consultationLinks: readonly HeaderMenuLink[] = [
-  { href: "/konsultaciya", label: "Все варианты" },
-  { href: "/konsultacii/ochnaya-konsultaciya-v-klinike", label: "Очная" },
-  { href: "/konsultacii/onlayn-konsultaciya", label: "Онлайн" },
-  { href: "/konsultacii/konsultaciya-po-ankete", label: "По анкете" },
-];
-
 const mainLinks: readonly HeaderMenuLink[] = [
   { href: "/akcii", label: "Акции" },
   { href: "/ceny", label: "Цены" },
@@ -95,7 +88,7 @@ export function SiteFooter() {
             <div className="site-footer__contact-block">
               <a className="text-link site-footer__contact-link" href="tel:+74951514206">+7 495 151-42-06</a>
               <span className="type-text-base site-footer__contact-note">Администратор · 9:15–19:00, Пн–Пт</span>
-              <a className="text-link site-footer__contact-link" href="https://api.whatsapp.com/send/?app_absent=0&phone=79256255510&text=Консультация">WhatsApp: +7 925 625-55-10</a>
+              <a className="text-link site-footer__contact-link" href="https://api.whatsapp.com/send/?app_absent=0&phone=79256255510&text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%2C%20%D0%9E%D0%BB%D1%8C%D0%B3%D0%B0%21%20%D0%9F%D0%B8%D1%88%D1%83%20%D1%81%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%20drkav.ru.%20%D0%95%D1%81%D1%82%D1%8C%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%3A">WhatsApp: +7 925 625-55-10</a>
               <a className="text-link site-footer__contact-link" href="mailto:admin@drkav.ru">admin@drkav.ru</a>
               <a className="text-link site-footer__contact-link" href="mailto:pr@drkav.ru">pr@drkav.ru</a>
             </div>
@@ -110,10 +103,6 @@ export function SiteFooter() {
             <div className="site-footer__column">
               <h2 className="type-label site-footer__heading">Операции</h2>
               <FooterLinkList links={operationLinks} />
-            </div>
-            <div className="site-footer__column">
-              <h2 className="type-label site-footer__heading">Консультации</h2>
-              <FooterLinkList links={consultationLinks} />
             </div>
             <div className="site-footer__column">
               <h2 className="type-label site-footer__heading">Пациентам</h2>

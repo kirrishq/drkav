@@ -99,22 +99,6 @@ export const pageRegistry = [
   page({ key: "about-credentials", name: "Дипломы и лицензии", route: "/obo-mne/diplomy-i-licenzii", kind: "static", section: "Обо мне", contentStatus: "partial" }),
   page({ key: "consultation", name: "Консультация", route: "/konsultaciya", kind: "listing", section: "Консультация", contentStatus: "scaffold" }),
   page({
-    key: "consultation-in-person",
-    name: "Очная консультация",
-    route: "/konsultacii/ochnaya-konsultaciya-v-klinike",
-    kind: "static",
-    section: "Консультация",
-    legacyRoutes: ["/konsultacii/ochnaya-konsultaciya-v-klinike.html"],
-    seo: {
-      title: "Консультация пластического хирурга в Москве - запись на прием к пластическому хирургу | Артем Коробов",
-      description: "Консультация пластического хирурга по низкой цене в Москве. Прием проводится профессиональным пластическим хирургом Артемом Коробовым. Звоните!",
-      canonicalPath: "/konsultacii/ochnaya-konsultaciya-v-klinike",
-    },
-    contentStatus: "scaffold",
-  }),
-  page({ key: "consultation-online", name: "Онлайн-консультация", route: "/konsultacii/onlayn-konsultaciya", kind: "static", section: "Консультация", legacyRoutes: ["/konsultacii/onlayn-konsultaciya.html"], contentStatus: "scaffold" }),
-  page({ key: "consultation-form", name: "Консультация по анкете", route: "/konsultacii/konsultaciya-po-ankete", kind: "static", section: "Консультация", legacyRoutes: ["/konsultacii/konsultaciya-po-ankete.html"], contentStatus: "scaffold" }),
-  page({
     key: "promotions",
     name: "Акции",
     route: "/akcii",

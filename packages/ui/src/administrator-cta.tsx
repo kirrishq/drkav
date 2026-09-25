@@ -1,9 +1,11 @@
 import { useId, type ReactNode } from "react";
+/* eslint-disable @next/next/no-img-element -- UI package cannot depend on Next.js Image. */
 
 import { buttonVariants } from "./button";
 import { cn } from "./lib/cn";
 
 export type AdministratorCtaProps = {
+  avatarSrc?: string;
   backgroundSrc: string;
   ctaHref: string;
   ctaLabel?: string;
@@ -15,6 +17,7 @@ export type AdministratorCtaProps = {
 
 /** Wide glassmorphism contact CTA for questions and help with arranging a visit. */
 export function AdministratorCta({
+  avatarSrc,
   backgroundSrc,
   ctaHref,
   ctaLabel = "Написать Ольге",
@@ -36,7 +39,9 @@ export function AdministratorCta({
       <span aria-hidden="true" className="administrator-cta__scrim" />
       <div className="administrator-cta__glass">
         <div className="administrator-cta__identity">
-          <span aria-hidden="true" className="administrator-cta__avatar">О</span>
+          <span className="administrator-cta__avatar">
+            {avatarSrc ? <img alt={`${name}, ${role}`} className="administrator-cta__avatar-image" src={avatarSrc} /> : "О"}
+          </span>
           <div>
             <p className="type-text-base administrator-cta__name">{name}</p>
             <p className="type-text-base administrator-cta__role">{role}</p>
