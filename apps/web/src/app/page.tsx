@@ -14,7 +14,7 @@ import { homeReviews } from "@/content/home-reviews";
 import { operationCategoryFallbackImages } from "@/content/operation-category-images";
 import { getPageMetadata } from "@/content/page-registry";
 import { createContentRepository } from "@/content/content-repository";
-import { getReviewFilters, mapReviewsToSliderItems } from "@/content/review-presentation";
+import { getReviewFilterGroups, mapReviewsToSliderItems } from "@/content/review-presentation";
 
 function ClinicIcon() {
   return (
@@ -98,8 +98,8 @@ export default async function HomePage() {
     getHomeFinalResults(),
     createContentRepository().getReviews(),
   ]);
-  const reviewItems = cmsReviews.length > 0 ? mapReviewsToSliderItems(cmsReviews) : homeReviews;
-  const reviewFilters = cmsReviews.length > 0 ? getReviewFilters(cmsReviews) : [];
+  const reviewItems = cmsReviews.length > 0 ? mapReviewsToSliderItems(cmsReviews, finalResults.groups) : homeReviews;
+  const reviewFilterGroups = cmsReviews.length > 0 ? getReviewFilterGroups(cmsReviews, finalResults.groups) : [];
   const resultTabs = finalResults.groups.length > 0
     ? finalResults.groups.map((group) => ({ id: group.key, label: group.name }))
     : homeFinalResultFallbacks.map(({ id, label }) => ({ id, label }));
@@ -194,7 +194,7 @@ export default async function HomePage() {
           tabs={resultTabs}
         />
         <OperationsCards items={operationItems} />
-        <ReviewsSlider ctaHref="/pacientam/otzyvy" filters={reviewFilters} items={reviewItems} />
+        <ReviewsSlider ctaHref="/pacientam/otzyvy" filterGroups={reviewFilterGroups} items={reviewItems} />
         <ConsultationSection />
         <AdministratorCta
           avatarSrc="/images/home/administrator-avatar.png"

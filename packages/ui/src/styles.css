@@ -140,13 +140,13 @@
   --type-display-weight: 700;
   --type-display-tracking: -0.04em;
 
-  --type-h1-size: 2.25rem;
-  --type-h1-line-height: 2.5rem;
+  --type-h1-size: 2.75rem;
+  --type-h1-line-height: 3rem;
   --type-h1-weight: 700;
   --type-h1-tracking: -0.03em;
 
-  --type-h2-size: 1.75rem;
-  --type-h2-line-height: 2.25rem;
+  --type-h2-size: 2.25rem;
+  --type-h2-line-height: 2.75rem;
   --type-h2-weight: 700;
   --type-h2-tracking: -0.02em;
 
@@ -252,10 +252,10 @@ html[data-vision="low-vision"] {
 
   --type-display-size: calc(clamp(2.75rem, 6.5vw, 4.5rem) * var(--vision-font-scale));
   --type-display-line-height: calc(1.1 * var(--vision-line-height-scale));
-  --type-h1-size: calc(2.5rem * var(--vision-font-scale));
-  --type-h1-line-height: calc(3rem * var(--vision-line-height-scale));
-  --type-h2-size: calc(2rem * var(--vision-font-scale));
-  --type-h2-line-height: calc(2.5rem * var(--vision-line-height-scale));
+  --type-h1-size: calc(3rem * var(--vision-font-scale));
+  --type-h1-line-height: calc(3.5rem * var(--vision-line-height-scale));
+  --type-h2-size: calc(2.5rem * var(--vision-font-scale));
+  --type-h2-line-height: calc(3rem * var(--vision-line-height-scale));
   --type-h3-size: calc(1.5rem * var(--vision-font-scale));
   --type-h3-line-height: calc(2rem * var(--vision-line-height-scale));
   --type-h4-size: calc(1.25rem * var(--vision-font-scale));
@@ -2049,7 +2049,7 @@ html[data-vision="low-vision"] a {
     padding: 0 0 var(--space-1);
   }
 
-  .final-results-slider__tab {
+  .filter-chip {
     min-height: var(--space-9);
     flex: none;
     padding-inline: var(--space-3);
@@ -2064,18 +2064,23 @@ html[data-vision="low-vision"] a {
     transition: background-color var(--duration-fast) var(--ease-standard), border-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
   }
 
-  .final-results-slider__tab:hover {
+  .filter-chip:hover,
+  .filter-chip:focus-visible {
     border-color: var(--accent);
     color: var(--text-primary);
   }
 
-  .final-results-slider__tab--active {
+  .filter-chip--active {
     border-color: var(--accent);
     background: var(--accent);
     color: var(--text-inverse);
   }
 
-  .final-results-slider__tab:focus-visible {
+  .filter-chip--active:hover {
+    color: var(--text-inverse);
+  }
+
+  .filter-chip:focus-visible {
     outline: none;
     box-shadow: 0 0 0 var(--focus-ring-offset) var(--background), 0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width)) var(--accent);
   }
@@ -2357,39 +2362,28 @@ html[data-vision="low-vision"] a {
   }
 
   .reviews-slider__filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    justify-content: flex-start;
+    display: grid;
+    gap: var(--space-4);
     margin-top: var(--space-5);
     overflow: visible;
     padding-bottom: var(--space-1);
   }
 
-  .reviews-slider__filter {
-    min-height: var(--space-9);
-    flex: none;
-    padding-inline: var(--space-3);
-    border: var(--border-width-default) solid var(--border-subtle);
-    border-radius: var(--radius-full);
-    background: var(--surface);
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: var(--type-text-base-size);
-    font-weight: var(--type-label-weight);
-    line-height: var(--type-text-base-line-height);
+  .reviews-slider__filter-group {
+    display: grid;
+    gap: var(--space-2);
   }
 
-  .reviews-slider__filter:hover,
-  .reviews-slider__filter:focus-visible {
-    border-color: var(--accent);
-    color: var(--text-primary);
+  .reviews-slider__filter-group + .reviews-slider__filter-group {
+    padding-top: var(--space-4);
+    border-top: var(--border-width-default) solid var(--border-subtle);
   }
 
-  .reviews-slider__filter--active {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: var(--text-inverse);
+  .reviews-slider__filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    justify-content: flex-start;
   }
 
   .reviews-slider__controls {

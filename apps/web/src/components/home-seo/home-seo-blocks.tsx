@@ -128,7 +128,6 @@ export function HomeSeoBlocks() {
   return (
     <section aria-labelledby="home-seo-title" className="home-seo">
       <div className="home-seo__heading">
-        <p className="type-label home-seo__eyebrow">ПАЦИЕНТАМ</p>
         <h2 className="type-h2 home-seo__title" id="home-seo-title">Вопрос/ответ</h2>
       </div>
       <Accordion className="home-seo__faq" items={faqItems} />

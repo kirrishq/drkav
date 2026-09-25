@@ -64,7 +64,6 @@ export function HomeSocialShowcase() {
         </div>
 
         <div className="home-social-showcase__intro">
-          <p className="type-label home-social-showcase__eyebrow">DR.KAV / МЕДИА</p>
           <h2 className="type-h2 home-social-showcase__title" id="home-social-showcase-title">Всё о пластической хирургии</h2>
           <p className="home-social-showcase__description">
             Подписывайтесь на наши соцсети, чтобы узнавать о новых методиках, операциях и трендах в пластической хирургии.

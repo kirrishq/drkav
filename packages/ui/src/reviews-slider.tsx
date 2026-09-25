@@ -5,6 +5,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 
 import { Button, buttonVariants } from "./button";
+import { FilterChip } from "./filter-chip";
 import { cn } from "./lib/cn";
 
 export type ReviewSliderItem = {
@@ -24,6 +25,14 @@ export type ReviewSliderFilter = {
   label: string;
 };
 
+export type ReviewSliderFilterGroup = {
+  defaultFilterId?: string;
+  filters: readonly ReviewSliderFilter[];
+  id: string;
+  label: string;
+  showAll?: boolean;
+};
+
 export type ReviewsSliderProps = {
   ariaLabel?: string;
   className?: string;
@@ -31,11 +40,19 @@ export type ReviewsSliderProps = {
   ctaLabel?: string;
   controlsPlacement?: "header" | "below";
   description?: string;
-  filters?: readonly ReviewSliderFilter[];
+  filterGroups?: readonly ReviewSliderFilterGroup[];
   items: readonly ReviewSliderItem[];
   showFooter?: boolean;
   title?: string;
 };
+
+function getDefaultFilterId(group: ReviewSliderFilterGroup): string {
+  if (group.defaultFilterId && group.filters.some((filter) => filter.id === group.defaultFilterId)) {
+    return group.defaultFilterId;
+  }
+
+  return group.showAll === false ? group.filters[0]?.id ?? "all" : "all";
+}
 
 function ReviewSliderControls({
   onScroll,
@@ -236,7 +253,7 @@ export function ReviewsSlider({
   ctaLabel = "Все отзывы",
   controlsPlacement = "header",
   description = "Реальные впечатления пациентов о результате и сопровождении после операции.",
-  filters = [],
+  filterGroups = [],
   items,
   showFooter = true,
   title = "Отзывы пациентов",
@@ -245,10 +262,14 @@ export function ReviewsSlider({
   const selectedScrollYRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState<ReviewSliderItem | null>(null);
-  const [activeFilterId, setActiveFilterId] = useState("all");
-  const visibleItems = activeFilterId === "all"
+  const [activeFilterIds, setActiveFilterIds] = useState<Record<string, string>>({});
+  const visibleItems = filterGroups.length === 0
     ? items
-    : items.filter((item) => item.filterIds?.includes(activeFilterId));
+    : items.filter((item) => filterGroups.every((group) => {
+        const activeFilterId = activeFilterIds[group.id] ?? getDefaultFilterId(group);
+
+        return activeFilterId === "all" || item.filterIds?.includes(activeFilterId);
+      }));
 
   const openReview = (item: ReviewSliderItem) => {
     selectedScrollYRef.current = window.scrollY;
@@ -288,7 +309,7 @@ export function ReviewsSlider({
   useEffect(() => {
     setActiveIndex(0);
     viewportRef.current?.scrollTo({ behavior: "auto", left: 0 });
-  }, [activeFilterId]);
+  }, [activeFilterIds]);
 
   const scroll = (direction: "left" | "right") => {
     const viewport = viewportRef.current;
@@ -343,29 +364,39 @@ export function ReviewsSlider({
           {controlsPlacement === "header" ? <ReviewSliderControls onScroll={scroll} /> : null}
         </div>
       ) : null}
-      {filters.length > 0 ? (
-        <div aria-label="Фильтр отзывов" className="reviews-slider__filters" role="tablist">
-          <button
-            aria-selected={activeFilterId === "all"}
-            className={cn("reviews-slider__filter", activeFilterId === "all" && "reviews-slider__filter--active")}
-            onClick={() => setActiveFilterId("all")}
-            role="tab"
-            type="button"
-          >
-            Все отзывы
-          </button>
-          {filters.map((filter) => (
-            <button
-              aria-selected={activeFilterId === filter.id}
-              className={cn("reviews-slider__filter", activeFilterId === filter.id && "reviews-slider__filter--active")}
-              key={filter.id}
-              onClick={() => setActiveFilterId(filter.id)}
-              role="tab"
-              type="button"
-            >
-              {filter.label}
-            </button>
-          ))}
+      {filterGroups.length > 0 ? (
+        <div aria-label="Фильтр отзывов" className="reviews-slider__filters">
+          {filterGroups.map((group) => {
+            const activeFilterId = activeFilterIds[group.id] ?? getDefaultFilterId(group);
+
+            return (
+              <div className="reviews-slider__filter-group" key={group.id}>
+                <div aria-label={group.label} className="reviews-slider__filter-options" role="tablist">
+                  {group.showAll !== false ? (
+                    <FilterChip
+                      active={activeFilterId === "all"}
+                      aria-selected={activeFilterId === "all"}
+                      onClick={() => setActiveFilterIds((current) => ({ ...current, [group.id]: "all" }))}
+                      role="tab"
+                    >
+                      Все
+                    </FilterChip>
+                  ) : null}
+                  {group.filters.map((filter) => (
+                    <FilterChip
+                      active={activeFilterId === filter.id}
+                      aria-selected={activeFilterId === filter.id}
+                      key={filter.id}
+                      onClick={() => setActiveFilterIds((current) => ({ ...current, [group.id]: filter.id }))}
+                      role="tab"
+                    >
+                      {filter.label}
+                    </FilterChip>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       ) : null}
       <div className="reviews-slider__viewport" ref={viewportRef}>

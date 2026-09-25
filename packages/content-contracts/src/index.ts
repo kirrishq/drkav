@@ -166,7 +166,7 @@ export interface BeforeAfterCase {
   operation: OperationCatalogLink;
 }
 
-export type ReviewKind = "patient" | "prodoctorov" | "social";
+export type ReviewKind = "patient" | "prodoctorov" | "social" | "video";
 
 export interface Review {
   slug: string;

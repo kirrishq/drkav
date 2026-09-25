@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { buttonVariants, cn } from "@drkav/ui";
-
 const highlights = [
   {
     description: "Практическое обучение для пластических хирургов: мастер-классы, стажировки, менторство и работа в операционной.",
@@ -34,23 +32,20 @@ export function HomeEditorialHighlights() {
   return (
     <section aria-labelledby="home-editorial-highlights-title" className="home-editorial-highlights">
       <div className="home-editorial-highlights__heading">
-        <p className="type-label home-editorial-highlights__eyebrow">ПРОЕКТЫ И МАТЕРИАЛЫ</p>
         <h2 className="type-h2 home-editorial-highlights__title" id="home-editorial-highlights-title">Ещё о докторе и его проектах</h2>
       </div>
       <div className="home-editorial-highlights__grid">
         {highlights.map((highlight) => (
-          <article className="home-editorial-highlights__card" key={highlight.title}>
+          <Link className="home-editorial-highlights__card focus-ring" href={highlight.href} key={highlight.title}>
             <figure className="home-editorial-highlights__image">
               <Image alt={highlight.imageAlt} fill loading="lazy" sizes="(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw" src={highlight.imageSrc} />
             </figure>
             <div className="home-editorial-highlights__content">
               <h3 className="type-h3 home-editorial-highlights__card-title">{highlight.title}</h3>
               <p className="home-editorial-highlights__description">{highlight.description}</p>
-              <Link className={cn(buttonVariants({ size: "sm", variant: "outline" }), "home-editorial-highlights__link")} href={highlight.href}>
-                {highlight.linkLabel}
-              </Link>
+              <span className="home-editorial-highlights__read-more">{highlight.linkLabel}</span>
             </div>
-          </article>
+          </Link>
         ))}
       </div>
     </section>

@@ -7,6 +7,7 @@ import { forwardRef, useEffect, useId, useImperativeHandle, useMemo, useRef, use
 
 import { Button } from "./button";
 import { buttonVariants } from "./button";
+import { FilterChip } from "./filter-chip";
 import { cn } from "./lib/cn";
 
 export type FinalResultsTab = {
@@ -313,10 +314,10 @@ export function FinalResultsSlider({
               const tabId = `${instanceId}-${tab.id}-tab`;
 
               return (
-                <button
+                <FilterChip
+                  active={selected}
                   aria-controls={panelId}
                   aria-selected={selected}
-                  className={cn("final-results-slider__tab", selected && "final-results-slider__tab--active")}
                   id={tabId}
                   key={tab.id}
                   onClick={() => setActiveTabId(tab.id)}
@@ -340,10 +341,9 @@ export function FinalResultsSlider({
                   }}
                   role="tab"
                   tabIndex={selected ? 0 : -1}
-                  type="button"
                 >
                   {tab.label}
-                </button>
+                </FilterChip>
               );
             })}
           </div>

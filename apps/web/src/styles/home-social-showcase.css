@@ -35,6 +35,7 @@
     border-radius: var(--radius-full);
     background: rgba(195, 198, 207, 0.42);
     box-shadow: 0 0 var(--space-3) color-mix(in srgb, var(--accent) 26%, transparent);
+    filter: blur(var(--space-0-5));
     opacity: 0.16;
     transform: scale(0.72);
     transition: background-color var(--duration-fast) var(--ease-standard);
@@ -96,15 +97,9 @@
     text-align: center;
   }
 
-  .home-social-showcase__eyebrow,
   .home-social-showcase__title,
   .home-social-showcase__description {
     margin: 0;
-  }
-
-  .home-social-showcase__eyebrow {
-    color: var(--accent);
-    letter-spacing: 0.12em;
   }
 
   .home-social-showcase__description {

@@ -3,6 +3,20 @@
     background: var(--background);
   }
 
+  .home-page > .benefits-strip,
+  .home-page > .video-highlights,
+  .home-page > .doctor-profile,
+  .home-page > .final-results-slider,
+  .home-page > .operations-cards,
+  .home-page > .reviews-slider,
+  .home-page > .consultation-section,
+  .home-page > .administrator-cta,
+  .home-page > .home-social-showcase,
+  .home-page > .home-editorial-highlights,
+  .home-page > .home-seo {
+    margin-top: var(--space-16);
+  }
+
   .home-hero {
     position: relative;
     isolation: isolate;

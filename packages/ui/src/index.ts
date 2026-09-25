@@ -18,6 +18,8 @@ export { CertificateCard } from "./certificate-card";
 export type { CertificateCardProps } from "./certificate-card";
 export { FeatureLinkCard } from "./feature-link-card";
 export type { FeatureLinkCardProps } from "./feature-link-card";
+export { FilterChip } from "./filter-chip";
+export type { FilterChipProps } from "./filter-chip";
 export { FinalResultsSlider } from "./final-results-slider";
 export type {
   FinalResultCard,
@@ -81,7 +83,7 @@ export type { RecordCardDetail, RecordCardProps } from "./record-card";
 export { StatsStrip } from "./stats-strip";
 export type { StatsStripItem, StatsStripProps } from "./stats-strip";
 export { ReviewsSlider } from "./reviews-slider";
-export type { ReviewSliderFilter, ReviewSliderItem, ReviewsSliderProps } from "./reviews-slider";
+export type { ReviewSliderFilter, ReviewSliderFilterGroup, ReviewSliderItem, ReviewsSliderProps } from "./reviews-slider";
 export { TextLink } from "./text-link";
 export type { TextLinkProps } from "./text-link";
 export { Textarea } from "./textarea";

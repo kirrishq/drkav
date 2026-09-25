@@ -1477,7 +1477,7 @@ export class StrapiContentRepository implements ContentRepository {
 
       const kind = requireString(item.kind, `${label}.kind`);
 
-      if (kind !== "patient" && kind !== "prodoctorov" && kind !== "social") {
+      if (kind !== "patient" && kind !== "prodoctorov" && kind !== "social" && kind !== "video") {
         throw new CmsInvalidResponseError(`Invalid Strapi response: ${label}.kind is unsupported.`);
       }
 
