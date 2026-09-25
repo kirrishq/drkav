@@ -1,5 +1,6 @@
 import { PatientSection } from "@/components/patient-content/patient-content";
 import { StaticPage } from "@/components/content-page/static-page";
+import { PatientRelatedPages } from "@/components/patient-related-pages/patient-related-pages";
 import { getPageMetadata } from "@/content/page-registry";
 
 export const metadata = getPageMetadata("/pacientam/spisok-analizov");
@@ -24,5 +25,5 @@ export default function TestsListPage() {
     ["ПЦР-мазок, не экспресс-тест", "48 часов"],
   ] as const;
 
-  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Список анализов" }]} description="Перечень обследований и сроков их актуальности перед операцией." title="Список анализов перед операцией"><PatientSection title="Обследования и сроки актуальности"><p className="patient-note">Список служит ориентиром. Окончательный перечень исследований, их сроки и решение о допуске к операции определяет врач с учётом планируемого вмешательства и состояния здоровья.</p><dl className="patient-tests">{tests.map(([name, validity]) => <div className="patient-tests__item" key={name}><dt className="patient-tests__name">{name}</dt><dd className="patient-tests__validity">Срок актуальности: {validity}</dd></div>)}</dl></PatientSection></StaticPage>;
+  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Список анализов" }]} description="Перечень обследований и сроков их актуальности перед операцией." title="Список анализов перед операцией"><PatientSection title="Обследования и сроки актуальности"><p className="patient-note">Список служит ориентиром. Окончательный перечень исследований, их сроки и решение о допуске к операции определяет врач с учётом планируемого вмешательства и состояния здоровья.</p><dl className="patient-tests">{tests.map(([name, validity]) => <div className="patient-tests__item" key={name}><dt className="patient-tests__name">{name}</dt><dd className="patient-tests__validity">Срок актуальности: {validity}</dd></div>)}</dl></PatientSection><PatientRelatedPages currentHref="/pacientam/spisok-analizov" /></StaticPage>;
 }

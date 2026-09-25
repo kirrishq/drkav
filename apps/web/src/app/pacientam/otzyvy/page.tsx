@@ -5,6 +5,7 @@ import { StaticPage } from "@/components/content-page/static-page";
 import { createContentRepository } from "@/content/content-repository";
 import { getPageMetadata } from "@/content/page-registry";
 import { getReviewFilters, mapReviewsToSliderItems } from "@/content/review-presentation";
+import { PatientRelatedPages } from "@/components/patient-related-pages/patient-related-pages";
 
 export const metadata = getPageMetadata("/pacientam/otzyvy");
 
@@ -13,5 +14,5 @@ export default async function ReviewsPage() {
   const reviewItems = cmsReviews.length > 0 ? mapReviewsToSliderItems(cmsReviews) : homeReviews;
   const reviewFilters = cmsReviews.length > 0 ? getReviewFilters(cmsReviews) : [];
 
-  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Отзывы" }]} description="Раздел с отзывами о консультациях, сопровождении и опыте взаимодействия с клиникой." title="Отзывы"><ReviewsSlider className="reviews-slider--viewport-edge" filters={reviewFilters} items={reviewItems} /></StaticPage>;
+  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Отзывы" }]} description="Раздел с отзывами о консультациях, сопровождении и опыте взаимодействия с клиникой." title="Отзывы"><ReviewsSlider className="reviews-slider--viewport-edge" filters={reviewFilters} items={reviewItems} /><PatientRelatedPages currentHref="/pacientam/otzyvy" /></StaticPage>;
 }

@@ -1,5 +1,6 @@
 import { PatientFaq, type PatientFaqItem } from "@/components/patient-content/patient-content";
 import { StaticPage } from "@/components/content-page/static-page";
+import { PatientRelatedPages } from "@/components/patient-related-pages/patient-related-pages";
 
 export const metadata = { title: "Вопросы и ответы", description: "Ответы на частые вопросы о подготовке, операции и восстановлении." };
 
@@ -11,5 +12,5 @@ export default function FaqPage() {
     { title: "Дополнительные вопросы", items: [{ question: "Как доктор подтверждает квалификацию?", answer: "Информация об образовании, сертификатах, опыте, научной деятельности и профессиональных мероприятиях представлена в разделе «Обо мне»." }, { question: "Работаете ли вы с мужчинами?", answer: "Да, операции для мужчин входят в направления практики. Варианты коррекции обсуждаются индивидуально на консультации." }, { question: "С какого возраста проводятся операции?", answer: "Операции проводятся совершеннолетним пациентам; возрастные и медицинские ограничения определяются индивидуально." }, { question: "Может ли близкий находиться в палате?", answer: "Возможность присутствия сопровождающего зависит от условий размещения и правил клиники; её нужно согласовать заранее." }, { question: "Есть ли одноместные палаты и личная медсестра?", answer: "Дополнительные условия размещения и ухода могут быть доступны по предварительному согласованию с клиникой." }] },
   ];
 
-  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Вопрос-ответ" }]} description="Ответы на частые вопросы о подготовке, операции, восстановлении и консультации." title="Вопросы и ответы"><div className="patient-page-content">{groups.map((group) => <section className="content-card content-card--spacious patient-section" key={group.title}><h2 className="content-card__heading content-card__heading--h2">{group.title}</h2><PatientFaq items={group.items} /></section>)}</div></StaticPage>;
+  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Вопрос-ответ" }]} description="Ответы на частые вопросы о подготовке, операции, восстановлении и консультации." title="Вопросы и ответы"><div className="patient-page-content">{groups.map((group) => <section className="content-card content-card--spacious patient-section" key={group.title}><h2 className="content-card__heading content-card__heading--h2">{group.title}</h2><PatientFaq items={group.items} /></section>)}</div><PatientRelatedPages currentHref="/pacientam/vopros-otvet" /></StaticPage>;
 }

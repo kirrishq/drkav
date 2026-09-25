@@ -1,6 +1,7 @@
 import { StaticPage } from "@/components/content-page/static-page";
 import { MediaVideoProjects } from "@/components/media-video-projects/media-video-projects";
 import { PortfolioIndex } from "@/components/portfolio/portfolio-index";
+import { PatientRelatedPages } from "@/components/patient-related-pages/patient-related-pages";
 import { createContentRepository } from "@/content/content-repository";
 import { getPageMetadata } from "@/content/page-registry";
 
@@ -79,5 +80,5 @@ const patientReviewVideos = [
 export default async function PortfolioPage() {
   const portfolio = await createContentRepository().getPortfolioIndex();
 
-  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Портфолио" }]} className="portfolio-index" description="Кейсы пациентов с кратким описанием операции и сроком результата." title="Портфолио пластических операций"><div className="content-card content-card--muted portfolio-index__principles"><p><span className="type-overline">01</span>Показываем результат честно и с указанием срока после операции.</p><p><span className="type-overline">02</span>Объясняем, почему был выбран именно такой план вмешательства.</p><p><span className="type-overline">03</span>Публикуем материалы с разрешения пациентов.</p></div><MediaVideoProjects items={patientReviewVideos} title="Видеокейсы" tone="surface" /><PortfolioIndex {...portfolio} /></StaticPage>;
+  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Портфолио" }]} className="portfolio-index" description="Кейсы пациентов с кратким описанием операции и сроком результата." title="Портфолио пластических операций"><div className="content-card content-card--muted portfolio-index__principles"><p><span className="type-overline">01</span>Показываем результат честно и с указанием срока после операции.</p><p><span className="type-overline">02</span>Объясняем, почему был выбран именно такой план вмешательства.</p><p><span className="type-overline">03</span>Публикуем материалы с разрешения пациентов.</p></div><MediaVideoProjects items={patientReviewVideos} title="Видеокейсы" tone="surface" /><PortfolioIndex {...portfolio} /><PatientRelatedPages currentHref="/pacientam/portfolio" /></StaticPage>;
 }

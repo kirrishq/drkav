@@ -10,6 +10,7 @@ export type RecordCardDetail = {
 type RecordCardBaseProps = {
   className?: string;
   details?: readonly RecordCardDetail[];
+  description?: string;
   icon?: ReactNode;
   meta?: string;
   title: ReactNode;
@@ -49,7 +50,7 @@ export function ArrowUpRightIcon() {
   );
 }
 
-function RecordCardContent({ details = [], icon, meta, title }: RecordCardBaseProps) {
+function RecordCardContent({ description, details = [], icon, meta, title }: RecordCardBaseProps) {
   const visibleDetails = details.filter((detail) => detail.value.trim().length > 0);
 
   return (
@@ -61,6 +62,7 @@ function RecordCardContent({ details = [], icon, meta, title }: RecordCardBasePr
         </div>
       ) : null}
       <h3 className="card-title record-card__title">{title}</h3>
+      {description ? <p className="record-card__description">{description}</p> : null}
       {visibleDetails.length > 0 ? (
         <ul className="record-card__details">
           {visibleDetails.map((detail) => (
@@ -83,7 +85,7 @@ function RecordCardContent({ details = [], icon, meta, title }: RecordCardBasePr
  */
 export function RecordCard(props: RecordCardProps) {
   if ("href" in props && props.href) {
-    const { className, details, href, icon, meta, title, ...linkProps } = props;
+    const { className, description, details, href, icon, meta, title, ...linkProps } = props;
 
     return (
       <a
@@ -91,7 +93,7 @@ export function RecordCard(props: RecordCardProps) {
         href={href}
         {...linkProps}
       >
-        <RecordCardContent details={details} icon={icon} meta={meta} title={title} />
+        <RecordCardContent description={description} details={details} icon={icon} meta={meta} title={title} />
         <span
           aria-hidden="true"
           className="record-card__arrow"
@@ -103,7 +105,7 @@ export function RecordCard(props: RecordCardProps) {
   }
 
   if (isButtonRecordCard(props)) {
-    const { className, details, icon, meta, onClick, title, ...buttonProps } = props;
+    const { className, description, details, icon, meta, onClick, title, ...buttonProps } = props;
 
     return (
       <button
@@ -112,7 +114,7 @@ export function RecordCard(props: RecordCardProps) {
         type="button"
         {...buttonProps}
       >
-        <RecordCardContent details={details} icon={icon} meta={meta} title={title} />
+        <RecordCardContent description={description} details={details} icon={icon} meta={meta} title={title} />
         <span aria-hidden="true" className="record-card__arrow">
           <ArrowUpRightIcon />
         </span>
@@ -120,11 +122,11 @@ export function RecordCard(props: RecordCardProps) {
     );
   }
 
-  const { className, details, icon, meta, title } = props;
+  const { className, description, details, icon, meta, title } = props;
 
   return (
     <article className={cn("record-card", className)}>
-      <RecordCardContent details={details} icon={icon} meta={meta} title={title} />
+      <RecordCardContent description={description} details={details} icon={icon} meta={meta} title={title} />
     </article>
   );
 }
