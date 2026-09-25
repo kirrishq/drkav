@@ -11,6 +11,11 @@ const patientPageMap = {
     href: "/pacientam/do-i-posle",
     title: "До и после",
   },
+  blog: {
+    description: "Статьи о пластической хирургии и восстановлении.",
+    href: "/pacientam/blog",
+    title: "Блог доктора",
+  },
   reviews: {
     description: "Впечатления пациентов о консультации и восстановлении.",
     href: "/pacientam/otzyvy",
@@ -45,11 +50,6 @@ const patientPageMap = {
     description: "Материалы о заболеваниях и особенностях лечения.",
     href: "/pacientam/pro-bolezni",
     title: "Про болезни",
-  },
-  blog: {
-    description: "Статьи о пластической хирургии и восстановлении.",
-    href: "/pacientam/blog",
-    title: "Блог доктора",
   },
 } as const;
 

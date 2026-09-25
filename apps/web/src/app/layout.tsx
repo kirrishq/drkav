@@ -65,7 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className={`${GeistSans.variable} ${GeistMono.variable}`}>
-        <ConsultationProvider>
+        <ConsultationProvider submitUrl="/api/forms/consultation">
           <RevealObserver>
             {children}
             <ContactFab

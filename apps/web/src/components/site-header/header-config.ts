@@ -1,3 +1,5 @@
+import { aboutPageLinks } from "@/components/about-page/about-page-links";
+
 export type HeaderMenuLink = {
   href: string;
   label: string;
@@ -38,15 +40,7 @@ export const headerMenu: readonly HeaderMenuItem[] = [
     label: "Обо мне",
     links: [
       { href: "/obo-mne", label: "Обо мне" },
-      { href: "/obo-mne/publikacii", label: "Научная деятельность" },
-      { href: "/obo-mne/vystupleniya", label: "Выступления" },
-      {
-        href: "/obo-mne/diplomy-i-licenzii",
-        label: "Дипломы и лицензии",
-      },
-      { href: "/obo-mne/smi", label: "СМИ" },
-      { href: "/obo-mne/neshkola", label: "Не Школа" },
-      { href: "/obo-mne/book", label: "Книга" },
+      ...aboutPageLinks.map(({ href, title }) => ({ href, label: title })),
     ],
   },
   {

@@ -195,7 +195,7 @@ export default async function HomePage() {
         />
         <OperationsCards items={operationItems} />
         <ReviewsSlider ctaHref="/pacientam/otzyvy" filterGroups={reviewFilterGroups} items={reviewItems} />
-        <ConsultationSection />
+        <ConsultationSection submitUrl="/api/forms/consultation" />
         <AdministratorCta
           avatarSrc="/images/home/administrator-avatar.png"
           backgroundSrc="/images/home/administrator-cta-background.png"

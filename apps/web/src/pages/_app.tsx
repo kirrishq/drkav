@@ -6,7 +6,7 @@ import { RevealObserver } from "@/components/reveal/reveal-observer";
 
 export default function PagesApp({ Component, pageProps }: AppProps) {
   return (
-    <ConsultationProvider>
+    <ConsultationProvider submitUrl="/api/forms/consultation">
       <RevealObserver>
         <Component {...pageProps} />
       </RevealObserver>

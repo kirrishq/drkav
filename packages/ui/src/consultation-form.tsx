@@ -26,6 +26,7 @@ type ContactMethod = "telegram" | "phone" | "max" | "whatsapp";
 
 type ConsultationDialogContextValue = {
   open: () => void;
+  submitUrl?: string;
 };
 
 const ConsultationDialogContext = createContext<ConsultationDialogContextValue | null>(null);
@@ -42,24 +43,65 @@ export type ConsultationFormProps = {
   className?: string;
   compact?: boolean;
   onSuccess?: () => void;
+  submitUrl?: string;
 };
 
-export function ConsultationForm({ className, compact = false, onSuccess }: ConsultationFormProps) {
+export function ConsultationForm({ className, compact = false, onSuccess, submitUrl }: ConsultationFormProps) {
   const idPrefix = useId().replaceAll(":", "");
   const [consultationFormat, setConsultationFormat] = useState<ConsultationFormat>("clinic");
   const [contactMethod, setContactMethod] = useState<ContactMethod>("phone");
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const formStartedAt = useRef(Date.now());
 
   const nameId = `${idPrefix}-name`;
   const phoneId = `${idPrefix}-phone`;
   const telegramUsernameId = `${idPrefix}-telegram-username`;
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!event.currentTarget.checkValidity()) {
       event.currentTarget.reportValidity();
       return;
+    }
+
+    setError(null);
+
+    if (submitUrl) {
+      setIsSubmitting(true);
+
+      try {
+        const formData = new FormData(event.currentTarget);
+        const response = await fetch(submitUrl, {
+          body: JSON.stringify({
+            contactMethod,
+            consultationFormat,
+            formStartedAt: formStartedAt.current,
+            marketingConsent: formData.get("marketing-consent") === "on",
+            name: formData.get("name"),
+            personalDataConsent: formData.get("personal-data") === "on",
+            phone: formData.get("phone"),
+            privacyPolicyConsent: formData.get("privacy-policy") === "on",
+            telegramUsername: formData.get("telegram-username"),
+            website: formData.get("website"),
+          }),
+          headers: { "Content-Type": "application/json" },
+          method: "POST",
+        });
+
+        const result = (await response.json()) as { error?: string };
+        if (!response.ok) {
+          throw new Error(result.error || "Не удалось отправить заявку.");
+        }
+      } catch (submissionError) {
+        setError(submissionError instanceof Error ? submissionError.message : "Не удалось отправить заявку.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      setIsSubmitting(false);
     }
 
     setSubmitted(true);
@@ -74,7 +116,7 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
         <p className="type-text-base consultation-form__success-description">
           Администратор свяжется с вами выбранным способом и уточнит удобное время.
         </p>
-        <Button onClick={() => setSubmitted(false)} size="md" variant="outline">
+        <Button onClick={() => { formStartedAt.current = Date.now(); setSubmitted(false); }} size="md" variant="outline">
           Заполнить ещё раз
         </Button>
       </div>
@@ -83,6 +125,7 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
 
   return (
     <form className={cn("consultation-form", compact && "consultation-form--compact", className)} onSubmit={handleSubmit}>
+      <input aria-hidden="true" autoComplete="off" className="sr-only" name="website" tabIndex={-1} />
       <div className="consultation-form__field">
         <Label htmlFor={nameId} required>Имя</Label>
         <Input autoComplete="name" id={nameId} name="name" placeholder="Как к вам обращаться" required />
@@ -185,8 +228,9 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
         </label>
       </div>
 
-      <Button className="consultation-form__submit" size="lg" type="submit">
-        Записаться на консультацию
+      {error ? <p aria-live="polite" className="type-text-sm consultation-form__error" role="alert">{error}</p> : null}
+      <Button className="consultation-form__submit" disabled={isSubmitting} size="lg" type="submit">
+        {isSubmitting ? "Отправляем…" : "Записаться на консультацию"}
       </Button>
       <p className="type-text-sm consultation-form__note">
         После отправки заявки администратор свяжется с вами для подтверждения записи.
@@ -195,7 +239,7 @@ export function ConsultationForm({ className, compact = false, onSuccess }: Cons
   );
 }
 
-export function ConsultationSection() {
+export function ConsultationSection({ submitUrl }: Pick<ConsultationFormProps, "submitUrl">) {
   return (
     <section aria-labelledby="consultation-section-title" className="consultation-section">
       <div className="consultation-section__layout">
@@ -213,19 +257,19 @@ export function ConsultationSection() {
             <li className="type-text-base consultation-section__detail">После заявки администратор свяжется с вами</li>
           </ul>
         </div>
-        <ConsultationForm />
+        <ConsultationForm submitUrl={submitUrl} />
       </div>
     </section>
   );
 }
 
-export function ConsultationProvider({ children }: { children: ReactNode }) {
+export function ConsultationProvider({ children, submitUrl }: { children: ReactNode; submitUrl?: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <ConsultationDialogContext.Provider value={{ open: () => setIsOpen(true) }}>
+    <ConsultationDialogContext.Provider value={{ open: () => setIsOpen(true), submitUrl }}>
       {children}
-      {isOpen ? <ConsultationDialog onClose={() => setIsOpen(false)} /> : null}
+      {isOpen ? <ConsultationDialog onClose={() => setIsOpen(false)} submitUrl={submitUrl} /> : null}
     </ConsultationDialogContext.Provider>
   );
 }
@@ -259,7 +303,7 @@ export function ConsultationTrigger({ children, className, onClick }: Consultati
   );
 }
 
-function ConsultationDialog({ onClose }: { onClose: () => void }) {
+function ConsultationDialog({ onClose, submitUrl }: { onClose: () => void; submitUrl?: string }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -303,7 +347,7 @@ function ConsultationDialog({ onClose }: { onClose: () => void }) {
             <CloseIcon />
           </button>
         </div>
-        <ConsultationForm compact />
+        <ConsultationForm compact submitUrl={submitUrl} />
       </div>
     </dialog>
   );

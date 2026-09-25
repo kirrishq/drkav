@@ -31,6 +31,23 @@ pnpm dev:cms
 
 Локальная CMS использует SQLite и доступна по адресу http://localhost:1337/admin. Локальные секреты, база SQLite, uploads и generated-файлы Strapi исключены из Git. Public role не имеет доступа к Content API; server-to-server запросы используют read-only API token.
 
+Для локального тестирования форм запустите Mailpit в отдельном терминале:
+
+```bash
+pnpm mailpit:up
+```
+
+Почтовый inbox будет доступен по адресу http://localhost:8025. В `apps/web/.env.local` включите локальную доставку:
+
+```env
+FORM_DELIVERY_MODE=mailpit
+MAILPIT_URL=http://127.0.0.1:8025
+MAILPIT_FROM=drkav-local@example.invalid
+MAILPIT_TO=qa@example.invalid
+```
+
+После этого запустите frontend через `pnpm dev:web` и проверьте формы на главной странице и `/kontakty`. Для остановки Mailpit используйте `pnpm mailpit:down`. Не отправляйте через локальную форму реальные персональные или медицинские данные.
+
 Seed выполняется только вручную и не входит в обычный запуск:
 
 ```bash

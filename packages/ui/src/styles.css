@@ -339,6 +339,15 @@ html[data-vision="low-vision"] a {
   text-underline-offset: 0.15em;
 }
 
+@media (max-width: 39.99rem) {
+  :root {
+    --type-h1-size: 2.25rem;
+    --type-h1-line-height: 2.5rem;
+    --type-h2-size: 1.75rem;
+    --type-h2-line-height: 2.25rem;
+  }
+}
+
 @utility type-display {
   font-size: var(--type-display-size);
   font-weight: var(--type-display-weight);
@@ -3443,6 +3452,11 @@ html[data-vision="low-vision"] a {
     width: 100%;
   }
 
+  .consultation-form__error {
+    margin: 0;
+    color: var(--error);
+  }
+
   .consultation-form__note {
     margin: 0;
     color: var(--text-muted);
@@ -3502,6 +3516,7 @@ html[data-vision="low-vision"] a {
 
   .consultation-dialog__content .consultation-form {
     min-width: 0;
+    padding: var(--space-4);
   }
 
   .consultation-dialog__header {
@@ -3586,6 +3601,13 @@ html[data-vision="low-vision"] a {
 
     .consultation-dialog__content .consultation-form {
       border-radius: 0;
+      padding: var(--space-4);
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .consultation-dialog__content .consultation-form {
+      padding: 0;
     }
   }
 

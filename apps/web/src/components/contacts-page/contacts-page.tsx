@@ -3,7 +3,7 @@
 import { Button, Checkbox, Input, Label, Textarea, buttonVariants, cn } from "@drkav/ui";
 import Image from "next/image";
 import { createPortal } from "react-dom";
-import { type FormEvent, useCallback, useEffect, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 
 type ContactPhoto = {
   alt: string;
@@ -73,14 +73,47 @@ function ArrowIcon({ direction }: { direction: "next" | "previous" }) {
 }
 
 function FeedbackForm() {
+  const formStartedAt = useRef(Date.now());
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!event.currentTarget.checkValidity()) {
       event.currentTarget.reportValidity();
       return;
     }
+
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      const formData = new FormData(event.currentTarget);
+      const response = await fetch("/api/forms/feedback", {
+        body: JSON.stringify({
+          contact: formData.get("contact"),
+          formStartedAt: formStartedAt.current,
+          message: formData.get("message"),
+          name: formData.get("name"),
+          personalDataConsent: formData.get("personal-data") === "on",
+          website: formData.get("website"),
+        }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
+
+      const result = (await response.json()) as { error?: string };
+      if (!response.ok) {
+        throw new Error(result.error || "Не удалось отправить сообщение.");
+      }
+    } catch (submissionError) {
+      setError(submissionError instanceof Error ? submissionError.message : "Не удалось отправить сообщение.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    setIsSubmitting(false);
     setSubmitted(true);
   }
 
@@ -90,7 +123,7 @@ function FeedbackForm() {
         <div aria-hidden="true" className="contacts-page__feedback-success-icon">✓</div>
         <h3 className="content-card__heading content-card__heading--h3">Спасибо за сообщение</h3>
         <p>Мы передали его администратору. Если понадобится уточнить детали, мы свяжемся с вами.</p>
-        <Button onClick={() => setSubmitted(false)} size="md" variant="outline">
+        <Button onClick={() => { formStartedAt.current = Date.now(); setSubmitted(false); }} size="md" variant="outline">
           Написать ещё
         </Button>
       </div>
@@ -99,6 +132,7 @@ function FeedbackForm() {
 
   return (
     <form className="contacts-page__feedback-form" onSubmit={handleSubmit}>
+      <input aria-hidden="true" autoComplete="off" className="sr-only" name="website" tabIndex={-1} />
       <div className="contacts-page__form-field">
         <Label htmlFor="feedback-name" required>Имя</Label>
         <Input autoComplete="name" id="feedback-name" name="name" placeholder="Как к вам обращаться" required />
@@ -115,7 +149,10 @@ function FeedbackForm() {
         <Checkbox name="personal-data" required />
         <span>Согласен на обработку персональных данных</span>
       </label>
-      <Button size="lg" type="submit">Отправить сообщение</Button>
+      {error ? <p aria-live="polite" className="contacts-page__feedback-error" role="alert">{error}</p> : null}
+      <Button disabled={isSubmitting} size="lg" type="submit">
+        {isSubmitting ? "Отправляем…" : "Отправить сообщение"}
+      </Button>
     </form>
   );
 }
