@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { GeistMono, GeistSans } from "geist/font";
+import { GeistSans } from "geist/font";
 import { ContactFab, ConsultationProvider } from "@drkav/ui";
 
 import "@/app/globals.css";
@@ -64,7 +64,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: themeBootstrapScript }}
         />
       </head>
-      <body className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <body className={GeistSans.variable}>
         <ConsultationProvider submitUrl="/api/forms/consultation">
           <RevealObserver>
             {children}

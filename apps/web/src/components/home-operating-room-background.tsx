@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 function randomBetween(min: number, max: number) {
@@ -16,7 +17,7 @@ function createCircleClipPath(centerX: number, centerY: number, radius: number) 
 export function HomeOperatingRoomBackground() {
   const dotsRef = useRef<HTMLSpanElement>(null);
   const glowRef = useRef<HTMLSpanElement>(null);
-  const revealRef = useRef<HTMLSpanElement>(null);
+  const revealRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const dots = dotsRef.current;
@@ -36,6 +37,7 @@ export function HomeOperatingRoomBackground() {
     let timer: number | undefined;
     let cancelled = false;
     let pointerActive = false;
+    let pageReady = false;
     let spotlightX = 50;
     let spotlightY = 50;
 
@@ -120,7 +122,7 @@ export function HomeOperatingRoomBackground() {
     };
 
     const startSpotlight = () => {
-      if (cancelled || reducedMotion.matches || pointerActive) {
+      if (!pageReady || cancelled || reducedMotion.matches || pointerActive) {
         return;
       }
 
@@ -162,6 +164,12 @@ export function HomeOperatingRoomBackground() {
       clearAnimation();
       clearTimer();
       pointerActive = false;
+
+      if (!pageReady) {
+        hideSpotlight();
+        return;
+      }
+
       if (desktopMedia.matches) {
         spotlightX = 50;
         spotlightY = 50;
@@ -187,7 +195,7 @@ export function HomeOperatingRoomBackground() {
     };
 
     const handlePointerMove = (event: PointerEvent) => {
-      if (!desktopMedia.matches || event.pointerType !== "mouse" || !section) {
+      if (!pageReady || !desktopMedia.matches || event.pointerType !== "mouse" || !section) {
         return;
       }
 
@@ -216,16 +224,34 @@ export function HomeOperatingRoomBackground() {
       handlePointerMove(event as PointerEvent);
     };
 
-    start();
+    hideSpotlight();
     section?.addEventListener("pointermove", handlePointerMoveEvent);
     section?.addEventListener("pointerleave", handlePointerLeave);
     reducedMotion.addEventListener("change", start);
     desktopMedia.addEventListener("change", start);
 
+    const handlePageLoad = () => {
+      window.setTimeout(() => {
+        if (cancelled) {
+          return;
+        }
+
+        pageReady = true;
+        start();
+      }, 250);
+    };
+
+    if (document.readyState === "complete") {
+      handlePageLoad();
+    } else {
+      window.addEventListener("load", handlePageLoad, { once: true });
+    }
+
     return () => {
       cancelled = true;
       clearAnimation();
       clearTimer();
+      window.removeEventListener("load", handlePageLoad);
       section?.removeEventListener("pointermove", handlePointerMoveEvent);
       section?.removeEventListener("pointerleave", handlePointerLeave);
       reducedMotion.removeEventListener("change", start);
@@ -235,11 +261,26 @@ export function HomeOperatingRoomBackground() {
 
   return (
     <div aria-hidden="true" className="home-hero__operating-room">
-      <span className="home-hero__operating-room-base" />
+      <Image
+        alt=""
+        className="home-hero__operating-room-base"
+        fill
+        fetchPriority="high"
+        priority
+        sizes="100vw"
+        src="/images/home/operating-room-bw.png"
+      />
       <span className="home-hero__operating-room-dots" ref={dotsRef}>
         {Array.from({ length: DOT_COLUMNS * DOT_ROWS }, (_, index) => <span className="home-hero__operating-room-dot" key={index} />)}
       </span>
-      <span className="home-hero__operating-room-reveal" ref={revealRef} />
+      <Image
+        alt=""
+        className="home-hero__operating-room-reveal"
+        fill
+        sizes="100vw"
+        src="/images/home/operating-room-bw.png"
+        ref={revealRef}
+      />
       <span className="home-hero__operating-room-glow" ref={glowRef} />
     </div>
   );

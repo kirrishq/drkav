@@ -43,10 +43,10 @@
     position: absolute;
     inset: 0;
     display: block;
-    background-image: url("/images/home/operating-room-bw.png");
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
 
   .home-hero__operating-room-base {
@@ -191,8 +191,7 @@
   @media (max-width: 39.99rem) {
     .home-hero__operating-room-base,
     .home-hero__operating-room-reveal {
-      background-position: center bottom;
-      background-size: auto 62%;
+      object-position: center bottom;
       -webkit-mask-image: linear-gradient(180deg, transparent 0%, transparent 32%, black 62%, black 100%);
       mask-image: linear-gradient(180deg, transparent 0%, transparent 32%, black 62%, black 100%);
     }
