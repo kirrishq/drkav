@@ -6,7 +6,7 @@ import { ContactFab, ConsultationProvider } from "@drkav/ui";
 import "@/app/globals.css";
 import { RevealObserver } from "@/components/reveal/reveal-observer";
 import { SiteFooter } from "@/components/site-footer/site-footer";
-import { administratorContact } from "@/components/site-header/header-config";
+import { contactActions } from "@/components/site-header/contact-actions";
 
 export const metadata: Metadata = {
   title: "drkav.ru — редизайн",
@@ -68,49 +68,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ConsultationProvider submitUrl="/api/forms/consultation">
           <RevealObserver>
             {children}
-            <ContactFab
-              actions={[
-                {
-                  detail: "+7 495 151-42-06",
-                  href: "tel:+74951514206",
-                  kind: "phone",
-                  label: "Позвонить в клинику",
-                },
-                {
-                  detail: administratorContact.phone,
-                  href: administratorContact.telHref,
-                  kind: "phone",
-                  label: "Позвонить администратору",
-                },
-                {
-                  detail: "Написать в WhatsApp",
-                  external: true,
-                  href: administratorContact.whatsappHref,
-                  kind: "whatsapp",
-                  label: "WhatsApp",
-                },
-                {
-                  detail: "Написать в Telegram",
-                  external: true,
-                  href: administratorContact.telegramHref,
-                  kind: "telegram",
-                  label: "Telegram",
-                },
-                {
-                  detail: "Открыть мессенджер",
-                  external: true,
-                  href: administratorContact.maxHref,
-                  kind: "max",
-                  label: "MAX",
-                },
-                {
-                  detail: "admin@drkav.ru",
-                  href: administratorContact.emailHref,
-                  kind: "email",
-                  label: "Электронная почта",
-                },
-              ]}
-            />
+            <ContactFab actions={contactActions} />
             <SiteFooter />
           </RevealObserver>
         </ConsultationProvider>

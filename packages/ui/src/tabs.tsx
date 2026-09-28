@@ -42,7 +42,7 @@ export function Tabs({ ariaLabel, className, defaultTabId, items }: TabsProps) {
             <button
               aria-controls={panelId}
               aria-selected={selected}
-              className={cn("tabs__tab", selected && "tabs__tab--active")}
+              className={cn("filter-control", "tabs__tab", selected && "tabs__tab--active")}
               id={tabId}
               key={item.id}
               onClick={() => setActiveTabId(item.id)}

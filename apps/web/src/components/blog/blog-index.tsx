@@ -39,9 +39,9 @@ export function BlogIndex({ activeCategory, articles, basePath = "/pacientam/blo
   return (
     <div className="blog-index">
       {showCategories ? <nav aria-label="Категории блога" className="blog-index__filters">
-        <Link aria-current={activeCategory ? undefined : "page"} className="blog-index__filter" href={basePath}>Все статьи</Link>
+        <Link aria-current={activeCategory ? undefined : "page"} className="filter-control blog-index__filter" href={basePath}>Все статьи</Link>
         {categories.map((category) => (
-          <Link aria-current={activeCategory === category.key ? "page" : undefined} className="blog-index__filter" href={`${basePath}?category=${category.key}`} key={category.key}>
+          <Link aria-current={activeCategory === category.key ? "page" : undefined} className="filter-control blog-index__filter" href={`${basePath}?category=${category.key}`} key={category.key}>
             {category.name}
           </Link>
         ))}

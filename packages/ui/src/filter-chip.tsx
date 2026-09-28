@@ -12,7 +12,7 @@ export type FilterChipProps = Omit<ComponentPropsWithoutRef<"button">, "children
 export function FilterChip({ active = false, children, className, ...buttonProps }: FilterChipProps) {
   return (
     <button
-      className={cn("filter-chip", active && "filter-chip--active", className)}
+      className={cn("filter-control", "filter-chip", active && "filter-chip--active", className)}
       type="button"
       {...buttonProps}
     >

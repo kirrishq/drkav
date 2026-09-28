@@ -1,9 +1,11 @@
 "use client";
 
-import { Button, Checkbox, Input, Label, Textarea, buttonVariants, cn } from "@drkav/ui";
+import { Button, Checkbox, ContactActionList, Input, Label, Textarea, buttonVariants, cn } from "@drkav/ui";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
+
+import { contactActions } from "@/components/site-header/contact-actions";
 
 type ContactPhoto = {
   alt: string;
@@ -207,11 +209,11 @@ export function ContactsPageContent() {
 
   return (
     <div className="contacts-page">
-      <section aria-labelledby="directions-title" className="content-card content-card--muted contacts-page__directions-section content-section" id="directions">
-        <p className="contacts-page__eyebrow">Как добраться</p>
+      <div className="contacts-page__layout">
+        <div className="contacts-page__main">
+          <section aria-labelledby="directions-title" className="content-card content-card--muted contacts-page__directions-section content-section" id="directions">
         <h2 className="content-card__heading content-card__heading--h2" id="directions-title">Будем ждать вас</h2>
         <div className="contacts-page__address-inline">
-          <p className="contacts-page__eyebrow">Адрес</p>
           <address>
             г. Москва, ул. Большая Очаковская, 31<br />
             этаж 1, кабинет 12
@@ -237,9 +239,9 @@ export function ContactsPageContent() {
             <ArrowUpRightIcon />
           </a>
         </div>
-      </section>
+          </section>
 
-      <section aria-label="Карта проезда" className="contacts-page__map-card content-section" id="map">
+          <section aria-label="Карта проезда" className="contacts-page__map-card content-section" id="map">
         <iframe
           className="contacts-page__map-embed"
           loading="lazy"
@@ -247,9 +249,9 @@ export function ContactsPageContent() {
           src={yandexMapEmbedUrl}
           title="Карта проезда к медицинскому центру"
         />
-      </section>
+          </section>
 
-      <section aria-label="Фотографии медицинского центра" className="contacts-page__gallery content-section" id="photos">
+          <section aria-label="Фотографии медицинского центра" className="contacts-page__gallery content-section" id="photos">
         {contactPhotos.map((photo, index) => (
           <button
             aria-label={`Открыть фотографию: ${photo.title}`}
@@ -269,28 +271,26 @@ export function ContactsPageContent() {
             <span aria-hidden="true" className="contacts-page__photo-arrow"><ArrowUpRightIcon /></span>
           </button>
         ))}
-      </section>
+          </section>
+        </div>
 
-      <section aria-labelledby="contacts-title" className="contacts-page__contact-layout content-section" id="contacts">
+      <aside aria-labelledby="contacts-title" className="contacts-page__sidebar content-section" id="contacts">
         <article className="content-card content-card--accent contacts-page__contact-card">
-          <p className="contacts-page__eyebrow">Контакты</p>
-          <h2 className="content-card__heading content-card__heading--h2" id="contacts-title">Свяжитесь с нами</h2>
+          <h2 className="content-card__heading type-h3" id="contacts-title">Свяжитесь с нами</h2>
+          <ContactActionList actions={contactActions} />
           <dl className="contacts-page__details">
-            <div><dt>Клиника</dt><dd><a href="tel:+74951514206">+7 495 151-42-06</a></dd></div>
-            <div><dt>Администратор Ольга</dt><dd><a href="tel:+79256255510">+7 925 625-55-10</a></dd></div>
-            <div><dt>Электронная почта</dt><dd><a href="mailto:admin@drkav.ru">admin@drkav.ru</a></dd></div>
             <div><dt>Режим работы</dt><dd>9:15–19:00, понедельник–пятница</dd></div>
           </dl>
           <p className="contacts-page__note">По всем вопросам звоните или пишите администратору.</p>
         </article>
+      </aside>
 
-        <article className="content-card content-card--muted contacts-page__feedback-card">
-          <p className="contacts-page__eyebrow">Обратная связь</p>
+      <article className="content-card content-card--muted contacts-page__feedback-card">
           <h2 className="content-card__heading content-card__heading--h2">Есть вопрос или предложение?</h2>
           <p className="contacts-page__feedback-description">Напишите нам — разберёмся с вопросом и передадим ваши предложения команде.</p>
           <FeedbackForm />
-        </article>
-      </section>
+      </article>
+      </div>
 
       {isMounted && selectedPhoto ? createPortal(
         <div aria-label="Просмотр фотографии" aria-modal="true" className="before-after-modal before-after-modal--open" onClick={(event) => { if (event.target === event.currentTarget) closePhoto(); }} role="dialog">

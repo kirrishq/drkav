@@ -24,6 +24,11 @@ export type ContactFabProps = {
   children?: ReactNode;
 };
 
+export type ContactActionListProps = {
+  actions: readonly ContactFabAction[];
+  className?: string;
+};
+
 export function ContactActionIcon({ kind }: { kind: ContactActionKind }) {
   const iconId = useId().replaceAll(":", "");
 
@@ -98,6 +103,30 @@ export function ContactActionIcon({ kind }: { kind: ContactActionKind }) {
   );
 }
 
+export function ContactActionList({ actions, className }: ContactActionListProps) {
+  return (
+    <div className={cn("contact-actions", className)}>
+      {actions.map((action) => (
+        <a
+          className="contact-actions__action"
+          href={action.href}
+          key={action.href}
+          rel={action.external ? "noreferrer" : undefined}
+          target={action.external ? "_blank" : undefined}
+        >
+          <span className={cn("contact-actions__icon", `contact-actions__icon--${action.kind}`)}>
+            <ContactActionIcon kind={action.kind} />
+          </span>
+          <span className="contact-actions__copy">
+            <span className="contact-actions__label">{action.label}</span>
+            {action.detail ? <span className="contact-actions__detail">{action.detail}</span> : null}
+          </span>
+        </a>
+      ))}
+    </div>
+  );
+}
+
 function ContactFabIcon({ open }: { open: boolean }) {
   return (
     <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
@@ -155,25 +184,7 @@ export function ContactFab({ actions, children }: ContactFabProps) {
           <div className="contact-fab__heading">
             <p className="type-label contact-fab__title">Выберите удобный способ связи</p>
           </div>
-          <div className="contact-fab__actions">
-            {actions.map((action) => (
-              <a
-                className="contact-fab__action"
-                href={action.href}
-                key={action.href}
-                rel={action.external ? "noreferrer" : undefined}
-                target={action.external ? "_blank" : undefined}
-              >
-                <span className={cn("contact-fab__action-icon", `contact-fab__action-icon--${action.kind}`)}>
-                  <ContactActionIcon kind={action.kind} />
-                </span>
-                <span className="contact-fab__action-copy">
-                  <span className="contact-fab__action-label">{action.label}</span>
-                  {action.detail ? <span className="contact-fab__action-detail">{action.detail}</span> : null}
-                </span>
-              </a>
-            ))}
-          </div>
+          <ContactActionList actions={actions} />
           {children ? <div className="contact-fab__footer">{children}</div> : null}
         </div>
       ) : null}

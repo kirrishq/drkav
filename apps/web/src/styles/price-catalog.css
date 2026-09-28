@@ -17,7 +17,7 @@
 
   .price-catalog__heading {
     margin: 0;
-    text-align: center;
+    text-align: left;
   }
 
   .price-catalog__heading span,
@@ -27,9 +27,13 @@
 
   .price-catalog__note {
     max-width: var(--container-reading);
-    margin: 0 auto;
+    margin: 0;
     color: var(--text-secondary);
-    text-align: center;
+    text-align: left;
+  }
+
+  .price-catalog .tabs__list {
+    justify-content: flex-start;
   }
 
   .price-catalog__panel {

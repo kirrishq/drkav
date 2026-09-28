@@ -52,7 +52,8 @@ export { ConsultationForm, ConsultationProvider, ConsultationSection, Consultati
 export type { ConsultationFormProps, ConsultationTriggerProps } from "./consultation-form";
 export { ContactFab } from "./contact-fab";
 export { ContactActionIcon } from "./contact-fab";
-export type { ContactActionKind, ContactFabAction, ContactFabProps } from "./contact-fab";
+export { ContactActionList } from "./contact-fab";
+export type { ContactActionKind, ContactActionListProps, ContactFabAction, ContactFabProps } from "./contact-fab";
 export { Input } from "./input";
 export type {
   InputProps,

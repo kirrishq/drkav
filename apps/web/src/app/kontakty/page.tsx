@@ -8,6 +8,7 @@ export default function ContactsPage() {
   return (
     <StaticPage
       breadcrumbs={[{ href: "/", label: "Главная" }, { label: "Контакты" }]}
+      className="contacts-page-shell"
       description="Адрес клиники, контакты администратора и понятный маршрут до консультации."
       title="Контакты"
     >

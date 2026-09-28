@@ -1,10 +1,25 @@
 @layer components {
+  .contacts-page-shell {
+    width: min(100% - var(--space-8), var(--container-wide));
+  }
+
   .contacts-page {
     display: grid;
     gap: var(--space-5);
   }
 
   .contacts-page > * {
+    min-width: 0;
+  }
+
+  .contacts-page__layout,
+  .contacts-page__main {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-5);
+  }
+
+  .contacts-page__sidebar {
     min-width: 0;
   }
 
@@ -98,31 +113,12 @@
     height: var(--space-4);
   }
 
-  .contacts-page__eyebrow {
-    margin: 0;
-    color: var(--accent);
-    font-size: var(--type-text-xs-size);
-    font-weight: var(--type-label-weight);
-    letter-spacing: var(--type-overline-tracking);
-    text-transform: uppercase;
-  }
-
   .contacts-page__address-value {
     margin: 0;
     color: var(--text-primary);
     font-size: var(--type-text-base-size);
     font-style: normal;
     line-height: var(--type-text-base-line-height);
-  }
-
-  .contacts-page__grid {
-    display: grid;
-    gap: var(--space-5);
-  }
-
-  .contacts-page__contact-layout {
-    display: grid;
-    gap: var(--space-5);
   }
 
   .contacts-page__contact-card,
@@ -284,29 +280,48 @@
   }
 
   @media (min-width: 48rem) {
+    .contacts-page-shell {
+      width: min(100% - var(--space-12), var(--container-wide));
+    }
+
     .contacts-page__gallery {
       grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .contacts-page__contact-layout {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      align-items: stretch;
-    }
-
-    .contacts-page__contact-card,
-    .contacts-page__feedback-card {
-      min-height: 100%;
     }
 
   }
 
   @media (min-width: 64rem) {
+    .contacts-page-shell {
+      width: min(100% - var(--space-16), var(--container-wide));
+    }
+
+    .contacts-page__layout {
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, 20rem);
+      align-items: start;
+    }
+
+    .contacts-page__sidebar {
+      position: sticky;
+      top: var(--space-40);
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+
+    .contacts-page__feedback-card {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
     .contacts-page__gallery {
       gap: var(--space-3);
     }
 
     .contacts-page__lightbox-panel {
       padding: var(--space-5);
+    }
+
+    body:has(.contacts-page) .contact-fab {
+      display: none;
     }
   }
 }
