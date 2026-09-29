@@ -28,16 +28,52 @@ export function HomeOperatingRoomBackground() {
       return;
     }
 
-    const requestBackground = () => setBackgroundRequested(true);
+    let delayId: number | undefined;
+    let idleId: number | undefined;
+    let cancelled = false;
+
+    const requestBackground = () => {
+      if (cancelled) {
+        return;
+      }
+
+      const loadBackground = () => {
+        if (cancelled) {
+          return;
+        }
+
+        setBackgroundRequested(true);
+      };
+
+      if ("requestIdleCallback" in window) {
+        idleId = window.requestIdleCallback(loadBackground, { timeout: 3500 });
+      } else {
+        loadBackground();
+      }
+    };
+
+    const scheduleBackground = () => {
+      // Keep the secondary hero layer out of the first mobile render and let
+      // the portrait, text, and primary actions settle before requesting it.
+      delayId = window.setTimeout(requestBackground, 1800);
+    };
 
     if (portrait.complete && portrait.naturalWidth > 0) {
-      requestBackground();
-      return;
+      scheduleBackground();
+    } else {
+      portrait.addEventListener("load", scheduleBackground, { once: true });
     }
 
-    portrait.addEventListener("load", requestBackground, { once: true });
-
-    return () => portrait.removeEventListener("load", requestBackground);
+    return () => {
+      cancelled = true;
+      if (delayId !== undefined) {
+        window.clearTimeout(delayId);
+      }
+      if (idleId !== undefined && "cancelIdleCallback" in window) {
+        window.cancelIdleCallback(idleId);
+      }
+      portrait.removeEventListener("load", scheduleBackground);
+    };
   }, []);
 
   useEffect(() => {
@@ -294,6 +330,7 @@ export function HomeOperatingRoomBackground() {
           <Image
             alt=""
             className="home-hero__operating-room-base"
+            fetchPriority="low"
             fill
             loading="eager"
             sizes="100vw"
@@ -302,6 +339,7 @@ export function HomeOperatingRoomBackground() {
           <Image
             alt=""
             className="home-hero__operating-room-reveal"
+            fetchPriority="low"
             fill
             loading="eager"
             onLoad={() => setBackgroundLoaded(true)}
