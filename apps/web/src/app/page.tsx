@@ -211,7 +211,7 @@ export default async function HomePage() {
         />
         <OperationsCards items={operationItems} />
         <ReviewsSlider ctaHref="/pacientam/otzyvy" filterGroups={reviewFilterGroups} items={reviewItems} />
-        <ConsultationSection submitUrl="/api/forms/consultation" />
+        <ConsultationSection captchaSiteKey={process.env.NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY} submitUrl="/api/forms/consultation" />
         <AdministratorCta
           avatarSrc="/images/home/administrator-avatar.png"
           backgroundSrc="/images/home/administrator-cta-background.png"

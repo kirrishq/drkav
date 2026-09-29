@@ -12,6 +12,8 @@
     "dev:cms": "pnpm --filter @drkav/cms dev",
     "mailpit:up": "docker compose -f docker-compose.local.yml up -d",
     "mailpit:down": "docker compose -f docker-compose.local.yml down",
+    "check:media": "node scripts/check-external-media.mjs",
+    "check:media:strict": "node scripts/check-external-media.mjs --strict",
     "check:styles": "node scripts/check-no-css-modules.mjs",
     "lint": "pnpm check:styles && eslint apps packages --max-warnings=0",
     "typecheck": "tsc -p apps/web/tsconfig.json --noEmit && tsc -p packages/ui/tsconfig.json --noEmit && tsc -p packages/content-contracts/tsconfig.json --noEmit",

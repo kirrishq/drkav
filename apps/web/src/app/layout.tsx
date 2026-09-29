@@ -10,8 +10,10 @@ import { contactActions } from "@/components/site-header/contact-actions";
 import { CookieConsent } from "@/components/cookie-consent/cookie-consent";
 import { MarketingAttribution } from "@/components/marketing-attribution/marketing-attribution";
 import { YandexMetrika } from "@/components/yandex-metrika/yandex-metrika";
+import { getSiteUrl } from "@/content/seo";
 
 export const metadata: Metadata = {
+  metadataBase: getSiteUrl(),
   title: "drkav.ru — редизайн",
   description: "Frontend-first редизайн сайта drkav.ru",
 };
@@ -57,6 +59,8 @@ const themeBootstrapScript = `(() => {
   } catch {}
 })();`;
 
+const smartCaptchaSiteKey = process.env.NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY?.trim();
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ru" suppressHydrationWarning>
@@ -66,12 +70,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeBootstrapScript }}
         />
+        {smartCaptchaSiteKey ? (
+          <Script
+            src="https://smartcaptcha.cloud.yandex.ru/captcha.js"
+            strategy="afterInteractive"
+          />
+        ) : null}
       </head>
       <body className={GeistSans.variable}>
         <YandexMetrika />
         <MarketingAttribution />
         <CookieConsent />
-        <ConsultationProvider submitUrl="/api/forms/consultation">
+        <ConsultationProvider captchaSiteKey={smartCaptchaSiteKey} submitUrl="/api/forms/consultation">
           <RevealObserver>
             {children}
             <ContactFab actions={contactActions} />

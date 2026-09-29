@@ -11,7 +11,7 @@
     "@drkav/content-contracts": "workspace:*",
     "@drkav/ui": "workspace:*",
     "geist": "^1.7.2",
-    "next": "^15.5.2",
+    "next": "^15.5.26",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },

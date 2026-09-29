@@ -10,11 +10,11 @@
 
 1. Формы в production по умолчанию отключены: сейчас доставка работает только в Mailpit.
 2. Интеграции старого сайта с amoCRM, почтой, Comagic, аналитикой, YourGood и Salebot не перенесены.
-3. `pnpm audit --prod` на текущем lockfile сообщает 49 уязвимостей: 2 critical, 17 high, 29 moderate и 1 low.
-4. Next.js находится на 15.5.22, тогда как найденные critical advisory требуют как минимум 15.5.24.
+3. Последний полный `pnpm audit --prod` до overrides сообщал 39 уязвимостей: 0 critical, 17 high, 21 moderate и 1 low. Повторный audit после overrides нужно завершить при стабильном доступе к npm registry.
+4. Next.js обновлён с 15.5.22 до 15.5.26; Strapi обновлён с 5.51.1 до 5.55.1.
 5. Часть фото и видео по-прежнему загружается с `drkav.ru` и Webflow CDN. После остановки старого сайта часть нового проекта перестанет показывать медиа.
 6. В коде расходятся юридические реквизиты и адрес ИП: это нужно исправить до запуска форм и оплаты.
-7. Нет production `sitemap.ts`, `robots.ts`, security headers/CSP и полноценного e2e/security smoke-теста.
+7. `sitemap.ts`, `robots.ts` и базовые security headers/CSP добавлены; ещё нет полноценного e2e/security smoke-теста.
 8. CMS настроена на локальный SQLite и локальные uploads. Для production нужны PostgreSQL, внешнее S3-хранилище и резервное копирование.
 
 ## 1. Что проверено
@@ -36,7 +36,9 @@
 - `pnpm lint` — успешно;
 - `pnpm build:cms` — успешно;
 - `pnpm build:web` — завершился успешно, но во время сбора страниц вывел много `fetch failed` из-за недоступности CMS в sandbox. Это нужно отдельно проверить в CI: production build не должен молча выпускать неполное содержимое при недоступной CMS.
-- `pnpm audit --prod` — неуспешно, найдено 49 advisory.
+- `pnpm audit --prod` — последний полный отчёт до overrides: 39 advisory; повторный запрос после overrides прерывался сетевой ошибкой npm registry.
+- `pnpm typecheck` — успешно после добавления sitemap/robots и retry доставки форм.
+- Локальный `curl` подтвердил `Content-Security-Policy`, `Permissions-Policy`, `Referrer-Policy`, `X-Content-Type-Options` и `X-Frame-Options`.
 
 ## 2. Критические недоработки
 
@@ -72,10 +74,9 @@ production   → FORM_DELIVERY_MODE, иначе disabled
 
 - rate limit хранится в обычном `Map` процесса и сбрасывается после рестарта;
 - при нескольких Node/container instances каждый instance имеет свой лимит;
-- `x-forwarded-for` берётся напрямую и может быть подделан, если reverse proxy не очищает этот заголовок;
-- нет CAPTCHA/SmartCaptcha server verification;
+- distributed rate limit ещё не подключён; текущий `Map` подходит только для локального режима или одного временного instance;
 - нет WAF/edge rate limiting;
-- нет persistent очереди или retry для ситуации, когда CRM/почта временно недоступны;
+- повторная доставка для сетевых ошибок, 408/429 и 5xx добавлена с максимумом трёх попыток и задержками 250/750 мс; persistent очереди для ручного повторения всё ещё нет;
 - contact feedback принимает строку «телефон или email», но сервер не различает и не нормализует форматы;
 - delivery failure нельзя безопасно повторить оператором без новой заявки;
 - медицинские/персональные данные не должны попадать в обычные логи, analytics events или exception traces.
@@ -104,28 +105,28 @@ production   → FORM_DELIVERY_MODE, иначе disabled
 
 ### P0 — безопасность зависимостей
 
-Текущий `pnpm audit --prod`:
+Последний полный `pnpm audit --prod` до overrides:
 
 | Severity | Количество |
 | --- | ---: |
-| Critical | 2 |
+| Critical | 0 |
 | High | 17 |
-| Moderate | 29 |
+| Moderate | 21 |
 | Low | 1 |
 
 Самые важные узлы:
 
-- `next@15.5.22`: critical advisory, patched version начинается с `15.5.24`;
-- `sharp@0.34.5`: high advisory по libvips, patched version начинается с `0.35.0`;
-- `vite@5.4.21`: high advisory, приходит через Strapi;
-- `postcss@8.4.31` как вложенная версия Next.js: high advisory;
+- `next@15.5.26`: обновлён до security-fixed версии;
+- `sharp@0.35.3`: зафиксирован через workspace override вместо уязвимой версии `0.34.5`;
+- `vite@5.4.21`: high advisory, приходит через Strapi и не форсируется на несовместимую major-версию;
+- `postcss@8.5.24`: зафиксирован через workspace override вместо вложенной версии `8.4.31`;
 - `nodemailer@9.0.1`: moderate advisories через Strapi email provider;
 - большое дерево Strapi/admin-dev dependencies с `brace-expansion`, `ip-address`, `hono`, `undici` и другими advisory.
 
 План:
 
 1. Обновить Next.js как минимум до security-fixed версии, затем проверить React/React DOM и lockfile.
-2. Обновить Strapi patch/minor версию в пределах совместимой ветки, если security advisories не закрываются текущим 5.51.1.
+2. Обновить Strapi patch/minor версию в пределах совместимой ветки; текущая локальная версия — 5.55.1.
 3. После каждого обновления выполнить `pnpm install --frozen-lockfile`, `pnpm audit --prod`, typecheck, lint, обе сборки и smoke-test CMS.
 4. Не делать слепой `pnpm update --latest` на всём workspace: Strapi и Next обновлять контролируемыми шагами.
 
@@ -337,10 +338,10 @@ Selectel документирует S3-compatible object storage и Managed Post
 1. Обновить уязвимые dependencies и зафиксировать lockfile.
 2. Реализовать production form delivery через server-side adapters.
 3. Добавить SmartCaptcha, distributed rate limit, WAF-friendly IP handling и idempotency key.
-4. Добавить security headers/CSP.
+4. Добавить security headers/CSP — базовый набор уже добавлен; после подключения всех production-интеграций нужно повторно проверить CSP и по возможности убрать `unsafe-inline`.
 5. Убрать прямые ссылки на старый image/video host из production content.
 6. Создать единый `site-settings` источник контактов/legal data.
-7. Добавить `app/robots.ts`, `app/sitemap.ts`, health endpoint и structured logs.
+7. Добавить `app/robots.ts`, `app/sitemap.ts`, health endpoint и structured logs — robots/sitemap уже добавлены.
 8. Сделать Playwright smoke suite.
 
 ### Этап 2. Поднять staging infrastructure

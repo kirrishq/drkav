@@ -166,6 +166,21 @@
       padding: var(--space-4);
     }
 
+    .cookie-consent__eyebrow {
+      font-size: var(--type-text-xs-size);
+      line-height: var(--type-text-xs-line-height);
+    }
+
+    .cookie-consent__title {
+      font-size: var(--type-h4-size);
+      line-height: var(--type-h4-line-height);
+    }
+
+    .cookie-consent__description {
+      font-size: var(--type-badge-size);
+      line-height: var(--type-badge-line-height);
+    }
+
     .cookie-consent__actions {
       display: grid;
     }

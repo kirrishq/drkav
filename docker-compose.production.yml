@@ -1,0 +1,85 @@
+services:
+  cms:
+    build:
+      context: .
+      dockerfile: apps/cms/Dockerfile.production
+    env_file:
+      - ./deploy/env/cms.env
+    secrets:
+      - beget_database_ca
+    ports:
+      - "127.0.0.1:1337:1337"
+    expose:
+      - "1337"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          node -e "fetch('http://127.0.0.1:1337/admin').then((response) =>
+          process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.production
+      network: host
+      args:
+        SITE_URL: ${SITE_URL}
+        NEXT_PUBLIC_SITE_URL: ${SITE_URL}
+        WEB_BUILD_STRAPI_API_URL: ${WEB_BUILD_STRAPI_API_URL:-http://127.0.0.1:1337}
+        CMS_REVALIDATE_SECONDS: ${CMS_REVALIDATE_SECONDS:-3600}
+        NEXT_PUBLIC_YANDEX_METRIKA_ID: ${NEXT_PUBLIC_YANDEX_METRIKA_ID}
+        NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY: ${NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY}
+      secrets:
+        - strapi_api_token
+    env_file:
+      - ./deploy/env/web.env
+    expose:
+      - "3000"
+    depends_on:
+      cms:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          node -e "fetch('http://127.0.0.1:3000/').then((response) =>
+          process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  caddy:
+    image: caddy:2-alpine
+    env_file:
+      - ./deploy/env/caddy.env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+      cms:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+secrets:
+  strapi_api_token:
+    file: ${STRAPI_BUILD_TOKEN_FILE:?Set STRAPI_BUILD_TOKEN_FILE in deploy/env/compose.env}
+  beget_database_ca:
+    file: ${DATABASE_CA_FILE:?Set DATABASE_CA_FILE in deploy/env/compose.env}

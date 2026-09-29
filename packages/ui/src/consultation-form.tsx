@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   type FormEvent,
   type MouseEvent,
   type ReactNode,
@@ -19,12 +20,20 @@ import { Input } from "./input";
 import { Label } from "./label";
 import { PhoneInput } from "./phone-input";
 import { RadioButton } from "./radio-button";
+import { SmartCaptcha } from "./smart-captcha";
 import { cn } from "./lib/cn";
 
 type ConsultationFormat = "clinic" | "online";
 type ContactMethod = "telegram" | "phone" | "max" | "whatsapp";
 
+function createIdempotencyKey(): string {
+  return typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
 type ConsultationDialogContextValue = {
+  captchaSiteKey?: string;
   open: () => void;
   submitUrl?: string;
 };
@@ -40,20 +49,25 @@ function CloseIcon() {
 }
 
 export type ConsultationFormProps = {
+  captchaSiteKey?: string;
   className?: string;
   compact?: boolean;
   onSuccess?: () => void;
   submitUrl?: string;
 };
 
-export function ConsultationForm({ className, compact = false, onSuccess, submitUrl }: ConsultationFormProps) {
+export function ConsultationForm({ captchaSiteKey, className, compact = false, onSuccess, submitUrl }: ConsultationFormProps) {
   const idPrefix = useId().replaceAll(":", "");
   const [consultationFormat, setConsultationFormat] = useState<ConsultationFormat>("clinic");
   const [contactMethod, setContactMethod] = useState<ContactMethod>("phone");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaResetSignal, setCaptchaResetSignal] = useState(0);
   const formStartedAt = useRef(Date.now());
+  const idempotencyKey = useRef<string | null>(null);
+  const handleCaptchaTokenChange = useCallback((token: string | null) => setCaptchaToken(token), []);
 
   const nameId = `${idPrefix}-name`;
   const phoneId = `${idPrefix}-phone`;
@@ -69,16 +83,24 @@ export function ConsultationForm({ className, compact = false, onSuccess, submit
 
     setError(null);
 
+    if (captchaSiteKey && !captchaToken) {
+      setError("Подтвердите, что вы не робот.");
+      return;
+    }
+
     if (submitUrl) {
       setIsSubmitting(true);
 
       try {
         const formData = new FormData(event.currentTarget);
+        idempotencyKey.current ??= createIdempotencyKey();
         const response = await fetch(submitUrl, {
           body: JSON.stringify({
             contactMethod,
             consultationFormat,
+            captchaToken,
             formStartedAt: formStartedAt.current,
+            idempotencyKey: idempotencyKey.current,
             marketingConsent: formData.get("marketing-consent") === "on",
             name: formData.get("name"),
             personalDataConsent: formData.get("personal-data") === "on",
@@ -116,7 +138,7 @@ export function ConsultationForm({ className, compact = false, onSuccess, submit
         <p className="type-text-base consultation-form__success-description">
           Администратор свяжется с вами выбранным способом и уточнит удобное время.
         </p>
-        <Button onClick={() => { formStartedAt.current = Date.now(); setSubmitted(false); }} size="md" variant="outline">
+        <Button onClick={() => { formStartedAt.current = Date.now(); idempotencyKey.current = null; setCaptchaResetSignal((value) => value + 1); setSubmitted(false); }} size="md" variant="outline">
           Заполнить ещё раз
         </Button>
       </div>
@@ -228,6 +250,13 @@ export function ConsultationForm({ className, compact = false, onSuccess, submit
         </label>
       </div>
 
+      <SmartCaptcha
+        onTokenChange={handleCaptchaTokenChange}
+        resetSignal={captchaResetSignal}
+        siteKey={captchaSiteKey}
+      />
+      {captchaSiteKey ? <p className="type-text-xs smart-captcha__notice">Форма защищена SmartCaptcha.</p> : null}
+
       {error ? <p aria-live="polite" className="type-text-sm consultation-form__error" role="alert">{error}</p> : null}
       <Button className="consultation-form__submit" disabled={isSubmitting} size="lg" type="submit">
         {isSubmitting ? "Отправляем…" : "Записаться на консультацию"}
@@ -239,7 +268,7 @@ export function ConsultationForm({ className, compact = false, onSuccess, submit
   );
 }
 
-export function ConsultationSection({ submitUrl }: Pick<ConsultationFormProps, "submitUrl">) {
+export function ConsultationSection({ captchaSiteKey, submitUrl }: Pick<ConsultationFormProps, "captchaSiteKey" | "submitUrl">) {
   return (
     <section aria-labelledby="consultation-section-title" className="consultation-section">
       <div className="consultation-section__layout">
@@ -257,19 +286,19 @@ export function ConsultationSection({ submitUrl }: Pick<ConsultationFormProps, "
             <li className="type-text-base consultation-section__detail">После заявки администратор свяжется с вами</li>
           </ul>
         </div>
-        <ConsultationForm submitUrl={submitUrl} />
+        <ConsultationForm captchaSiteKey={captchaSiteKey} submitUrl={submitUrl} />
       </div>
     </section>
   );
 }
 
-export function ConsultationProvider({ children, submitUrl }: { children: ReactNode; submitUrl?: string }) {
+export function ConsultationProvider({ captchaSiteKey, children, submitUrl }: { captchaSiteKey?: string; children: ReactNode; submitUrl?: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <ConsultationDialogContext.Provider value={{ open: () => setIsOpen(true), submitUrl }}>
+    <ConsultationDialogContext.Provider value={{ captchaSiteKey, open: () => setIsOpen(true), submitUrl }}>
       {children}
-      {isOpen ? <ConsultationDialog onClose={() => setIsOpen(false)} submitUrl={submitUrl} /> : null}
+      {isOpen ? <ConsultationDialog captchaSiteKey={captchaSiteKey} onClose={() => setIsOpen(false)} submitUrl={submitUrl} /> : null}
     </ConsultationDialogContext.Provider>
   );
 }
@@ -303,7 +332,7 @@ export function ConsultationTrigger({ children, className, onClick }: Consultati
   );
 }
 
-function ConsultationDialog({ onClose, submitUrl }: { onClose: () => void; submitUrl?: string }) {
+function ConsultationDialog({ captchaSiteKey, onClose, submitUrl }: { captchaSiteKey?: string; onClose: () => void; submitUrl?: string }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -347,7 +376,7 @@ function ConsultationDialog({ onClose, submitUrl }: { onClose: () => void; submi
             <CloseIcon />
           </button>
         </div>
-        <ConsultationForm compact submitUrl={submitUrl} />
+        <ConsultationForm captchaSiteKey={captchaSiteKey} compact submitUrl={submitUrl} />
       </div>
     </dialog>
   );

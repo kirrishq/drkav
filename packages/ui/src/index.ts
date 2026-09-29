@@ -83,6 +83,8 @@ export { ArrowUpRightIcon, RecordCard } from "./record-card";
 export type { RecordCardDetail, RecordCardProps } from "./record-card";
 export { StatsStrip } from "./stats-strip";
 export type { StatsStripItem, StatsStripProps } from "./stats-strip";
+export { SmartCaptcha } from "./smart-captcha";
+export type { SmartCaptchaProps } from "./smart-captcha";
 export { ReviewsSlider } from "./reviews-slider";
 export type { ReviewSliderFilter, ReviewSliderFilterGroup, ReviewSliderItem, ReviewsSliderProps } from "./reviews-slider";
 export { TextLink } from "./text-link";

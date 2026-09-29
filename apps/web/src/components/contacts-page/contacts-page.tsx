@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Checkbox, ContactActionList, Input, Label, Textarea, buttonVariants, cn } from "@drkav/ui";
+import { Button, Checkbox, ContactActionList, Input, Label, SmartCaptcha, Textarea, buttonVariants, cn } from "@drkav/ui";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
@@ -50,6 +50,12 @@ const yandexMapsUrl = "https://yandex.ru/maps/-/CXU7jRZM";
 const twoGisUrl = "https://2gis.ru/moscow/search/ASBeauty%2C%20%D0%B4.%20%D0%96%D1%83%D0%BA%D0%BE%D0%B2%D0%BA%D0%B0%2C%20%D0%A0%D1%83%D0%B1%D0%BB%D0%B5%D0%B2%D0%BE-%D0%A3%D1%81%D0%BF%D0%B5%D0%BD%D1%81%D0%BA%D0%BE%D0%B5%20%D1%88%D0%BE%D1%81%D1%81%D0%B5%2C%20123%D0%91";
 const yandexMapEmbedUrl = "https://yandex.ru/map-widget/v1/?ll=37.243370%2C55.738110&mode=search&oid=75508515849&ol=biz&z=17";
 
+function createIdempotencyKey(): string {
+  return typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
 function CloseIcon() {
   return (
     <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
@@ -74,11 +80,15 @@ function ArrowIcon({ direction }: { direction: "next" | "previous" }) {
   );
 }
 
-function FeedbackForm() {
+function FeedbackForm({ captchaSiteKey }: { captchaSiteKey?: string }) {
   const formStartedAt = useRef(Date.now());
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaResetSignal, setCaptchaResetSignal] = useState(0);
+  const handleCaptchaTokenChange = useCallback((token: string | null) => setCaptchaToken(token), []);
+  const idempotencyKey = useRef<string | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -88,14 +98,23 @@ function FeedbackForm() {
     }
 
     setError(null);
+
+    if (captchaSiteKey && !captchaToken) {
+      setError("Подтвердите, что вы не робот.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const formData = new FormData(event.currentTarget);
+      idempotencyKey.current ??= createIdempotencyKey();
       const response = await fetch("/api/forms/feedback", {
         body: JSON.stringify({
           contact: formData.get("contact"),
+          captchaToken,
           formStartedAt: formStartedAt.current,
+          idempotencyKey: idempotencyKey.current,
           marketingConsent: formData.get("marketing-consent") === "on",
           message: formData.get("message"),
           name: formData.get("name"),
@@ -127,7 +146,7 @@ function FeedbackForm() {
         <div aria-hidden="true" className="contacts-page__feedback-success-icon">✓</div>
         <h3 className="content-card__heading content-card__heading--h3">Спасибо за сообщение</h3>
         <p>Мы передали его администратору. Если понадобится уточнить детали, мы свяжемся с вами.</p>
-        <Button onClick={() => { formStartedAt.current = Date.now(); setSubmitted(false); }} size="md" variant="outline">
+        <Button onClick={() => { formStartedAt.current = Date.now(); idempotencyKey.current = null; setCaptchaResetSignal((value) => value + 1); setSubmitted(false); }} size="md" variant="outline">
           Написать ещё
         </Button>
       </div>
@@ -163,6 +182,12 @@ function FeedbackForm() {
           <span>Соглашаюсь на получение <a href="/consent-marketing" rel="noreferrer" target="_blank">рекламной и информационной рассылки</a></span>
         </label>
       </div>
+      <SmartCaptcha
+        onTokenChange={handleCaptchaTokenChange}
+        resetSignal={captchaResetSignal}
+        siteKey={captchaSiteKey}
+      />
+      {captchaSiteKey ? <p className="type-text-xs smart-captcha__notice">Форма защищена SmartCaptcha.</p> : null}
       {error ? <p aria-live="polite" className="contacts-page__feedback-error" role="alert">{error}</p> : null}
       <Button disabled={isSubmitting} size="lg" type="submit">
         {isSubmitting ? "Отправляем…" : "Отправить сообщение"}
@@ -171,7 +196,7 @@ function FeedbackForm() {
   );
 }
 
-export function ContactsPageContent() {
+export function ContactsPageContent({ captchaSiteKey }: { captchaSiteKey?: string }) {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const selectedPhoto = selectedPhotoIndex === null ? null : contactPhotos[selectedPhotoIndex];
@@ -301,7 +326,7 @@ export function ContactsPageContent() {
       <article className="content-card content-card--muted contacts-page__feedback-card">
           <h2 className="content-card__heading content-card__heading--h2">Есть вопрос или предложение?</h2>
           <p className="contacts-page__feedback-description">Напишите нам — разберёмся с вопросом и передадим ваши предложения команде.</p>
-          <FeedbackForm />
+          <FeedbackForm captchaSiteKey={captchaSiteKey} />
       </article>
       </div>
 

@@ -12,7 +12,7 @@ export default function ContactsPage() {
       description="Адрес клиники, контакты администратора и понятный маршрут до консультации."
       title="Контакты"
     >
-      <ContactsPageContent />
+      <ContactsPageContent captchaSiteKey={process.env.NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY} />
     </StaticPage>
   );
 }

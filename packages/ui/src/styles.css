@@ -3435,6 +3435,15 @@ html[data-vision="low-vision"] a {
     width: 100%;
   }
 
+  .smart-captcha {
+    min-height: 100px;
+  }
+
+  .smart-captcha__notice {
+    margin: calc(var(--space-4) * -1) 0 0;
+    color: var(--text-muted);
+  }
+
   .consultation-form__error {
     margin: 0;
     color: var(--error);

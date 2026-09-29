@@ -17,6 +17,11 @@ coverage/
 .env.*.local
 !.env.example
 
+# Production deployment secrets
+/deploy/env/*.env
+!/deploy/env/*.example
+/deploy/secrets/
+
 # Local Strapi runtime files
 apps/cms/.tmp/
 apps/cms/.cache/

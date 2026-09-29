@@ -1,16 +1,35 @@
 const path = require('path');
+const fs = require('fs');
 
 module.exports = ({ env }) => {
   const client = env('DATABASE_CLIENT', 'sqlite');
 
   if (client === 'postgres') {
+    const sslEnabled = env.bool('DATABASE_SSL', true);
+    const sslCaPath = env('DATABASE_SSL_CA_PATH', '');
+    const sslRejectUnauthorized = env.bool(
+      'DATABASE_SSL_REJECT_UNAUTHORIZED',
+      Boolean(sslCaPath),
+    );
+
+    if (sslEnabled && sslRejectUnauthorized && !sslCaPath) {
+      throw new Error(
+        'DATABASE_SSL_CA_PATH is required when DATABASE_SSL_REJECT_UNAUTHORIZED=true.',
+      );
+    }
+
     return {
       connection: {
         client: 'postgres',
         connection: {
           connectionString: env('DATABASE_URL'),
-          ssl: env.bool('DATABASE_SSL', true)
-            ? { rejectUnauthorized: false }
+          ssl: sslEnabled
+            ? {
+                rejectUnauthorized: sslRejectUnauthorized,
+                ...(sslCaPath
+                  ? { ca: fs.readFileSync(sslCaPath, 'utf8') }
+                  : {}),
+              }
             : false,
         },
         pool: {

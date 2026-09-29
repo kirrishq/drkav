@@ -1,0 +1,14 @@
+{$SITE_DOMAIN} {
+    encode zstd gzip
+    reverse_proxy web:3000
+}
+
+{$CMS_DOMAIN} {
+    encode zstd gzip
+
+    basic_auth {
+        {$CMS_BASIC_AUTH_USER} {$CMS_BASIC_AUTH_HASH}
+    }
+
+    reverse_proxy cms:1337
+}
