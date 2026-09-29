@@ -14,6 +14,7 @@ export type SectionNavigationProps = {
   ariaLabel: string;
   className?: string;
   items: readonly SectionNavigationItem[];
+  title?: string;
 };
 
 function ChevronIcon({ open }: { open: boolean }) {
@@ -85,7 +86,7 @@ function SectionLinks({
   );
 }
 
-export function SectionNavigation({ ariaLabel, className, items }: SectionNavigationProps) {
+export function SectionNavigation({ ariaLabel, className, items, title }: SectionNavigationProps) {
   const mobilePanelId = useId();
   const firstItemId = items[0]?.id ?? "";
   const [activeId, setActiveId] = useState(firstItemId);
@@ -128,6 +129,7 @@ export function SectionNavigation({ ariaLabel, className, items }: SectionNaviga
     <>
       <aside className={cn("section-navigation__desktop", className)}>
         <nav aria-label={ariaLabel} className="section-navigation__panel">
+          {title ? <p className="type-overline section-navigation__title">{title}</p> : null}
           <SectionLinks activeId={activeId} availableIds={availableIds} items={items} />
         </nav>
       </aside>
@@ -137,6 +139,7 @@ export function SectionNavigation({ ariaLabel, className, items }: SectionNaviga
           className={cn("section-navigation__mobile-list", !mobileOpen && "section-navigation__mobile-list--hidden")}
           id={mobilePanelId}
         >
+          {title ? <p className="type-overline section-navigation__title">{title}</p> : null}
           <nav aria-label={ariaLabel}>
             <SectionLinks
               activeId={activeId}

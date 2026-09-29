@@ -1152,6 +1152,11 @@ html[data-vision="low-vision"] a {
     box-shadow: var(--shadow-subtle);
   }
 
+  .section-navigation__title {
+    margin: var(--space-2) var(--space-3) var(--space-1);
+    color: var(--text-primary);
+  }
+
   .section-navigation__list {
     display: grid;
     gap: var(--space-1-5);
@@ -1162,7 +1167,9 @@ html[data-vision="low-vision"] a {
 
   .section-navigation__link {
     display: flex;
+    box-sizing: border-box;
     min-height: var(--space-10);
+    width: 100%;
     align-items: center;
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius-md);
@@ -1263,19 +1270,29 @@ html[data-vision="low-vision"] a {
   @media (min-width: 64rem) {
     .section-navigation__desktop {
       position: sticky;
-      top: var(--space-40);
+      top: calc(var(--space-40) + var(--space-6));
       display: block;
       align-self: start;
     }
 
     .section-navigation__panel {
-      max-height: calc(100dvh - var(--space-40) - var(--space-4));
+      max-height: calc(100dvh - var(--space-40) - var(--space-6) - var(--space-4));
       overflow-y: auto;
       scrollbar-width: thin;
     }
 
     .section-navigation__mobile {
       display: none;
+    }
+  }
+
+  @media (min-width: 80rem) {
+    .section-navigation__desktop {
+      top: var(--space-40);
+    }
+
+    .section-navigation__panel {
+      max-height: calc(100dvh - var(--space-40) - var(--space-4));
     }
   }
 

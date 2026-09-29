@@ -1,10 +1,19 @@
 @layer components {
+  .blog-article-page {
+    width: min(100% - var(--space-8), var(--container-wide));
+  }
+
   .blog-index,
   .blog-article,
   .blog-article__sections {
     display: grid;
     min-width: 0;
     gap: var(--space-5);
+  }
+
+  .blog-article > * {
+    min-width: 0;
+    width: 100%;
   }
 
   .blog-index__filters {
@@ -86,7 +95,11 @@
   }
 
   .blog-card__title {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     max-inline-size: 100%;
+    white-space: normal;
   }
 
   .blog-card__excerpt {
@@ -133,6 +146,7 @@
   .blog-article__header {
     display: grid;
     gap: var(--space-3);
+    width: 100%;
   }
 
   .blog-article__title {
@@ -140,10 +154,30 @@
   }
 
   .blog-article__lead {
-    max-width: var(--container-reading);
+    width: 100%;
+    color: var(--text-secondary);
+  }
+
+  .blog-article__lead p {
+    margin: 0;
     font-size: var(--type-text-xl-size);
     line-height: var(--type-text-xl-line-height);
-    color: var(--text-secondary);
+  }
+
+  .blog-article__lead p + p {
+    margin-top: var(--space-3);
+  }
+
+  .blog-article__body {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .blog-article__body-layout {
+    display: grid;
+    min-width: 0;
+    width: 100%;
+    gap: var(--space-5);
   }
 
   .blog-article__blocks {
@@ -162,6 +196,15 @@
     display: grid;
     gap: var(--space-2);
     padding-left: var(--space-6);
+  }
+
+  .blog-article__blocks .content-card__list {
+    padding-left: 0;
+  }
+
+  .blog-article__callout {
+    display: grid;
+    gap: var(--space-3);
   }
 
   .blog-article__faq {
@@ -187,74 +230,17 @@
     color: var(--text-secondary);
   }
 
-  .blog-article__related {
+  .blog-article__neighbors,
+  .blog-article__related-operations {
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-4);
     padding-top: var(--space-7);
   }
 
-  .blog-article__related-grid {
+  .blog-article__neighbors-grid,
+  .blog-article__related-operations-grid {
     display: grid;
     gap: var(--space-3);
-  }
-
-  .blog-related-card {
-    position: relative;
-    display: grid;
-    min-width: 0;
-    gap: var(--space-2);
-    padding: var(--space-4);
-    padding-right: var(--space-12);
-    border: var(--border-width-default) solid transparent;
-    border-radius: var(--radius-md);
-    background: var(--surface);
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: border-color var(--duration-normal) var(--ease-standard);
-  }
-
-  .blog-related-card--operation {
-    background: var(--accent-soft);
-  }
-
-  .blog-related-card:hover {
-    border-color: var(--accent);
-  }
-
-  .blog-related-card:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 var(--focus-ring-offset) var(--background), 0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width)) var(--accent);
-  }
-
-  .blog-related-card__eyebrow {
-    font-size: var(--type-text-xs-size);
-    line-height: var(--type-text-xs-line-height);
-    color: var(--text-secondary);
-  }
-
-  .blog-related-card__arrow {
-    position: absolute;
-    top: var(--space-4);
-    right: var(--space-4);
-    display: inline-flex;
-    width: var(--space-7);
-    height: var(--space-7);
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-full);
-    background: var(--surface-muted);
-    transition: color var(--duration-normal) var(--ease-standard), background-color var(--duration-normal) var(--ease-standard);
-  }
-
-  .blog-related-card:hover .blog-related-card__arrow,
-  .blog-related-card:focus-visible .blog-related-card__arrow {
-    background: var(--accent);
-    color: var(--text-inverse);
-  }
-
-  .blog-related-card__arrow-icon {
-    width: var(--space-4);
-    height: var(--space-4);
   }
 
   @media (min-width: 48rem) {
@@ -262,12 +248,28 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .blog-article__related-grid {
+    .blog-article__neighbors-grid,
+    .blog-article__related-operations-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
+  @media (min-width: 40rem) {
+    .blog-article-page {
+      width: min(100% - var(--space-12), var(--container-wide));
+    }
+  }
+
   @media (min-width: 64rem) {
+    .blog-article-page {
+      width: min(100% - var(--space-16), var(--container-wide));
+    }
+
+    .blog-article__body-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, 20rem);
+      align-items: start;
+    }
+
     .blog-index__grid--three {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }

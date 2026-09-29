@@ -44,12 +44,30 @@ function InlineContent({ children }: { children: readonly RichTextInline[] }) {
   return children.map((node, index) => <InlineNode key={index} node={node} />);
 }
 
+function getInlineText(children: readonly RichTextInline[]): string {
+  return children.map((node) => node.type === "text" ? node.text : node.children.map((child) => child.text).join("" )).join("");
+}
+
+export function getHeadingAnchorId(prefix: string, index: number, children: readonly RichTextInline[]): string {
+  const slug = getInlineText(children)
+    .toLocaleLowerCase("ru-RU")
+    .replace(/[^\p{L}\p{N}]+/gu, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80);
+
+  return `${prefix}-${index}-${slug || "heading"}`;
+}
+
 export function BlocksRenderer({
   blocks,
   className = "operation-content__blocks",
+  listVariant = "default",
+  headingIdPrefix,
 }: {
   blocks: readonly RichTextBlock[];
   className?: string;
+  headingIdPrefix?: string;
+  listVariant?: "default" | "accent";
 }) {
   return (
     <div className={className}>
@@ -65,7 +83,7 @@ export function BlocksRenderer({
         if (block.type === "heading") {
           const Heading = `h${block.level}` as "h2" | "h3" | "h4" | "h5" | "h6";
           return (
-            <Heading className={`content-card__heading content-card__heading--h${Math.min(block.level, 4)}`} key={index}>
+            <Heading className={`content-card__heading content-card__heading--h${Math.min(block.level, 4)}`} id={headingIdPrefix ? getHeadingAnchorId(headingIdPrefix, index, block.children) : undefined} key={index}>
               <InlineContent>{block.children}</InlineContent>
             </Heading>
           );
@@ -87,10 +105,12 @@ export function BlocksRenderer({
         }
 
         const List = block.format === "ordered" ? "ol" : "ul";
+        const accentList = listVariant === "accent" && block.format === "unordered";
         return (
-          <List className="operation-content__blocks-list" key={index}>
+          <List className={accentList ? "content-card__list" : "operation-content__blocks-list"} key={index}>
             {block.children.map((item, itemIndex) => (
-              <li key={itemIndex}>
+              <li className={accentList ? "content-card__list-item" : undefined} key={itemIndex}>
+                {accentList ? <span aria-hidden="true" className="content-card__list-marker" /> : null}
                 <InlineContent>{item.children}</InlineContent>
               </li>
             ))}
