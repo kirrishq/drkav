@@ -1160,6 +1160,18 @@ export function SiteHeader() {
         </div>
       </header>
 
+      {openMenu ? (
+        <button
+          aria-label="Закрыть подменю"
+          className="site-header__submenu-backdrop hidden lg:block"
+          onClick={() => {
+            setOpenMenuHref(null);
+            setOpenNestedItem(null);
+          }}
+          type="button"
+        />
+      ) : null}
+
       <div
         ref={mobileMenuRef}
         className={cn(

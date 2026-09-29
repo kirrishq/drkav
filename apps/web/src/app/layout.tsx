@@ -9,6 +9,7 @@ import { SiteFooter } from "@/components/site-footer/site-footer";
 import { contactActions } from "@/components/site-header/contact-actions";
 import { CookieConsent } from "@/components/cookie-consent/cookie-consent";
 import { MarketingAttribution } from "@/components/marketing-attribution/marketing-attribution";
+import { NavigationScrollRestoration } from "@/components/navigation-scroll-restoration/navigation-scroll-restoration";
 import { YandexMetrika } from "@/components/yandex-metrika/yandex-metrika";
 import { getSiteUrl } from "@/content/seo";
 
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className={GeistSans.variable}>
         <YandexMetrika />
         <MarketingAttribution />
+        <NavigationScrollRestoration />
         <CookieConsent />
         <ConsultationProvider captchaSiteKey={smartCaptchaSiteKey} submitUrl="/api/forms/consultation">
           <RevealObserver>

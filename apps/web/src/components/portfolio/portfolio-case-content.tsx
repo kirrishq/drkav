@@ -1,25 +1,20 @@
 import type { ImageAsset, PortfolioCase, PortfolioCaseSummary, PortfolioMediaAsset } from "@drkav/content-contracts";
-import { BeforeAfterComparison, ConsultationTrigger, buttonVariants } from "@drkav/ui";
+import { BeforeAfterComparison, ConsultationTrigger, SectionNavigation, buttonVariants } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
 
 import { BlocksRenderer } from "@/components/operation-content/blocks-renderer";
-import { PortfolioReveal } from "@/components/portfolio/portfolio-reveal";
 
 function PortfolioImage({ asset, className = "" }: { asset: ImageAsset; className?: string }) {
-  return (
-    <PortfolioReveal>
-      <Image
-        alt={asset.alternativeText ?? ""}
-        className={className}
-        height={asset.height ?? 900}
-        sizes="(min-width: 72rem) 72rem, 100vw"
-        src={asset.url}
-        unoptimized
-        width={asset.width ?? 1200}
-      />
-    </PortfolioReveal>
-  );
+  return <Image
+    alt={asset.alternativeText ?? ""}
+    className={className}
+    height={asset.height ?? 900}
+    sizes="(min-width: 64rem) 58rem, 100vw"
+    src={asset.url}
+    unoptimized
+    width={asset.width ?? 1200}
+  />;
 }
 
 function PortfolioMedia({ asset }: { asset: PortfolioMediaAsset }) {
@@ -39,6 +34,22 @@ function getOperationLabel(portfolioCase: PortfolioCaseSummary) {
   return portfolioCase.operations.length > 0
     ? portfolioCase.operations.map((operation) => operation.heading).join(" · ")
     : portfolioCase.caseLabel;
+}
+
+function getSectionId(index: number): string {
+  return `portfolio-case-section-${index + 1}`;
+}
+
+function getSectionNavigationItems(portfolioCase: PortfolioCase) {
+  return portfolioCase.contentSections.flatMap((section, index) => {
+    const label = section.type === "timeline-stage"
+      ? section.heading ?? section.term
+      : "heading" in section
+        ? section.heading
+        : undefined;
+
+    return label ? [{ id: getSectionId(index), label }] : [];
+  });
 }
 
 function RelatedCaseCard({ portfolioCase }: { portfolioCase: PortfolioCaseSummary }) {
@@ -68,6 +79,8 @@ export function PortfolioCaseContent({
   portfolioCase: PortfolioCase;
   relatedCases: readonly PortfolioCaseSummary[];
 }) {
+  const navigationItems = getSectionNavigationItems(portfolioCase);
+
   return (
     <article className="portfolio-case">
       <header className="content-card content-card--intro portfolio-case__hero">
@@ -93,13 +106,25 @@ export function PortfolioCaseContent({
         </dl>
       </header>
 
-      <div className="portfolio-case__narrow">
-        <div className="portfolio-case__sections">
-          {portfolioCase.contentSections.map((section) => {
+      <div className="portfolio-case__content-layout">
+        {navigationItems.length > 0 ? (
+          <SectionNavigation
+            ariaLabel="Содержание кейса"
+            className="portfolio-case__navigation"
+            items={navigationItems}
+            title="Содержание"
+          />
+        ) : null}
+
+        <div className="portfolio-case__main">
+          <div className="portfolio-case__sections">
+          {portfolioCase.contentSections.map((section, index) => {
+          const sectionId = getSectionId(index);
+
           if (section.type === "rich-text") {
             const hasHeading = Boolean(section.eyebrow || section.heading);
             return (
-              <section className={`content-card content-card--spacious portfolio-case__text-section${hasHeading ? " portfolio-case__text-section--with-heading" : ""}`} key={section.sectionKey}>
+              <section className={`content-card content-card--spacious portfolio-case__text-section${hasHeading ? " portfolio-case__text-section--with-heading" : ""}`} id={sectionId} key={section.sectionKey}>
                 {hasHeading ? <div className="portfolio-case__section-heading">
                   {section.eyebrow ? <p className="type-overline">{section.eyebrow}</p> : null}
                   {section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}
@@ -110,12 +135,12 @@ export function PortfolioCaseContent({
           }
 
           if (section.type === "statement") {
-            return <blockquote className={`type-h2 content-card portfolio-case__statement portfolio-case__statement--${section.tone}`} key={section.sectionKey}>{section.text}</blockquote>;
+            return <blockquote className={`type-h2 content-card portfolio-case__statement portfolio-case__statement--${section.tone}`} id={sectionId} key={section.sectionKey}>{section.text}</blockquote>;
           }
 
           if (section.type === "comparison") {
             return (
-              <figure className="content-card content-card--spacious portfolio-case__comparison" key={section.sectionKey}>
+              <figure className="content-card content-card--spacious portfolio-case__comparison" id={sectionId} key={section.sectionKey}>
                 {section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}
                 <BeforeAfterComparison afterAlt={section.afterAlt} afterImage={section.afterImage.url} beforeAlt={section.beforeAlt} beforeImage={section.beforeImage.url} className="portfolio-case__comparison-media" />
                 {section.caption ? <figcaption>{section.caption}</figcaption> : null}
@@ -125,7 +150,7 @@ export function PortfolioCaseContent({
 
           if (section.type === "timeline-stage") {
             return (
-              <section className="content-card content-card--spacious portfolio-case__stage" key={section.sectionKey}>
+              <section className="content-card content-card--spacious portfolio-case__stage" id={sectionId} key={section.sectionKey}>
                 <div className="portfolio-case__stage-copy">
                   <p className="type-overline portfolio-case__term">{section.term}</p>
                   {section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}
@@ -138,7 +163,7 @@ export function PortfolioCaseContent({
 
           if (section.type === "gallery") {
             return (
-              <section className={`content-card content-card--spacious portfolio-case__gallery portfolio-case__gallery--${section.presentation}`} key={section.sectionKey}>
+              <section className={`content-card content-card--spacious portfolio-case__gallery portfolio-case__gallery--${section.presentation}`} id={sectionId} key={section.sectionKey}>
                 {section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}
                 <div className={`portfolio-case__gallery-grid${section.images.length === 1 ? " portfolio-case__gallery-grid--single" : ""}`}>{section.images.map((image) => <PortfolioImage asset={image} className={`portfolio-case__gallery-image${image.width && image.height && image.width / image.height > 1.8 ? " portfolio-case__gallery-image--wide" : ""}`} key={image.url} />)}</div>
                 {section.caption ? <p className="portfolio-case__caption">{section.caption}</p> : null}
@@ -147,15 +172,16 @@ export function PortfolioCaseContent({
           }
 
           return (
-            <figure className="content-card portfolio-case__quote" key={section.sectionKey}>
+            <figure className="content-card portfolio-case__quote" id={sectionId} key={section.sectionKey}>
               <blockquote className="type-h2">«{section.text}»</blockquote>
               {section.attribution || section.note ? <figcaption>{[section.attribution, section.note].filter(Boolean).join(" · ")}</figcaption> : null}
             </figure>
           );
           })}
-        </div>
+          </div>
 
-        <aside className="type-text-sm content-card content-card--muted portfolio-case__disclaimer">Результат операции индивидуален. Фотографии показывают конкретный клинический случай и не гарантируют аналогичный результат.</aside>
+          <aside className="type-text-sm content-card content-card--muted portfolio-case__disclaimer">Результат операции индивидуален. Фотографии показывают конкретный клинический случай и не гарантируют аналогичный результат.</aside>
+        </div>
       </div>
 
       <section className="portfolio-case__cta">

@@ -16,6 +16,8 @@ export type VideoCardItem = {
 export type VideoCardProps = VideoCardItem & {
   className?: string;
   dialogItems?: readonly VideoCardItem[];
+  description?: string;
+  fullCard?: boolean;
   showDetails?: boolean;
 };
 
@@ -52,10 +54,12 @@ function DialogArrowIcon({ direction }: { direction: "next" | "previous" }) {
 /** Preview card that opens a supplied video in an accessible modal player. */
 export function VideoCard({
   className,
+  description,
   location,
   posterAlt,
   posterSrc,
   dialogItems,
+  fullCard = false,
   showDetails = true,
   title,
   videoSrc,
@@ -103,22 +107,46 @@ export function VideoCard({
   return (
     <>
       <article className={cn("video-card", className)}>
-        <button
-          aria-haspopup="dialog"
-          aria-label={`Смотреть видео: ${title}`}
-          className="video-card__preview"
-          onClick={openDialog}
-          type="button"
-        >
-          <img alt={posterAlt} className="video-card__poster" src={posterSrc} />
-          <span aria-hidden="true" className="video-card__play"><PlayIcon /></span>
-        </button>
-        {showDetails ? (
-          <div className="video-card__content">
-            <p className="video-card__meta">{[location, year].filter(Boolean).join(", ")}</p>
-            <h3 className="card-title video-card__title">{title}</h3>
-          </div>
-        ) : null}
+        {fullCard ? (
+          <button
+            aria-haspopup="dialog"
+            aria-label={`Смотреть видео: ${title}`}
+            className="video-card__full-preview"
+            onClick={openDialog}
+            type="button"
+          >
+            <span className="video-card__full-media">
+              <img alt={posterAlt} className="video-card__poster" src={posterSrc} />
+              <span aria-hidden="true" className="video-card__play"><PlayIcon /></span>
+            </span>
+            {showDetails ? (
+              <span className="video-card__content">
+                <span className="video-card__meta">{[location, year].filter(Boolean).join(", ")}</span>
+                <span className="card-title video-card__title">{title}</span>
+                {description ? <span className="video-card__description">{description}</span> : null}
+              </span>
+            ) : null}
+          </button>
+        ) : (
+          <>
+            <button
+              aria-haspopup="dialog"
+              aria-label={`Смотреть видео: ${title}`}
+              className="video-card__preview"
+              onClick={openDialog}
+              type="button"
+            >
+              <img alt={posterAlt} className="video-card__poster" src={posterSrc} />
+              <span aria-hidden="true" className="video-card__play"><PlayIcon /></span>
+            </button>
+            {showDetails ? (
+              <div className="video-card__content">
+                <p className="video-card__meta">{[location, year].filter(Boolean).join(", ")}</p>
+                <h3 className="card-title video-card__title">{title}</h3>
+              </div>
+            ) : null}
+          </>
+        )}
       </article>
 
       {isOpen ? (
