@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function randomBetween(min: number, max: number) {
   return min + Math.random() * (max - min);
@@ -18,8 +18,33 @@ export function HomeOperatingRoomBackground() {
   const dotsRef = useRef<HTMLSpanElement>(null);
   const glowRef = useRef<HTMLSpanElement>(null);
   const revealRef = useRef<HTMLImageElement>(null);
+  const [backgroundRequested, setBackgroundRequested] = useState(false);
+  const [backgroundLoaded, setBackgroundLoaded] = useState(false);
 
   useEffect(() => {
+    const portrait = document.querySelector<HTMLImageElement>(".home-hero__portrait-image");
+
+    if (!portrait) {
+      return;
+    }
+
+    const requestBackground = () => setBackgroundRequested(true);
+
+    if (portrait.complete && portrait.naturalWidth > 0) {
+      requestBackground();
+      return;
+    }
+
+    portrait.addEventListener("load", requestBackground, { once: true });
+
+    return () => portrait.removeEventListener("load", requestBackground);
+  }, []);
+
+  useEffect(() => {
+    if (!backgroundLoaded) {
+      return;
+    }
+
     const dots = dotsRef.current;
     const glow = glowRef.current;
     const reveal = revealRef.current;
@@ -257,30 +282,35 @@ export function HomeOperatingRoomBackground() {
       reducedMotion.removeEventListener("change", start);
       desktopMedia.removeEventListener("change", start);
     };
-  }, []);
+  }, [backgroundLoaded]);
 
   return (
     <div aria-hidden="true" className="home-hero__operating-room">
-      <Image
-        alt=""
-        className="home-hero__operating-room-base"
-        fill
-        fetchPriority="high"
-        priority
-        sizes="100vw"
-        src="/images/home/operating-room-bw.png"
-      />
       <span className="home-hero__operating-room-dots" ref={dotsRef}>
         {Array.from({ length: DOT_COLUMNS * DOT_ROWS }, (_, index) => <span className="home-hero__operating-room-dot" key={index} />)}
       </span>
-      <Image
-        alt=""
-        className="home-hero__operating-room-reveal"
-        fill
-        sizes="100vw"
-        src="/images/home/operating-room-bw.png"
-        ref={revealRef}
-      />
+      {backgroundRequested ? (
+        <>
+          <Image
+            alt=""
+            className="home-hero__operating-room-base"
+            fill
+            loading="eager"
+            sizes="100vw"
+            src="/images/home/operating-room-bw.png"
+          />
+          <Image
+            alt=""
+            className="home-hero__operating-room-reveal"
+            fill
+            loading="eager"
+            onLoad={() => setBackgroundLoaded(true)}
+            sizes="100vw"
+            src="/images/home/operating-room-bw.png"
+            ref={revealRef}
+          />
+        </>
+      ) : null}
       <span className="home-hero__operating-room-glow" ref={glowRef} />
     </div>
   );

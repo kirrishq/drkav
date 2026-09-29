@@ -15,6 +15,11 @@
     gap: var(--space-5);
   }
 
+  .patient-subpage__main > .reviews-slider {
+    width: 100%;
+    min-width: 0;
+  }
+
   .patient-subpage__sidebar {
     display: none;
     min-width: 0;

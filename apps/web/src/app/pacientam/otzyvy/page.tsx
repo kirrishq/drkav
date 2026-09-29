@@ -19,5 +19,5 @@ export default async function ReviewsPage() {
   const reviewItems = cmsReviews.length > 0 ? mapReviewsToSliderItems(cmsReviews, operationGroups) : homeReviews;
   const reviewFilterGroups = cmsReviews.length > 0 ? getReviewFilterGroups(cmsReviews, operationGroups) : [];
 
-  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Отзывы" }]} className="patient-subpage-page" description="Раздел с отзывами о консультациях, сопровождении и опыте взаимодействия с клиникой." title="Отзывы"><PatientSubpageLayout><ReviewsSlider className="reviews-slider--viewport-edge" filterGroups={reviewFilterGroups} items={reviewItems} /></PatientSubpageLayout><PatientRelatedPages currentHref="/pacientam/otzyvy" /></StaticPage>;
+  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Отзывы" }]} className="patient-subpage-page" description="Раздел с отзывами о консультациях, сопровождении и опыте взаимодействия с клиникой." title="Отзывы"><PatientSubpageLayout><ReviewsSlider filterGroups={reviewFilterGroups} items={reviewItems} /></PatientSubpageLayout><PatientRelatedPages currentHref="/pacientam/otzyvy" /></StaticPage>;
 }
