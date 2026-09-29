@@ -146,7 +146,7 @@ export function ConsultationForm({ className, compact = false, onSuccess, submit
             onChange={() => setConsultationFormat("clinic")}
             value="clinic"
           >
-            Очно — 1 950 ₽
+            Очно — 2 500 ₽
           </RadioButton>
           <RadioButton
             checked={consultationFormat === "online"}
@@ -155,7 +155,7 @@ export function ConsultationForm({ className, compact = false, onSuccess, submit
             onChange={() => setConsultationFormat("online")}
             value="online"
           >
-            Онлайн — 950 ₽
+            Онлайн — 2 500 ₽
           </RadioButton>
         </div>
       </fieldset>
@@ -216,15 +216,15 @@ export function ConsultationForm({ className, compact = false, onSuccess, submit
       <div className="consultation-form__consents">
         <label className="consultation-form__consent">
           <Checkbox name="personal-data" required />
-          <span>Согласен на <a className="consultation-form__legal-link" href="/consent">обработку персональных данных</a></span>
+          <span>Согласен на <a className="consultation-form__legal-link" href="/consent" rel="noreferrer" target="_blank">обработку персональных данных</a></span>
         </label>
         <label className="consultation-form__consent">
           <Checkbox name="privacy-policy" required />
-          <span>Соглашаюсь с <a className="consultation-form__legal-link" href="/policy">политикой конфиденциальности</a></span>
+          <span>Соглашаюсь с <a className="consultation-form__legal-link" href="/policy" rel="noreferrer" target="_blank">политикой конфиденциальности</a></span>
         </label>
         <label className="consultation-form__consent">
           <Checkbox name="marketing-consent" />
-          <span>Соглашаюсь на получение <a className="consultation-form__legal-link" href="/consent-marketing">рекламной и информационной рассылки</a></span>
+          <span>Соглашаюсь на получение <a className="consultation-form__legal-link" href="/consent-marketing" rel="noreferrer" target="_blank">рекламной и информационной рассылки</a></span>
         </label>
       </div>
 

@@ -45,8 +45,8 @@ export function ContactActionIcon({ kind }: { kind: ContactActionKind }) {
   if (kind === "email") {
     return (
       <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
-        <rect height="14" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="18" x="3" y="5" />
-        <path d="m4 7 8 6 8-6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
+        <rect fill="none" height="14" rx="2.5" stroke="currentColor" strokeWidth="1.7" width="18" x="3" y="5" />
+        <path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
       </svg>
     );
   }

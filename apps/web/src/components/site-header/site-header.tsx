@@ -970,7 +970,7 @@ export function SiteHeader() {
               <SiteLogo onNavigate={closeMobileMenu} />
               <div className="site-header__brand-meta">
                 <span className="site-header__descriptor">Пластический хирург, Москва</span>
-                <span className="site-header__address">г. Москва, ул. Большая Очаковская, 31, этаж 1, кабинет 12</span>
+                <span className="site-header__address">г. Москва, Рублёво-Успенское шоссе, 123Б, этаж 2, кабинет 1</span>
               </div>
             </div>
 
@@ -1180,7 +1180,7 @@ export function SiteHeader() {
           ) : (
             <>
               <div className="site-header__mobile-identity">
-                <span className="site-header__address">г. Москва, ул. Большая Очаковская, 31, этаж 1, кабинет 12</span>
+                <span className="site-header__address">г. Москва, Рублёво-Успенское шоссе, 123Б, этаж 2, кабинет 1</span>
               </div>
               <div className="site-header__mobile-actions sm:hidden">
             <div className="site-header__mobile-contact">

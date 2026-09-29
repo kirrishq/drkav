@@ -198,6 +198,20 @@
     line-height: var(--type-text-xs-line-height);
   }
 
+  .site-footer__cookie-settings {
+    appearance: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-family: inherit;
+    font-size: var(--type-text-xs-size);
+    font-weight: inherit;
+    line-height: var(--type-text-xs-line-height);
+    text-align: left;
+    cursor: pointer;
+  }
+
   @media (min-width: 40rem) {
     .site-footer__container {
       width: min(100% - var(--space-12), var(--container-wide));

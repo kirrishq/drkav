@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { headerMenu, type HeaderMenuLink } from "@/components/site-header/header-config";
+import { CookieSettingsButton } from "@/components/cookie-consent/cookie-consent";
 
 const aboutLinks = headerMenu.find((item) => item.href === "/obo-mne")?.links ?? [];
 const operationLinks = headerMenu.find((item) => item.href === "/operaczii")?.links ?? [];
@@ -92,7 +93,7 @@ export function SiteFooter() {
               <a className="text-link site-footer__contact-link" href="mailto:admin@drkav.ru">admin@drkav.ru</a>
               <a className="text-link site-footer__contact-link" href="mailto:pr@drkav.ru">pr@drkav.ru</a>
             </div>
-            <address className="type-text-base site-footer__address">г. Москва, ул. Большая Очаковская, 31, этаж 1, кабинет 12</address>
+            <address className="type-text-base site-footer__address">г. Москва, Рублёво-Успенское шоссе, 123Б, этаж 2, кабинет 1</address>
           </div>
 
           <nav aria-label="Навигация в подвале" className="site-footer__navigation">
@@ -121,7 +122,7 @@ export function SiteFooter() {
 
         <div className="site-footer__socials">
           <div className="site-footer__social-legal">
-            <p className="type-text-xs site-footer__social-legal-line">ИП Коробов А.В. · ИНН 7702070139 · ОГРНИП 321645100059511</p>
+            <p className="type-text-xs site-footer__social-legal-line">ИП Коробов А.В. · ИНН 583201220045 · ОГРНИП 321645100059511</p>
             <p className="type-text-xs site-footer__social-legal-line">© 2014–{currentYear} DrKAV. Все материалы сайта охраняются авторским правом.</p>
             <p className="type-text-xs site-footer__social-legal-line">Meta Platforms Inc. признана экстремистской организацией и запрещена на территории РФ.</p>
           </div>
@@ -136,12 +137,12 @@ export function SiteFooter() {
 
         <div className="site-footer__legal">
           <div className="site-footer__legal-links">
-            <Link className="text-link site-footer__legal-link" href="/obo-mne/diplomy-i-licenzii">Лицензии и сертификаты</Link>
-            <Link className="text-link site-footer__legal-link" href="/oferta">Публичная оферта</Link>
-            <Link className="text-link site-footer__legal-link" href="/policy">Политика обработки персональных данных</Link>
-            <Link className="text-link site-footer__legal-link" href="/cookies">Согласие на обработку cookies</Link>
-            <Link className="text-link site-footer__legal-link" href="/consent">Согласие на обработку персональных данных</Link>
-            <Link className="text-link site-footer__legal-link" href="/consent-marketing">Согласие на рекламную рассылку</Link>
+            <Link className="text-link site-footer__legal-link" href="/oferta" rel="noreferrer" target="_blank">Публичная оферта</Link>
+            <Link className="text-link site-footer__legal-link" href="/policy" rel="noreferrer" target="_blank">Политика обработки персональных данных</Link>
+            <Link className="text-link site-footer__legal-link" href="/cookies" rel="noreferrer" target="_blank">Согласие на обработку cookies</Link>
+            <Link className="text-link site-footer__legal-link" href="/consent" rel="noreferrer" target="_blank">Согласие на обработку персональных данных</Link>
+            <Link className="text-link site-footer__legal-link" href="/consent-marketing" rel="noreferrer" target="_blank">Согласие на рекламную рассылку</Link>
+            <CookieSettingsButton />
           </div>
         </div>
       </div>

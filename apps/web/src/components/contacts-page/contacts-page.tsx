@@ -17,38 +17,38 @@ type ContactPhoto = {
 
 const contactPhotos: readonly ContactPhoto[] = [
   {
-    alt: "Фасад медицинского центра с главным входом",
-    height: 848,
+    alt: "Стойка ресепшен клиники ASBeauty",
+    height: 1069,
     src: "/images/contacts/04-clinic.jpg",
-    title: "Вход в медицинский центр",
-    width: 1366,
+    title: "Ресепшен клиники ASBeauty",
+    width: 1600,
   },
   {
-    alt: "Светлый кабинет для консультаций",
-    height: 404,
+    alt: "Стойка ресепшен с логотипом ASBeauty",
+    height: 1070,
     src: "/images/contacts/01-clinic.jpg",
-    title: "Кабинет для консультаций",
-    width: 600,
+    title: "Стойка ресепшен",
+    width: 1600,
   },
   {
-    alt: "Светлая операционная с медицинским оборудованием",
-    height: 848,
-    src: "/images/contacts/02-clinic.jpg",
-    title: "Операционная",
-    width: 1366,
+    alt: "Вход в клинику ASBeauty",
+    height: 894,
+    src: "/images/contacts/02-clinic.png",
+    title: "Вход в клинику",
+    width: 605,
   },
   {
-    alt: "Зона ожидания и стойка администратора",
-    height: 847,
+    alt: "Входная зона клиники ASBeauty",
+    height: 1070,
     src: "/images/contacts/03-clinic.jpg",
-    title: "Зона ожидания",
-    width: 1366,
+    title: "Входная зона",
+    width: 1600,
   },
 ] as const;
 
-const yandexMapsUrl = "https://yandex.ru/maps/?rtext=~55.678304,37.451744&rtt=auto";
-const twoGisUrl = "https://2gis.ru/moscow/search/%D0%91%D0%BE%D0%BB%D1%8C%D1%88%D0%B0%D1%8F%20%D0%9E%D1%87%D0%B0%D0%BA%D0%BE%D0%B2%D1%81%D0%BA%D0%B0%D1%8F%2031";
-const yandexMapEmbedUrl = "https://yandex.by/map-widget/v1/-/CCUFJQVmxC";
+const yandexMapsUrl = "https://yandex.ru/maps/-/CXU7jRZM";
+const twoGisUrl = "https://2gis.ru/moscow/search/ASBeauty%2C%20%D0%B4.%20%D0%96%D1%83%D0%BA%D0%BE%D0%B2%D0%BA%D0%B0%2C%20%D0%A0%D1%83%D0%B1%D0%BB%D0%B5%D0%B2%D0%BE-%D0%A3%D1%81%D0%BF%D0%B5%D0%BD%D1%81%D0%BA%D0%BE%D0%B5%20%D1%88%D0%BE%D1%81%D1%81%D0%B5%2C%20123%D0%91";
+const yandexMapEmbedUrl = "https://yandex.ru/map-widget/v1/?ll=37.243370%2C55.738110&mode=search&oid=75508515849&ol=biz&z=17";
 
 function CloseIcon() {
   return (
@@ -96,9 +96,11 @@ function FeedbackForm() {
         body: JSON.stringify({
           contact: formData.get("contact"),
           formStartedAt: formStartedAt.current,
+          marketingConsent: formData.get("marketing-consent") === "on",
           message: formData.get("message"),
           name: formData.get("name"),
           personalDataConsent: formData.get("personal-data") === "on",
+          privacyPolicyConsent: formData.get("privacy-policy") === "on",
           website: formData.get("website"),
         }),
         headers: { "Content-Type": "application/json" },
@@ -147,10 +149,20 @@ function FeedbackForm() {
         <Label htmlFor="feedback-message" required>Ваш вопрос или предложение</Label>
         <Textarea id="feedback-message" name="message" placeholder="Напишите, чем мы можем помочь" required />
       </div>
-      <label className="contacts-page__feedback-consent">
-        <Checkbox name="personal-data" required />
-        <span>Согласен на обработку персональных данных</span>
-      </label>
+      <div className="contacts-page__feedback-consents">
+        <label className="contacts-page__feedback-consent">
+          <Checkbox name="personal-data" required />
+          <span>Согласен на <a href="/consent" rel="noreferrer" target="_blank">обработку персональных данных</a></span>
+        </label>
+        <label className="contacts-page__feedback-consent">
+          <Checkbox name="privacy-policy" required />
+          <span>Соглашаюсь с <a href="/policy" rel="noreferrer" target="_blank">политикой конфиденциальности</a></span>
+        </label>
+        <label className="contacts-page__feedback-consent">
+          <Checkbox name="marketing-consent" />
+          <span>Соглашаюсь на получение <a href="/consent-marketing" rel="noreferrer" target="_blank">рекламной и информационной рассылки</a></span>
+        </label>
+      </div>
       {error ? <p aria-live="polite" className="contacts-page__feedback-error" role="alert">{error}</p> : null}
       <Button disabled={isSubmitting} size="lg" type="submit">
         {isSubmitting ? "Отправляем…" : "Отправить сообщение"}
@@ -214,19 +226,20 @@ export function ContactsPageContent() {
           <section aria-labelledby="directions-title" className="content-card content-card--muted contacts-page__directions-section content-section" id="directions">
         <h2 className="content-card__heading content-card__heading--h2" id="directions-title">Будем ждать вас</h2>
         <div className="contacts-page__address-inline">
+          <p>Клиника ASBeauty</p>
           <address>
-            г. Москва, ул. Большая Очаковская, 31<br />
-            этаж 1, кабинет 12
+            г. Москва, Рублёво-Успенское шоссе, 123Б<br />
+            этаж 2, кабинет 1
           </address>
         </div>
         <div className="contacts-page__directions">
           <div>
             <h3 className="content-card__heading content-card__heading--h4">На общественном транспорте</h3>
-            <p>До метро «Озёрная» (жёлтая ветка), выход № 4. Затем пешком около 7 минут.</p>
+            <p>Ориентир — остановка «Жуковка-1». От неё до клиники ASBeauty можно дойти пешком.</p>
           </div>
           <div>
             <h3 className="content-card__heading content-card__heading--h4">На автомобиле</h3>
-            <p>По улице Марии Поливановой действуют знаки «Остановка и стоянка запрещены». Если парковка у здания занята, лучше припарковаться во дворе.</p>
+            <p>В навигаторе укажите: Москва, Рублёво-Успенское шоссе, 123Б, клиника ASBeauty.</p>
           </div>
         </div>
         <div className="contacts-page__route-actions">

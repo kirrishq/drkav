@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { GeistSans } from "geist/font";
+import { GeistSans } from "geist/font/sans";
 import { ContactFab, ConsultationProvider } from "@drkav/ui";
 
 import "@/app/globals.css";
 import { RevealObserver } from "@/components/reveal/reveal-observer";
 import { SiteFooter } from "@/components/site-footer/site-footer";
 import { contactActions } from "@/components/site-header/contact-actions";
+import { CookieConsent } from "@/components/cookie-consent/cookie-consent";
+import { MarketingAttribution } from "@/components/marketing-attribution/marketing-attribution";
+import { YandexMetrika } from "@/components/yandex-metrika/yandex-metrika";
 
 export const metadata: Metadata = {
   title: "drkav.ru — редизайн",
@@ -65,6 +68,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className={GeistSans.variable}>
+        <YandexMetrika />
+        <MarketingAttribution />
+        <CookieConsent />
         <ConsultationProvider submitUrl="/api/forms/consultation">
           <RevealObserver>
             {children}

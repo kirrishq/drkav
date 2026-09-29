@@ -28,9 +28,11 @@ type ConsultationPayload = CommonFormPayload & {
 
 type FeedbackPayload = CommonFormPayload & {
   contact?: unknown;
+  marketingConsent?: unknown;
   message?: unknown;
   name?: unknown;
   personalDataConsent?: unknown;
+  privacyPolicyConsent?: unknown;
 };
 
 type MailpitMessage = {
@@ -38,6 +40,15 @@ type MailpitMessage = {
   To: Array<{ Email: string; Name: string }>;
   Subject: string;
   Text: string;
+};
+
+type AmoFormPayload = {
+  contact?: string;
+  contactMethod?: string;
+  consultationFormat?: string;
+  message?: string;
+  name: string;
+  phone?: string;
 };
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
@@ -63,6 +74,25 @@ function isBooleanTrue(value: unknown): boolean {
 function getClientKey(request: Request, kind: FormKind): string {
   const forwardedFor = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
   return `${kind}:${forwardedFor || "local"}`;
+}
+
+function getCookie(request: Request, name: string): string | undefined {
+  const cookies = request.headers.get("cookie")?.split(";") ?? [];
+  const prefix = `${name}=`;
+  const value = cookies.map((cookie) => cookie.trim()).find((cookie) => cookie.startsWith(prefix))?.slice(prefix.length);
+
+  if (!value) return undefined;
+
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return undefined;
+  }
+}
+
+function normalizePhone(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  return digits.length === 10 ? `7${digits}` : digits;
 }
 
 function isRateLimited(key: string): boolean {
@@ -121,7 +151,9 @@ function getFormError(kind: FormKind, payload: ConsultationPayload | FeedbackPay
     const feedback = payload as FeedbackPayload;
     if (!stringValue(feedback.contact, 160)) return "Проверьте контакт для ответа.";
     if (!stringValue(feedback.message, 2_000)) return "Проверьте сообщение.";
-    if (!isBooleanTrue(feedback.personalDataConsent)) return "Необходимо подтвердить согласие.";
+    if (!isBooleanTrue(feedback.personalDataConsent) || !isBooleanTrue(feedback.privacyPolicyConsent)) {
+      return "Необходимо подтвердить согласие.";
+    }
   }
 
   return null;
@@ -168,6 +200,52 @@ async function sendToMailpit(message: MailpitMessage): Promise<void> {
   if (!response.ok) throw new Error("Mailpit rejected the message.");
 }
 
+async function sendToAmo(request: Request, kind: FormKind, payload: AmoFormPayload): Promise<void> {
+  const proxyUrl = process.env.AMO_PROXY_URL?.trim();
+  const code = process.env.AMO_CODE?.trim();
+
+  if (process.env.AMO_ENABLED !== "true" || !proxyUrl || !code) {
+    throw new Error("amoCRM delivery is not configured.");
+  }
+
+  const requestUrl = new URL(request.url);
+  const params = new URLSearchParams({
+    code,
+    domain: requestUrl.hostname,
+    formName: kind,
+    name: payload.name,
+    page: `${requestUrl.pathname}${requestUrl.search}`,
+    pipeline_id: process.env.AMO_PIPELINE_ID || "5284933",
+    status_id: process.env.AMO_STATUS_ID || "47117170",
+  });
+
+  if (payload.phone) params.set("phone", normalizePhone(payload.phone));
+  if (payload.contact?.includes("@")) params.set("email", payload.contact);
+  if (payload.contact && !payload.contact.includes("@")) params.set("phone", normalizePhone(payload.contact));
+  if (payload.contactMethod) params.set("contactMethod", payload.contactMethod);
+  if (payload.consultationFormat) params.set("consultationFormat", payload.consultationFormat);
+  if (payload.message) params.set("message", payload.message);
+
+  const referrer = getCookie(request, "referrer") || request.headers.get("referer");
+  if (referrer) params.set("referrer", referrer);
+
+  for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const) {
+    const value = getCookie(request, key);
+    if (value) params.set(key, value);
+  }
+
+  if (process.env.AMO_TEST_MODE === "true") params.set("test", "1");
+
+  const response = await fetch(proxyUrl, {
+    body: params,
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    method: "POST",
+    signal: AbortSignal.timeout(Number(process.env.AMO_REQUEST_TIMEOUT_MS || 8_000)),
+  });
+
+  if (!response.ok) throw new Error(`amoCRM proxy returned ${response.status}.`);
+}
+
 export async function handleFormSubmission(request: Request, kind: FormKind): Promise<Response> {
   if (request.method !== "POST") return jsonResponse({ error: "Метод не поддерживается." }, 405);
   if (!hasAllowedOrigin(request)) return jsonResponse({ error: "Запрос отклонён." }, 403);
@@ -206,28 +284,39 @@ export async function handleFormSubmission(request: Request, kind: FormKind): Pr
     return jsonResponse({ error: "Слишком много попыток. Попробуйте позже." }, 429);
   }
 
-  const deliveryMode = process.env.FORM_DELIVERY_MODE || (process.env.NODE_ENV === "development" ? "mailpit" : "disabled");
-  if (deliveryMode !== "mailpit") {
-    return jsonResponse({ error: "Локальная доставка форм не включена." }, 503);
-  }
-
   const isConsultation = kind === "consultation";
-  const message: MailpitMessage = {
-    From: {
-      Email: process.env.MAILPIT_FROM || "drkav-local@example.invalid",
-      Name: "drkav — локальная разработка",
-    },
-    Subject: isConsultation ? "drkav: заявка на консультацию" : "drkav: сообщение с сайта",
-    Text: isConsultation
-      ? formatConsultationMessage(payload as ConsultationPayload)
-      : formatFeedbackMessage(payload as FeedbackPayload),
-    To: [{ Email: process.env.MAILPIT_TO || "qa@example.invalid", Name: "Локальный тестовый inbox" }],
-  };
+  const deliveryMode = process.env.FORM_DELIVERY_MODE || (process.env.NODE_ENV === "development" ? "mailpit" : "disabled");
 
   try {
-    await sendToMailpit(message);
+    if (deliveryMode === "mailpit") {
+      const message: MailpitMessage = {
+        From: {
+          Email: process.env.MAILPIT_FROM || "drkav-local@example.invalid",
+          Name: "drkav — локальная разработка",
+        },
+        Subject: isConsultation ? "drkav: заявка на консультацию" : "drkav: сообщение с сайта",
+        Text: isConsultation
+          ? formatConsultationMessage(payload as ConsultationPayload)
+          : formatFeedbackMessage(payload as FeedbackPayload),
+        To: [{ Email: process.env.MAILPIT_TO || "qa@example.invalid", Name: "Локальный тестовый inbox" }],
+      };
+      await sendToMailpit(message);
+    } else if (deliveryMode === "amo") {
+      const consultation = payload as ConsultationPayload;
+      const feedback = payload as FeedbackPayload;
+      await sendToAmo(request, kind, {
+        contact: stringValue(feedback.contact, 160) ?? undefined,
+        contactMethod: String(consultation.contactMethod ?? ""),
+        consultationFormat: String(consultation.consultationFormat ?? ""),
+        message: stringValue(feedback.message, 2_000) ?? undefined,
+        name: stringValue(payload.name, 100) ?? "Клиент",
+        phone: stringValue(consultation.phone, 32) ?? undefined,
+      });
+    } else {
+      return jsonResponse({ error: "Доставка заявок не настроена." }, 503);
+    }
   } catch {
-    return jsonResponse({ error: "Локальный почтовый inbox недоступен." }, 503);
+    return jsonResponse({ error: "Не удалось передать заявку. Попробуйте ещё раз позже." }, 503);
   }
 
   return jsonResponse({ ok: true });
