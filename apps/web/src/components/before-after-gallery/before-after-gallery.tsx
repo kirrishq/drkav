@@ -130,7 +130,7 @@ export function BeforeAfterGallery({ items }: { items: readonly BeforeAfterCase[
   return <>
     <div className="before-after-gallery">
       {visibleItems.map((item) => <button aria-label={`Открыть изображение: ${item.title}`} className={`before-after-gallery__tile${viewedSlugs.has(item.slug) ? " before-after-gallery__tile--viewed" : ""}`} key={item.slug} onClick={(event) => openCase(item, event.currentTarget.getBoundingClientRect())} type="button">
-        <Image alt={item.title} className="before-after-gallery__image" fill sizes="(min-width: 64rem) 25vw, (min-width: 48rem) 33vw, 50vw" src={item.image.url} unoptimized />
+        <Image alt={item.title} className="before-after-gallery__image" fill sizes="(min-width: 64rem) 25vw, (min-width: 48rem) 33vw, 50vw" src={item.image.url} />
         <span className="before-after-gallery__label">{item.operation.heading}</span>
         {viewedSlugs.has(item.slug) ? <span className="before-after-gallery__viewed">Просмотрено</span> : null}
       </button>)}
@@ -144,7 +144,7 @@ export function BeforeAfterGallery({ items }: { items: readonly BeforeAfterCase[
         <button aria-label="Предыдущий кейс" className="before-after-modal__navigation before-after-modal__navigation--previous" disabled={currentIndex <= 0} onClick={() => navigateCase("previous")} type="button"><ArrowIcon direction="previous" /></button>
         <button aria-label="Следующий кейс" className="before-after-modal__navigation before-after-modal__navigation--next" disabled={currentIndex >= items.length - 1} onClick={() => navigateCase("next")} type="button"><ArrowIcon direction="next" /></button>
         <div className="before-after-modal__media">
-          <Image alt={modal.item.image.alternativeText ?? modal.item.title} className="before-after-modal__image" fill sizes="(min-width: 64rem) 42rem, calc(100vw - 2rem)" src={modal.item.image.url} unoptimized />
+          <Image alt={modal.item.image.alternativeText ?? modal.item.title} className="before-after-modal__image" fill sizes="(min-width: 64rem) 42rem, calc(100vw - 2rem)" src={modal.item.image.url} />
         </div>
         <div className="before-after-modal__content"><p>Операция</p><Link className="text-link" href={modal.item.operation.canonicalPath}>{modal.item.operation.heading}</Link></div>
       </div>

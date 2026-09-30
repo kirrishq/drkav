@@ -1,6 +1,7 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { cn } from "./lib/cn";
+import { formatRussianText } from "./russian-typography";
 
 export type BreadcrumbItem = {
   href?: string;
@@ -36,11 +37,11 @@ export function Breadcrumbs({ className, items }: BreadcrumbsProps) {
                   className="breadcrumbs__link"
                   href={item.href}
                 >
-                  {item.label}
+                  {formatRussianText(item.label)}
                 </a>
               ) : (
                 <span aria-current={current ? "page" : undefined} className="breadcrumbs__current">
-                  {item.label}
+                  {formatRussianText(item.label)}
                 </span>
               )}
             </li>
@@ -71,9 +72,9 @@ export function PageIntro({
       <Breadcrumbs items={breadcrumbs} />
 
       <section className="content-card content-card--intro">
-        <h1 className="content-card__heading content-card__heading--h1">{title}</h1>
+        <h1 className="content-card__heading content-card__heading--h1">{formatRussianText(title)}</h1>
         <p className="page-intro__description type-text-base">
-          {description}
+          {formatRussianText(description)}
         </p>
       </section>
       {children ? <div className="page-intro__content">{children}</div> : null}

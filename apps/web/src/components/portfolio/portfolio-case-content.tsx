@@ -12,7 +12,6 @@ function PortfolioImage({ asset, className = "" }: { asset: ImageAsset; classNam
     height={asset.height ?? 900}
     sizes="(min-width: 64rem) 58rem, 100vw"
     src={asset.url}
-    unoptimized
     width={asset.width ?? 1200}
   />;
 }
@@ -76,7 +75,6 @@ function RelatedCaseCard({ portfolioCase }: { portfolioCase: PortfolioCaseSummar
           height={portfolioCase.cover.height ?? 900}
           sizes="(min-width: 40rem) 23rem, 100vw"
           src={portfolioCase.cover.url}
-          unoptimized
           width={portfolioCase.cover.width ?? 1200}
         />
       </span>

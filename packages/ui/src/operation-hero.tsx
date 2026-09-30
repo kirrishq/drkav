@@ -4,6 +4,7 @@ import { ConsultationTrigger } from "./consultation-form";
 import { buttonVariants } from "./button";
 import { cn } from "./lib/cn";
 import { Breadcrumbs, type BreadcrumbItem } from "./page-intro";
+import { formatRussianText } from "./russian-typography";
 
 export type OperationHeroLink = {
   href: string;
@@ -41,13 +42,13 @@ export function OperationHero({
       <div aria-hidden="true" className="operation-hero__scrim" />
       <div className="operation-hero__content">
         {breadcrumbs ? <Breadcrumbs className="operation-hero__breadcrumbs" items={breadcrumbs} /> : null}
-        <h1 className="type-h1 operation-hero__title" id={titleId}>{title}</h1>
-        {description ? <p className="type-text-xl operation-hero__description">{description}</p> : null}
+        <h1 className="type-h1 operation-hero__title" id={titleId}>{formatRussianText(title)}</h1>
+        {description ? <p className="type-text-xl operation-hero__description">{typeof description === "string" ? formatRussianText(description) : description}</p> : null}
         {links.length > 0 ? (
           <nav aria-label="Разделы операции" className="operation-hero__navigation">
             {links.map((link) => (
               <a className="operation-hero__link" href={link.href} key={link.href}>
-                {link.label}
+                {formatRussianText(link.label)}
               </a>
             ))}
           </nav>

@@ -1,4 +1,5 @@
 import { cn } from "./lib/cn";
+import { formatRussianText } from "./russian-typography";
 
 export type AccordionItem = {
   answer: string;
@@ -17,14 +18,14 @@ export function Accordion({ className, items }: AccordionProps) {
       {items.map((item) => (
         <details className="accordion__item" key={item.question}>
           <summary className="accordion__summary">
-            <span>{item.question}</span>
+            <span>{formatRussianText(item.question)}</span>
             <span aria-hidden="true" className="accordion__indicator">
               <svg className="accordion__indicator-icon" fill="none" viewBox="0 0 20 20">
                 <path d="m5.5 7.5 4.5 4.5 4.5-4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" />
               </svg>
             </span>
           </summary>
-          <div className="accordion__content"><p>{item.answer}</p></div>
+          <div className="accordion__content"><p>{formatRussianText(item.answer)}</p></div>
         </details>
       ))}
     </div>

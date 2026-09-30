@@ -1,5 +1,5 @@
 import type { StaticPageContentSection } from "@drkav/content-contracts";
-import { RecordCard } from "@drkav/ui";
+import { formatRussianText, RecordCard } from "@drkav/ui";
 
 import { BlocksRenderer } from "@/components/operation-content/blocks-renderer";
 
@@ -7,7 +7,7 @@ import { PatientChecklist, PatientFaq } from "./patient-content";
 
 function SectionHeading({ heading }: { heading?: string }) {
   return heading ? (
-    <h2 className="content-card__heading content-card__heading--h2">{heading}</h2>
+    <h2 className="content-card__heading content-card__heading--h2">{formatRussianText(heading)}</h2>
   ) : null;
 }
 
@@ -33,8 +33,8 @@ export function StaticPageSections({ sections }: { sections: readonly StaticPage
               <dl className="patient-tests">
                 {section.items.map((item) => (
                   <div className="patient-tests__item" key={item.title ?? item.text}>
-                    <dt className="patient-tests__name">{item.title ?? item.text}</dt>
-                    {item.title ? <dd className="patient-tests__validity">{item.text}</dd> : null}
+                    <dt className="patient-tests__name">{formatRussianText(item.title ?? item.text)}</dt>
+                    {item.title ? <dd className="patient-tests__validity">{formatRussianText(item.text)}</dd> : null}
                   </div>
                 ))}
               </dl>

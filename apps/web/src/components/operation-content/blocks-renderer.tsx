@@ -5,10 +5,11 @@ import type {
   RichTextInline,
   RichTextText,
 } from "@drkav/content-contracts";
+import { formatRussianText } from "@drkav/ui";
 import Image from "next/image";
 
 function TextMarks({ node }: { node: RichTextText }) {
-  let content: ReactNode = node.text;
+  let content: ReactNode = formatRussianText(node.text);
 
   if (node.code) {
     content = <code>{content}</code>;
@@ -98,7 +99,6 @@ export function BlocksRenderer({
               key={index}
               sizes="(min-width: 72rem) 50vw, 100vw"
               src={block.image.url}
-              unoptimized
               width={block.image.width ?? 1200}
             />
           );

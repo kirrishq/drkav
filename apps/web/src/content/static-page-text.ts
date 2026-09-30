@@ -1,4 +1,5 @@
 import type { RichTextInline, StaticPageContent } from "@drkav/content-contracts";
+import { formatRussianText } from "@drkav/ui";
 
 function inlineText(value: RichTextInline): string {
   if (value.type === "link") {
@@ -25,7 +26,7 @@ export function getRichTextParagraphs(
       return [];
     }
 
-    const text = block.children.map(inlineText).join("").trim();
+    const text = formatRussianText(block.children.map(inlineText).join("").trim());
     return text ? [text] : [];
   });
 }

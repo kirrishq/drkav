@@ -1,6 +1,7 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { cn } from "./lib/cn";
+import { formatRussianText } from "./russian-typography";
 
 export type RecordCardDetail = {
   tone?: "primary" | "secondary";
@@ -58,11 +59,11 @@ function RecordCardContent({ description, details = [], icon, meta, title }: Rec
       {icon || meta ? (
         <div className="record-card__header">
           {icon ? <span className="record-card__icon">{icon}</span> : <span />}
-          {meta ? <span className="record-card__meta">{meta}</span> : null}
+          {meta ? <span className="record-card__meta">{formatRussianText(meta)}</span> : null}
         </div>
       ) : null}
-      <h3 className="card-title record-card__title">{title}</h3>
-      {description ? <p className="record-card__description">{description}</p> : null}
+      <h3 className="card-title record-card__title">{typeof title === "string" ? formatRussianText(title) : title}</h3>
+      {description ? <p className="record-card__description">{formatRussianText(description)}</p> : null}
       {visibleDetails.length > 0 ? (
         <ul className="record-card__details">
           {visibleDetails.map((detail) => (
@@ -70,7 +71,7 @@ function RecordCardContent({ description, details = [], icon, meta, title }: Rec
               className={cn("record-card__detail", detail.tone === "secondary" && "record-card__detail--secondary")}
               key={`${detail.tone ?? "primary"}-${detail.value}`}
             >
-              {detail.value}
+              {formatRussianText(detail.value)}
             </li>
           ))}
         </ul>

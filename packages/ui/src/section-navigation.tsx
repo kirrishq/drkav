@@ -3,6 +3,7 @@
 import { useEffect, useId, useState } from "react";
 
 import { cn } from "./lib/cn";
+import { formatRussianText } from "./russian-typography";
 
 export type SectionNavigationItem = {
   id: string;
@@ -66,7 +67,7 @@ function SectionLinks({
                 href={`#${item.id}`}
                 onClick={onNavigate}
               >
-                {item.label}
+                {formatRussianText(item.label)}
               </a>
             ) : (
               <span
@@ -76,7 +77,7 @@ function SectionLinks({
                   item.variant === "accent" && "section-navigation__link--accent",
                 )}
               >
-                {item.label}
+                {formatRussianText(item.label)}
               </span>
             )}
           </li>
@@ -92,7 +93,7 @@ export function SectionNavigation({ ariaLabel, className, items, title }: Sectio
   const [activeId, setActiveId] = useState(firstItemId);
   const [availableIds, setAvailableIds] = useState<ReadonlySet<string>>(new Set());
   const [mobileOpen, setMobileOpen] = useState(false);
-  const activeLabel = items.find((item) => item.id === activeId)?.label ?? items[0]?.label ?? "Содержание";
+  const activeLabel = formatRussianText(items.find((item) => item.id === activeId)?.label ?? items[0]?.label ?? "Содержание");
 
   useEffect(() => {
     const sections = items

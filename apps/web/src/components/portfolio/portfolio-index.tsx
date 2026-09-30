@@ -46,7 +46,6 @@ export function PortfolioIndex({ cases, variant = "default" }: PortfolioIndexCon
               priority={index === 0}
               sizes="(min-width: 40rem) 40vw, 100vw"
               src={portfolioCase.cover.url}
-              unoptimized
               width={portfolioCase.cover.width ?? 1200}
             />
             </span>

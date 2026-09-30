@@ -63,7 +63,6 @@ function HeroBlock({ block }: { block: Extract<BuilderBlock, { type: "hero" }> }
           className="builder-page__hero-image"
           height={block.image.height ?? 900}
           src={block.image.url}
-          unoptimized
           width={block.image.width ?? 1200}
         />
       ) : null}

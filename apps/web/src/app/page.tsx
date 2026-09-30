@@ -1,4 +1,4 @@
-import { AdministratorCta, BenefitsStrip, buttonVariants, cn, ConsultationSection, ConsultationTrigger, FinalResultsSlider, OperationsCards, ReviewsSlider, VideoHighlights } from "@drkav/ui";
+import { AdministratorCta, BenefitsStrip, buttonVariants, cn, ConsultationSection, ConsultationTrigger, FinalResultsSlider, formatRussianText, OperationsCards, ReviewsSlider, VideoHighlights } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -23,18 +23,6 @@ import academicBackgroundAnimation from "@/assets/lottie/home-benefits/academic-
 import doctorHealthAnimation from "@/assets/lottie/home-benefits/doctor-health.json";
 import headquarterAnimation from "@/assets/lottie/home-benefits/headquarter.json";
 import heartBeatAnimation from "@/assets/lottie/home-benefits/heart-beat.json";
-
-function getLocalImageSrcSet(src: string | undefined) {
-  if (!src?.startsWith("/")) {
-    return undefined;
-  }
-
-  const encodedSrc = encodeURIComponent(src);
-
-  return [384, 640, 768, 1024]
-    .map((width) => `/_next/image?url=${encodedSrc}&w=${width}&q=70 ${width}w`)
-    .join(", ");
-}
 
 const homeBenefits = [
   {
@@ -155,7 +143,6 @@ export default async function HomePage() {
         imageAlt: group.image?.alternativeText ?? `Иллюстрация: ${group.name}`,
         imageSrc: group.image?.url ?? operationCategoryFallbackImages[group.key as keyof typeof operationCategoryFallbackImages],
         imageSizes: "(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw",
-        imageSrcSet: getLocalImageSrcSet(group.image?.url ?? operationCategoryFallbackImages[group.key as keyof typeof operationCategoryFallbackImages]),
         links: group.operations.map((operation) => ({
           href: operation.canonicalPath,
           label: operation.heading,
@@ -167,7 +154,6 @@ export default async function HomePage() {
         imageAlt: `Заглушка: ${group.label}`,
         imageSrc: operationCategoryFallbackImages[group.id as keyof typeof operationCategoryFallbackImages],
         imageSizes: "(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw",
-        imageSrcSet: getLocalImageSrcSet(operationCategoryFallbackImages[group.id as keyof typeof operationCategoryFallbackImages]),
         links: [{ href: group.href, label: group.label }],
         title: group.label,
       }));
@@ -185,8 +171,8 @@ export default async function HomePage() {
                 <span className="home-hero__badge">Автор патента и учебника</span>
                 <span className="home-hero__badge">16+ лет опыта</span>
               </div>
-              <h1 className="type-h1 home-hero__title" id="home-hero-title">{heroTitle}</h1>
-              <p className="home-hero__description">{heroDescription}</p>
+              <h1 className="type-h1 home-hero__title" id="home-hero-title">{formatRussianText(heroTitle)}</h1>
+              <p className="home-hero__description">{formatRussianText(heroDescription)}</p>
               <div className="home-hero__actions">
                 <ConsultationTrigger className={buttonVariants({ size: "md", variant: "primary" })}>Записаться на консультацию</ConsultationTrigger>
                 <Link className={cn(buttonVariants({ size: "md", variant: "outline" }), "home-hero__secondary-action")} href="/ceny">Услуги и цены</Link>

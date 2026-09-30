@@ -21,7 +21,6 @@ export function OperationsCatalog({ groups }: OperationsCatalogProps) {
                 fill
                 sizes="100vw"
                 src={group.image?.url ?? operationCategoryFallbackImages[group.key as keyof typeof operationCategoryFallbackImages]}
-                unoptimized
               />
             ) : (
               <span>Изображение группы загружается в CMS</span>

@@ -35,7 +35,6 @@ export async function CmsEntryTemplate({ slug }: { slug?: string }) {
             fill
             sizes="(min-width: 64rem) 48rem, 100vw"
             src={entry.image.url}
-            unoptimized
           />
         </figure>
         <p>

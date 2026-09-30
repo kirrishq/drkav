@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "./lib/cn";
+import { formatRussianText } from "./russian-typography";
 
 export type StatsStripItem = {
   label: string;
@@ -104,7 +105,7 @@ export function StatsStrip({ ariaLabel = "Ключевые показатели"
         {items.map((item) => (
           <div className="stats-strip__item" key={`${item.label}-${item.value}`}>
             <AnimatedStatValue item={item} />
-            <p className="type-text-sm stats-strip__label">{item.label}</p>
+            <p className="type-text-sm stats-strip__label">{formatRussianText(item.label)}</p>
           </div>
         ))}
       </div>

@@ -25,7 +25,6 @@ export function ProdoctorovRatingBanner({ className }: ProdoctorovRatingBannerPr
           height="17"
           loading="lazy"
           src={PRODOCTOROV_LOGO_URL}
-          unoptimized
           width="112"
         />
         <span aria-hidden="true" className="prodoctorov-rating-banner__stars">★★★★★</span>

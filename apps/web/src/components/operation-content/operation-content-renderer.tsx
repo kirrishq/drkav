@@ -4,6 +4,7 @@ import type {
   PriceItem,
 } from "@drkav/content-contracts";
 import { formatPriceItem } from "@drkav/content-contracts";
+import { formatRussianText } from "@drkav/ui";
 
 import { BlocksRenderer } from "./blocks-renderer";
 
@@ -25,9 +26,9 @@ function SectionHeading({
   }
 
   return level === 2 ? (
-    <h2 className="content-card__heading content-card__heading--h2">{heading}</h2>
+    <h2 className="content-card__heading content-card__heading--h2">{formatRussianText(heading)}</h2>
   ) : (
-    <h3 className="content-card__heading content-card__heading--h3">{heading}</h3>
+    <h3 className="content-card__heading content-card__heading--h3">{formatRussianText(heading)}</h3>
   );
 }
 
@@ -53,8 +54,8 @@ function TextItems({
             {checklist ? "✓" : null}
           </span>
           <div className="operation-content__item-copy">
-            {item.title ? <strong>{item.title}</strong> : null}
-            <span>{item.text}</span>
+            {item.title ? <strong>{formatRussianText(item.title)}</strong> : null}
+            <span>{formatRussianText(item.text)}</span>
           </div>
         </li>
       ))}
@@ -73,7 +74,7 @@ function PriceList({ prices }: { prices: readonly PriceItem[] }) {
         <li className="operation-content__price-item" key={price.key}>
           <div className="operation-content__price-header">
             <h3 className="content-card__heading content-card__heading--h3">
-              {price.name}
+              {formatRussianText(price.name)}
             </h3>
             <p className="operation-content__price-value">
               {formatPriceItem(price)}
@@ -81,11 +82,11 @@ function PriceList({ prices }: { prices: readonly PriceItem[] }) {
           </div>
           {price.description ? (
             <p className="operation-content__price-description">
-              {price.description}
+              {formatRussianText(price.description)}
             </p>
           ) : null}
           {price.note ? (
-            <p className="operation-content__price-note">{price.note}</p>
+            <p className="operation-content__price-note">{formatRussianText(price.note)}</p>
           ) : null}
         </li>
       ))}
@@ -124,9 +125,9 @@ function SectionContent({
               </div>
               <div>
                 <h3 className="content-card__heading content-card__heading--h3">
-                  {step.title}
+                  {formatRussianText(step.title)}
                 </h3>
-                {step.description ? <p>{step.description}</p> : null}
+                {step.description ? <p>{formatRussianText(step.description)}</p> : null}
               </div>
             </li>
           ))}
@@ -186,7 +187,7 @@ export function OperationContentRenderer({
             {navigation.map((item) => (
               <li key={item.anchor}>
                 <a className="operation-content__navigation-link" href={`#${item.anchor}`}>
-                  {item.heading}
+                  {formatRussianText(item.heading)}
                 </a>
               </li>
             ))}

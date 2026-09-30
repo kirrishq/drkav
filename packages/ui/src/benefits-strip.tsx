@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { cn } from "./lib/cn";
+import { formatRussianText } from "./russian-typography";
 
 export type BenefitsStripItem = {
   icon: ReactNode;
@@ -23,7 +24,7 @@ export function BenefitsStrip({ ariaLabel = "Преимущества", classNam
             <span aria-hidden="true" className="benefits-strip__icon">
               {item.icon}
             </span>
-            <p className="type-text-sm benefits-strip__label">{item.label}</p>
+            <p className="type-text-sm benefits-strip__label">{formatRussianText(item.label)}</p>
           </li>
         ))}
       </ul>

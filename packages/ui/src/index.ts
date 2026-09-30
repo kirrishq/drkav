@@ -79,6 +79,7 @@ export { RadioButton } from "./radio-button";
 export type { RadioButtonProps } from "./radio-button";
 export { PhoneInput, formatRussianPhone } from "./phone-input";
 export type { PhoneInputProps } from "./phone-input";
+export { formatRussianText } from "./russian-typography";
 export { ArrowUpRightIcon, RecordCard } from "./record-card";
 export type { RecordCardDetail, RecordCardProps } from "./record-card";
 export { StatsStrip } from "./stats-strip";

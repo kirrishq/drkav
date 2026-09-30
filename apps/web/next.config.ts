@@ -30,8 +30,35 @@ const securityHeaders = [
     : []),
 ];
 
+const cmsImageRemotePatterns = (() => {
+  const cmsUrl = process.env.STRAPI_API_URL;
+
+  if (!cmsUrl) {
+    return [];
+  }
+
+  try {
+    const parsedUrl = new URL(cmsUrl);
+
+    return [{
+      hostname: parsedUrl.hostname,
+      pathname: "/**",
+      port: parsedUrl.port || undefined,
+      protocol: parsedUrl.protocol.replace(":", "") as "http" | "https",
+    }];
+  } catch {
+    return [];
+  }
+})();
+
 const nextConfig: NextConfig = {
   headers: async () => [{ source: "/(.*)", headers: securityHeaders }],
+  images: {
+    remotePatterns: [
+      ...cmsImageRemotePatterns,
+      { hostname: "prodoctorov.ru", pathname: "/**", protocol: "https" },
+    ],
+  },
   transpilePackages: ["@drkav/ui", "@drkav/content-contracts"],
   redirects: async () => [
     ...siteRedirects,
