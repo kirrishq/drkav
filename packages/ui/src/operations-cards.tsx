@@ -18,6 +18,7 @@ export type OperationsCardItem = {
   id: string;
   imageAlt: string;
   imageSrc?: string;
+  imageSrcSet?: string;
   imageSizes?: string;
   links: readonly OperationsCardLink[];
   title: string;
@@ -134,6 +135,7 @@ export function OperationsCards({
                 loading="lazy"
                 sizes={item.imageSizes}
                 src={item.imageSrc}
+                srcSet={item.imageSrcSet}
               />
             ) : null}
             <span aria-hidden="true" className="operations-cards__scrim" />

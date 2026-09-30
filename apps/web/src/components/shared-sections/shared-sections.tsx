@@ -13,6 +13,7 @@ import { createContentRepository } from "@/content/content-repository";
 import { operationCategoryFallbackImages } from "@/content/operation-category-images";
 import { homeReviews } from "@/content/home-reviews";
 import { getReviewFilterGroups, mapReviewsToSliderItems } from "@/content/review-presentation";
+import { getOptimizedImageSrcSet } from "@/content/optimized-image";
 
 export async function SharedSectionContent({ section }: { section: SharedSection }) {
   if (section.type === "doctor-profile") {
@@ -66,6 +67,7 @@ export async function SharedSectionContent({ section }: { section: SharedSection
           imageAlt: group.image?.alternativeText ?? `Иллюстрация: ${group.name}`,
           imageSrc: group.image?.url ?? operationCategoryFallbackImages[group.key as keyof typeof operationCategoryFallbackImages],
           imageSizes: "(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw",
+          imageSrcSet: getOptimizedImageSrcSet(group.image?.url ?? operationCategoryFallbackImages[group.key as keyof typeof operationCategoryFallbackImages]),
           links: group.operations.map((operation) => ({
             href: operation.canonicalPath,
             label: operation.heading,

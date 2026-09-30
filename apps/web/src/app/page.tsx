@@ -19,6 +19,7 @@ import { createContentRepository } from "@/content/content-repository";
 import { getReviewFilterGroups, mapReviewsToSliderItems } from "@/content/review-presentation";
 import { getStaticPageContent } from "@/content/static-page";
 import { getCardGridItems } from "@/content/static-page-text";
+import { getOptimizedImageSrcSet } from "@/content/optimized-image";
 import academicBackgroundAnimation from "@/assets/lottie/home-benefits/academic-background.json";
 import doctorHealthAnimation from "@/assets/lottie/home-benefits/doctor-health.json";
 import headquarterAnimation from "@/assets/lottie/home-benefits/headquarter.json";
@@ -143,6 +144,7 @@ export default async function HomePage() {
         imageAlt: group.image?.alternativeText ?? `Иллюстрация: ${group.name}`,
         imageSrc: group.image?.url ?? operationCategoryFallbackImages[group.key as keyof typeof operationCategoryFallbackImages],
         imageSizes: "(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw",
+        imageSrcSet: getOptimizedImageSrcSet(group.image?.url ?? operationCategoryFallbackImages[group.key as keyof typeof operationCategoryFallbackImages]),
         links: group.operations.map((operation) => ({
           href: operation.canonicalPath,
           label: operation.heading,
@@ -154,6 +156,7 @@ export default async function HomePage() {
         imageAlt: `Заглушка: ${group.label}`,
         imageSrc: operationCategoryFallbackImages[group.id as keyof typeof operationCategoryFallbackImages],
         imageSizes: "(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw",
+        imageSrcSet: getOptimizedImageSrcSet(operationCategoryFallbackImages[group.id as keyof typeof operationCategoryFallbackImages]),
         links: [{ href: group.href, label: group.label }],
         title: group.label,
       }));
