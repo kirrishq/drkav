@@ -8,6 +8,8 @@ import { getPageMetadata } from "@/content/page-registry";
 import { getStaticPageContent, getStaticPageMetadata } from "@/content/static-page";
 import { getCardGridItems } from "@/content/static-page-text";
 
+export const revalidate = 300;
+
 export async function generateMetadata() {
   return getStaticPageMetadata("about-media", getPageMetadata("/obo-mne/smi"));
 }
