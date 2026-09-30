@@ -118,12 +118,14 @@ export function BlogArticleContent({
   article,
   articleKind = "blog",
   showPublishedAt = true,
+  source,
   support,
 }: {
   adjacentArticles?: readonly BlogArticleSummary[];
   article: BlogArticle;
   articleKind?: "blog" | "condition";
   showPublishedAt?: boolean;
+  source?: { href: string; label: string };
   support: ArticleSupportData;
 }) {
   return (
@@ -131,6 +133,7 @@ export function BlogArticleContent({
       <header className="content-card content-card--intro blog-article__header">
         <p className="blog-article__meta">{[article.categories.map((category) => category.name).join(" · "), showPublishedAt ? formatPublishedAt(article.publishedAt) : "", `${article.readingTimeMinutes} мин чтения`].filter(Boolean).join(" · ")}</p>
         <h1 className="type-h1 blog-article__title">{article.title}</h1>
+        {source ? <p className="blog-article__source">Источник: <a className="text-link" href={source.href} rel="noreferrer" target="_blank">{source.label}</a></p> : null}
         <div className="blog-article__lead">
           {getLeadParagraphs(article.excerpt).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>

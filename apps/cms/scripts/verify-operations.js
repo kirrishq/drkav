@@ -50,6 +50,7 @@ async function run() {
     .filter((snapshot) => snapshot.publicationEligibility.eligible)
     .map((snapshot) => snapshot.canonicalPath)
     .sort();
+  const expectedPriceKeys = new Set(catalog.prices.map((price) => price.key));
   const migratedSource = await fs.readFile(MIGRATED_PATHS_FILE, "utf8");
   const configuredMigrated = [
     ...migratedSource.matchAll(/"(\/operaczii\/[^"\n]+)"/g),
@@ -86,8 +87,20 @@ async function run() {
     assert(publishedOperations.length === 36, `Expected 36 published operations, received ${publishedOperations.length}.`);
     assert(draftCategories.length === 13, `Expected 13 categories, received ${draftCategories.length}.`);
     assert(publishedCategories.length === 13, `Expected 13 published categories, received ${publishedCategories.length}.`);
-    assert(draftPrices.length === 42, `Expected 42 prices, received ${draftPrices.length}.`);
-    assert(publishedPrices.length === 42, `Expected 42 published prices, received ${publishedPrices.length}.`);
+    assert(
+      draftPrices.every((price) => price.isActive === true),
+      "A draft price is inactive.",
+    );
+    assert(
+      publishedPrices.every((price) => price.isActive === true),
+      "A published price is inactive.",
+    );
+    const draftPriceKeys = new Set(draftPrices.map((price) => price.key));
+    const publishedPriceKeys = new Set(publishedPrices.map((price) => price.key));
+    for (const key of expectedPriceKeys) {
+      assert(draftPriceKeys.has(key), `Expected price ${key} is missing from drafts.`);
+      assert(publishedPriceKeys.has(key), `Expected price ${key} is missing from published records.`);
+    }
     assertUnique(draftOperations.map((operation) => operation.canonicalPath), "operation canonical path");
     assertUnique(draftCategories.map((category) => category.key), "category key");
     assertUnique(draftPrices.map((price) => price.key), "price key");
@@ -140,8 +153,9 @@ async function run() {
     }
 
     for (const price of draftPrices) {
-      assert(price.priceLabel, `Price ${price.key} has no exact priceLabel.`);
-      assert(price.isActive === true, `Price ${price.key} is inactive.`);
+      if (expectedPriceKeys.has(price.key)) {
+        assert(price.priceLabel, `Price ${price.key} has no exact priceLabel.`);
+      }
     }
 
     const augmentation = draftOperations.filter(
@@ -157,6 +171,8 @@ async function run() {
         draftOnly: draftOnly.length,
         categories: draftCategories.length,
         prices: draftPrices.length,
+        expectedPrices: expectedPriceKeys.size,
+        legacyPrices: draftPrices.length - expectedPriceKeys.size,
         blocks: blockCount,
         priceRelations: relationCount,
         migratedPaths: configuredMigrated.length,

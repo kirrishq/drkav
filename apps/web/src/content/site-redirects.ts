@@ -101,6 +101,20 @@ const redirects = allPageRegistryItems.flatMap((item) =>
     })),
 );
 
+const mediaPublicationRedirects: readonly SiteRedirect[] = [
+  "neschool",
+  "rbg",
+  "book",
+  "kak-navyki-ekstrennoy-hirurgii-pomogayut-pri-reshenii-zadach-v-plastike-opyt-doktora-korobova",
+  "hirurg-nomer-odin",
+].map((slug) => ({
+  source: `/smi/${slug}.html`,
+  destination: `/obo-mne/smi/${slug}`,
+  permanent: true,
+}));
+
+redirects.push(...mediaPublicationRedirects);
+
 const redirectSources = new Set<string>();
 
 for (const redirect of redirects) {

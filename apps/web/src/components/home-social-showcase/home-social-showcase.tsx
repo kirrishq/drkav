@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element -- Thumbnails are served from the original site's media CDN. */
+/* eslint-disable @next/next/no-img-element -- The gallery uses intentionally cropped local thumbnails. */
 
 import { buttonVariants, cn } from "@drkav/ui";
 
@@ -7,35 +7,35 @@ import { HomeSocialDotsBackground } from "./home-social-dots-background";
 const socialPosts = [
   {
     alt: "Доктор Коробов на церемонии премии «Хрустальный лотос»",
-    imageSrc: "https://cdn.prod.website-files.com/61f3f4390534ec0c5cda944c/63ef5e4501337063266619a2_maxresdefault.jpg",
+    imageSrc: "/images/home/social/maxresdefault.jpg",
   },
   {
     alt: "Доктор Коробов на конгрессе пластических хирургов",
-    imageSrc: "https://cdn.prod.website-files.com/61f3f4390534ec0c5cda944c/63efc3e0536a2fd4f38cfbbc_yt4.webp",
+    imageSrc: "/images/home/social/yt4.webp",
   },
   {
     alt: "Интервью доктора Коробова",
-    imageSrc: "https://cdn.prod.website-files.com/61f3f4390534ec0c5cda944c/63efc3e1ba04fc401721e4c3_yt5.webp",
+    imageSrc: "/images/home/social/yt5.webp",
   },
   {
     alt: "Доктор Коробов в медицинском интервью",
-    imageSrc: "https://cdn.prod.website-files.com/61f3f4390534ec0c5cda944c/63efc3e3623d7747f5c182fc_yt6.webp",
+    imageSrc: "/images/home/social/yt6.webp",
   },
   {
     alt: "Выступление доктора Коробова на конгрессе",
-    imageSrc: "https://cdn.prod.website-files.com/61f3f4390534ec0c5cda944c/63efc3e810fa36ba4da0f814_yt7.webp",
+    imageSrc: "/images/home/social/yt7.webp",
   },
   {
     alt: "Профессиональная лекция доктора Коробова",
-    imageSrc: "https://cdn.prod.website-files.com/61f3f4390534ec0c5cda944c/63efc31805fc0482857484d4_yt1.webp",
+    imageSrc: "/images/home/social/yt1.webp",
   },
   {
     alt: "Доктор Коробов на профессиональном мероприятии",
-    imageSrc: "https://cdn.prod.website-files.com/61f3f4390534ec0c5cda944c/63efc3dfa2e73baf34f164c4_yt2.webp",
+    imageSrc: "/images/home/social/yt2.webp",
   },
   {
     alt: "Материалы о пластической хирургии",
-    imageSrc: "https://cdn.prod.website-files.com/61f3f4390534ec0c5cda944c/63efc3e105fc04bdde748a48_yt3.webp",
+    imageSrc: "/images/home/social/yt3.webp",
   },
 ] as const;
 

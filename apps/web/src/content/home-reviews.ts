@@ -1,12 +1,10 @@
 import type { ReviewSliderItem } from "@drkav/ui";
 
-const originalSiteImage = "https://cdn.prod.website-files.com/61f3f4390534ec0c5cda944c/";
-
 export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-1",
     imageAlt: "Фото отзыва 1 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}67979b15746a215bf9c8fdab_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%201.jpg`,
+    imageSrc: "/images/home/reviews/review-01.jpg",
     label: "Живот через 3 месяца",
     source: "Сообщение пациента",
     text: "Артём Владимирович добрый день! Не нарадуюсь на свой живот, даже не вериться что это мой ☺️ Прошло три месяца, а я уже купаюсь. Это самая лучшая инвестиция в этом году😀👍🙏🏻 Спасибо огромное ☺️",
@@ -14,7 +12,7 @@ export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-2",
     imageAlt: "Фото отзыва 2 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}67979bd59f61ecff5be2da97_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%202.jpg`,
+    imageSrc: "/images/home/reviews/review-02.jpg",
     label: "Радость спустя год",
     source: "Сообщение пациента",
     text: "Артём Владимирович, доброе утро! Спасибо за заботу Благодаря вашему профессионализму, спустя год, всё отлично! Наслаждаюсь и радуюсь своим телом.",
@@ -22,7 +20,7 @@ export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-3",
     imageAlt: "Фото отзыва 3 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}67979c871d44db74a3853b12_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%203.JPG`,
+    imageSrc: "/images/home/reviews/review-03.JPG",
     label: "Коррекция боковых ям",
     source: "Сообщение пациента",
     text: "Артем Владимирович, доброе утро! Прошло 2 года после операции) честно признаюсь, что на весах +2 кг где-то от дня операции. Есть фотки майские, где я еще хожу в зал и так сказать «на пампе», но они в таком домашнем формате, чисто для проверки формы. И сделала фотки сегодняшние, с учетом что месяца 3 не хожу в зал, поэтому сбоку немного сдулась. Но наша задача была заполнить боковые ямы. Поэтому результатом я довольна на 100000%! Попа сзади круглая несмотря на мои похудения-потолстения в течении 2х лет (в пределах 5 кг). Спасибо Вам огромное! Вы супер!!!",
@@ -30,7 +28,7 @@ export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-4",
     imageAlt: "Фото отзыва 4 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}67979cbb77e8d5dc67439697_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%204.JPG`,
+    imageSrc: "/images/home/reviews/review-04.JPG",
     label: "Чувство быть желанной и счастливой",
     source: "Сообщение пациента",
     text: "Спасибо , Артем Владимирович 🙏🏻за чувство быть желанной и счастливой!",
@@ -38,7 +36,7 @@ export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-5",
     imageAlt: "Фото отзыва 5 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}67979d05fbcf7da2b1ab3d74_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%205.JPG`,
+    imageSrc: "/images/home/reviews/review-05.JPG",
     label: "Живот через 3 года",
     source: "Сообщение пациента",
     text: "Добрый вечер, Артем Владимирович, вот уже почти 3 года результат проделанной работы вашей меня радует до сих пор 🤪😇🤩 17 ноября будет уже 3 года 😎👍 время летиииииит) животик шикарный 😎 спасибо вам еще раз",
@@ -46,7 +44,7 @@ export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-6",
     imageAlt: "Фото отзыва 6 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}6797bc5ec5d79d7a4376413d_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%206.JPG`,
+    imageSrc: "/images/home/reviews/review-06.JPG",
     label: "Грудь и незаметные швы",
     source: "Сообщение пациента",
     text: "Доброе утро ☀️ С грудью все прекрасно, швы зажили так, что их вообще не видно, разглядеть только под микроскопом можно 😃 спасибо Вам за это❤️ Поделюсь фотографиями)",
@@ -54,7 +52,7 @@ export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-7",
     imageAlt: "Фото отзыва 7 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}6797bcc946def04d3a0788f6_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%207.jpeg`,
+    imageSrc: "/images/home/reviews/review-07.jpeg",
     label: "Возвращение своего тела",
     source: "Сообщение пациента",
     text: "Док! Спасибо 😍 Я так счастлива, что вернула себе свое тело спустя 7 лет материнства! Эту свободу выбора одежды и восхищенные взгляды со стороны ☺️ спасибо Вам, за Ваши золотые руки!",
@@ -62,7 +60,7 @@ export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-8",
     imageAlt: "Фото отзыва 8 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}6797bdcc79375b1a3c2205bb_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%208.jpeg`,
+    imageSrc: "/images/home/reviews/review-08.jpeg",
     label: "Великолепный живот",
     source: "Сообщение пациента",
     text: "Артём Владимирович, здравствуйте. Огромное Вам спасибо за мой живот! Он великолепен!!!!",
@@ -70,7 +68,7 @@ export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-9",
     imageAlt: "Фото отзыва 9 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}6797be3caa9346ad39d4f4cb_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%209.JPG`,
+    imageSrc: "/images/home/reviews/review-09.JPG",
     label: "Спортивные линии",
     source: "Сообщение пациента",
     text: "Доктор мой дорогой! Я до сих пор готова целовать Ваши золотые руки!!! Ох уж эта попа🤪 и спортивные линии!! Муж до сих пор в восторге от моей пятой точки))) 😂",
@@ -78,7 +76,7 @@ export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-10",
     imageAlt: "Фото отзыва 10 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}6797be9aae79c852416ff20a_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%2010.jpeg`,
+    imageSrc: "/images/home/reviews/review-10.jpeg",
     label: "Уверенность после двух родов",
     source: "Сообщение пациента",
     text: "Добрый день, Артём Владимирович, прошло пол года с операции, делюсь фото, спасибо за уверенность в себе после 2 родов в 33)",
@@ -86,7 +84,7 @@ export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-11",
     imageAlt: "Фото отзыва 11 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}6797bef6f78ad1e5b44e6972_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%2011.JPG`,
+    imageSrc: "/images/home/reviews/review-11.JPG",
     label: "Результат через 2 месяца",
     source: "Сообщение пациента",
     text: "Добрый день, Артём Владимирович. После операции прошло два месяца. Спасибо Вам огромное за такой шикарный результат 🔥!!! Спасибо, что всегда были рядом, после операции, спасибо, что изменили мою жизнь на до и после. Я очень счастлива, каждый день вас вспоминаю 🥰! Спасибо!!!!!",
@@ -94,7 +92,7 @@ export const homeReviews: readonly ReviewSliderItem[] = [
   {
     id: "original-review-12",
     imageAlt: "Фото отзыва 12 с главной страницы drkav.ru",
-    imageSrc: `${originalSiteImage}6797bf56c0ff53480b23c2f0_%D0%9E%D1%82%D0%B7%D1%8B%D0%B2%2012.jpeg`,
+    imageSrc: "/images/home/reviews/review-12.jpeg",
     label: "Не могу налюбоваться животиком",
     source: "Сообщение пациента",
     text: "Доброе утро, Артем Владимирович ) хочу выслать вам фото ) не могу налюбоваться своим животиком 🥰🥰🥰🤩🤩🤩 спасибо за ваши волшебные руки 🙈🤗",

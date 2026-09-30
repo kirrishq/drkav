@@ -624,6 +624,32 @@ export interface BlogIndexContent {
   categories: readonly BlogCategorySummary[];
 }
 
+export interface MediaPublicationSummary {
+  slug: string;
+  canonicalPath?: string;
+  title: string;
+  excerpt: string;
+  sourceName: string;
+  sourceDateLabel?: string;
+  sourceUrl: string;
+  externalUrl?: string;
+  isExternal: boolean;
+  layoutVariant: "primary" | "featured";
+  imagePath?: string;
+  imageAlt?: string;
+  sortOrder: number;
+  readingTimeMinutes?: number;
+}
+
+export interface MediaPublication extends MediaPublicationSummary {
+  seo?: SeoData;
+  contentSections: readonly BlogContentSection[];
+}
+
+export interface MediaPublicationIndexContent {
+  publications: readonly MediaPublicationSummary[];
+}
+
 export interface PortfolioCaseSummary {
   slug: string;
   canonicalPath: string;
@@ -737,6 +763,8 @@ export interface ContentRepository {
   getFinalResults(): Promise<readonly FinalResult[]>;
   getBlogIndex(): Promise<BlogIndexContent>;
   getBlogArticleBySlug(slug: string): Promise<BlogArticle | null>;
+  getMediaPublicationIndex(): Promise<MediaPublicationIndexContent>;
+  getMediaPublicationBySlug(slug: string): Promise<MediaPublication | null>;
   getPortfolioIndex(): Promise<PortfolioIndexContent>;
   getPortfolioCaseBySlug(slug: string): Promise<PortfolioCase | null>;
   getConditionIndex(): Promise<ConditionIndexContent>;

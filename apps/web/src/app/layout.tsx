@@ -16,8 +16,8 @@ import { getSiteNavigation } from "@/content/site-navigation";
 
 export const metadata: Metadata = {
   metadataBase: getSiteUrl(),
-  title: "drkav.ru — редизайн",
-  description: "Frontend-first редизайн сайта drkav.ru",
+  title: "Пластический хирург Артём Коробов — DrKAV",
+  description: "Официальный сайт пластического хирурга Артёма Владимировича Коробова: операции, цены, результаты, статьи, отзывы и запись на консультацию в Москве.",
 };
 
 const themeBootstrapScript = `(() => {

@@ -7,6 +7,9 @@ import type {
   BlogCategorySummary,
   BlogContentSection,
   BlogIndexContent,
+  MediaPublication,
+  MediaPublicationIndexContent,
+  MediaPublicationSummary,
   BeforeAfterCase,
   BuilderBlock,
   BuilderFont,
@@ -62,6 +65,8 @@ import {
   getBuilderPageCacheTag,
   getConditionArticleCacheTag,
   getConditionIndexCacheTag,
+  getMediaPublicationCacheTag,
+  getMediaPublicationIndexCacheTag,
   getOperationCatalogCacheTag,
   getOperationCacheTag,
   getOperationPathsCacheTag,
@@ -1268,6 +1273,62 @@ function mapBlogCategory(value: unknown, index: number): BlogCategorySummary {
   };
 }
 
+function mapMediaPublicationSummary(
+  value: unknown,
+  index: number,
+): MediaPublicationSummary {
+  const label = `mediaPublications[${index}]`;
+  const publication = requireRecord(value, label);
+  const canonicalPath = optionalString(
+    publication.canonicalPath,
+    `${label}.canonicalPath`,
+  );
+  const externalUrl = optionalString(
+    publication.externalUrl,
+    `${label}.externalUrl`,
+  );
+  const readingTimeMinutes = optionalInteger(
+    publication.readingTimeMinutes,
+    `${label}.readingTimeMinutes`,
+  );
+  const layoutVariant = requireString(
+    publication.layoutVariant,
+    `${label}.layoutVariant`,
+  );
+  if (layoutVariant !== "primary" && layoutVariant !== "featured") {
+    throw new CmsInvalidResponseError(
+      `Invalid Strapi response: ${label}.layoutVariant must be primary or featured.`,
+    );
+  }
+  const imagePath = optionalString(publication.imagePath, `${label}.imagePath`);
+  const imageAlt = optionalString(publication.imageAlt, `${label}.imageAlt`);
+  const sortOrder = optionalInteger(publication.sortOrder, `${label}.sortOrder`);
+  if (sortOrder === undefined || sortOrder < 0) {
+    throw new CmsInvalidResponseError(
+      `Invalid Strapi response: ${label}.sortOrder must be a non-negative integer.`,
+    );
+  }
+
+  return {
+    slug: requireString(publication.slug, `${label}.slug`),
+    ...(canonicalPath ? { canonicalPath } : {}),
+    title: requireString(publication.title, `${label}.title`),
+    excerpt: requireString(publication.excerpt, `${label}.excerpt`),
+    sourceName: requireString(publication.sourceName, `${label}.sourceName`),
+    ...(optionalString(publication.sourceDateLabel, `${label}.sourceDateLabel`)
+      ? { sourceDateLabel: optionalString(publication.sourceDateLabel, `${label}.sourceDateLabel`) }
+      : {}),
+    sourceUrl: requireString(publication.sourceUrl, `${label}.sourceUrl`),
+    ...(externalUrl ? { externalUrl } : {}),
+    isExternal: requireBoolean(publication.isExternal, `${label}.isExternal`),
+    layoutVariant,
+    ...(imagePath ? { imagePath } : {}),
+    ...(imageAlt ? { imageAlt } : {}),
+    sortOrder,
+    ...(readingTimeMinutes !== undefined ? { readingTimeMinutes } : {}),
+  };
+}
+
 function mapBlogArticleSummary(
   value: unknown,
   index: number,
@@ -2244,6 +2305,99 @@ export class StrapiContentRepository implements ContentRepository {
       cacheTag: getBlogArticleCacheTag(slug),
       includeCategories: true,
     });
+  }
+
+  async getMediaPublicationIndex(): Promise<MediaPublicationIndexContent> {
+    const params = this.createPublishedParams([
+      "slug",
+      "canonicalPath",
+      "title",
+      "excerpt",
+      "sourceName",
+      "sourceDateLabel",
+      "sourceUrl",
+      "externalUrl",
+      "isExternal",
+      "layoutVariant",
+      "imagePath",
+      "imageAlt",
+      "sortOrder",
+      "readingTimeMinutes",
+    ]);
+    params.set("pagination[pageSize]", "100");
+    params.set("sort[0]", "sortOrder:asc");
+
+    const publications = await this.getMany(
+      "/api/media-publications",
+      params,
+      getMediaPublicationIndexCacheTag(),
+    );
+
+    return {
+      publications: publications.map((publication, index) =>
+        mapMediaPublicationSummary(publication, index),
+      ),
+    };
+  }
+
+  async getMediaPublicationBySlug(
+    slug: string,
+  ): Promise<MediaPublication | null> {
+    const params = this.createPublishedParams([
+      "slug",
+      "canonicalPath",
+      "title",
+      "excerpt",
+      "sourceName",
+      "sourceDateLabel",
+      "sourceUrl",
+      "externalUrl",
+      "isExternal",
+      "layoutVariant",
+      "imagePath",
+      "imageAlt",
+      "sortOrder",
+      "readingTimeMinutes",
+    ]);
+    params.set("filters[slug][$eq]", slug);
+    params.set("populate[seo][fields][0]", "metaTitle");
+    params.set("populate[seo][fields][1]", "metaDescription");
+    params.set("populate[seo][fields][2]", "canonicalPath");
+    params.set("populate[seo][fields][3]", "noIndex");
+    params.set(
+      "populate[contentSections][on][blog.rich-text-section][fields][0]",
+      "sectionKey",
+    );
+    params.set(
+      "populate[contentSections][on][blog.rich-text-section][fields][1]",
+      "heading",
+    );
+    params.set(
+      "populate[contentSections][on][blog.rich-text-section][fields][2]",
+      "body",
+    );
+
+    const publication = await this.getFirst(
+      "/api/media-publications",
+      params,
+      getMediaPublicationCacheTag(slug),
+    );
+    if (!publication) return null;
+
+    const contentSections = requireArray(
+      publication.contentSections,
+      "mediaPublication.contentSections",
+    ).map((section, index) =>
+      mapBlogContentSection(section, index, this.baseUrl),
+    );
+
+    return {
+      ...mapMediaPublicationSummary(publication, 0),
+      seo: publication.seo
+        ? mapSeo(publication.seo, this.baseUrl, "mediaPublication.seo")
+        : undefined,
+      contentSections,
+    };
   }
 
   async getConditionArticleBySlug(slug: string): Promise<BlogArticle | null> {

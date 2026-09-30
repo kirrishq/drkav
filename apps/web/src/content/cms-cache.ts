@@ -118,6 +118,14 @@ export function getConditionArticleCacheTag(slug: string): string {
   return `condition:${slug}`;
 }
 
+export function getMediaPublicationIndexCacheTag(): string {
+  return "media-publications";
+}
+
+export function getMediaPublicationCacheTag(slug: string): string {
+  return `media-publication:${slug}`;
+}
+
 export function getBuilderPageCacheTag(canonicalPath: string): string {
   return `builder-page:${normalizeCanonicalPath(canonicalPath)}`;
 }
