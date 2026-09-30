@@ -11,7 +11,7 @@
       "required": true
     },
     "clinicPhoneHref": {
-      "type": "string",
+      "type": "text",
       "required": true
     },
     "clinicAddress": {
@@ -27,46 +27,40 @@
       "required": true
     },
     "administratorPhoneHref": {
-      "type": "string",
+      "type": "text",
       "required": true
     },
     "telegramHref": {
-      "type": "string",
-      "required": true,
-      "maxLength": 1024
+      "type": "text",
+      "required": true
     },
     "maxHref": {
-      "type": "string",
-      "required": true,
-      "maxLength": 1024
+      "type": "text",
+      "required": true
     },
     "whatsappHref": {
-      "type": "string",
-      "required": true,
-      "maxLength": 1024
+      "type": "text",
+      "required": true
     },
     "emailHref": {
-      "type": "string",
-      "required": true,
-      "maxLength": 1024
+      "type": "text",
+      "required": true
     },
     "emailLabel": {
       "type": "string",
       "required": true
     },
     "footerEmailHref": {
-      "type": "string",
-      "required": true,
-      "maxLength": 1024
+      "type": "text",
+      "required": true
     },
     "footerEmailLabel": {
       "type": "string",
       "required": true
     },
     "footerWhatsappHref": {
-      "type": "string",
-      "required": true,
-      "maxLength": 1024
+      "type": "text",
+      "required": true
     },
     "footerWhatsappLabel": {
       "type": "string",
