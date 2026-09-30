@@ -34,14 +34,21 @@ const articles = [
   },
 ] as const;
 
-export function JournalArticleSection() {
+type JournalArticle = {
+  href: string;
+  source?: string;
+  title: string;
+  year: string;
+};
+
+export function JournalArticleSection({ items = articles }: { items?: readonly JournalArticle[] }) {
   return (
     <section className="content-card content-card--muted content-section journal-article-section" id="journal-articles">
       <h2 className="content-card__heading content-card__heading--h2">Статьи в журнале</h2>
       <div className="content-card__grid journal-article-section__grid">
-        {articles.map((article) => (
+        {items.map((article) => (
           <RecordCard
-            details={[{ tone: "secondary", value: article.source }]}
+            details={article.source ? [{ tone: "secondary", value: article.source }] : undefined}
             href={article.href}
             icon={<span aria-hidden="true" className="journal-article-section__icon" />}
             key={`${article.year}-${article.title}-${article.source}`}

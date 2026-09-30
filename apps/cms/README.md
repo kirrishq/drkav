@@ -76,4 +76,4 @@ pnpm --filter @drkav/cms verify:operations
 3. Нажмите **Publish**.
 4. Откройте `/operaczii/plastika-grudi/uvelichenie-grudi` в Next.js.
 5. Убедитесь, что новый заголовок появился без изменения frontend-кода. Сохранённый draft без Publish на обычной странице не отображается.
-6. Верните `heading` к «Увеличение груди: аугментационная маммопластика» и снова нажмите **Publish**.
+6. Верните `heading` к «Увеличение груди» и снова нажмите **Publish**.

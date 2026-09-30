@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Breadcrumbs } from "@drkav/ui";
 import { BlogArticleContent, getAdjacentArticles } from "@/components/blog/blog-article-content";
-import { SiteHeader } from "@/components/site-header/site-header";
+import { SiteHeader } from "@/components/site-header/site-header-server";
 import { getArticleSupportData } from "@/content/article-support-data";
 import { createContentRepository } from "@/content/content-repository";
 import { toMetadata } from "@/content/seo";

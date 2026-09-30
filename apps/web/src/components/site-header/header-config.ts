@@ -1,10 +1,14 @@
 import { aboutPageLinks } from "@/components/about-page/about-page-links";
+import type {
+  SiteContactSettings,
+  SiteFooterColumn,
+  SiteNavigation,
+  SiteNavigationItem,
+  SiteNavigationLink,
+  SiteSocialLink,
+} from "@drkav/content-contracts";
 
-export type HeaderMenuLink = {
-  href: string;
-  label: string;
-  links?: readonly HeaderMenuLink[];
-};
+export type HeaderMenuLink = SiteNavigationLink;
 
 export const administratorContact = {
   phone: "+7 925 625-55-10",
@@ -16,6 +20,26 @@ export const administratorContact = {
     "https://wa.me/79256255510?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%2C%20%D0%9E%D0%BB%D1%8C%D0%B3%D0%B0%21%20%D0%9F%D0%B8%D1%88%D1%83%20%D1%81%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%20drkav.ru.%20%D0%95%D1%81%D1%82%D1%8C%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%3A",
   emailHref: "mailto:admin@drkav.ru",
 } as const;
+
+export const siteContact: SiteContactSettings = {
+  administratorHours: "Администратор · 9:15–19:00, Пн–Пт",
+  administratorPhone: administratorContact.phone,
+  administratorPhoneHref: administratorContact.telHref,
+  clinicAddress: "г. Москва, Рублёво-Успенское шоссе, 123Б, этаж 2, кабинет 1",
+  clinicDescriptor: "Пластический хирург, Москва",
+  clinicPhone: "+7 495 151-42-06",
+  clinicPhoneHref: "tel:+74951514206",
+  emailHref: administratorContact.emailHref,
+  emailLabel: "admin@drkav.ru",
+  footerEmailHref: "mailto:pr@drkav.ru",
+  footerEmailLabel: "pr@drkav.ru",
+  footerWhatsappHref:
+    "https://api.whatsapp.com/send/?app_absent=0&phone=79256255510&text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%2C%20%D0%9E%D0%BB%D1%8C%D0%B3%D0%B0%21%20%D0%9F%D0%B8%D1%88%D1%83%20%D1%81%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%20drkav.ru.%20%D0%95%D1%81%D1%82%D1%8C%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%3A",
+  footerWhatsappLabel: "WhatsApp: +7 925 625-55-10",
+  maxHref: administratorContact.maxHref,
+  telegramHref: administratorContact.telegramHref,
+  whatsappHref: administratorContact.whatsappHref,
+};
 
 export const headerSubmenuImages: Readonly<Record<string, string>> = {
   "/operaczii": "/images/operations/body-contouring.jpg",
@@ -29,10 +53,7 @@ export const headerSubmenuImages: Readonly<Record<string, string>> = {
   "/operaczii/rf-lifting": "/images/operations/rf-lifting.jpg",
 };
 
-export type HeaderMenuItem = HeaderMenuLink & {
-  featured?: boolean;
-  links?: readonly HeaderMenuLink[];
-};
+export type HeaderMenuItem = SiteNavigationItem;
 
 export const headerMenu: readonly HeaderMenuItem[] = [
   {
@@ -165,3 +186,44 @@ export const headerMenu: readonly HeaderMenuItem[] = [
     label: "Контакты",
   },
 ] as const;
+
+export const footerColumns: readonly SiteFooterColumn[] = [
+  {
+    heading: "Обо мне",
+    links: headerMenu.find((item) => item.href === "/obo-mne")?.links ?? [],
+  },
+  {
+    heading: "Операции",
+    links: headerMenu.find((item) => item.href === "/operaczii")?.links ?? [],
+  },
+  {
+    heading: "Пациентам",
+    links: [
+      ...(headerMenu.find((item) => item.href === "/pacientam")?.links ?? []),
+      { href: "/pacientam/portfolio", label: "Портфолио" },
+      { href: "/pacientam/do-i-posle", label: "До/после" },
+    ],
+  },
+  {
+    heading: "Основное",
+    links: [
+      { href: "/akcii", label: "Акции" },
+      { href: "/ceny", label: "Цены" },
+      { href: "/kontakty", label: "Контакты" },
+    ],
+  },
+];
+
+export const socialLinks: readonly SiteSocialLink[] = [
+  { href: "https://t.me/drkav_official", kind: "telegram", label: "Telegram" },
+  { href: "https://www.youtube.com/channel/UCyNisHCb9vYS6qLWlgK6lwg", kind: "youtube", label: "YouTube" },
+  { href: "https://www.instagram.com/dr.kav/", kind: "instagram", label: "Instagram*" },
+  { href: "https://vk.com/publicdoctorkav", kind: "vk", label: "ВКонтакте" },
+];
+
+export const defaultSiteNavigation: SiteNavigation = {
+  contact: siteContact,
+  footerColumns,
+  headerMenu,
+  socialLinks,
+};

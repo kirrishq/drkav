@@ -56,6 +56,7 @@ export async function getArticleSupportData(repository: ContentRepository): Prom
       repository.getOperationCatalog(),
       repository.getReviews(),
     ]);
+    const localOperationFallback = process.env.NODE_ENV !== "production" ? getFallbackOperationItems() : [];
     const operationItems = operationGroups.length > 0
       ? operationGroups.map((group) => ({
           id: group.key,
@@ -66,8 +67,9 @@ export async function getArticleSupportData(repository: ContentRepository): Prom
           links: group.operations.map((operation) => ({ href: operation.canonicalPath, label: operation.heading })),
           title: group.name,
         }))
-      : getFallbackOperationItems();
-    const reviewItems = reviews.length > 0 ? mapReviewsToSliderItems(reviews, operationGroups) : homeReviews;
+      : localOperationFallback;
+    const localReviewFallback = process.env.NODE_ENV !== "production" ? homeReviews : [];
+    const reviewItems = reviews.length > 0 ? mapReviewsToSliderItems(reviews, operationGroups) : localReviewFallback;
 
     return {
       operationItems,
@@ -76,9 +78,9 @@ export async function getArticleSupportData(repository: ContentRepository): Prom
     };
   } catch {
     return {
-      operationItems: getFallbackOperationItems(),
+      operationItems: process.env.NODE_ENV !== "production" ? getFallbackOperationItems() : [],
       reviewFilterGroups: [],
-      reviewItems: homeReviews,
+      reviewItems: process.env.NODE_ENV !== "production" ? homeReviews : [],
     };
   }
 }

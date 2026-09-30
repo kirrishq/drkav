@@ -14,12 +14,12 @@ import {
 } from "react";
 
 import {
-  administratorContact,
-  headerMenu,
+  defaultSiteNavigation,
   headerSubmenuImages,
   type HeaderMenuLink,
   type HeaderMenuItem,
 } from "@/components/site-header/header-config";
+import type { SiteNavigation } from "@drkav/content-contracts";
 import { SiteLogo } from "@/components/site-header/site-logo";
 import {
   getSearchResultDescription,
@@ -168,6 +168,60 @@ function ArrowIcon() {
         strokeWidth="1.7"
       />
     </svg>
+  );
+}
+
+function ProtectedPhoneText({ phone, revealed = false }: { phone: string; revealed?: boolean }) {
+  const visibleLength = Math.max(phone.length - 5, 0);
+
+  return (
+    <>
+      <span>{phone.slice(0, visibleLength)}</span>
+      <span
+        aria-hidden="true"
+        className={cn(
+          "site-header__protected-phone-tail",
+          revealed && "site-header__protected-phone-tail--revealed",
+        )}
+      >
+        {phone.slice(visibleLength)}
+      </span>
+    </>
+  );
+}
+
+function ProtectedPhoneLink({
+  href,
+  mobile = false,
+  phone,
+}: {
+  href: string;
+  mobile?: boolean;
+  phone: string;
+}) {
+  const [revealed, setRevealed] = useState(false);
+
+  return (
+    <a
+      aria-label={`Позвонить в клинику: ${phone}`}
+      className={cn(
+        "site-header__contact-phone site-header__protected-phone",
+        mobile && "site-header__mobile-clinic-phone",
+        revealed && "site-header__protected-phone--revealed",
+      )}
+      href={href}
+      onClick={(event) => {
+        if (mobile && !revealed) {
+          event.preventDefault();
+          setRevealed(true);
+        }
+      }}
+    >
+      {mobile ? <span className="site-header__contact-label">Клиника</span> : null}
+      <span className="site-header__contact-phone-value">
+        <ProtectedPhoneText phone={phone} revealed={revealed} />
+      </span>
+    </a>
   );
 }
 
@@ -623,6 +677,10 @@ function isCurrentPath(pathname: string, href: string) {
   return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
 }
 
+function hasMenuLinks(item: { links?: readonly HeaderMenuLink[] }) {
+  return Boolean(item.links?.length);
+}
+
 function isMenuLinkActive(pathname: string, link: HeaderMenuLink): boolean {
   return isCurrentPath(pathname, link.href) || Boolean(link.links?.some((child) => isMenuLinkActive(pathname, child)));
 }
@@ -644,7 +702,7 @@ function isMenuItemSelected(
     return false;
   }
 
-  return !item.links || !activeStandaloneHref;
+  return !hasMenuLinks(item) || !activeStandaloneHref;
 }
 
 function DesktopSubmenu({
@@ -664,7 +722,7 @@ function DesktopSubmenu({
 }) {
   const links = nestedItem?.links ?? item.links;
 
-  if (!links) {
+  if (!links?.length) {
     return null;
   }
 
@@ -716,12 +774,12 @@ function DesktopSubmenu({
               <span className="site-header__submenu-card-overlay" />
               <span className="site-header__submenu-card-label">{link.label}</span>
               <span aria-hidden="true" className="site-header__submenu-card-arrow">
-                {link.links ? <ChevronIcon open={false} /> : <ArrowIcon />}
+                {hasMenuLinks(link) ? <ChevronIcon open={false} /> : <ArrowIcon />}
               </span>
             </>
           );
 
-            return link.links ? (
+            return hasMenuLinks(link) ? (
             <button
               aria-haspopup="true"
               className={cardClassName}
@@ -748,7 +806,19 @@ function DesktopSubmenu({
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({
+  navigation = defaultSiteNavigation,
+}: {
+  navigation?: SiteNavigation;
+}) {
+  const { contact, headerMenu } = navigation;
+  const administratorContact = {
+    maxHref: contact.maxHref,
+    phone: contact.administratorPhone,
+    telHref: contact.administratorPhoneHref,
+    telegramHref: contact.telegramHref,
+    whatsappHref: contact.whatsappHref,
+  };
   const pathname = usePathname() ?? "";
   const submenuId = useId();
   const mobileMenuId = useId();
@@ -774,8 +844,9 @@ export function SiteHeader() {
   const openMenu = headerMenu.find((item) => item.href === openMenuHref);
   const mobilePanelOpen = mobileOpen || searchOpen;
   const mobileSubmenu = openNestedItem ?? openMenu;
+  const mobileSubmenuLinks = mobileSubmenu?.links ?? [];
   const activeStandaloneHref = headerMenu.find(
-    (item) => !item.links && isCurrentPath(pathname, item.href),
+    (item) => !hasMenuLinks(item) && isCurrentPath(pathname, item.href),
   )?.href;
 
   useEffect(() => {
@@ -969,8 +1040,8 @@ export function SiteHeader() {
             <div className="site-header__brand">
               <SiteLogo onNavigate={closeMobileMenu} />
               <div className="site-header__brand-meta">
-                <span className="site-header__descriptor">Пластический хирург, Москва</span>
-                <span className="site-header__address">г. Москва, Рублёво-Успенское шоссе, 123Б, этаж 2, кабинет 1</span>
+                <span className="site-header__descriptor">{contact.clinicDescriptor}</span>
+                <span className="site-header__address">{contact.clinicAddress}</span>
               </div>
             </div>
 
@@ -986,9 +1057,10 @@ export function SiteHeader() {
               </div>
               <div className="site-header__contact">
                 <span className="site-header__contact-label">Клиника</span>
-                <a className="site-header__contact-phone" href="tel:+74951514206">
-                  +7 495 151-42-06
-                </a>
+                <ProtectedPhoneLink
+                  href={contact.clinicPhoneHref}
+                  phone={contact.clinicPhone}
+                />
               </div>
               <div className="site-header__contact">
                 <span className="site-header__contact-label">Администратор</span>
@@ -1074,7 +1146,7 @@ export function SiteHeader() {
           <div className="site-header__desktop-nav">
             <ul className="flex min-w-0 flex-1 flex-wrap items-center gap-x-5 gap-y-1">
               {headerMenu.map((item) => {
-              const hasSubmenu = Boolean(item.links);
+              const hasSubmenu = hasMenuLinks(item);
               const menuOpen = openMenuHref === item.href;
               const selected = isMenuItemSelected(
                 pathname,
@@ -1192,27 +1264,42 @@ export function SiteHeader() {
           ) : (
             <>
               <div className="site-header__mobile-identity">
-                <span className="site-header__address">г. Москва, Рублёво-Успенское шоссе, 123Б, этаж 2, кабинет 1</span>
+                <span className="site-header__address">{contact.clinicAddress}</span>
               </div>
-              <div className="site-header__mobile-actions sm:hidden">
-            <div className="site-header__mobile-contact">
-              <div>
-                <span className="site-header__contact-label">Администратор</span>
-                <div className="site-header__contact-row">
-                  <div className="site-header__messengers">
-                    <MessengerLink href={administratorContact.telegramHref} kind="telegram" />
-                    <MessengerLink href={administratorContact.maxHref} kind="max" />
-                    <MessengerLink href={administratorContact.whatsappHref} kind="whatsapp" />
+              <div className="site-header__mobile-contact-strip">
+                <ProtectedPhoneLink
+                  href={contact.clinicPhoneHref}
+                  mobile
+                  phone={contact.clinicPhone}
+                />
+                <div className="site-header__mobile-admin">
+                  <div className="site-header__mobile-admin-content">
+                    <span className="site-header__contact-label">Администратор</span>
+                    <div className="site-header__contact-row">
+                      <a
+                        aria-label={`Позвонить администратору: ${administratorContact.phone}`}
+                        className="site-header__contact-icon"
+                        href={administratorContact.telHref}
+                        title={`Позвонить администратору: ${administratorContact.phone}`}
+                      >
+                        <PhoneIcon />
+                      </a>
+                      <div className="site-header__messengers">
+                        <MessengerLink href={administratorContact.telegramHref} kind="telegram" />
+                        <MessengerLink href={administratorContact.maxHref} kind="max" />
+                        <MessengerLink href={administratorContact.whatsappHref} kind="whatsapp" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <ConsultationTrigger
-              className={buttonVariants({ size: "sm", variant: "primary" })}
-              onClick={closeMobileMenu}
-            >
-              Консультация
-            </ConsultationTrigger>
+              <div className="site-header__mobile-actions">
+                <ConsultationTrigger
+                  className={buttonVariants({ size: "sm", variant: "primary" })}
+                  onClick={closeMobileMenu}
+                >
+                  Консультация
+                </ConsultationTrigger>
               </div>
 
               <div className="site-header__mobile-vision">
@@ -1238,7 +1325,7 @@ export function SiteHeader() {
               ) : null}
 
               <nav aria-label="Мобильная навигация" className="mt-3 sm:mt-0">
-            {mobileSubmenu?.links ? (
+            {mobileSubmenu && mobileSubmenuLinks.length > 0 ? (
               <div className="site-header__mobile-submenu-page" id={`${submenuId}-mobile-submenu`}>
                 <button
                   aria-label="Вернуться к разделам меню"
@@ -1257,7 +1344,7 @@ export function SiteHeader() {
                 </button>
                 <h2 className="site-header__mobile-submenu-title">{mobileSubmenu.label}</h2>
                 <ul className="site-header__mobile-submenu-grid" aria-label={`Подразделы: ${mobileSubmenu.label}`}>
-                  {mobileSubmenu.links.map((link, index) => {
+                  {mobileSubmenuLinks.map((link, index) => {
                     const active = isActivePage(pathname, link.href);
                     const imageSrc = openNestedItem
                       ? undefined
@@ -1284,7 +1371,7 @@ export function SiteHeader() {
                         <span className="site-header__mobile-submenu-card-overlay" />
                         <span className="site-header__mobile-submenu-card-label">{link.label}</span>
                         <span aria-hidden="true" className="site-header__mobile-submenu-card-arrow">
-                          {link.links ? <ChevronIcon open={false} /> : <ArrowIcon />}
+                          {hasMenuLinks(link) ? <ChevronIcon open={false} /> : <ArrowIcon />}
                         </span>
                       </>
                     );
@@ -1298,7 +1385,7 @@ export function SiteHeader() {
                         key={link.href}
                         style={{ "--menu-index": index } as CSSProperties}
                       >
-                        {link.links ? (
+                        {hasMenuLinks(link) ? (
                           <button
                             aria-expanded={openNestedItem?.href === link.href}
                             aria-haspopup="true"
@@ -1326,7 +1413,7 @@ export function SiteHeader() {
             ) : (
               <ul className="space-y-2">
                 {headerMenu.map((item, index) => {
-                  const hasSubmenu = Boolean(item.links);
+                  const hasSubmenu = hasMenuLinks(item);
                   const selected = isMenuItemSelected(pathname, item, activeStandaloneHref);
                   const itemPanelId = `${submenuId}-mobile-${item.href.replaceAll("/", "-")}`;
                   const itemStyle = { "--menu-index": index } as CSSProperties;

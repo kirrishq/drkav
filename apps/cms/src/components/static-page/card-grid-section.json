@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_static_page_card_grid_sections",
+  "info": {
+    "displayName": "Static Page Card Grid Section",
+    "description": "A grid of controlled linked cards"
+  },
+  "options": {},
+  "attributes": {
+    "sectionKey": {
+      "type": "string",
+      "required": true
+    },
+    "heading": {
+      "type": "string",
+      "required": false
+    },
+    "cards": {
+      "type": "component",
+      "component": "static-page.card-item",
+      "repeatable": true,
+      "required": true
+    }
+  },
+  "config": {}
+}

@@ -53,6 +53,22 @@
       "repeatable": false,
       "required": false
     },
+    "contentSections": {
+      "type": "dynamiczone",
+      "components": [
+        "static-page.rich-text-section",
+        "static-page.checklist-section",
+        "static-page.tests-section",
+        "static-page.card-grid-section",
+        "static-page.faq-section"
+      ]
+    },
+    "sharedSections": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::shared-section.shared-section",
+      "inversedBy": "staticPages"
+    },
     "contentStatus": {
       "type": "enumeration",
       "enum": ["empty", "partial", "ready"],

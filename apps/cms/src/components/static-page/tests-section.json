@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_static_page_tests_sections",
+  "info": {
+    "displayName": "Static Page Tests Section",
+    "description": "A structured list of examinations and validity periods"
+  },
+  "options": {},
+  "attributes": {
+    "sectionKey": {
+      "type": "string",
+      "required": true
+    },
+    "heading": {
+      "type": "string",
+      "required": false
+    },
+    "intro": {
+      "type": "blocks",
+      "required": false
+    },
+    "items": {
+      "type": "component",
+      "component": "shared.text-item",
+      "repeatable": true,
+      "required": true
+    },
+    "outro": {
+      "type": "blocks",
+      "required": false
+    }
+  },
+  "config": {}
+}

@@ -1,9 +1,9 @@
-import type { ImageAsset, PortfolioCase, PortfolioCaseSummary, PortfolioMediaAsset } from "@drkav/content-contracts";
+import type { ImageAsset, PortfolioCase, PortfolioCaseSummary, PortfolioMediaAsset, RichTextInline } from "@drkav/content-contracts";
 import { BeforeAfterComparison, ConsultationTrigger, SectionNavigation, buttonVariants } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
 
-import { BlocksRenderer } from "@/components/operation-content/blocks-renderer";
+import { BlocksRenderer, getHeadingAnchorId } from "@/components/operation-content/blocks-renderer";
 
 function PortfolioImage({ asset, className = "" }: { asset: ImageAsset; className?: string }) {
   return <Image
@@ -40,15 +40,29 @@ function getSectionId(index: number): string {
   return `portfolio-case-section-${index + 1}`;
 }
 
+function getInlineText(children: readonly RichTextInline[]): string {
+  return children.map((child) => child.type === "text" ? child.text : child.children.map((item) => item.text).join("")).join("");
+}
+
 function getSectionNavigationItems(portfolioCase: PortfolioCase) {
   return portfolioCase.contentSections.flatMap((section, index) => {
+    const sectionId = getSectionId(index);
     const label = section.type === "timeline-stage"
       ? section.heading ?? section.term
       : "heading" in section
         ? section.heading
         : undefined;
+    const sectionItems = label ? [{ id: sectionId, label }] : [];
+    const bodyItems = "body" in section
+      ? section.body.flatMap((block, blockIndex) => block.type === "heading"
+        ? [{
+            id: getHeadingAnchorId(`portfolio-${section.sectionKey}`, blockIndex, block.children),
+            label: getInlineText(block.children),
+          }]
+        : [])
+      : [];
 
-    return label ? [{ id: getSectionId(index), label }] : [];
+    return [...sectionItems, ...bodyItems];
   });
 }
 
@@ -129,7 +143,7 @@ export function PortfolioCaseContent({
                   {section.eyebrow ? <p className="type-overline">{section.eyebrow}</p> : null}
                   {section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}
                 </div> : null}
-                <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" />
+                <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" headingIdPrefix={`portfolio-${section.sectionKey}`} />
               </section>
             );
           }
@@ -154,7 +168,7 @@ export function PortfolioCaseContent({
                 <div className="portfolio-case__stage-copy">
                   <p className="type-overline portfolio-case__term">{section.term}</p>
                   {section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}
-                  <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" />
+                  <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" headingIdPrefix={`portfolio-${section.sectionKey}`} />
                 </div>
                 {section.media.length > 0 ? <div className="portfolio-case__stage-media">{section.media.map((asset) => <PortfolioMedia asset={asset} key={asset.url} />)}</div> : null}
               </section>

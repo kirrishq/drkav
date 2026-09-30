@@ -1,0 +1,81 @@
+{
+  "collectionName": "components_shared_contact_settings",
+  "info": {
+    "displayName": "Site contact settings",
+    "description": "Contact labels and links used by the existing site chrome"
+  },
+  "options": {},
+  "attributes": {
+    "clinicPhone": {
+      "type": "string",
+      "required": true
+    },
+    "clinicPhoneHref": {
+      "type": "string",
+      "required": true
+    },
+    "clinicAddress": {
+      "type": "string",
+      "required": true
+    },
+    "clinicDescriptor": {
+      "type": "string",
+      "required": true
+    },
+    "administratorPhone": {
+      "type": "string",
+      "required": true
+    },
+    "administratorPhoneHref": {
+      "type": "string",
+      "required": true
+    },
+    "telegramHref": {
+      "type": "string",
+      "required": true,
+      "maxLength": 1024
+    },
+    "maxHref": {
+      "type": "string",
+      "required": true,
+      "maxLength": 1024
+    },
+    "whatsappHref": {
+      "type": "string",
+      "required": true,
+      "maxLength": 1024
+    },
+    "emailHref": {
+      "type": "string",
+      "required": true,
+      "maxLength": 1024
+    },
+    "emailLabel": {
+      "type": "string",
+      "required": true
+    },
+    "footerEmailHref": {
+      "type": "string",
+      "required": true,
+      "maxLength": 1024
+    },
+    "footerEmailLabel": {
+      "type": "string",
+      "required": true
+    },
+    "footerWhatsappHref": {
+      "type": "string",
+      "required": true,
+      "maxLength": 1024
+    },
+    "footerWhatsappLabel": {
+      "type": "string",
+      "required": true
+    },
+    "administratorHours": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "config": {}
+}

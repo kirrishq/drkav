@@ -202,8 +202,31 @@
     transition: color var(--duration-fast) var(--ease-standard);
   }
 
-  .site-header__contact-phone:hover {
+  .site-header__contact-phone:hover:not(.site-header__protected-phone) {
     color: var(--accent);
+  }
+
+  .site-header__protected-phone {
+    display: inline-block;
+    white-space: nowrap;
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .site-header__contact-phone-value {
+    display: inline-block;
+  }
+
+  .site-header__protected-phone-tail {
+    display: inline-block;
+    color: inherit;
+    filter: blur(3px);
+    opacity: 0.16;
+    transition: filter var(--duration-fast) var(--ease-standard), opacity var(--duration-fast) var(--ease-standard);
+  }
+
+  .site-header__protected-phone-tail--revealed {
+    filter: none;
+    opacity: 1;
   }
 
   .site-header__contact-row,
@@ -266,6 +289,73 @@
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     align-items: stretch;
     gap: var(--space-2);
+  }
+
+  .site-header__mobile-contact-strip {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .site-header__mobile-clinic-phone {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--space-1);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-header__mobile-admin {
+    position: relative;
+    min-width: 0;
+    justify-self: stretch;
+  }
+
+  .site-header__mobile-admin-content {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-1);
+    overflow: hidden;
+    padding: var(--space-2) 0;
+    mask-image: linear-gradient(90deg, rgb(0 0 0 / 0), rgb(0 0 0) 20%, rgb(0 0 0) 78%, rgb(0 0 0 / 0));
+    -webkit-mask-image: linear-gradient(90deg, rgb(0 0 0 / 0), rgb(0 0 0) 20%, rgb(0 0 0) 78%, rgb(0 0 0 / 0));
+    transition: mask-image var(--duration-fast) var(--ease-standard);
+  }
+
+
+  @media (min-width: 64rem) {
+    .site-header__protected-phone:hover,
+    .site-header__protected-phone:focus-visible {
+      color: var(--accent);
+    }
+
+    .site-header__protected-phone:hover .site-header__protected-phone-tail,
+    .site-header__protected-phone:focus-visible .site-header__protected-phone-tail {
+      filter: none;
+      opacity: 1;
+    }
+
+    .site-header__mobile-admin:hover .site-header__mobile-admin-content,
+    .site-header__mobile-admin:focus-within .site-header__mobile-admin-content {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: var(--layer-floating);
+      width: max-content;
+      max-width: min(18rem, calc(100vw - var(--space-8)));
+      overflow: visible;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      background: var(--surface-muted);
+      box-shadow: var(--shadow-subtle);
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
   }
 
   .site-header__mobile-submenu-page {
@@ -744,6 +834,15 @@
   @media (max-width: 39.99rem) {
     .site-header__mobile-actions {
       grid-template-columns: 1fr;
+    }
+
+    .site-header__mobile-contact-strip {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: var(--space-2);
+    }
+
+    .site-header__mobile-clinic-phone .site-header__contact-phone {
+      font-size: var(--type-text-xs-size);
     }
 
     .site-header__search-results {

@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_navigation_columns",
+  "info": {
+    "displayName": "Footer navigation column",
+    "description": "A titled group of footer links"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "links": {
+      "type": "component",
+      "component": "shared.navigation-link",
+      "repeatable": true,
+      "required": true
+    }
+  },
+  "config": {}
+}

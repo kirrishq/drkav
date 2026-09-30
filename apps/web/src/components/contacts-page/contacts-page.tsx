@@ -1,11 +1,11 @@
 "use client";
 
-import { Button, Checkbox, ContactActionList, Input, Label, SmartCaptcha, Textarea, buttonVariants, cn } from "@drkav/ui";
+import { Button, Checkbox, ContactActionList, Input, Label, SmartCaptcha, Textarea, buttonVariants, cn, type ContactFabAction } from "@drkav/ui";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 
-import { contactActions } from "@/components/site-header/contact-actions";
+import { contactActions as defaultContactActions } from "@/components/site-header/contact-actions";
 
 type ContactPhoto = {
   alt: string;
@@ -196,7 +196,13 @@ function FeedbackForm({ captchaSiteKey }: { captchaSiteKey?: string }) {
   );
 }
 
-export function ContactsPageContent({ captchaSiteKey }: { captchaSiteKey?: string }) {
+export function ContactsPageContent({
+  captchaSiteKey,
+  contactActions = defaultContactActions,
+}: {
+  captchaSiteKey?: string;
+  contactActions?: readonly ContactFabAction[];
+}) {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const selectedPhoto = selectedPhotoIndex === null ? null : contactPhotos[selectedPhotoIndex];

@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_static_page_card_items",
+  "info": {
+    "displayName": "Static Page Card Item"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": false
+    },
+    "href": {
+      "type": "string",
+      "required": true
+    },
+    "sortOrder": {
+      "type": "integer",
+      "required": false,
+      "min": 0
+    }
+  },
+  "config": {}
+}

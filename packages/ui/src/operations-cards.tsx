@@ -118,7 +118,7 @@ export function OperationsCards({
         <h2 className="type-h2 operations-cards__title">Операции</h2>
         <p className="type-text-base operations-cards__description">Операции любой сложности</p>
       </div>
-      <div className="operations-cards__grid">
+      {items.length > 0 ? <div className="operations-cards__grid">
         {items.map((item) => (
           <button
             aria-haspopup="dialog"
@@ -145,7 +145,11 @@ export function OperationsCards({
             </span>
           </button>
         ))}
-      </div>
+      </div> : (
+        <div className="content-card content-card--muted">
+          <p>Список операций временно недоступен. Пожалуйста, обновите страницу позже.</p>
+        </div>
+      )}
       {activeItem ? <OperationsDialog item={activeItem} onClose={() => setActiveItem(null)} /> : null}
     </section>
   );

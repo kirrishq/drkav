@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_shared_navigation_children",
+  "info": {
+    "displayName": "Navigation child",
+    "description": "A navigation group or direct child item"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "href": {
+      "type": "string",
+      "required": true
+    },
+    "links": {
+      "type": "component",
+      "component": "shared.navigation-link",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

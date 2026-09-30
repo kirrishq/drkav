@@ -1,5 +1,6 @@
 "use client";
 
+import type { PriceCatalogSection } from "@drkav/content-contracts";
 import { ConsultationTrigger, Tabs, buttonVariants, cn } from "@drkav/ui";
 
 type PriceEntry = {
@@ -109,17 +110,53 @@ function PriceSection({ accent, entries, title }: { accent?: string; entries: re
   return <section className="price-catalog__section"><h2 className="type-h2 price-catalog__heading">{title}{accent ? <span> {accent}</span> : null}</h2><div className="price-catalog__panel"><PriceList entries={entries} /><ConsultationCallout /></div></section>;
 }
 
-export function PriceCatalog() {
-  const tabs = womenGroups.map((group) => ({ content: <div className="price-catalog__panel"><PriceList entries={group.entries} /><ConsultationCallout /></div>, id: group.id, label: group.label }));
+type PriceCatalogProps = {
+  sections?: readonly PriceCatalogSection[];
+  womenNote?: string;
+};
+
+export function PriceCatalog({ sections, womenNote }: PriceCatalogProps = {}) {
+  const allowLocalFallback = process.env.NODE_ENV !== "production";
+
+  if (!allowLocalFallback && !sections?.length) {
+    return (
+      <div className="content-card content-card--muted">
+        <p>Стоимость временно недоступна. Пожалуйста, обновите страницу позже.</p>
+      </div>
+    );
+  }
+
+  const cmsWomenGroups = sections
+    ?.filter((section) => section.kind === "women-tab")
+    .map((section) => ({
+      id: section.key,
+      label: section.title,
+      entries: section.entries,
+    }));
+  const catalogWomenGroups = cmsWomenGroups?.length
+    ? cmsWomenGroups
+    : allowLocalFallback
+      ? womenGroups
+      : [];
+  const cmsStandalone = sections?.filter((section) => section.kind === "standalone");
+  const getStandalone = (key: string, fallback: readonly PriceEntry[]) =>
+    cmsStandalone?.find((section) => section.key === key)?.entries ?? (allowLocalFallback ? fallback : []);
+  const menSection = cmsStandalone?.find((section) => section.key === "men");
+  const rfSection = cmsStandalone?.find((section) => section.key === "rf");
+  const additionalSection = cmsStandalone?.find((section) => section.key === "additional");
+  const menEntries = getStandalone("men", menPrices);
+  const rfEntries = getStandalone("rf", rfPrices);
+  const additionalEntries = getStandalone("additional", additionalPrices);
+  const tabs = catalogWomenGroups.map((group) => ({ content: <div className="price-catalog__panel"><PriceList entries={group.entries} /><ConsultationCallout /></div>, id: group.id, label: group.label }));
 
   return <div className="price-catalog">
     <section className="price-catalog__section">
       <h2 className="type-h2 price-catalog__heading">Стоимость операций для <span>женщин</span></h2>
-      <p className="price-catalog__note">В ряде случаев доктор также может помочь в коррекции неудовлетворительных результатов операций, выполненных другими хирургами в других клиниках. Стоимость таких случаев рассчитывается индивидуально.</p>
-      <Tabs ariaLabel="Разделы стоимости операций для женщин" defaultTabId="abdomen" items={tabs} />
+      <p className="price-catalog__note">{womenNote ?? "В ряде случаев доктор также может помочь в коррекции неудовлетворительных результатов операций, выполненных другими хирургами в других клиниках. Стоимость таких случаев рассчитывается индивидуально."}</p>
+      <Tabs ariaLabel="Разделы стоимости операций для женщин" defaultTabId={catalogWomenGroups[0]?.id ?? "abdomen"} items={tabs} />
     </section>
-    <PriceSection accent="мужчин" entries={menPrices} title="Стоимость операций для" />
-    <PriceSection accent="RF-лифтинга Morpheus 8" entries={rfPrices} title="Стоимость" />
-    <PriceSection accent="оплачивается" entries={additionalPrices} title="Дополнительно" />
+    <PriceSection accent={menSection?.accent ?? "мужчин"} entries={menEntries} title={menSection?.title ?? "Стоимость операций для"} />
+    <PriceSection accent={rfSection?.accent ?? "RF-лифтинга Morpheus 8"} entries={rfEntries} title={rfSection?.title ?? "Стоимость"} />
+    <PriceSection accent={additionalSection?.accent ?? "оплачивается"} entries={additionalEntries} title={additionalSection?.title ?? "Дополнительно"} />
   </div>;
 }

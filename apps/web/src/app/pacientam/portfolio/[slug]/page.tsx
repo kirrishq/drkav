@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@drkav/ui";
 
 import { PortfolioCaseContent } from "@/components/portfolio/portfolio-case-content";
-import { SiteHeader } from "@/components/site-header/site-header";
+import { SiteHeader } from "@/components/site-header/site-header-server";
 import { createContentRepository } from "@/content/content-repository";
 import { toMetadata } from "@/content/seo";
 

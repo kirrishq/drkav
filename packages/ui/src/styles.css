@@ -2043,13 +2043,22 @@ html[data-vision="low-vision"] a {
 
   .benefits-strip__icon {
     display: grid;
-    width: var(--space-8);
-    height: var(--space-8);
+    width: var(--space-12);
+    height: var(--space-12);
+    padding: var(--space-2);
     place-items: center;
+    border: var(--border-width-default) solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-muted);
     color: var(--accent);
   }
 
   .benefits-strip__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .benefits-strip__lottie {
     width: 100%;
     height: 100%;
   }
@@ -2957,6 +2966,23 @@ html[data-vision="low-vision"] a {
 
     .benefits-strip__grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .benefits-strip__item {
+      display: grid;
+    }
+  }
+
+  @media (max-width: 39.99rem) {
+    .benefits-strip__item {
+      display: flex;
+      min-height: var(--space-20);
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .benefits-strip__icon {
+      flex: 0 0 var(--space-12);
     }
   }
 

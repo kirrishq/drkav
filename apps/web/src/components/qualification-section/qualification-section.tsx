@@ -33,14 +33,14 @@ const qualifications: readonly QualificationRecord[] = [
   { year: "2015", title: "«Применение лазера в дерматохирургии»" },
 ];
 
-export function QualificationSection() {
+export function QualificationSection({ items = qualifications }: { items?: readonly QualificationRecord[] }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
     <section className="content-card content-card--muted content-section qualification-section" id="qualifications">
       <h2 className="content-card__heading content-card__heading--h2">Повышение квалификации</h2>
       <div className={cn("content-card__grid", "qualification-section__grid", expanded && "qualification-section__grid--expanded")}>
-        {qualifications.map((qualification) => (
+        {items.map((qualification) => (
           <RecordCard
             className="qualification-section__item"
             icon={<QualificationIcon />}

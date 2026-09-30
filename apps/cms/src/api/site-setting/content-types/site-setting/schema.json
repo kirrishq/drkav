@@ -25,6 +25,30 @@
       "component": "shared.seo",
       "repeatable": false,
       "required": true
+    },
+    "headerMenu": {
+      "type": "component",
+      "component": "shared.navigation-item",
+      "repeatable": true,
+      "required": true
+    },
+    "footerColumns": {
+      "type": "component",
+      "component": "shared.navigation-column",
+      "repeatable": true,
+      "required": true
+    },
+    "socialLinks": {
+      "type": "component",
+      "component": "shared.social-link",
+      "repeatable": true,
+      "required": true
+    },
+    "contact": {
+      "type": "component",
+      "component": "shared.contact-settings",
+      "repeatable": false,
+      "required": true
     }
   },
   "config": {}

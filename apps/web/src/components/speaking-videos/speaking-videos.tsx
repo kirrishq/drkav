@@ -27,11 +27,11 @@ const videos = [
   },
 ] as const;
 
-export function SpeakingVideos() {
+export function SpeakingVideos({ copy }: { copy?: readonly { title: string; location?: string; year?: string }[] }) {
   return (
     <section aria-label="Видеозаписи выступлений" className="speaking-videos">
       <div className="content-card__grid speaking-videos__grid">
-        {videos.map((video) => <VideoCard key={video.videoSrc} {...video} />)}
+        {videos.map((video, index) => <VideoCard key={video.videoSrc} {...video} location={copy?.[index]?.location ?? video.location} title={copy?.[index]?.title ?? video.title} year={copy?.[index]?.year ?? video.year} />)}
       </div>
     </section>
   );

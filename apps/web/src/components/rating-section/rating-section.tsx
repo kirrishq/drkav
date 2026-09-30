@@ -12,7 +12,7 @@ const ratings = [
   { label: "Посоветуете ли врача?", value: "Обязательно" },
 ] as const;
 
-export function RatingSection() {
+export function RatingSection({ items = ratings }: { items?: readonly { label: string; value: string }[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [hasStarted, setHasStarted] = useState(false);
 
@@ -49,7 +49,7 @@ export function RatingSection() {
         <ProdoctorovRatingBanner className="rating-section__provider" />
       </div>
       <dl className="rating-section__list">
-        {ratings.map((rating) => (
+        {items.map((rating) => (
           <div className="rating-section__item" key={rating.label}>
             <div className="rating-section__label-row">
               <dt>{rating.label}</dt>

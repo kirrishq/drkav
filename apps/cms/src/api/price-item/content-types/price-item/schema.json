@@ -83,11 +83,22 @@
       "type": "date",
       "required": false
     },
+    "sortOrder": {
+      "type": "integer",
+      "required": false,
+      "default": 0
+    },
     "operations": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::operation.operation",
       "mappedBy": "prices"
+    },
+    "catalogSections": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::price-section.price-section",
+      "mappedBy": "entries"
     }
   },
   "config": {}

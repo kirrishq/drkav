@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { StaticPage } from "@/components/content-page/static-page";
-import { getPageByRoute, getPageMetadata } from "@/content/page-registry";
+import { getPromotionsContent } from "@/content/promotions";
 
 type PromotionEntryPageProps = {
   params: Promise<{ slug: string }>;
@@ -12,19 +12,58 @@ function routeFor(slug: string) {
   return `/akcii/${slug}`;
 }
 
+function slugFromPromotionHref(href: string) {
+  const match = /^\/akcii\/([^/]+)$/.exec(href);
+  return match?.[1];
+}
+
+export async function generateStaticParams() {
+  const promotions = await getPromotionsContent();
+
+  return Array.from(
+    new Set(
+      (promotions ?? [])
+        .map((promotion) => slugFromPromotionHref(promotion.href))
+        .filter((slug): slug is string => Boolean(slug)),
+    ),
+  ).map((slug) => ({ slug }));
+}
+
 export async function generateMetadata({ params }: PromotionEntryPageProps): Promise<Metadata> {
   const { slug } = await params;
-  return getPageMetadata(routeFor(slug));
+  const route = routeFor(slug);
+  const promotions = await getPromotionsContent();
+  const matchingPromotion = promotions?.find((promotion) => promotion.href === route);
+
+  if (!matchingPromotion) {
+    return {};
+  }
+
+  return {
+    description: matchingPromotion.subtitle ?? matchingPromotion.description[0],
+    title: matchingPromotion.title,
+  };
 }
 
 export default async function PromotionEntryPage({ params }: PromotionEntryPageProps) {
   const { slug } = await params;
   const route = routeFor(slug);
 
-  if (!getPageByRoute(route)) {
+  const cmsPromotions = await getPromotionsContent();
+  const matchingPromotions = cmsPromotions?.filter((promotion) => promotion.href === route) ?? [];
+
+  if (!cmsPromotions || matchingPromotions.length === 0) {
     notFound();
   }
-  if (slug !== "intimnaya-plastika-ili-lipofiling-ruk-v-podarok") notFound();
 
-  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/akcii", label: "Акции" }, { label: "Интимная пластика или липофилинг рук в подарок" }]} description="Только в декабре: при записи на операцию — интимная пластика или липофилинг рук в подарок." title="Интимная пластика или липофилинг рук в подарок"><article className="promotion-detail"><p className="promotion-detail__lead">При записи на любую операцию в декабре вы можете получить в подарок интимную пластику или липофилинг кистей рук — по показаниям и в рамках одного анестезиологического входа.</p><section className="content-card content-card--spacious"><h2 className="content-card__heading content-card__heading--h2">Условия предложения</h2><ul className="promotion-detail__list"><li>Подарочная процедура стоимостью до 350 000 ₽.</li><li>Основная операция и подарок выполняются в один день.</li><li>Количество мест ограничено; предложение не суммируется с другими спецпредложениями.</li><li>На консультации врач определит показания и составит персональный план операции.</li></ul></section><section className="content-card content-card--muted"><h2 className="content-card__heading content-card__heading--h3">Почему нужна консультация</h2><p>На консультации можно обсудить задачи, подобрать безопасный вариант коррекции, получить точную смету и зафиксировать стоимость операции на три месяца.</p></section></article></StaticPage>;
+  const title = matchingPromotions.length > 0
+    ? matchingPromotions.map((promotion) => promotion.title).join(" или ")
+    : "Интимная пластика или липофилинг рук в подарок";
+  const subtitle = matchingPromotions
+    .map((promotion) => promotion.subtitle)
+    .filter((value): value is string => Boolean(value))
+    .at(0);
+  const description = matchingPromotions.flatMap((promotion) => promotion.description);
+
+  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/akcii", label: "Акции" }, { label: title }]} description={subtitle ?? "Специальное предложение доктора Коробова."} title={title}><article className="promotion-detail"><div className="content-card content-card--spacious"><div className="promotion-detail__body">{description.length > 0 ? description.map((paragraph) => <p className="promotion-detail__lead" key={paragraph}>{paragraph}</p>) : <p className="promotion-detail__lead">При записи на операцию условия предложения уточняются на консультации.</p>}</div></div><section className="content-card content-card--muted"><h2 className="content-card__heading content-card__heading--h3">Почему нужна консультация</h2><p>На консультации врач определит показания, подберёт безопасный вариант коррекции, составит персональный план операции и уточнит условия предложения.</p></section></article></StaticPage>;
 }

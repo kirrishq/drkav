@@ -14,10 +14,19 @@ function isLocalPath(path: string): boolean {
   return path.startsWith("/") && !path.startsWith("//");
 }
 
+const excludedStaticRoutes = new Set(["/konsultaciya"]);
+
 function getStaticEntries(): MetadataRoute.Sitemap {
   const paths = new Set(
     allPageRegistryItems
-      .filter((item) => isLocalPath(item.route) && !item.route.includes("[") && item.contentStatus !== "scaffold" && !item.seo?.noIndex)
+      .filter(
+        (item) =>
+          isLocalPath(item.route) &&
+          !item.route.includes("[") &&
+          !item.route.startsWith("/design-system/") &&
+          !excludedStaticRoutes.has(item.route) &&
+          !item.seo?.noIndex,
+      )
       .map((item) => item.route),
   );
 
@@ -29,13 +38,15 @@ async function getCmsEntries(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const repository = createContentRepository();
-    const [blog, conditions, portfolio] = await Promise.all([
+    const [blog, conditions, portfolio, operations] = await Promise.all([
       repository.getBlogIndex(),
       repository.getConditionIndex(),
       repository.getPortfolioIndex(),
+      repository.getOperationPaths(),
     ]);
 
     return [
+      ...operations.map((canonicalPath) => ({ canonicalPath })),
       ...blog.articles,
       ...conditions.articles,
       ...portfolio.cases,

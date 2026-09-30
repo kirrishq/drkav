@@ -25,14 +25,21 @@ const formats = [
   },
 ] as const;
 
-export function EducationFormats() {
+type EducationFormatCopy = {
+  description: string;
+  title: string;
+};
+
+export function EducationFormats({ copy }: { copy?: readonly EducationFormatCopy[] }) {
+  const copyByTitle = new Map(copy?.map((item) => [item.title, item.description]));
+
   return (
     <section aria-labelledby="education-formats-title" className="education-formats">
       <h2 className="type-h2 education-formats__title" id="education-formats-title">Форматы обучения в НеШколе</h2>
       <div className="education-formats__grid">
         {formats.map((format) => (
           <FeatureLinkCard
-            description={format.description}
+            description={copyByTitle.get(format.title) ?? format.description}
             href={schoolUrl}
             imageAlt=""
             imageSrc={format.imageSrc}

@@ -18,13 +18,19 @@ const articles = [
   },
 ] as const;
 
-export function ContributionArticles() {
+type ContributionArticle = {
+  href: string;
+  title: string;
+  year?: string;
+};
+
+export function ContributionArticles({ items = articles }: { items?: readonly ContributionArticle[] }) {
   return (
     <section aria-labelledby="contribution-articles-title" className="content-card content-card--muted contribution-articles">
       <h2 className="content-card__heading content-card__heading--h2" id="contribution-articles-title">Научная деятельность</h2>
       <p className="content-card__lead">Научные публикации доктора Коробова А.В.</p>
       <div className="content-card__grid contribution-articles__grid">
-        {articles.map((article) => (
+        {items.map((article) => (
           <RecordCard
             href={article.href}
             icon={<span aria-hidden="true" className="contribution-articles__icon" />}

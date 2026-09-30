@@ -1,28 +1,12 @@
 import { buttonVariants, ConsultationTrigger } from "@drkav/ui";
+import type { SiteNavigation } from "@drkav/content-contracts";
 import Image from "next/image";
 import Link from "next/link";
 
-import { headerMenu, type HeaderMenuLink } from "@/components/site-header/header-config";
 import { CookieSettingsButton } from "@/components/cookie-consent/cookie-consent";
+import { getSiteNavigation } from "@/content/site-navigation";
 
-const aboutLinks = headerMenu.find((item) => item.href === "/obo-mne")?.links ?? [];
-const operationLinks = headerMenu.find((item) => item.href === "/operaczii")?.links ?? [];
-const patientLinks = headerMenu.find((item) => item.href === "/pacientam")?.links ?? [];
-
-const mainLinks: readonly HeaderMenuLink[] = [
-  { href: "/akcii", label: "Акции" },
-  { href: "/ceny", label: "Цены" },
-  { href: "/kontakty", label: "Контакты" },
-];
-
-const socialLinks = [
-  { href: "https://t.me/drkav_official", kind: "telegram", label: "Telegram" },
-  { href: "https://www.youtube.com/channel/UCyNisHCb9vYS6qLWlgK6lwg", kind: "youtube", label: "YouTube" },
-  { href: "https://www.instagram.com/dr.kav/", kind: "instagram", label: "Instagram*" },
-  { href: "https://vk.com/publicdoctorkav", kind: "vk", label: "ВКонтакте" },
-] as const;
-
-function FooterLinkList({ links }: { links: readonly HeaderMenuLink[] }) {
+function FooterLinkList({ links }: { links: SiteNavigation["footerColumns"][number]["links"] }) {
   return (
     <ul className="site-footer__links">
       {links.map((link) => (
@@ -36,7 +20,7 @@ function FooterLinkList({ links }: { links: readonly HeaderMenuLink[] }) {
   );
 }
 
-function SocialIcon({ kind }: { kind: (typeof socialLinks)[number]["kind"] }) {
+function SocialIcon({ kind }: { kind: SiteNavigation["socialLinks"][number]["kind"] }) {
   if (kind === "telegram") {
     return (
       <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -71,7 +55,13 @@ function SocialIcon({ kind }: { kind: (typeof socialLinks)[number]["kind"] }) {
 }
 
 /** Site-wide footer with current project navigation and original contact details. */
-export function SiteFooter() {
+export async function SiteFooter({
+  navigation,
+}: {
+  navigation?: SiteNavigation;
+}) {
+  const siteNavigation = navigation ?? (await getSiteNavigation());
+  const { contact, footerColumns, socialLinks } = siteNavigation;
   const currentYear = new Date().getFullYear();
 
   return (
@@ -82,41 +72,27 @@ export function SiteFooter() {
             <Link aria-label="Доктор Коробов — на главную" className="site-footer__brand" href="/">
               <Image alt="Доктор Коробов" className="site-footer__logo" height={230} src="/images/branding/logo-white.png" width={560} />
             </Link>
-            <p className="type-text-base site-footer__tagline">Пластический хирург Артём Владимирович Коробов</p>
+            <p className="type-text-base site-footer__tagline">{contact.clinicDescriptor}</p>
             <ConsultationTrigger className={buttonVariants({ size: "md", variant: "primary" })}>
               Записаться на консультацию
             </ConsultationTrigger>
             <div className="site-footer__contact-block">
-              <a className="text-link site-footer__contact-link" href="tel:+74951514206">+7 495 151-42-06</a>
-              <span className="type-text-base site-footer__contact-note">Администратор · 9:15–19:00, Пн–Пт</span>
-              <a className="text-link site-footer__contact-link" href="https://api.whatsapp.com/send/?app_absent=0&phone=79256255510&text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%2C%20%D0%9E%D0%BB%D1%8C%D0%B3%D0%B0%21%20%D0%9F%D0%B8%D1%88%D1%83%20%D1%81%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%20drkav.ru.%20%D0%95%D1%81%D1%82%D1%8C%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%3A">WhatsApp: +7 925 625-55-10</a>
-              <a className="text-link site-footer__contact-link" href="mailto:admin@drkav.ru">admin@drkav.ru</a>
-              <a className="text-link site-footer__contact-link" href="mailto:pr@drkav.ru">pr@drkav.ru</a>
+              <a className="text-link site-footer__contact-link" href={contact.clinicPhoneHref}>{contact.clinicPhone}</a>
+              <span className="type-text-base site-footer__contact-note">{contact.administratorHours}</span>
+              <a className="text-link site-footer__contact-link" href={contact.footerWhatsappHref}>{contact.footerWhatsappLabel}</a>
+              <a className="text-link site-footer__contact-link" href={contact.emailHref}>{contact.emailLabel}</a>
+              <a className="text-link site-footer__contact-link" href={contact.footerEmailHref}>{contact.footerEmailLabel}</a>
             </div>
-            <address className="type-text-base site-footer__address">г. Москва, Рублёво-Успенское шоссе, 123Б, этаж 2, кабинет 1</address>
+            <address className="type-text-base site-footer__address">{contact.clinicAddress}</address>
           </div>
 
           <nav aria-label="Навигация в подвале" className="site-footer__navigation">
-            <div className="site-footer__column">
-              <h2 className="type-label site-footer__heading">Обо мне</h2>
-              <FooterLinkList links={aboutLinks} />
-            </div>
-            <div className="site-footer__column">
-              <h2 className="type-label site-footer__heading">Операции</h2>
-              <FooterLinkList links={operationLinks} />
-            </div>
-            <div className="site-footer__column">
-              <h2 className="type-label site-footer__heading">Пациентам</h2>
-              <FooterLinkList links={[
-                ...patientLinks,
-                { href: "/pacientam/portfolio", label: "Портфолио" },
-                { href: "/pacientam/do-i-posle", label: "До/после" },
-              ]} />
-            </div>
-            <div className="site-footer__column">
-              <h2 className="type-label site-footer__heading">Основное</h2>
-              <FooterLinkList links={mainLinks} />
-            </div>
+            {footerColumns.map((column) => (
+              <div className="site-footer__column" key={column.heading}>
+                <h2 className="type-label site-footer__heading">{column.heading}</h2>
+                <FooterLinkList links={column.links} />
+              </div>
+            ))}
           </nav>
         </div>
 

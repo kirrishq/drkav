@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-import { OperationErrorFallback } from "@/components/operation-content/operation-error-fallback";
+import { CmsUnavailableFallback } from "@/components/content-page/cms-unavailable-fallback";
 
 export default function ServerErrorPage() {
   function retry() {
@@ -13,7 +13,7 @@ export default function ServerErrorPage() {
         <title>Информация временно недоступна</title>
         <meta content="noindex, nofollow" name="robots" />
       </Head>
-      <OperationErrorFallback retry={retry} />
+      <CmsUnavailableFallback retry={retry} />
     </>
   );
 }

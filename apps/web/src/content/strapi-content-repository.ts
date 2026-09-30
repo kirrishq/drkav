@@ -1,6 +1,7 @@
 import "server-only";
 
 import type {
+  AboutPageContent,
   BlogArticle,
   BlogArticleSummary,
   BlogCategorySummary,
@@ -28,7 +29,10 @@ import type {
   PortfolioContentSection,
   PortfolioIndexContent,
   PortfolioMediaAsset,
+  Promotion,
   Review,
+  PriceCatalogContent,
+  PriceCatalogSection,
   PriceItem,
   RichTextBlock,
   RichTextInline,
@@ -36,8 +40,18 @@ import type {
   RichTextListItem,
   RichTextText,
   SeoData,
+  SiteContactSettings,
+  SiteFooterColumn,
+  SiteNavigation,
+  SiteNavigationItem,
+  SiteNavigationLink,
+  SiteSocialLink,
+  SharedSection,
+  SharedSectionType,
   StaticPageContent,
+  StaticPageContentSection,
 } from "@drkav/content-contracts";
+import { formatPriceItem } from "@drkav/content-contracts";
 import type { ReviewKind } from "@drkav/content-contracts";
 
 import {
@@ -50,10 +64,15 @@ import {
   getConditionIndexCacheTag,
   getOperationCatalogCacheTag,
   getOperationCacheTag,
+  getOperationPathsCacheTag,
+  getPriceCatalogCacheTag,
+  getPromotionsCacheTag,
+  getAboutPageCacheTag,
   getFinalResultsCacheTag,
   getReviewsCacheTag,
   getPortfolioCaseCacheTag,
   getPortfolioIndexCacheTag,
+  getSiteNavigationCacheTag,
 } from "./cms-cache";
 import {
   CmsConfigurationError,
@@ -87,6 +106,17 @@ function requireString(value: unknown, label: string): string {
   }
 
   return value;
+}
+
+function getTodayInMoscow(): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: "Europe/Moscow",
+    year: "numeric",
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
 }
 
 function optionalString(value: unknown, label: string): string | undefined {
@@ -163,6 +193,158 @@ function requireArray(value: unknown, label: string): unknown[] {
   }
 
   return value;
+}
+
+function requireNavigationHref(value: unknown, label: string): string {
+  const href = requireString(value, label);
+
+  if (href.startsWith("/") && !href.startsWith("//")) {
+    return href;
+  }
+
+  if (href.startsWith("tel:") || href.startsWith("mailto:")) {
+    return href;
+  }
+
+  try {
+    const parsed = new URL(href);
+
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      return parsed.toString();
+    }
+  } catch {
+    // Fall through to the shared validation error.
+  }
+
+  throw new CmsInvalidResponseError(
+    `Invalid Strapi response: ${label} must be a site path or safe HTTP(S), mailto, or tel URL.`,
+  );
+}
+
+function mapNavigationLink(
+  value: unknown,
+  label: string,
+): SiteNavigationLink {
+  const link = requireRecord(value, label);
+
+  return {
+    href: requireNavigationHref(link.href, `${label}.href`),
+    label: requireString(link.label, `${label}.label`),
+  };
+}
+
+function mapNavigationChild(
+  value: unknown,
+  label: string,
+): SiteNavigationLink {
+  const child = requireRecord(value, label);
+  const links = child.links;
+
+  return {
+    href: requireNavigationHref(child.href, `${label}.href`),
+    label: requireString(child.label, `${label}.label`),
+    ...(links === undefined || links === null
+      ? {}
+      : {
+          links: requireArray(links, `${label}.links`).map((link, index) =>
+            mapNavigationLink(link, `${label}.links[${index}]`),
+          ),
+        }),
+  };
+}
+
+function mapNavigationItem(
+  value: unknown,
+  label: string,
+): SiteNavigationItem {
+  const item = requireRecord(value, label);
+  const featured = item.featured;
+  const links = requireArray(item.links, `${label}.links`).map((child, index) =>
+    mapNavigationChild(child, `${label}.links[${index}]`),
+  );
+
+  return {
+    href: requireNavigationHref(item.href, `${label}.href`),
+    label: requireString(item.label, `${label}.label`),
+    ...(featured === undefined
+      ? {}
+      : { featured: requireBoolean(featured, `${label}.featured`) }),
+    links,
+  };
+}
+
+function mapFooterColumn(value: unknown, label: string): SiteFooterColumn {
+  const column = requireRecord(value, label);
+
+  return {
+    heading: requireString(column.heading, `${label}.heading`),
+    links: requireArray(column.links, `${label}.links`).map((link, index) =>
+      mapNavigationLink(link, `${label}.links[${index}]`),
+    ),
+  };
+}
+
+function mapSocialLink(value: unknown, label: string): SiteSocialLink {
+  const link = requireRecord(value, label);
+  const kind = requireString(link.kind, `${label}.kind`);
+
+  if (kind !== "telegram" && kind !== "youtube" && kind !== "instagram" && kind !== "vk") {
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label}.kind is unsupported.`);
+  }
+
+  return {
+    href: requireNavigationHref(link.href, `${label}.href`),
+    kind,
+    label: requireString(link.label, `${label}.label`),
+  };
+}
+
+function mapContactSettings(value: unknown, label: string): SiteContactSettings {
+  const contact = requireRecord(value, label);
+  const stringFields = [
+    "clinicPhone",
+    "clinicPhoneHref",
+    "clinicAddress",
+    "clinicDescriptor",
+    "administratorPhone",
+    "administratorPhoneHref",
+    "telegramHref",
+    "maxHref",
+    "whatsappHref",
+    "emailHref",
+    "emailLabel",
+    "footerEmailHref",
+    "footerEmailLabel",
+    "footerWhatsappHref",
+    "footerWhatsappLabel",
+    "administratorHours",
+  ] as const;
+
+  const mapped = Object.fromEntries(
+    stringFields.map((field) => [
+      field,
+      field.endsWith("Href")
+        ? requireNavigationHref(contact[field], `${label}.${field}`)
+        : requireString(contact[field], `${label}.${field}`),
+    ]),
+  );
+
+  return mapped as unknown as SiteContactSettings;
+}
+
+function mapSiteNavigation(value: Record<string, unknown>): SiteNavigation {
+  return {
+    headerMenu: requireArray(value.headerMenu, "siteSetting.headerMenu").map(
+      (item, index) => mapNavigationItem(item, `siteSetting.headerMenu[${index}]`),
+    ),
+    footerColumns: requireArray(value.footerColumns, "siteSetting.footerColumns").map(
+      (column, index) => mapFooterColumn(column, `siteSetting.footerColumns[${index}]`),
+    ),
+    socialLinks: requireArray(value.socialLinks, "siteSetting.socialLinks").map(
+      (link, index) => mapSocialLink(link, `siteSetting.socialLinks[${index}]`),
+    ),
+    contact: mapContactSettings(value.contact, "siteSetting.contact"),
+  };
 }
 
 function mapTextInline(value: unknown, label: string): RichTextInline {
@@ -476,6 +658,144 @@ function validateUniqueSectionIdentifiers(
       anchors.add(section.anchor);
     }
   }
+}
+
+function mapStaticPageContentSection(
+  value: unknown,
+  index: number,
+  baseUrl: string,
+): StaticPageContentSection {
+  const label = `staticPage.contentSections[${index}]`;
+  const section = requireRecord(value, label);
+  const component = requireString(section.__component, `${label}.__component`);
+  const base = {
+    sectionKey: requireString(section.sectionKey, `${label}.sectionKey`),
+    heading: optionalString(section.heading, `${label}.heading`),
+  };
+
+  if (component === "static-page.rich-text-section") {
+    return {
+      ...base,
+      type: "rich-text",
+      body: mapBlocks(section.body, `${label}.body`, baseUrl),
+    };
+  }
+
+  if (component === "static-page.checklist-section") {
+    return {
+      ...base,
+      type: "checklist",
+      intro: optionalBlocks(section.intro, `${label}.intro`, baseUrl),
+      items: sortEditorialItems(
+        requireArray(section.items, `${label}.items`).map((item, itemIndex) =>
+          mapTextItem(item, `${label}.items[${itemIndex}]`),
+        ),
+      ),
+      outro: optionalBlocks(section.outro, `${label}.outro`, baseUrl),
+    };
+  }
+
+  if (component === "static-page.tests-section") {
+    return {
+      ...base,
+      type: "tests",
+      intro: optionalBlocks(section.intro, `${label}.intro`, baseUrl),
+      items: sortEditorialItems(
+        requireArray(section.items, `${label}.items`).map((item, itemIndex) =>
+          mapTextItem(item, `${label}.items[${itemIndex}]`),
+        ),
+      ),
+      outro: optionalBlocks(section.outro, `${label}.outro`, baseUrl),
+    };
+  }
+
+  if (component === "static-page.card-grid-section") {
+    return {
+      ...base,
+      type: "card-grid",
+      cards: sortEditorialItems(
+        requireArray(section.cards, `${label}.cards`).map((card, cardIndex) => {
+          const cardLabel = `${label}.cards[${cardIndex}]`;
+          const value = requireRecord(card, cardLabel);
+
+          return {
+            title: requireString(value.title, `${cardLabel}.title`),
+            description: optionalString(value.description, `${cardLabel}.description`),
+            href: requireNavigationHref(value.href, `${cardLabel}.href`),
+            sortOrder: optionalInteger(value.sortOrder, `${cardLabel}.sortOrder`),
+          };
+        }),
+      ),
+    };
+  }
+
+  if (component === "static-page.faq-section") {
+    return {
+      ...base,
+      type: "faq",
+      items: requireArray(section.items, `${label}.items`).map((item, itemIndex) => {
+        const itemLabel = `${label}.items[${itemIndex}]`;
+        const value = requireRecord(item, itemLabel);
+
+        return {
+          question: requireString(value.question, `${itemLabel}.question`),
+          answer: requireString(value.answer, `${itemLabel}.answer`),
+        };
+      }),
+    };
+  }
+
+  throw new CmsInvalidResponseError(
+    `Invalid Strapi response: unsupported static page section ${component}.`,
+  );
+}
+
+function validateUniqueStaticPageSectionKeys(
+  sections: readonly StaticPageContentSection[],
+): void {
+  const sectionKeys = new Set<string>();
+
+  for (const section of sections) {
+    if (sectionKeys.has(section.sectionKey)) {
+      throw new CmsInvalidResponseError(
+        `Invalid Strapi response: duplicate static page sectionKey ${section.sectionKey}.`,
+      );
+    }
+    sectionKeys.add(section.sectionKey);
+  }
+}
+
+function requireSharedSectionType(value: unknown, label: string): SharedSectionType {
+  if (
+    value !== "administrator" &&
+    value !== "consultation" &&
+    value !== "doctor-profile" &&
+    value !== "operations-catalog" &&
+    value !== "reviews" &&
+    value !== "rich-text"
+  ) {
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} is unsupported.`);
+  }
+
+  return value;
+}
+
+function mapSharedSection(
+  value: unknown,
+  index: number,
+  baseUrl: string,
+): SharedSection {
+  const label = `staticPage.sharedSections[${index}]`;
+  const section = requireRecord(value, label);
+
+  return {
+    sectionKey: requireString(section.sectionKey, `${label}.sectionKey`),
+    internalName: requireString(section.internalName, `${label}.internalName`),
+    type: requireSharedSectionType(section.type, `${label}.type`),
+    heading: optionalString(section.heading, `${label}.heading`),
+    description: optionalString(section.description, `${label}.description`),
+    body: optionalBlocks(section.body, `${label}.body`, baseUrl),
+  };
 }
 
 function mapPrice(value: unknown, index: number): PriceItem | null {
@@ -1234,6 +1554,22 @@ export class StrapiContentRepository implements ContentRepository {
     this.timeoutMs = timeoutMs;
   }
 
+  async getSiteNavigation(): Promise<SiteNavigation | null> {
+    const params = new URLSearchParams();
+    params.set("populate[headerMenu][populate][links][populate][links]", "*");
+    params.set("populate[footerColumns][populate][links]", "*");
+    params.set("populate[socialLinks]", "*");
+    params.set("populate[contact]", "*");
+
+    const settings = await this.getSingle(
+      "/api/site-setting",
+      params,
+      getSiteNavigationCacheTag(),
+    );
+
+    return settings ? mapSiteNavigation(settings) : null;
+  }
+
   async getStaticPage(pageKey: string): Promise<StaticPageContent | null> {
     const params = this.createPublishedParams([
       "pageKey",
@@ -1243,6 +1579,7 @@ export class StrapiContentRepository implements ContentRepository {
     ]);
     params.set("filters[pageKey][$eq]", pageKey);
     this.populatePageFields(params);
+    this.populateStaticPageContent(params);
     const page = await this.getFirst(
       "/api/static-pages",
       params,
@@ -1252,6 +1589,13 @@ export class StrapiContentRepository implements ContentRepository {
     if (!page) {
       return null;
     }
+
+    const contentSections = Array.isArray(page.contentSections)
+      ? requireArray(page.contentSections, "staticPage.contentSections").map(
+        (section, index) => mapStaticPageContentSection(section, index, this.baseUrl),
+      )
+      : [];
+    validateUniqueStaticPageSectionKeys(contentSections);
 
     return {
       pageKey: requireString(page.pageKey, "staticPage.pageKey"),
@@ -1274,6 +1618,12 @@ export class StrapiContentRepository implements ContentRepository {
         page.secondaryAction,
         "staticPage.secondaryAction",
       ),
+      contentSections,
+      sharedSections: Array.isArray(page.sharedSections)
+        ? requireArray(page.sharedSections, "staticPage.sharedSections").map(
+          (section, index) => mapSharedSection(section, index, this.baseUrl),
+        )
+        : [],
       contentStatus: requireContentStatus(
         page.contentStatus,
         "staticPage.contentStatus",
@@ -1386,6 +1736,26 @@ export class StrapiContentRepository implements ContentRepository {
     };
   }
 
+  async getOperationPaths(): Promise<readonly string[]> {
+    const params = this.createPublishedParams(["canonicalPath"]);
+    params.set("pagination[pageSize]", "100");
+    params.set("sort[0]", "canonicalPath:asc");
+
+    const operations = await this.getMany(
+      "/api/operations",
+      params,
+      getOperationPathsCacheTag(),
+    );
+
+    return operations.map((value, index) => {
+      const operation = requireRecord(value, `operations[${index}]`);
+      return requireCanonicalPath(
+        operation.canonicalPath,
+        `operations[${index}].canonicalPath`,
+      );
+    });
+  }
+
   async getOperationCatalog(): Promise<readonly OperationCatalogGroup[]> {
     const params = this.createPublishedParams([
       "key",
@@ -1417,6 +1787,206 @@ export class StrapiContentRepository implements ContentRepository {
     );
   }
 
+  async getPriceCatalog(): Promise<PriceCatalogContent | null> {
+    const params = this.createPublishedParams([
+      "sectionKey",
+      "title",
+      "accent",
+      "note",
+      "kind",
+      "sortOrder",
+    ]);
+    params.set("pagination[pageSize]", "100");
+    params.set("sort[0]", "sortOrder:asc");
+    [
+      "key",
+      "internalName",
+      "publicName",
+      "priceType",
+      "priceLabel",
+      "amount",
+      "minAmount",
+      "maxAmount",
+      "currency",
+      "unitLabel",
+      "description",
+      "note",
+      "isActive",
+      "validFrom",
+      "validUntil",
+      "publishedAt",
+    ].forEach((field, index) => {
+      params.set(`populate[entries][fields][${index}]`, field);
+    });
+    params.set("populate[entries][sort][0]", "sortOrder:asc");
+    params.set("populate[entries][filters][publishedAt][$notNull]", "true");
+
+    const sections = await this.getMany(
+      "/api/price-sections",
+      params,
+      getPriceCatalogCacheTag(),
+    );
+
+    if (sections.length === 0) {
+      return null;
+    }
+
+    const mappedSections = sections.map((value, index) => {
+      const label = `priceCatalog.sections[${index}]`;
+      const section = requireRecord(value, label);
+      const kind = requireString(section.kind, `${label}.kind`);
+
+      if (kind !== "standalone" && kind !== "women-tab") {
+        throw new CmsInvalidResponseError(
+          `Invalid Strapi response: ${label}.kind is unsupported.`,
+        );
+      }
+
+      const entries = requireArray(section.entries, `${label}.entries`)
+        .map((entry, entryIndex) => mapPrice(entry, entryIndex))
+        .filter((entry): entry is PriceItem => entry !== null)
+        .map((entry) => ({
+          name: entry.name,
+          description: entry.description,
+          price: formatPriceItem(entry),
+        }));
+
+      return {
+        key: requireString(section.sectionKey, `${label}.sectionKey`),
+        title: requireString(section.title, `${label}.title`),
+        accent: optionalString(section.accent, `${label}.accent`),
+        note: optionalString(section.note, `${label}.note`),
+        kind: kind as PriceCatalogSection["kind"],
+        sortOrder: optionalInteger(section.sortOrder, `${label}.sortOrder`),
+        entries,
+      };
+    });
+
+    return {
+      womenNote: mappedSections.find((section) => section.kind === "women-tab" && section.note)?.note,
+      sections: mappedSections,
+    };
+  }
+
+  async getPromotions(): Promise<readonly Promotion[]> {
+    const params = this.createPublishedParams([
+      "key",
+      "title",
+      "subtitle",
+      "href",
+      "validUntil",
+      "sortOrder",
+      "isActive",
+    ]);
+    params.set("pagination[pageSize]", "100");
+    params.set("sort[0]", "sortOrder:asc");
+    params.set("filters[isActive][$eq]", "true");
+    params.set("populate[description][fields][0]", "text");
+    params.set("populate[description][fields][1]", "sortOrder");
+    params.set("populate[description][sort][0]", "sortOrder:asc");
+
+    const promotions = await this.getMany(
+      "/api/promotions",
+      params,
+      getPromotionsCacheTag(),
+    );
+
+    const today = getTodayInMoscow();
+
+    return promotions.map((value, index) => {
+      const label = `promotions[${index}]`;
+      const promotion = requireRecord(value, label);
+      const description = requireArray(promotion.description, `${label}.description`)
+        .map((item, itemIndex) => {
+          const paragraph = requireRecord(item, `${label}.description[${itemIndex}]`);
+          return {
+            text: requireString(paragraph.text, `${label}.description[${itemIndex}].text`),
+            sortOrder: optionalInteger(paragraph.sortOrder, `${label}.description[${itemIndex}].sortOrder`),
+          };
+        })
+        .sort((left, right) => (left.sortOrder ?? 0) - (right.sortOrder ?? 0))
+        .map((paragraph) => paragraph.text);
+
+      return {
+        key: requireString(promotion.key, `${label}.key`),
+        title: requireString(promotion.title, `${label}.title`),
+        subtitle: optionalString(promotion.subtitle, `${label}.subtitle`),
+        description,
+        href: requireString(promotion.href, `${label}.href`),
+        validUntil: optionalString(promotion.validUntil, `${label}.validUntil`),
+        sortOrder: optionalInteger(promotion.sortOrder, `${label}.sortOrder`),
+      };
+    }).filter((promotion) => !promotion.validUntil || promotion.validUntil.slice(0, 10) >= today);
+  }
+
+  async getAboutPage(): Promise<AboutPageContent | null> {
+    const params = new URLSearchParams({ status: "published" });
+    ["profileHeading", "profileLead", "profileHighlights", "educationRecords", "qualifications", "awards", "associations", "journalArticles", "theses", "ratings"].forEach((field, index) => {
+      params.set(`fields[${index}]`, field);
+    });
+
+    params.set("filters[pageKey][$eq]", "about");
+    const page = await this.getFirst("/api/about-pages", params, getAboutPageCacheTag());
+
+    if (!page) {
+      return null;
+    }
+
+    const highlights = requireArray(page.profileHighlights, "aboutPage.profileHighlights").map((value, index) =>
+      requireString(value, `aboutPage.profileHighlights[${index}]`),
+    );
+    const educationRecords = requireArray(page.educationRecords, "aboutPage.educationRecords").map((value, index) => {
+      const label = `aboutPage.educationRecords[${index}]`;
+      const record = requireRecord(value, label);
+      return {
+        title: requireString(record.title, `${label}.title`),
+        year: requireString(record.year, `${label}.year`),
+        field: requireString(record.field, `${label}.field`),
+        typeLabel: requireString(record.typeLabel, `${label}.typeLabel`),
+      };
+    });
+
+    const records = (field: string) => requireArray(page[field], `aboutPage.${field}`).map((value, index) => {
+      const label = `aboutPage.${field}[${index}]`;
+      const record = requireRecord(value, label);
+      return {
+        title: requireString(record.title, `${label}.title`),
+        year: requireString(record.year, `${label}.year`),
+      };
+    });
+    const publicationRecords = (field: string) => requireArray(page[field], `aboutPage.${field}`).map((value, index) => {
+      const label = `aboutPage.${field}[${index}]`;
+      const record = requireRecord(value, label);
+      return {
+        href: requireString(record.href, `${label}.href`),
+        source: optionalString(record.source, `${label}.source`),
+        title: requireString(record.title, `${label}.title`),
+        year: requireString(record.year, `${label}.year`),
+      };
+    });
+    const ratings = requireArray(page.ratings, "aboutPage.ratings").map((value, index) => {
+      const label = `aboutPage.ratings[${index}]`;
+      const record = requireRecord(value, label);
+      return {
+        label: requireString(record.label, `${label}.label`),
+        value: requireString(record.value, `${label}.value`),
+      };
+    });
+
+    return {
+      profileHeading: requireString(page.profileHeading, "aboutPage.profileHeading"),
+      profileLead: requireString(page.profileLead, "aboutPage.profileLead"),
+      profileHighlights: highlights,
+      educationRecords,
+      qualifications: records("qualifications"),
+      awards: records("awards"),
+      associations: requireArray(page.associations, "aboutPage.associations").map((value, index) => requireString(value, `aboutPage.associations[${index}]`)),
+      journalArticles: publicationRecords("journalArticles"),
+      theses: publicationRecords("theses"),
+      ratings,
+    };
+  }
+
   async getBeforeAfterCases(): Promise<readonly BeforeAfterCase[]> {
     const params = this.createPublishedParams([
       "slug",
@@ -1446,6 +2016,36 @@ export class StrapiContentRepository implements ContentRepository {
         operation: mapCatalogLink(item.operation, `${label}.operation`),
       };
     });
+  }
+
+  async getBeforeAfterCaseBySlug(slug: string): Promise<BeforeAfterCase | null> {
+    const params = this.createPublishedParams([
+      "slug",
+      "title",
+      "imagePath",
+    ]);
+    params.set("filters[slug][$eq]", slug);
+    params.set("populate[operation][fields][0]", "canonicalPath");
+    params.set("populate[operation][fields][1]", "heading");
+
+    const entry = await this.getFirst(
+      "/api/before-after-cases",
+      params,
+      `before-after-case:${encodeURIComponent(slug)}`,
+    );
+
+    if (!entry) {
+      return null;
+    }
+
+    const item = requireRecord(entry, `beforeAfterCase:${slug}`);
+
+    return {
+      slug: requireString(item.slug, `beforeAfterCase:${slug}.slug`),
+      title: requireString(item.title, `beforeAfterCase:${slug}.title`),
+      image: mapSiteImagePath(item.imagePath, `beforeAfterCase:${slug}.imagePath`),
+      operation: mapCatalogLink(item.operation, `beforeAfterCase:${slug}.operation`),
+    };
   }
 
   async getReviews(): Promise<readonly Review[]> {
@@ -1773,6 +2373,76 @@ export class StrapiContentRepository implements ContentRepository {
     params.set("populate[heroImage][fields][3]", "height");
     params.set("populate[primaryAction]", "true");
     params.set("populate[secondaryAction]", "true");
+  }
+
+  private populateStaticPageContent(params: URLSearchParams): void {
+    const sectionComponents = [
+      "static-page.rich-text-section",
+      "static-page.checklist-section",
+      "static-page.tests-section",
+      "static-page.card-grid-section",
+      "static-page.faq-section",
+    ];
+
+    sectionComponents.forEach((component) => {
+      params.set(
+        `populate[contentSections][on][${component}][fields][0]`,
+        "sectionKey",
+      );
+      params.set(
+        `populate[contentSections][on][${component}][fields][1]`,
+        "heading",
+      );
+    });
+
+    params.set(
+      "populate[contentSections][on][static-page.rich-text-section][fields][2]",
+      "body",
+    );
+    params.set(
+      "populate[contentSections][on][static-page.checklist-section][fields][2]",
+      "intro",
+    );
+    params.set(
+      "populate[contentSections][on][static-page.checklist-section][fields][3]",
+      "outro",
+    );
+    params.set(
+      "populate[contentSections][on][static-page.tests-section][fields][2]",
+      "intro",
+    );
+    params.set(
+      "populate[contentSections][on][static-page.tests-section][fields][3]",
+      "outro",
+    );
+    ["title", "text", "sortOrder"].forEach((field, index) => {
+      params.set(
+        `populate[contentSections][on][static-page.checklist-section][populate][items][fields][${index}]`,
+        field,
+      );
+    });
+    ["title", "description", "href", "sortOrder"].forEach((field, index) => {
+      params.set(
+        `populate[contentSections][on][static-page.card-grid-section][populate][cards][fields][${index}]`,
+        field,
+      );
+    });
+    ["question", "answer"].forEach((field, index) => {
+      params.set(
+        `populate[contentSections][on][static-page.faq-section][populate][items][fields][${index}]`,
+        field,
+      );
+    });
+    ["title", "text", "sortOrder"].forEach((field, index) => {
+      params.set(
+        `populate[contentSections][on][static-page.tests-section][populate][items][fields][${index}]`,
+        field,
+      );
+    });
+
+    ["sectionKey", "internalName", "type", "heading", "description", "body"].forEach((field, index) => {
+      params.set(`populate[sharedSections][fields][${index}]`, field);
+    });
   }
 
   private populateBuilderPage(params: URLSearchParams): void {
@@ -2132,5 +2802,66 @@ export class StrapiContentRepository implements ContentRepository {
     return responseObject.data.map((item, index) =>
       requireRecord(item, `data[${index}]`),
     );
+  }
+
+  private async getSingle(
+    endpoint: string,
+    params: URLSearchParams,
+    cacheTag: string,
+  ): Promise<Record<string, unknown> | null> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+    const headers = new Headers({
+      Accept: "application/json",
+      Authorization: `Bearer ${this.apiToken}`,
+    });
+    let response: Response;
+
+    try {
+      response = await this.fetchImplementation(
+        `${this.baseUrl}${endpoint}?${params.toString()}`,
+        {
+          ...getCmsFetchCacheOptions(cacheTag),
+          headers,
+          signal: controller.signal,
+        },
+      );
+    } catch {
+      if (controller.signal.aborted) {
+        throw new CmsUnavailableError("CMS request timed out.", { timedOut: true });
+      }
+
+      throw new CmsUnavailableError("CMS request failed before receiving a response.");
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    if (response.status === 401 || response.status === 403) {
+      throw new CmsUnauthorizedError();
+    }
+
+    if (response.status >= 500) {
+      throw new CmsUnavailableError();
+    }
+
+    if (!response.ok) {
+      throw new CmsInvalidResponseError("CMS returned an unexpected HTTP response.");
+    }
+
+    let payload: unknown;
+
+    try {
+      payload = await response.json();
+    } catch {
+      throw new CmsInvalidResponseError("CMS returned invalid JSON.");
+    }
+
+    const responseObject = requireRecord(payload, "response");
+
+    if (responseObject.data === null) {
+      return null;
+    }
+
+    return requireRecord(responseObject.data, "data");
   }
 }

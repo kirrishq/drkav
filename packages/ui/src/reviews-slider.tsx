@@ -311,6 +311,16 @@ export function ReviewsSlider({
     viewportRef.current?.scrollTo({ behavior: "auto", left: 0 });
   }, [activeFilterIds]);
 
+  if (items.length === 0) {
+    return (
+      <section aria-label={ariaLabel} className={cn("reviews-slider", className)}>
+        <div className="content-card content-card--muted">
+          <p>Отзывы временно недоступны. Пожалуйста, обновите страницу позже.</p>
+        </div>
+      </section>
+    );
+  }
+
   const scroll = (direction: "left" | "right") => {
     const viewport = viewportRef.current;
 

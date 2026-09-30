@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_static_page_faq_sections",
+  "info": {
+    "displayName": "Static Page FAQ Section",
+    "description": "A grouped FAQ section for static pages"
+  },
+  "options": {},
+  "attributes": {
+    "sectionKey": {
+      "type": "string",
+      "required": true
+    },
+    "heading": {
+      "type": "string",
+      "required": false
+    },
+    "items": {
+      "type": "component",
+      "component": "static-page.faq-item",
+      "repeatable": true,
+      "required": true
+    }
+  },
+  "config": {}
+}

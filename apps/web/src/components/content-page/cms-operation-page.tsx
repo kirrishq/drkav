@@ -19,7 +19,6 @@ import { OperationContentRenderer } from "@/components/operation-content/operati
 import { administratorContact } from "@/components/site-header/header-config";
 import {
   getCmsOperationByPath,
-  type CmsMigratedOperationPath,
 } from "@/content/cms-migrated-operations";
 import { logCmsError } from "@/content/cms-logging";
 import { getOperationPageEnhancement } from "@/content/operation-page-config";
@@ -31,10 +30,10 @@ import {
 import { toMetadata, toUnavailableMetadata } from "@/content/seo";
 
 import { StaticPage } from "./static-page";
-import { SiteHeader } from "../site-header/site-header";
+import { SiteHeader } from "../site-header/site-header-server";
 
 export async function getCmsOperationMetadata(
-  path: CmsMigratedOperationPath,
+  path: string,
 ): Promise<Metadata> {
   try {
     const content = await getCmsOperationByPath(path);
@@ -53,7 +52,7 @@ export async function getCmsOperationMetadata(
 export async function CmsOperationPage({
   path,
 }: {
-  path: CmsMigratedOperationPath;
+  path: string;
 }) {
   let content: Awaited<ReturnType<typeof getCmsOperationByPath>>;
 

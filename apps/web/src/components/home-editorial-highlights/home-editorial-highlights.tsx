@@ -30,14 +30,20 @@ const highlights = [
   },
 ] as const;
 
-export function HomeEditorialHighlights() {
+export function HomeEditorialHighlights({ copy }: { copy?: readonly { description?: string; title: string }[] }) {
+  const resolvedHighlights = highlights.map((highlight, index) => ({
+    ...highlight,
+    description: copy?.[index]?.description ?? highlight.description,
+    title: copy?.[index]?.title ?? highlight.title,
+  }));
+
   return (
     <section aria-labelledby="home-editorial-highlights-title" className="home-editorial-highlights">
       <div className="home-editorial-highlights__heading">
         <h2 className="type-h2 home-editorial-highlights__title" id="home-editorial-highlights-title">Ещё о докторе и его проектах</h2>
       </div>
       <div className="home-editorial-highlights__grid">
-        {highlights.map((highlight) => {
+        {resolvedHighlights.map((highlight) => {
           if ("videoSrc" in highlight) {
             return (
               <article className="home-editorial-highlights__card" key={highlight.title}>

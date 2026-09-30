@@ -9,8 +9,9 @@ import { JournalArticleSection } from "@/components/journal-article-section/jour
 import { PatentSection } from "@/components/patent-section/patent-section";
 import { QualificationSection } from "@/components/qualification-section/qualification-section";
 import { RatingSection } from "@/components/rating-section/rating-section";
-import { SiteHeader } from "@/components/site-header/site-header";
+import { SiteHeader } from "@/components/site-header/site-header-server";
 import { ThesisSection } from "@/components/thesis-section/thesis-section";
+import { getAboutPageContent } from "@/content/about-page";
 
 export const metadata = {
   title: "Доктор Коробов — пластический хирург",
@@ -82,7 +83,20 @@ const educationRecords = [
   },
 ] as const;
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const cmsPage = await getAboutPageContent();
+  const profileHeading = cmsPage?.profileHeading ?? "О докторе Коробове Артеме Владимировиче";
+  const profileLead = cmsPage?.profileLead ?? "Пластический хирург, КМН, многолетний профессиональный опыт работы с телом.";
+  const cmsEducationRecords = cmsPage?.educationRecords;
+  const profileHighlights = cmsPage?.profileHighlights;
+  const displayEducationRecords = cmsEducationRecords
+    ? cmsEducationRecords.map((record) => ({
+      details: [{ value: record.field }, { tone: "secondary" as const, value: record.typeLabel }],
+      meta: record.year,
+      title: record.title,
+    }))
+    : educationRecords;
+
   return (
     <>
       <SiteHeader />
@@ -108,14 +122,14 @@ export default function AboutPage() {
 
                 <div className="content-card content-card--spacious">
                   <h1 className="content-card__heading content-card__heading--h2">
-                    О докторе Коробове Артеме Владимировиче
+                    {profileHeading}
                   </h1>
                   <p className="content-card__lead">
-                    Пластический хирург, КМН, многолетний профессиональный опыт работы с телом.
+                    {profileLead}
                   </p>
 
                   <ul className="content-card__list">
-                    {[
+                    {(profileHighlights ?? [
                       {
                         content: <>Один из первых в России применил <strong>SIME</strong> — безопасный липофилинг груди.</>,
                         key: "sime",
@@ -136,10 +150,10 @@ export default function AboutPage() {
                         content: <>Автор <strong>романа «Боль двенадцати женщин»</strong>.</>,
                         key: "novel",
                       },
-                    ].map(({ content, key }) => (
-                      <li className="content-card__list-item" key={key}>
+                    ]).map((highlight, index) => (
+                      <li className="content-card__list-item" key={`${highlight}-${index}`}>
                         <span aria-hidden="true" className="content-card__list-marker" />
-                        <span>{content}</span>
+                        <span>{typeof highlight === "string" ? highlight : highlight.content}</span>
                       </li>
                     ))}
                   </ul>
@@ -154,27 +168,27 @@ export default function AboutPage() {
             <section className="content-card content-card--muted content-section" id="education">
               <h2 className="content-card__heading content-card__heading--h2">Образование</h2>
               <div className="content-card__grid">
-                {educationRecords.map((record) => (
+                {displayEducationRecords.map((record) => (
                   <RecordCard icon={<GraduationCapIcon />} key={`${record.meta}-${record.title}`} {...record} />
                 ))}
               </div>
             </section>
 
-            <QualificationSection />
+            <QualificationSection items={cmsPage?.qualifications} />
 
             <CertificateSection />
 
-            <AwardSection />
+            <AwardSection items={cmsPage?.awards} />
 
-            <AssociationSection />
+            <AssociationSection items={cmsPage?.associations} />
 
             <PatentSection />
 
-            <JournalArticleSection />
+            <JournalArticleSection items={cmsPage?.journalArticles} />
 
-            <ThesisSection />
+            <ThesisSection items={cmsPage?.theses} />
 
-            <RatingSection />
+            <RatingSection items={cmsPage?.ratings} />
           </div>
         </div>
       </main>

@@ -23,22 +23,29 @@ const mediaVideos = [
 ] as const;
 
 export type MediaVideoProjectsProps = {
+  copy?: readonly { description?: string; location?: string; title: string }[];
   items?: readonly VideoCardProps[];
   title?: string;
   tone?: "muted" | "surface";
 };
 
-export function MediaVideoProjects({ items = mediaVideos, title = "Видео проекты", tone = "muted" }: MediaVideoProjectsProps) {
-  const [visibleCount, setVisibleCount] = useState(Math.min(3, items.length));
-  const visibleItems = items.slice(0, visibleCount);
+export function MediaVideoProjects({ copy, items = mediaVideos, title = "Видео проекты", tone = "muted" }: MediaVideoProjectsProps) {
+  const resolvedItems = items.map((item, index) => ({
+    ...item,
+    description: copy?.[index]?.description ?? item.description,
+    location: copy?.[index]?.location ?? item.location,
+    title: copy?.[index]?.title ?? item.title,
+  }));
+  const [visibleCount, setVisibleCount] = useState(Math.min(3, resolvedItems.length));
+  const visibleItems = resolvedItems.slice(0, visibleCount);
 
   return (
     <section aria-labelledby="media-video-projects-title" className={cn("content-card content-section media-video-projects", tone === "muted" && "content-card--muted")}>
       <h2 className="content-card__heading content-card__heading--h2" id="media-video-projects-title">{title}</h2>
       <div className="content-card__grid media-video-projects__grid">
-        {visibleItems.map((video) => <VideoCard dialogItems={items} key={video.videoSrc} {...video} />)}
+        {visibleItems.map((video) => <VideoCard dialogItems={resolvedItems} key={video.videoSrc} {...video} />)}
       </div>
-      {visibleCount < items.length ? <div className="media-video-projects__more"><Button onClick={() => setVisibleCount((count) => Math.min(count + 3, items.length))} variant="outline">Показать ещё</Button></div> : null}
+      {visibleCount < resolvedItems.length ? <div className="media-video-projects__more"><Button onClick={() => setVisibleCount((count) => Math.min(count + 3, resolvedItems.length))} variant="outline">Показать ещё</Button></div> : null}
     </section>
   );
 }

@@ -26,5 +26,24 @@
   .before-after-modal__content p { margin: 0; color: var(--text-secondary); font-size: var(--type-text-base-size); line-height: var(--type-text-base-line-height); }
   .before-after-modal__content a { justify-self: start; color: var(--text-primary); font-size: var(--type-text-base-size); font-weight: var(--type-label-weight); }
   @media (min-width: 48rem) { .before-after-gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  @media (min-width: 64rem) { .before-after-gallery { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .before-after-gallery { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+.before-after-entry__media {
+  position: relative;
+  min-height: 24rem;
+  margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) var(--space-5);
+  overflow: hidden;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.before-after-entry__media img {
+  object-fit: contain;
+}
+
+@media (max-width: 47.99rem) {
+  .before-after-entry__media {
+    min-height: 18rem;
+    margin-inline: calc(var(--space-4) * -1);
+  }
+}
 }

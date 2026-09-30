@@ -6,12 +6,13 @@ import { ContactFab, ConsultationProvider } from "@drkav/ui";
 import "@/app/globals.css";
 import { RevealObserver } from "@/components/reveal/reveal-observer";
 import { SiteFooter } from "@/components/site-footer/site-footer";
-import { contactActions } from "@/components/site-header/contact-actions";
+import { createContactActions } from "@/components/site-header/contact-actions";
 import { CookieConsent } from "@/components/cookie-consent/cookie-consent";
 import { MarketingAttribution } from "@/components/marketing-attribution/marketing-attribution";
 import { NavigationScrollRestoration } from "@/components/navigation-scroll-restoration/navigation-scroll-restoration";
 import { YandexMetrika } from "@/components/yandex-metrika/yandex-metrika";
 import { getSiteUrl } from "@/content/seo";
+import { getSiteNavigation } from "@/content/site-navigation";
 
 export const metadata: Metadata = {
   metadataBase: getSiteUrl(),
@@ -62,7 +63,9 @@ const themeBootstrapScript = `(() => {
 
 const smartCaptchaSiteKey = process.env.NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY?.trim();
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const siteNavigation = await getSiteNavigation();
+
   return (
     <html lang="ru" suppressHydrationWarning>
       <head>
@@ -86,8 +89,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ConsultationProvider captchaSiteKey={smartCaptchaSiteKey} submitUrl="/api/forms/consultation">
           <RevealObserver>
             {children}
-            <ContactFab actions={contactActions} />
-            <SiteFooter />
+            <ContactFab actions={createContactActions(siteNavigation.contact)} />
+            <SiteFooter navigation={siteNavigation} />
           </RevealObserver>
         </ConsultationProvider>
       </body>

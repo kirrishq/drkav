@@ -6,7 +6,7 @@ import { TextLink } from "@drkav/ui";
 
 const patentImageSrc = "/images/patents/patent-diastaz.webp";
 
-export function ContributionPatent() {
+export function ContributionPatent({ lead }: { lead?: string }) {
   const imageRef = useRef<HTMLImageElement>(null);
 
   function openFullscreen() {
@@ -25,9 +25,7 @@ export function ContributionPatent() {
   return (
     <section aria-labelledby="contribution-patent-title" className="content-card content-card--muted contribution-patent">
       <h2 className="content-card__heading content-card__heading--h2" id="contribution-patent-title">Патент</h2>
-      <p className="content-card__lead">
-        На операцию <TextLink href="/operaczii/diastaz-myshc-zhivota">«Диастаз без шрамов»</TextLink> получен патент № 2801500 от 09 августа 2023 г.
-      </p>
+      {lead ? <p className="content-card__lead">{lead}</p> : <p className="content-card__lead">На операцию <TextLink href="/operaczii/diastaz-myshc-zhivota">«Диастаз без шрамов»</TextLink> получен патент № 2801500 от 09 августа 2023 г.</p>}
       <button
         aria-label="Открыть патент на весь экран"
         className="contribution-patent__preview"

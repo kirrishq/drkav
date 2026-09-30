@@ -66,6 +66,22 @@ export function getOperationCatalogCacheTag(): string {
   return "operation-catalog";
 }
 
+export function getOperationPathsCacheTag(): string {
+  return "operation-paths";
+}
+
+export function getPriceCatalogCacheTag(): string {
+  return "price-catalog";
+}
+
+export function getPromotionsCacheTag(): string {
+  return "promotions";
+}
+
+export function getAboutPageCacheTag(): string {
+  return "about-page";
+}
+
 export function getBeforeAfterCasesCacheTag(): string {
   return "before-after-cases";
 }
@@ -104,6 +120,10 @@ export function getConditionArticleCacheTag(slug: string): string {
 
 export function getBuilderPageCacheTag(canonicalPath: string): string {
   return `builder-page:${normalizeCanonicalPath(canonicalPath)}`;
+}
+
+export function getSiteNavigationCacheTag(): string {
+  return "site-navigation";
 }
 
 export function getCmsFetchCacheOptions(

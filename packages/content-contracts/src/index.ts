@@ -135,7 +135,137 @@ export interface StaticPageContent {
   heroImage?: ImageAsset;
   primaryAction?: ContentAction;
   secondaryAction?: ContentAction;
+  contentSections: readonly StaticPageContentSection[];
+  sharedSections: readonly SharedSection[];
   contentStatus: ContentStatus;
+}
+
+export type SharedSectionType =
+  | "administrator"
+  | "consultation"
+  | "doctor-profile"
+  | "operations-catalog"
+  | "reviews"
+  | "rich-text";
+
+export interface SharedSection {
+  sectionKey: string;
+  internalName: string;
+  type: SharedSectionType;
+  heading?: string;
+  description?: string;
+  body?: readonly RichTextBlock[];
+}
+
+export interface StaticPageTextItem {
+  title?: string;
+  text: string;
+  sortOrder?: number;
+}
+
+export interface StaticPageRichTextSection {
+  type: "rich-text";
+  sectionKey: string;
+  heading?: string;
+  body: readonly RichTextBlock[];
+}
+
+export interface StaticPageChecklistSection {
+  type: "checklist";
+  sectionKey: string;
+  heading?: string;
+  intro?: readonly RichTextBlock[];
+  items: readonly StaticPageTextItem[];
+  outro?: readonly RichTextBlock[];
+}
+
+export interface StaticPageTestsSection {
+  type: "tests";
+  sectionKey: string;
+  heading?: string;
+  intro?: readonly RichTextBlock[];
+  items: readonly StaticPageTextItem[];
+  outro?: readonly RichTextBlock[];
+}
+
+export interface StaticPageCardItem {
+  title: string;
+  description?: string;
+  href: string;
+  sortOrder?: number;
+}
+
+export interface StaticPageCardGridSection {
+  type: "card-grid";
+  sectionKey: string;
+  heading?: string;
+  cards: readonly StaticPageCardItem[];
+}
+
+export interface StaticPageFaqSection {
+  type: "faq";
+  sectionKey: string;
+  heading?: string;
+  items: readonly {
+    question: string;
+    answer: string;
+  }[];
+}
+
+export type StaticPageContentSection =
+  | StaticPageRichTextSection
+  | StaticPageChecklistSection
+  | StaticPageTestsSection
+  | StaticPageCardGridSection
+  | StaticPageFaqSection;
+
+export interface SiteNavigationLink {
+  href: string;
+  label: string;
+  links?: readonly SiteNavigationLink[];
+}
+
+export interface SiteNavigationItem extends SiteNavigationLink {
+  featured?: boolean;
+}
+
+export interface SiteFooterColumn {
+  heading: string;
+  links: readonly SiteNavigationLink[];
+}
+
+export type SiteSocialLinkKind = "telegram" | "youtube" | "instagram" | "vk";
+
+export interface SiteSocialLink {
+  href: string;
+  kind: SiteSocialLinkKind;
+  label: string;
+}
+
+export interface SiteContactSettings {
+  clinicPhone: string;
+  clinicPhoneHref: string;
+  clinicAddress: string;
+  clinicDescriptor: string;
+  administratorPhone: string;
+  administratorPhoneHref: string;
+  telegramHref: string;
+  maxHref: string;
+  whatsappHref: string;
+  emailHref: string;
+  emailLabel: string;
+  footerEmailHref: string;
+  footerEmailLabel: string;
+  footerWhatsappHref: string;
+  footerWhatsappLabel: string;
+  administratorHours: string;
+}
+
+export interface SiteNavigation {
+  headerMenu: readonly SiteNavigationItem[];
+  footerColumns: readonly SiteFooterColumn[];
+  socialLinks: readonly SiteSocialLink[];
+  contact: SiteContactSettings;
 }
 
 export interface OperationCategorySummary {
@@ -315,6 +445,74 @@ export interface PriceItem {
   unitLabel?: string;
   description?: string;
   note?: string;
+}
+
+export type PriceCatalogSectionKind = "standalone" | "women-tab";
+
+export interface PriceCatalogEntry {
+  name: string;
+  description?: string;
+  price?: string;
+}
+
+export interface PriceCatalogSection {
+  key: string;
+  title: string;
+  accent?: string;
+  note?: string;
+  kind: PriceCatalogSectionKind;
+  sortOrder?: number;
+  entries: readonly PriceCatalogEntry[];
+}
+
+export interface PriceCatalogContent {
+  womenNote?: string;
+  sections: readonly PriceCatalogSection[];
+}
+
+export interface Promotion {
+  key: string;
+  title: string;
+  subtitle?: string;
+  description: readonly string[];
+  href: string;
+  validUntil?: string;
+  sortOrder?: number;
+}
+
+export interface AboutEducationRecord {
+  title: string;
+  year: string;
+  field: string;
+  typeLabel: string;
+}
+
+export interface AboutRecord {
+  title: string;
+  year: string;
+}
+
+export interface AboutPublicationRecord extends AboutRecord {
+  href: string;
+  source?: string;
+}
+
+export interface AboutRatingRecord {
+  label: string;
+  value: string;
+}
+
+export interface AboutPageContent {
+  profileHeading: string;
+  profileLead: string;
+  profileHighlights: readonly string[];
+  educationRecords: readonly AboutEducationRecord[];
+  qualifications: readonly AboutRecord[];
+  awards: readonly AboutRecord[];
+  associations: readonly string[];
+  journalArticles: readonly AboutPublicationRecord[];
+  theses: readonly AboutPublicationRecord[];
+  ratings: readonly AboutRatingRecord[];
 }
 
 const priceNumberFormatter = new Intl.NumberFormat("ru-RU", {
@@ -521,15 +719,21 @@ export type ConditionIndexContent = BlogIndexContent;
  * CMS-agnostic boundary for future content sources.
  */
 export interface ContentRepository {
+  getSiteNavigation(): Promise<SiteNavigation | null>;
   getStaticPage(pageKey: string): Promise<StaticPageContent | null>;
   getBuilderPageByPath(
     path: string,
     mode?: ContentReadMode,
   ): Promise<BuilderPage | null>;
+  getOperationPaths(): Promise<readonly string[]>;
   getOperationByPath(path: string): Promise<OperationContent | null>;
   getOperationCatalog(): Promise<readonly OperationCatalogGroup[]>;
   getBeforeAfterCases(): Promise<readonly BeforeAfterCase[]>;
+  getBeforeAfterCaseBySlug(slug: string): Promise<BeforeAfterCase | null>;
   getReviews(): Promise<readonly Review[]>;
+  getPriceCatalog(): Promise<PriceCatalogContent | null>;
+  getPromotions(): Promise<readonly Promotion[]>;
+  getAboutPage(): Promise<AboutPageContent | null>;
   getFinalResults(): Promise<readonly FinalResult[]>;
   getBlogIndex(): Promise<BlogIndexContent>;
   getBlogArticleBySlug(slug: string): Promise<BlogArticle | null>;

@@ -44,16 +44,10 @@ export const cmsMigratedOperationPaths = [
   "/operaczii/rf-lifting/rf-lifting-zhivota",
 ] as const;
 
-export type CmsMigratedOperationPath =
-  (typeof cmsMigratedOperationPaths)[number];
+export type CmsMigratedOperationPath = string;
 
-export function isCmsMigratedOperationPath(
-  path: string,
-): path is CmsMigratedOperationPath {
-  return cmsMigratedOperationPaths.some((candidate) => candidate === path);
-}
-
-const loadCmsOperation = cache(async (path: CmsMigratedOperationPath) => {
+/** Existing paths are kept only as a build-time fallback when CMS is unavailable. */
+const loadCmsOperation = cache(async (path: string) => {
   try {
     return await createContentRepository().getOperationByPath(path);
   } catch (error) {
@@ -62,6 +56,15 @@ const loadCmsOperation = cache(async (path: CmsMigratedOperationPath) => {
   }
 });
 
-export function getCmsOperationByPath(path: CmsMigratedOperationPath) {
+export function getCmsOperationByPath(path: string) {
   return loadCmsOperation(path);
+}
+
+export async function getCmsOperationPaths(): Promise<readonly string[]> {
+  try {
+    return await createContentRepository().getOperationPaths();
+  } catch (error) {
+    logCmsError("cms_fetch_or_revalidation_failed", error, "operation-paths");
+    return cmsMigratedOperationPaths;
+  }
 }

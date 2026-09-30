@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_static_page_checklist_sections",
+  "info": {
+    "displayName": "Static Page Checklist Section",
+    "description": "A controlled checklist section for static pages"
+  },
+  "options": {},
+  "attributes": {
+    "sectionKey": {
+      "type": "string",
+      "required": true
+    },
+    "heading": {
+      "type": "string",
+      "required": false
+    },
+    "intro": {
+      "type": "blocks",
+      "required": false
+    },
+    "items": {
+      "type": "component",
+      "component": "shared.text-item",
+      "repeatable": true,
+      "required": true
+    },
+    "outro": {
+      "type": "blocks",
+      "required": false
+    }
+  }
+}

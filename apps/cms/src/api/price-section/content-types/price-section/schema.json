@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "price_sections",
+  "info": {
+    "singularName": "price-section",
+    "pluralName": "price-sections",
+    "displayName": "Price catalog section",
+    "description": "A group of prices displayed on the public price catalog"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "internalName": {
+      "type": "string",
+      "required": true,
+      "maxLength": 160
+    },
+    "sectionKey": {
+      "type": "uid",
+      "targetField": "internalName",
+      "required": true,
+      "unique": true
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 160
+    },
+    "accent": {
+      "type": "string",
+      "required": false,
+      "maxLength": 160
+    },
+    "note": {
+      "type": "text",
+      "required": false
+    },
+    "kind": {
+      "type": "enumeration",
+      "enum": ["standalone", "women-tab"],
+      "required": true,
+      "default": "standalone"
+    },
+    "sortOrder": {
+      "type": "integer",
+      "required": true,
+      "default": 0
+    },
+    "entries": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::price-item.price-item",
+      "inversedBy": "catalogSections"
+    }
+  },
+  "config": {}
+}

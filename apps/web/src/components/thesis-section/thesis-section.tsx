@@ -18,14 +18,21 @@ const theses = [
   },
 ] as const;
 
-export function ThesisSection() {
+type Thesis = {
+  href?: string;
+  source?: string;
+  title: string;
+  year: string;
+};
+
+export function ThesisSection({ items = theses }: { items?: readonly Thesis[] }) {
   return (
     <section className="content-card content-card--muted content-section thesis-section" id="theses">
       <h2 className="content-card__heading content-card__heading--h2">Тезисы</h2>
       <div className="content-card__grid thesis-section__grid">
-        {theses.map((thesis) => (
+        {items.map((thesis) => (
           <RecordCard
-            details={[{ tone: "secondary", value: thesis.source }]}
+            details={thesis.source ? [{ tone: "secondary", value: thesis.source }] : undefined}
             icon={<span aria-hidden="true" className="thesis-section__icon" />}
             key={`${thesis.year}-${thesis.title}`}
             meta={thesis.year}

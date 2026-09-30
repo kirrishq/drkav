@@ -1,0 +1,57 @@
+{
+  "kind": "collectionType",
+  "collectionName": "shared_sections",
+  "info": {
+    "singularName": "shared-section",
+    "pluralName": "shared-sections",
+    "displayName": "Shared Section",
+    "description": "Reusable site sections rendered by the existing frontend components"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "internalName": {
+      "type": "string",
+      "required": true
+    },
+    "sectionKey": {
+      "type": "uid",
+      "targetField": "internalName",
+      "required": true,
+      "unique": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "administrator",
+        "consultation",
+        "doctor-profile",
+        "operations-catalog",
+        "reviews",
+        "rich-text"
+      ],
+      "required": true
+    },
+    "heading": {
+      "type": "string",
+      "required": false
+    },
+    "description": {
+      "type": "text",
+      "required": false
+    },
+    "body": {
+      "type": "blocks",
+      "required": false
+    },
+    "staticPages": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::static-page.static-page",
+      "mappedBy": "sharedSections"
+    }
+  },
+  "config": {}
+}

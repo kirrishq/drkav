@@ -8,12 +8,12 @@ const associations = [
   "Общество пластических и реконструктивно-эстетических хирургов (ОПРЭХ)",
 ] as const;
 
-export function AssociationSection() {
+export function AssociationSection({ items = associations }: { items?: readonly string[] }) {
   return (
     <section className="content-card content-card--muted content-section association-section" id="associations">
       <h2 className="content-card__heading content-card__heading--h2">Медицинские ассоциации</h2>
       <div className="content-card__grid association-section__grid">
-        {associations.map((association) => (
+        {items.map((association) => (
           <RecordCard
             className="association-section__item"
             icon={<AssociationIcon />}

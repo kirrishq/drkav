@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_static_page_rich_text_sections",
+  "info": {
+    "displayName": "Static Page Rich Text Section",
+    "description": "A controlled rich-text section for static pages"
+  },
+  "options": {},
+  "attributes": {
+    "sectionKey": {
+      "type": "string",
+      "required": true
+    },
+    "heading": {
+      "type": "string",
+      "required": false
+    },
+    "body": {
+      "type": "blocks",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "about_pages",
+  "info": {
+    "singularName": "about-page",
+    "pluralName": "about-pages",
+    "displayName": "About page content"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "pageKey": { "type": "uid", "targetField": "profileHeading", "required": true, "unique": true },
+    "profileHeading": { "type": "string", "required": true },
+    "profileLead": { "type": "text", "required": true },
+    "profileHighlights": { "type": "json", "required": true },
+    "educationRecords": { "type": "json", "required": true },
+    "qualifications": { "type": "json", "required": true },
+    "awards": { "type": "json", "required": true },
+    "associations": { "type": "json", "required": true },
+    "journalArticles": { "type": "json", "required": true },
+    "theses": { "type": "json", "required": true },
+    "ratings": { "type": "json", "required": true }
+  },
+  "config": {}
+}

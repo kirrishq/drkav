@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_navigation_items",
+  "info": {
+    "displayName": "Navigation item",
+    "description": "A top-level header menu item with optional nested links"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "href": {
+      "type": "string",
+      "required": true
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "links": {
+      "type": "component",
+      "component": "shared.navigation-child",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

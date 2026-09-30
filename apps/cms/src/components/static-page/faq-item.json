@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_static_page_faq_items",
+  "info": {
+    "displayName": "Static Page FAQ Item"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "answer": {
+      "type": "text",
+      "required": true
+    }
+  },
+  "config": {}
+}
