@@ -1,4 +1,4 @@
-const OPTIMIZED_IMAGE_WIDTHS = [384, 640, 768, 1024];
+const OPTIMIZED_IMAGE_WIDTHS = [384, 640, 1080];
 
 export function getOptimizedImageSrcSet(src: string | undefined): string | undefined {
   if (!src?.startsWith("/") && !src?.startsWith("http://") && !src?.startsWith("https://")) {

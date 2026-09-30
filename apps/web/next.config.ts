@@ -10,7 +10,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "media-src 'self' blob: https:",
-  "connect-src 'self' https://mc.yandex.ru https://smartcaptcha.cloud.yandex.ru",
+  "connect-src 'self' https://mc.yandex.ru wss://mc.yandex.ru https://smartcaptcha.cloud.yandex.ru",
   "frame-src 'self' https://yandex.ru https://*.yandex.ru",
   "worker-src 'self' blob:",
   "object-src 'none'",
@@ -56,7 +56,6 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       ...cmsImageRemotePatterns,
-      { hostname: "prodoctorov.ru", pathname: "/**", protocol: "https" },
     ],
   },
   transpilePackages: ["@drkav/ui", "@drkav/content-contracts"],

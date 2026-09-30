@@ -1,5 +1,6 @@
 import { cn } from "@drkav/ui";
-import Image from "next/image";
+
+/* eslint-disable @next/next/no-img-element -- the third-party logo is loaded directly because the external host rejects Next.js proxy requests. */
 
 const PRODOCTOROV_URL = "https://prodoctorov.ru/moskva/vrach/158087-korobov/";
 const PRODOCTOROV_LOGO_URL = "https://prodoctorov.ru/static/_v1/pd/logos/logo-pd-widget.png";
@@ -18,7 +19,7 @@ export function ProdoctorovRatingBanner({ className }: ProdoctorovRatingBannerPr
       target="_blank"
     >
       <div className="prodoctorov-rating-banner__topline">
-        <Image
+        <img
           alt="ПроДокторов"
           className="prodoctorov-rating-banner__logo"
           decoding="async"
