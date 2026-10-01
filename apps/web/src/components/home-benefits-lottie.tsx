@@ -1,6 +1,11 @@
 "use client";
 
-import { Lottie } from "lottie-react";
+import dynamic from "next/dynamic";
+
+const Lottie = dynamic(() => import("lottie-react").then((module) => module.Lottie), {
+  loading: () => null,
+  ssr: false,
+});
 
 export function HomeBenefitsLottie({
   animationData,

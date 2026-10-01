@@ -32,6 +32,7 @@ export function HomeSocialDotsBackground() {
     let timer: number | undefined;
     let directionIndex = 0;
     let cancelled = false;
+    let isNearViewport = false;
 
     const clearScheduledWork = () => {
       if (animationFrame !== undefined) {
@@ -75,7 +76,7 @@ export function HomeSocialDotsBackground() {
     };
 
     const startWave = () => {
-      if (cancelled || reducedMotion.matches) {
+      if (cancelled || reducedMotion.matches || !isNearViewport) {
         return;
       }
 
@@ -104,23 +105,45 @@ export function HomeSocialDotsBackground() {
       animationFrame = window.requestAnimationFrame(animate);
     };
 
-    const handleMotionPreferenceChange = () => {
-      clearScheduledWork();
-      resetDots();
-      if (!reducedMotion.matches) {
+    const scheduleWave = () => {
+      if (!cancelled && !reducedMotion.matches && isNearViewport) {
         timer = window.setTimeout(startWave, 600);
       }
     };
 
+    const handleMotionPreferenceChange = () => {
+      clearScheduledWork();
+      resetDots();
+      scheduleWave();
+    };
+
     resetDots();
-    if (!reducedMotion.matches) {
-      timer = window.setTimeout(startWave, 900);
+    const visibilityObserver = "IntersectionObserver" in window
+      ? new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        isNearViewport = true;
+        visibilityObserver?.disconnect();
+        scheduleWave();
+      }, { rootMargin: "200px" })
+      : undefined;
+
+    if (visibilityObserver) {
+      visibilityObserver.observe(dotsRoot);
+    } else {
+      isNearViewport = true;
+      if (!reducedMotion.matches) {
+        timer = window.setTimeout(startWave, 900);
+      }
     }
     reducedMotion.addEventListener("change", handleMotionPreferenceChange);
 
     return () => {
       cancelled = true;
       clearScheduledWork();
+      visibilityObserver?.disconnect();
       reducedMotion.removeEventListener("change", handleMotionPreferenceChange);
     };
   }, []);

@@ -7,15 +7,11 @@ function randomBetween(min: number, max: number) {
   return min + Math.random() * (max - min);
 }
 
-const DOT_COLUMNS = 16;
-const DOT_ROWS = 10;
-
 function createCircleClipPath(centerX: number, centerY: number, radius: number) {
   return `circle(${radius}% at ${centerX}% ${centerY}%)`;
 }
 
 export function HomeOperatingRoomBackground() {
-  const dotsRef = useRef<SVGSVGElement>(null);
   const glowRef = useRef<HTMLSpanElement>(null);
   const revealRef = useRef<HTMLImageElement>(null);
   const [backgroundRequested, setBackgroundRequested] = useState(false);
@@ -76,10 +72,9 @@ export function HomeOperatingRoomBackground() {
       return;
     }
 
-    const dots = dotsRef.current;
-    const glow = glowRef.current ?? dots?.closest(".home-hero")?.querySelector<HTMLElement>(".home-hero__operating-room-glow");
+    const glow = glowRef.current;
 
-    if (!dots || !glow) {
+    if (!glow) {
       return;
     }
 
@@ -96,9 +91,7 @@ export function HomeOperatingRoomBackground() {
     let pageReady = false;
     let spotlightX = 50;
     let spotlightY = 50;
-    let spotlightRadius = 0;
     let sectionBounds = section?.getBoundingClientRect();
-    let dotsSize = { width: 0, height: 0 };
     let pointerFrame: number | undefined;
     let pendingPointer: { x: number; y: number } | undefined;
 
@@ -116,47 +109,8 @@ export function HomeOperatingRoomBackground() {
       }
     };
 
-    const resizeDots = (width: number, height: number) => {
-      dotsSize = { width, height };
-    };
-
-    const drawDots = (centerX: number, centerY: number, radius: number) => {
-      if (!dotsSize.width || !dotsSize.height) {
-        return;
-      }
-
-      const { width, height } = dotsSize;
-      const baseRadiusX = (2 / width) * 100;
-      const baseRadiusY = (2 / height) * 100;
-
-      const dotNodes = Array.from(dots.querySelectorAll<SVGEllipseElement>("ellipse"));
-
-      dotNodes.forEach((dot, index) => {
-        const column = index % DOT_COLUMNS;
-        const row = Math.floor(index / DOT_COLUMNS);
-        const dotX = ((column + 0.5) / DOT_COLUMNS) * 100;
-        const dotY = ((row + 0.5) / DOT_ROWS) * 100;
-        const distance = radius > 0 ? Math.hypot((dotX - centerX) * 0.78, dotY - centerY) : Infinity;
-        const influence = radius > 0 ? Math.max(0, 1 - distance / (radius * 1.18)) : 0;
-        const scale = 0.42 + influence * 2.55;
-        const opacity = 0.18 + influence * 0.7;
-
-        dot.setAttribute("rx", `${baseRadiusX * scale}`);
-        dot.setAttribute("ry", `${baseRadiusY * scale}`);
-        dot.setAttribute("opacity", `${opacity}`);
-        dot.setAttribute("fill", influence > 0.12
-          ? `rgba(255, 190, 216, ${0.42 + influence * 0.46})`
-          : "rgba(215, 215, 215, 0.42)");
-      });
-    };
-
-    const initialDotsBounds = dots.getBoundingClientRect();
-    resizeDots(initialDotsBounds.width, initialDotsBounds.height);
-
     const resizeObserver = section ? new ResizeObserver(() => {
       sectionBounds = section.getBoundingClientRect();
-      resizeDots(sectionBounds.width, sectionBounds.height);
-      drawDots(spotlightX, spotlightY, spotlightRadius);
     }) : undefined;
 
     if (section && resizeObserver) {
@@ -172,8 +126,6 @@ export function HomeOperatingRoomBackground() {
       glow.style.setProperty("--spotlight-radius", `${radius}%`);
       glow.style.setProperty("--spotlight-soft-radius", `${radius * 0.45}%`);
       glow.style.setProperty("--spotlight-wide-radius", `${radius * 1.55}%`);
-      spotlightRadius = radius;
-      drawDots(centerX, centerY, radius);
     };
 
     const getMobilePhotoBounds = (radius: number) => {
@@ -200,8 +152,6 @@ export function HomeOperatingRoomBackground() {
     const hideSpotlight = () => {
       reveal?.style.setProperty("clip-path", "circle(0% at 50% 50%)");
       glow.style.opacity = "0";
-      spotlightRadius = 0;
-      drawDots(50, 50, 0);
     };
 
     const startSpotlight = () => {
@@ -366,30 +316,7 @@ export function HomeOperatingRoomBackground() {
 
   return (
     <div aria-hidden="true" className="home-hero__operating-room">
-      <svg
-        aria-hidden="true"
-        className="home-hero__operating-room-dots"
-        preserveAspectRatio="none"
-        ref={dotsRef}
-        viewBox="0 0 100 100"
-      >
-        {Array.from({ length: DOT_COLUMNS * DOT_ROWS }, (_, index) => {
-          const column = index % DOT_COLUMNS;
-          const row = Math.floor(index / DOT_COLUMNS);
-
-          return (
-            <ellipse
-              cx={((column + 0.5) / DOT_COLUMNS) * 100}
-              cy={((row + 0.5) / DOT_ROWS) * 100}
-              fill="rgba(215, 215, 215, 0.42)"
-              key={index}
-              opacity="0.2"
-              rx="0.2"
-              ry="0.2"
-            />
-          );
-        })}
-      </svg>
+      <span className="home-hero__operating-room-dots" />
       {backgroundRequested ? (
         <>
           <Image
