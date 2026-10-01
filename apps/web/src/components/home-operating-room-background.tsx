@@ -399,7 +399,7 @@ export function HomeOperatingRoomBackground() {
             fill
             loading="lazy"
             sizes="100vw"
-            src="/images/home/operating-room-bw.png"
+            src="/images/home/operating-room-bw.webp"
           />
           <Image
             alt=""
@@ -408,7 +408,7 @@ export function HomeOperatingRoomBackground() {
             fill
             loading="lazy"
             sizes="100vw"
-            src="/images/home/operating-room-bw.png"
+            src="/images/home/operating-room-bw.webp"
             ref={revealRef}
           />
         </>

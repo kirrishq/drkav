@@ -1,9 +1,8 @@
 import { cn } from "@drkav/ui";
 
-/* eslint-disable @next/next/no-img-element -- the third-party logo is loaded directly because the external host rejects Next.js proxy requests. */
+/* eslint-disable @next/next/no-img-element -- this small local SVG does not need the image optimizer. */
 
 const PRODOCTOROV_URL = "https://prodoctorov.ru/moskva/vrach/158087-korobov/";
-const PRODOCTOROV_LOGO_URL = "https://prodoctorov.ru/static/_v1/pd/logos/logo-pd-widget.png";
 
 type ProdoctorovRatingBannerProps = {
   className?: string;
@@ -25,7 +24,7 @@ export function ProdoctorovRatingBanner({ className }: ProdoctorovRatingBannerPr
           decoding="async"
           height="17"
           loading="lazy"
-          src={PRODOCTOROV_LOGO_URL}
+          src="/images/branding/prodoctorov-widget.svg"
           width="112"
         />
         <span aria-hidden="true" className="prodoctorov-rating-banner__stars">★★★★★</span>

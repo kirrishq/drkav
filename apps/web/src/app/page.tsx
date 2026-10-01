@@ -189,7 +189,7 @@ export default async function HomePage() {
                 priority
                 quality={75}
                 sizes="(min-width: 80rem) 30rem, (min-width: 40rem) 36vw, calc(100vw - 2rem)"
-                src="/images/home/doctor-hero-suit-half.png"
+                src="/images/home/doctor-hero-suit-half.webp"
               />
             </div>
           </div>
