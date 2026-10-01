@@ -52,7 +52,7 @@ export function PortfolioIndex({ cases, variant = "default" }: PortfolioIndexCon
             <div className="portfolio-index__case-content">
               <p className={variant === "compact" ? "portfolio-index__case-operation portfolio-index__case-operation--compact" : "type-overline portfolio-index__case-operation"}>{getOperationLabel(portfolioCase.operations, portfolioCase.caseLabel)}</p>
               <h2 className="card-title card-title--prominent portfolio-index__case-title">{portfolioCase.title}</h2>
-              <p className="type-text-base portfolio-index__excerpt">{portfolioCase.excerpt}</p>
+              {portfolioCase.excerpt ? <p className="type-text-base portfolio-index__excerpt">{portfolioCase.excerpt}</p> : null}
               <p className="type-text-sm portfolio-index__procedure"><span className="type-overline">Выполнено</span>{portfolioCase.procedureSummary}</p>
               <span className="type-label portfolio-index__case-link">
                 Смотреть кейс <ArrowIcon />

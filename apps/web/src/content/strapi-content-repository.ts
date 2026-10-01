@@ -1428,7 +1428,7 @@ function mapPortfolioCaseSummary(
       `${label}.canonicalPath`,
     ),
     title: requireString(portfolioCase.title, `${label}.title`),
-    excerpt: requireString(portfolioCase.excerpt, `${label}.excerpt`),
+    excerpt: optionalString(portfolioCase.excerpt, `${label}.excerpt`) ?? "",
     caseLabel: requireString(portfolioCase.caseLabel, `${label}.caseLabel`),
     resultTerm: requireString(portfolioCase.resultTerm, `${label}.resultTerm`),
     procedureSummary: requireString(

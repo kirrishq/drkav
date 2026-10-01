@@ -16,7 +16,7 @@
       "unique": true
     },
     "canonicalPath": { "type": "string", "required": true, "unique": true },
-    "excerpt": { "type": "text", "required": true },
+    "excerpt": { "type": "text", "required": false },
     "caseLabel": { "type": "string", "required": true },
     "resultTerm": { "type": "string", "required": true },
     "procedureSummary": { "type": "text", "required": true },

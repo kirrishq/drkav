@@ -111,7 +111,7 @@ export function BlocksRenderer({
             {block.children.map((item, itemIndex) => (
               <li className={accentList ? "content-card__list-item" : undefined} key={itemIndex}>
                 {accentList ? <span aria-hidden="true" className="content-card__list-marker" /> : null}
-                <InlineContent>{item.children}</InlineContent>
+                {accentList ? <span><InlineContent>{item.children}</InlineContent></span> : <InlineContent>{item.children}</InlineContent>}
               </li>
             ))}
           </List>

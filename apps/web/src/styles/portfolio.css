@@ -333,12 +333,14 @@
   }
 
   .portfolio-case__operation-links a {
-    color: inherit;
+    color: var(--text-primary);
     text-decoration: none;
+    transition: color var(--motion-fast) ease;
   }
 
   .portfolio-case__operation-links a:hover,
   .portfolio-case__operation-links a:focus-visible {
+    color: var(--accent-hover);
     text-decoration: underline;
     text-underline-offset: var(--space-1);
   }

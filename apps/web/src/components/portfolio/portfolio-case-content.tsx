@@ -97,19 +97,15 @@ export function PortfolioCaseContent({
     <article className="portfolio-case">
       <header className="content-card content-card--intro portfolio-case__hero">
         <h1 className="content-card__heading content-card__heading--h1 portfolio-case__title">{portfolioCase.title}</h1>
-        <p className="content-card__lead portfolio-case__lead">{portfolioCase.excerpt}</p>
+        {portfolioCase.excerpt ? <p className="content-card__lead portfolio-case__lead">{portfolioCase.excerpt}</p> : null}
         <dl className="portfolio-case__facts">
           <div>
             <dt className="type-overline">Операция</dt>
             <dd className="portfolio-case__operation-links">
               {portfolioCase.operations.length > 0
-                ? portfolioCase.operations.map((operation) => <Link href={operation.canonicalPath} key={operation.canonicalPath}>{operation.heading}</Link>)
+                ? portfolioCase.operations.map((operation) => <Link className="portfolio-case__operation-link" href={operation.canonicalPath} key={operation.canonicalPath}>{operation.heading}</Link>)
                 : portfolioCase.caseLabel}
             </dd>
-          </div>
-          <div>
-            <dt className="type-overline">Результат через</dt>
-            <dd>{portfolioCase.resultTerm}</dd>
           </div>
           <div>
             <dt className="type-overline">Выполнено</dt>
@@ -141,7 +137,7 @@ export function PortfolioCaseContent({
                   {section.eyebrow ? <p className="type-overline">{section.eyebrow}</p> : null}
                   {section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}
                 </div> : null}
-                <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" headingIdPrefix={`portfolio-${section.sectionKey}`} />
+                <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" headingIdPrefix={`portfolio-${section.sectionKey}`} listVariant="accent" />
               </section>
             );
           }
@@ -166,7 +162,7 @@ export function PortfolioCaseContent({
                 <div className="portfolio-case__stage-copy">
                   <p className="type-overline portfolio-case__term">{section.term}</p>
                   {section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}
-                  <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" headingIdPrefix={`portfolio-${section.sectionKey}`} />
+                  <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" headingIdPrefix={`portfolio-${section.sectionKey}`} listVariant="accent" />
                 </div>
                 {section.media.length > 0 ? <div className="portfolio-case__stage-media">{section.media.map((asset) => <PortfolioMedia asset={asset} key={asset.url} />)}</div> : null}
               </section>
