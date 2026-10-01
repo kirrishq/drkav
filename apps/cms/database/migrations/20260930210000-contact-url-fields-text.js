@@ -14,22 +14,32 @@ const urlColumns = [
 
 module.exports = {
   async up(knex) {
-    if (knex.client.config.client !== 'pg') {
+    if (
+      knex.client.config.client !== 'pg' ||
+      !(await knex.schema.hasTable(tableName))
+    ) {
       return;
     }
 
     for (const column of urlColumns) {
-      await knex.raw('alter table ?? alter column ?? type text', [tableName, column]);
+      if (await knex.schema.hasColumn(tableName, column)) {
+        await knex.raw('alter table ?? alter column ?? type text', [tableName, column]);
+      }
     }
   },
 
   async down(knex) {
-    if (knex.client.config.client !== 'pg') {
+    if (
+      knex.client.config.client !== 'pg' ||
+      !(await knex.schema.hasTable(tableName))
+    ) {
       return;
     }
 
     for (const column of urlColumns) {
-      await knex.raw('alter table ?? alter column ?? type varchar(255)', [tableName, column]);
+      if (await knex.schema.hasColumn(tableName, column)) {
+        await knex.raw('alter table ?? alter column ?? type varchar(255)', [tableName, column]);
+      }
     }
   },
 };
