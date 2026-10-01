@@ -1,9 +1,22 @@
 {$SITE_DOMAIN} {
+    log {
+        output stdout
+        format json
+    }
+
+    @known_scanners path /.env /.env/* /.git /.git/* /cgi-bin /cgi-bin/* /phpmyadmin /phpmyadmin/* /server-status /vendor/phpunit /vendor/phpunit/* /wp-admin /wp-admin/* /wp-login.php /xmlrpc.php
+    respond @known_scanners 404
+
     encode zstd gzip
     reverse_proxy web:3000
 }
 
 {$CMS_DOMAIN} {
+    log {
+        output stdout
+        format json
+    }
+
     encode zstd gzip
 
     basic_auth {

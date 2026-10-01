@@ -60,6 +60,11 @@ services:
     image: caddy:2-alpine
     env_file:
       - ./deploy/env/caddy.env
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
     ports:
       - "80:80"
       - "443:443"
