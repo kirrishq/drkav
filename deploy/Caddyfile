@@ -27,15 +27,13 @@
         {$CMS_BASIC_AUTH_USER} {$CMS_BASIC_AUTH_HASH}
     }
 
-    # Strapi protects the admin API with its own session/JWT. Caddy only
-    # protects the initial admin document; public CMS API and upload paths
-    # stay closed from the internet.
-    @cms_admin path /admin /admin/*
-    handle @cms_admin {
-        reverse_proxy cms:1337
-    }
-
-    handle {
+    # Strapi protects its admin and plugin routes with its own session/JWT.
+    # Keep the public content API and direct upload storage closed from the
+    # internet while allowing the admin application to call its own routes.
+    @cms_public path /api /api/* /uploads /uploads/*
+    handle @cms_public {
         respond 404
     }
+
+    reverse_proxy cms:1337
 }
