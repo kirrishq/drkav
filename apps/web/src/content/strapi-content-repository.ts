@@ -981,9 +981,20 @@ function mapPortfolioMedia(
 }
 
 function mapSiteImagePath(value: unknown, label: string): ImageAsset {
-  const url = requireCanonicalPath(value, label);
+  const path = requireString(value, label);
+  const publicMediaUrl = process.env.MEDIA_PUBLIC_URL?.trim().replace(/\/$/, "");
+  const isLegacyLocalUpload =
+    path.startsWith("/uploads/")
+    || path.startsWith("http://cms:1337/uploads/")
+    || path.startsWith("http://localhost:1337/uploads/");
 
-  return { url };
+  if (isLegacyLocalUpload && publicMediaUrl) {
+    return {
+      url: `${publicMediaUrl}${path.replace(/^https?:\/\/[^/]+/, "").replace(/^\/uploads(?=\/)/, "")}`,
+    };
+  }
+
+  return { url: requireCanonicalPath(path, label) };
 }
 
 function requireCanonicalPath(value: unknown, label: string): string {
