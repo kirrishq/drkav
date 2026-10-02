@@ -2642,7 +2642,9 @@ export class StrapiContentRepository implements ContentRepository {
       );
     });
 
-    params.set("populate[sharedSections]", "*");
+    ["sectionKey", "internalName", "type", "heading", "description", "body"].forEach((field, index) => {
+      params.set(`populate[sharedSections][fields][${index}]`, field);
+    });
   }
 
   private populateBuilderPage(params: URLSearchParams): void {
