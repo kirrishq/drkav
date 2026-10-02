@@ -51,11 +51,18 @@ const cmsImageRemotePatterns = (() => {
   }
 })();
 
+const s3ImageRemotePatterns = [{
+  hostname: "s3.ru1.storage.beget.cloud",
+  pathname: "/**",
+  protocol: "https" as const,
+}];
+
 const nextConfig: NextConfig = {
   headers: async () => [{ source: "/(.*)", headers: securityHeaders }],
   images: {
     remotePatterns: [
       ...cmsImageRemotePatterns,
+      ...s3ImageRemotePatterns,
     ],
   },
   transpilePackages: ["@drkav/ui", "@drkav/content-contracts"],
