@@ -907,7 +907,15 @@ function mapImage(
 
   const image = requireRecord(value, label);
   const path = requireString(image.url, `${label}.url`);
-  const url = new URL(path, `${baseUrl}/`);
+  const publicMediaUrl = process.env.MEDIA_PUBLIC_URL?.trim().replace(/\/$/, "");
+  const isLegacyLocalUpload =
+    path.startsWith("/uploads/")
+    || path.startsWith("http://cms:1337/uploads/")
+    || path.startsWith("http://localhost:1337/uploads/");
+  const normalizedPath = isLegacyLocalUpload && publicMediaUrl
+    ? `${publicMediaUrl}${path.replace(/^https?:\/\/[^/]+/, "")}`
+    : path;
+  const url = new URL(normalizedPath, `${baseUrl}/`);
 
   if (url.protocol !== "http:" && url.protocol !== "https:") {
     throw new CmsInvalidResponseError(
