@@ -1,4 +1,27 @@
 services:
+  amo-proxy:
+    profiles: ["amo"]
+    build:
+      context: ./apps/amo-proxy
+      dockerfile: Dockerfile
+    env_file:
+      - ./deploy/env/amo.env
+    volumes:
+      - ./deploy/secrets/amo_auth.set:/run/amo/auth.set:rw
+    expose:
+      - "8080"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          node -e "fetch('http://127.0.0.1:8080/health').then((response) =>
+          process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+
   cms:
     build:
       context: .

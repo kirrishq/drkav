@@ -368,8 +368,6 @@ async function sendToAmo(request: Request, kind: FormKind, payload: AmoFormPaylo
     if (value) params.set(key, value);
   }
 
-  if (process.env.AMO_TEST_MODE === "true") params.set("test", "1");
-
   const response = await fetchWithDeliveryRetry(proxyUrl, {
     body: params,
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
