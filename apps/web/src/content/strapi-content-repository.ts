@@ -1673,7 +1673,8 @@ export class StrapiContentRepository implements ContentRepository {
     const page = await this.getFirst(
       "/api/static-pages",
       params,
-      `static-page:${encodeURIComponent(pageKey)}`,
+      `static-page:${encodeURIComponent(canonicalPath ?? pageKey)}`,
+      { noStore: Boolean(canonicalPath) },
     );
 
     if (!page) {
