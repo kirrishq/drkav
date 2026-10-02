@@ -20,6 +20,8 @@ export { FeatureLinkCard } from "./feature-link-card";
 export type { FeatureLinkCardProps } from "./feature-link-card";
 export { FilterChip } from "./filter-chip";
 export type { FilterChipProps } from "./filter-chip";
+export { ContentFilters } from "./content-filters";
+export type { ContentFilterOption, ContentFiltersProps } from "./content-filters";
 export { FinalResultsSlider } from "./final-results-slider";
 export type {
   FinalResultCard,

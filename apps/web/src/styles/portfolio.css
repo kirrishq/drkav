@@ -6,13 +6,24 @@
 
   .portfolio-index .page-intro__content {
     display: grid;
-    gap: var(--space-8);
-    margin-top: var(--space-8);
+    gap: var(--space-5);
+    margin-top: var(--space-5);
+  }
+
+  .portfolio-index .patient-subpage__main {
+    gap: var(--space-5);
   }
 
   .portfolio-index .portfolio-index__list {
     margin-top: 0;
   }
+
+  .portfolio-index__filters-card {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .portfolio-index__filters-title { margin: 0; }
 
   .portfolio-index__principles p,
   .portfolio-index__case-operation,
@@ -49,8 +60,8 @@
 
   .portfolio-index__list {
     display: grid;
-    gap: var(--space-8);
-    margin-top: var(--space-8);
+    gap: var(--space-5);
+    margin-top: var(--space-5);
   }
 
   .portfolio-index__case {

@@ -11,6 +11,8 @@
     "title": { "type": "string", "required": true },
     "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
     "imagePath": { "type": "string", "required": true },
+    "date": { "type": "date", "required": false },
+    "isFeatured": { "type": "boolean", "required": true, "default": false },
     "sortOrder": { "type": "integer", "required": true, "min": 0 },
     "operation": { "type": "relation", "relation": "manyToOne", "target": "api::operation.operation" }
   }

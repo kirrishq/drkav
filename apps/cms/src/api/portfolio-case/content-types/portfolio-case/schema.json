@@ -27,6 +27,7 @@
       "required": true,
       "allowedTypes": ["images"]
     },
+    "date": { "type": "date", "required": false },
     "isFeatured": { "type": "boolean", "required": true, "default": false },
     "sortOrder": { "type": "integer", "required": true, "min": 0 },
     "seo": {

@@ -294,6 +294,8 @@ export interface BeforeAfterCase {
   title: string;
   image: ImageAsset;
   operation: OperationCatalogLink;
+  date?: string;
+  isFeatured: boolean;
 }
 
 export type ReviewKind = "patient" | "prodoctorov" | "social" | "video";
@@ -661,6 +663,7 @@ export interface PortfolioCaseSummary {
   tags: readonly string[];
   cover: ImageAsset;
   operations: readonly OperationCatalogLink[];
+  date?: string;
   isFeatured: boolean;
 }
 

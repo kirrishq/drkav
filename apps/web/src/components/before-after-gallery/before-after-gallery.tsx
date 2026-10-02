@@ -1,7 +1,7 @@
 "use client";
 
-import type { BeforeAfterCase } from "@drkav/content-contracts";
-import { Button } from "@drkav/ui";
+import type { BeforeAfterCase, OperationCatalogGroup } from "@drkav/content-contracts";
+import { Button, ContentFilters } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
 import { createPortal } from "react-dom";
@@ -17,15 +17,29 @@ function ArrowIcon({ direction }: { direction: "next" | "previous" }) {
   return <svg aria-hidden="true" fill="none" viewBox="0 0 24 24"><path d={direction === "next" ? "m9 5 7 7-7 7" : "m15 5-7 7 7 7"} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" /></svg>;
 }
 
-export function BeforeAfterGallery({ items }: { items: readonly BeforeAfterCase[] }) {
+export function BeforeAfterGallery({
+  filterGroups = [],
+  items,
+}: {
+  filterGroups?: readonly OperationCatalogGroup[];
+  items: readonly BeforeAfterCase[];
+}) {
   const [modal, setModal] = useState<ModalState | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [motionStyle, setMotionStyle] = useState<CSSProperties>();
   const [viewedSlugs, setViewedSlugs] = useState<ReadonlySet<string>>(new Set());
   const [visibleCount, setVisibleCount] = useState(12);
+  const [activeFilterId, setActiveFilterId] = useState("all");
   const [isMounted, setIsMounted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  const availableFilterGroups = filterGroups.filter((group) =>
+    items.some((item) => group.operations.some((operation) => operation.canonicalPath === item.operation.canonicalPath)),
+  );
+  const filteredItems = activeFilterId === "all"
+    ? items
+    : items.filter((item) => availableFilterGroups.find((group) => group.key === activeFilterId)?.operations.some((operation) => operation.canonicalPath === item.operation.canonicalPath));
 
   const markViewed = useCallback((slug: string) => {
     setViewedSlugs((current) => {
@@ -37,13 +51,13 @@ export function BeforeAfterGallery({ items }: { items: readonly BeforeAfterCase[
 
   const navigateCase = useCallback((direction: "next" | "previous") => {
     if (!modal) return;
-    const currentIndex = items.findIndex((item) => item.slug === modal.item.slug);
+    const currentIndex = filteredItems.findIndex((item) => item.slug === modal.item.slug);
     const nextIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
-    const nextItem = items[nextIndex];
+    const nextItem = filteredItems[nextIndex];
     if (!nextItem) return;
     markViewed(nextItem.slug);
     setModal({ ...modal, item: nextItem });
-  }, [items, markViewed, modal]);
+  }, [filteredItems, markViewed, modal]);
 
   const closeModal = useCallback(() => {
     setIsClosing(true);
@@ -111,6 +125,10 @@ export function BeforeAfterGallery({ items }: { items: readonly BeforeAfterCase[
     if (stored) setViewedSlugs(new Set(JSON.parse(stored) as string[]));
   }, []);
 
+  useEffect(() => {
+    setVisibleCount(12);
+  }, [activeFilterId]);
+
   function openCase(item: BeforeAfterCase, origin: DOMRect) {
     markViewed(item.slug);
     setIsOpen(false);
@@ -124,25 +142,26 @@ export function BeforeAfterGallery({ items }: { items: readonly BeforeAfterCase[
     setIsClosing(false);
   }
 
-  const currentIndex = modal ? items.findIndex((item) => item.slug === modal.item.slug) : -1;
-  const visibleItems = items.slice(0, visibleCount);
+  const currentIndex = modal ? filteredItems.findIndex((item) => item.slug === modal.item.slug) : -1;
+  const visibleItems = filteredItems.slice(0, visibleCount);
 
   return <>
-    <div className="before-after-gallery">
+    {availableFilterGroups.length > 0 ? <ContentFilters activeId={activeFilterId} ariaLabel="Фильтр результатов по части тела" className="before-after-gallery__filters" options={availableFilterGroups.map((group) => ({ id: group.key, label: group.name }))} onChange={setActiveFilterId} /> : null}
+    {visibleItems.length > 0 ? <div className="before-after-gallery">
       {visibleItems.map((item) => <button aria-label={`Открыть изображение: ${item.title}`} className={`before-after-gallery__tile${viewedSlugs.has(item.slug) ? " before-after-gallery__tile--viewed" : ""}`} key={item.slug} onClick={(event) => openCase(item, event.currentTarget.getBoundingClientRect())} type="button">
         <Image alt={item.title} className="before-after-gallery__image" fill sizes="(min-width: 64rem) 25vw, (min-width: 48rem) 33vw, 50vw" src={item.image.url} />
         <span className="before-after-gallery__label">{item.operation.heading}</span>
         {viewedSlugs.has(item.slug) ? <span className="before-after-gallery__viewed">Просмотрено</span> : null}
       </button>)}
-    </div>
-    {visibleCount < items.length ? <div className="before-after-gallery__more"><Button onClick={() => setVisibleCount((count) => count + 12)} variant="outline">Показать ещё</Button></div> : null}
+    </div> : <p className="before-after-gallery__empty">Для выбранной части тела пока нет опубликованных результатов.</p>}
+    {visibleCount < filteredItems.length ? <div className="before-after-gallery__more"><Button onClick={() => setVisibleCount((count) => count + 12)} variant="outline">Показать ещё</Button></div> : null}
     {isMounted && modal ? createPortal(<div aria-modal="true" className={`before-after-modal${isOpen ? " before-after-modal--open" : ""}`} onClick={(event) => { if (event.target === event.currentTarget) closeModal(); }} role="dialog">
       <div className="before-after-modal__panel" onTransitionEnd={(event) => { if (event.propertyName === "transform") finishClosing(); }} ref={panelRef} style={motionStyle}>
         <div className="before-after-modal__close">
           <Button aria-label="Закрыть" onClick={closeModal} size="icon" variant="ghost"><CloseIcon /></Button>
         </div>
         <button aria-label="Предыдущий кейс" className="before-after-modal__navigation before-after-modal__navigation--previous" disabled={currentIndex <= 0} onClick={() => navigateCase("previous")} type="button"><ArrowIcon direction="previous" /></button>
-        <button aria-label="Следующий кейс" className="before-after-modal__navigation before-after-modal__navigation--next" disabled={currentIndex >= items.length - 1} onClick={() => navigateCase("next")} type="button"><ArrowIcon direction="next" /></button>
+        <button aria-label="Следующий кейс" className="before-after-modal__navigation before-after-modal__navigation--next" disabled={currentIndex >= filteredItems.length - 1} onClick={() => navigateCase("next")} type="button"><ArrowIcon direction="next" /></button>
         <div className="before-after-modal__media">
           <Image alt={modal.item.image.alternativeText ?? modal.item.title} className="before-after-modal__image" fill sizes="(min-width: 64rem) 42rem, calc(100vw - 2rem)" src={modal.item.image.url} />
         </div>

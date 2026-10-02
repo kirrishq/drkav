@@ -67,7 +67,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const siteNavigation = await getSiteNavigation();
 
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html data-scroll-behavior="smooth" lang="ru" suppressHydrationWarning>
       <head>
         <Script
           id="theme-bootstrap"

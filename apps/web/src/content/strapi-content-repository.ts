@@ -170,6 +170,14 @@ function requireBoolean(value: unknown, label: string): boolean {
   return value;
 }
 
+function optionalBoolean(value: unknown, label: string): boolean | undefined {
+  if (value === null || value === undefined) {
+    return undefined;
+  }
+
+  return requireBoolean(value, label);
+}
+
 function optionalNumber(value: unknown, label: string): number | undefined {
   if (value === null || value === undefined) {
     return undefined;
@@ -913,7 +921,7 @@ function mapImage(
     || path.startsWith("http://cms:1337/uploads/")
     || path.startsWith("http://localhost:1337/uploads/");
   const normalizedPath = isLegacyLocalUpload && publicMediaUrl
-    ? `${publicMediaUrl}${path.replace(/^https?:\/\/[^/]+/, "")}`
+    ? `${publicMediaUrl}${path.replace(/^https?:\/\/[^/]+/, "").replace(/^\/uploads(?=\/)/, "")}`
     : path;
   const url = new URL(normalizedPath, `${baseUrl}/`);
 
@@ -1451,6 +1459,7 @@ function mapPortfolioCaseSummary(
     ).map((operation, operationIndex) =>
       mapCatalogLink(operation, `${label}.operations[${operationIndex}]`),
     ),
+    date: optionalString(portfolioCase.date, `${label}.date`),
     isFeatured: requireBoolean(
       portfolioCase.isFeatured,
       `${label}.isFeatured`,
@@ -2061,10 +2070,14 @@ export class StrapiContentRepository implements ContentRepository {
       "slug",
       "title",
       "imagePath",
+      "date",
+      "isFeatured",
       "sortOrder",
     ]);
     params.set("pagination[pageSize]", "100");
-    params.set("sort[0]", "sortOrder:asc");
+    params.set("sort[0]", "isFeatured:desc");
+    params.set("sort[1]", "date:desc");
+    params.set("sort[2]", "sortOrder:asc");
     params.set("populate[operation][fields][0]", "canonicalPath");
     params.set("populate[operation][fields][1]", "heading");
 
@@ -2083,6 +2096,8 @@ export class StrapiContentRepository implements ContentRepository {
         title: requireString(item.title, `${label}.title`),
         image: mapSiteImagePath(item.imagePath, `${label}.imagePath`),
         operation: mapCatalogLink(item.operation, `${label}.operation`),
+        date: optionalString(item.date, `${label}.date`),
+        isFeatured: optionalBoolean(item.isFeatured, `${label}.isFeatured`) ?? false,
       };
     });
   }
@@ -2092,6 +2107,8 @@ export class StrapiContentRepository implements ContentRepository {
       "slug",
       "title",
       "imagePath",
+      "date",
+      "isFeatured",
     ]);
     params.set("filters[slug][$eq]", slug);
     params.set("populate[operation][fields][0]", "canonicalPath");
@@ -2114,6 +2131,8 @@ export class StrapiContentRepository implements ContentRepository {
       title: requireString(item.title, `beforeAfterCase:${slug}.title`),
       image: mapSiteImagePath(item.imagePath, `beforeAfterCase:${slug}.imagePath`),
       operation: mapCatalogLink(item.operation, `beforeAfterCase:${slug}.operation`),
+      date: optionalString(item.date, `beforeAfterCase:${slug}.date`),
+      isFeatured: optionalBoolean(item.isFeatured, `beforeAfterCase:${slug}.isFeatured`) ?? false,
     };
   }
 
@@ -2254,6 +2273,7 @@ export class StrapiContentRepository implements ContentRepository {
       "resultTerm",
       "procedureSummary",
       "tags",
+      "date",
       "isFeatured",
     ]);
     params.set("filters[slug][$eq]", slug);
@@ -2512,12 +2532,14 @@ export class StrapiContentRepository implements ContentRepository {
       "resultTerm",
       "procedureSummary",
       "tags",
+      "date",
       "isFeatured",
       "sortOrder",
     ]);
     params.set("pagination[pageSize]", "100");
     params.set("sort[0]", "isFeatured:desc");
-    params.set("sort[1]", "sortOrder:asc");
+    params.set("sort[1]", "date:desc");
+    params.set("sort[2]", "sortOrder:asc");
     return params;
   }
 

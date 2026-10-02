@@ -1,6 +1,7 @@
 "use client";
 
-import type { PortfolioIndexContent } from "@drkav/content-contracts";
+import type { OperationCatalogGroup, PortfolioIndexContent } from "@drkav/content-contracts";
+import { ContentFilters } from "@drkav/ui";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,16 +27,40 @@ function getOperationLabel(operations: PortfolioIndexContent["cases"][number]["o
   return operations.length > 0 ? operations.map((operation) => operation.heading).join(" · ") : fallback;
 }
 
-export function PortfolioIndex({ cases, variant = "default" }: PortfolioIndexContent & { variant?: "default" | "compact" }) {
+export function PortfolioIndex({
+  cases,
+  filterGroups = [],
+  variant = "default",
+}: PortfolioIndexContent & {
+  filterGroups?: readonly OperationCatalogGroup[];
+  variant?: "default" | "compact";
+}) {
   const [revealedCases, setRevealedCases] = useState<ReadonlySet<string>>(new Set());
+  const [activeFilterId, setActiveFilterId] = useState("all");
 
   if (cases.length === 0) {
     return <p className="portfolio-index__empty">Кейсы готовятся к публикации.</p>;
   }
 
+  const availableFilterGroups = filterGroups.filter((group) =>
+    cases.some((portfolioCase) => portfolioCase.operations.some((operation) =>
+      group.operations.some((groupOperation) => groupOperation.canonicalPath === operation.canonicalPath),
+    )),
+  );
+  const filteredCases = activeFilterId === "all"
+    ? cases
+    : cases.filter((portfolioCase) => portfolioCase.operations.some((operation) =>
+      availableFilterGroups.find((group) => group.key === activeFilterId)?.operations.some((groupOperation) => groupOperation.canonicalPath === operation.canonicalPath),
+    ));
+
   return (
-    <div className={`portfolio-index__list${variant === "compact" ? " portfolio-index__list--compact" : ""}`}>
-      {cases.map((portfolioCase, index) => (
+    <>
+      {variant === "default" && availableFilterGroups.length > 0 ? <section className="content-card portfolio-index__filters-card">
+        <h2 className="content-card__heading content-card__heading--h2 portfolio-index__filters-title">Кейсы</h2>
+        <ContentFilters activeId={activeFilterId} ariaLabel="Фильтр кейсов по части тела" options={availableFilterGroups.map((group) => ({ id: group.key, label: group.name }))} onChange={setActiveFilterId} />
+      </section> : null}
+      {filteredCases.length === 0 ? <p className="portfolio-index__empty">Для выбранной части тела пока нет опубликованных кейсов.</p> : <div className={`portfolio-index__list${variant === "compact" ? " portfolio-index__list--compact" : ""}`}>
+      {filteredCases.map((portfolioCase, index) => (
         <article className="content-card content-card--spacious portfolio-index__case" key={portfolioCase.slug}>
           <Link className="portfolio-index__card-link" href={portfolioCase.canonicalPath}>
             <span className="portfolio-index__media">
@@ -76,6 +101,7 @@ export function PortfolioIndex({ cases, variant = "default" }: PortfolioIndexCon
           </button>
         </article>
       ))}
-    </div>
+      </div>}
+    </>
   );
 }

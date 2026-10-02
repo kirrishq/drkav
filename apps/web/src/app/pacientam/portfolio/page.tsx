@@ -82,7 +82,11 @@ const patientReviewVideos = [
 ];
 
 export default async function PortfolioPage() {
-  const portfolio = await createContentRepository().getPortfolioIndex();
+  const repository = createContentRepository();
+  const [portfolio, filterGroups] = await Promise.all([
+    repository.getPortfolioIndex(),
+    repository.getOperationCatalog(),
+  ]);
 
-  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Портфолио" }]} className="patient-subpage-page portfolio-index" description="Кейсы пациентов с кратким описанием операции и сроком результата." pageKey="portfolio" title="Портфолио пластических операций"><PatientSubpageLayout><div className="content-card content-card--muted portfolio-index__principles"><p><span className="type-overline">01</span>Показываем результат честно и с указанием срока после операции.</p><p><span className="type-overline">02</span>Объясняем, почему был выбран именно такой план вмешательства.</p><p><span className="type-overline">03</span>Публикуем материалы с разрешения пациентов.</p></div><MediaVideoProjects items={patientReviewVideos} title="Видеокейсы" tone="surface" /><PortfolioIndex {...portfolio} /></PatientSubpageLayout><PatientRelatedPages currentHref="/pacientam/portfolio" /></StaticPage>;
+  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Портфолио" }]} className="patient-subpage-page portfolio-index" description="Кейсы пациентов с кратким описанием операции и сроком результата." pageKey="portfolio" title="Портфолио пластических операций"><PatientSubpageLayout><div className="content-card content-card--muted portfolio-index__principles"><p><span className="type-overline">01</span>Показываем результат честно и с указанием срока после операции.</p><p><span className="type-overline">02</span>Объясняем, почему был выбран именно такой план вмешательства.</p><p><span className="type-overline">03</span>Публикуем материалы с разрешения пациентов.</p></div><MediaVideoProjects items={patientReviewVideos} title="Видеокейсы" tone="surface" /><PortfolioIndex {...portfolio} filterGroups={filterGroups} /></PatientSubpageLayout><PatientRelatedPages currentHref="/pacientam/portfolio" /></StaticPage>;
 }

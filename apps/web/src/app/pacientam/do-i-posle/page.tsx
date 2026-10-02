@@ -11,6 +11,10 @@ export async function generateMetadata() {
 }
 
 export default async function BeforeAfterPage() {
-  const cases = await createContentRepository().getBeforeAfterCases();
-  return <StaticPage pageKey="before-after" breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "До/после" }]} className="patient-subpage-page" description="Фотографии результатов операций и примеры работ доктора Коробова." title="Результаты операций: до и после"><PatientSubpageLayout><BeforeAfterGallery items={cases} /></PatientSubpageLayout><PatientRelatedPages currentHref="/pacientam/do-i-posle" /></StaticPage>;
+  const repository = createContentRepository();
+  const [cases, filterGroups] = await Promise.all([
+    repository.getBeforeAfterCases(),
+    repository.getOperationCatalog(),
+  ]);
+  return <StaticPage pageKey="before-after" breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "До/после" }]} className="patient-subpage-page" description="Фотографии результатов операций и примеры работ доктора Коробова." title="Результаты операций: до и после"><PatientSubpageLayout><BeforeAfterGallery filterGroups={filterGroups} items={cases} /></PatientSubpageLayout><PatientRelatedPages currentHref="/pacientam/do-i-posle" /></StaticPage>;
 }
