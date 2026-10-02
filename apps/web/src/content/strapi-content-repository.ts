@@ -1659,14 +1659,15 @@ export class StrapiContentRepository implements ContentRepository {
     return settings ? mapSiteNavigation(settings) : null;
   }
 
-  async getStaticPage(pageKey: string): Promise<StaticPageContent | null> {
+  async getStaticPage(pageKey: string, canonicalPath?: string): Promise<StaticPageContent | null> {
     const params = this.createPublishedParams([
       "pageKey",
+      "canonicalPath",
       "heading",
       "heroDescription",
       "contentStatus",
     ]);
-    params.set("filters[pageKey][$eq]", pageKey);
+    params.set(`filters[${canonicalPath ? "canonicalPath" : "pageKey"}][$eq]`, canonicalPath ?? pageKey);
     this.populatePageFields(params);
     this.populateStaticPageContent(params);
     const page = await this.getFirst(
@@ -1688,6 +1689,7 @@ export class StrapiContentRepository implements ContentRepository {
 
     return {
       pageKey: requireString(page.pageKey, "staticPage.pageKey"),
+      canonicalPath: optionalString(page.canonicalPath, "staticPage.canonicalPath"),
       seo: mapSeo(page.seo, this.baseUrl, "staticPage.seo"),
       heading: optionalString(page.heading, "staticPage.heading"),
       heroDescription: optionalString(
@@ -1718,6 +1720,10 @@ export class StrapiContentRepository implements ContentRepository {
         "staticPage.contentStatus",
       ),
     };
+  }
+
+  async getStaticPageByPath(path: string): Promise<StaticPageContent | null> {
+    return this.getStaticPage("", path);
   }
 
   async getBuilderPageByPath(

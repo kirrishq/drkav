@@ -129,6 +129,7 @@ export interface BuilderPage {
 
 export interface StaticPageContent {
   pageKey: string;
+  canonicalPath?: string;
   seo: SeoData;
   heading?: string;
   heroDescription?: string;
@@ -750,6 +751,7 @@ export type ConditionIndexContent = BlogIndexContent;
 export interface ContentRepository {
   getSiteNavigation(): Promise<SiteNavigation | null>;
   getStaticPage(pageKey: string): Promise<StaticPageContent | null>;
+  getStaticPageByPath(path: string): Promise<StaticPageContent | null>;
   getBuilderPageByPath(
     path: string,
     mode?: ContentReadMode,

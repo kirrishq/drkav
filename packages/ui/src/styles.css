@@ -1639,6 +1639,10 @@ html[data-vision="low-vision"] a {
     transition: border-color var(--duration-normal) var(--ease-standard);
   }
 
+  .record-card--muted {
+    background: var(--surface-muted);
+  }
+
   .record-card--interactive:hover {
     border-color: var(--accent);
   }

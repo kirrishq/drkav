@@ -167,6 +167,9 @@
 
   .patient-related-pages {
     margin-top: var(--space-12);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--surface-muted);
   }
 
   .patient-related-pages__title {

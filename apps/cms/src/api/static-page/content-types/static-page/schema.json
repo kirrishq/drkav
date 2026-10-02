@@ -21,6 +21,12 @@
       "required": true,
       "unique": true
     },
+    "canonicalPath": {
+      "type": "string",
+      "required": false,
+      "unique": true,
+      "regex": "^\\/[a-z0-9-]+(?:\\/[a-z0-9-]+)*$"
+    },
     "seo": {
       "type": "component",
       "component": "shared.seo",

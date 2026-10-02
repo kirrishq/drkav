@@ -22,7 +22,7 @@ export function StaticPageSections({ sections }: { sections: readonly StaticPage
           ) : section.type === "card-grid" ? (
             <div className="content-card__grid">
               {section.cards.map((card) => (
-                <RecordCard description={card.description} href={card.href} key={card.href} title={card.title} />
+                <RecordCard className="record-card--muted" description={card.description} href={card.href} key={card.href} title={card.title} />
               ))}
             </div>
           ) : section.type === "faq" ? (

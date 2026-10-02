@@ -22,7 +22,7 @@ export default async function PatientsPage() {
           <h2 className="content-card__heading content-card__heading--h2">{section.title}</h2>
           <div className="content-card__grid">
             {section.pages.map((page) => (
-              <RecordCard details={[{ value: page.description }]} href={page.href} key={page.href} title={page.title} />
+              <RecordCard className="record-card--muted" details={[{ value: page.description }]} href={page.href} key={page.href} title={page.title} />
             ))}
           </div>
         </section>
