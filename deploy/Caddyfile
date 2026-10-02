@@ -19,9 +19,23 @@
 
     encode zstd gzip
 
-    basic_auth {
+    @cms_admin_entry {
+        path /admin /admin/
+    }
+
+    basic_auth @cms_admin_entry {
         {$CMS_BASIC_AUTH_USER} {$CMS_BASIC_AUTH_HASH}
     }
 
-    reverse_proxy cms:1337
+    # Strapi protects the admin API with its own session/JWT. Caddy only
+    # protects the initial admin document; public CMS API and upload paths
+    # stay closed from the internet.
+    @cms_admin path /admin /admin/*
+    handle @cms_admin {
+        reverse_proxy cms:1337
+    }
+
+    handle {
+        respond 404
+    }
 }
