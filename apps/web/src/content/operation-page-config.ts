@@ -1,4 +1,5 @@
 import type { CmsMigratedOperationPath } from "./cms-migrated-operations";
+import { operationCategoryFallbackImages } from "./operation-category-images";
 
 export type OperationPagePromotion = {
   description: string;
@@ -21,7 +22,7 @@ export type OperationPageEnhancement = {
 
 const operationPageOverrides: Partial<Record<CmsMigratedOperationPath, Partial<OperationPageEnhancement>>> = {
   "/operaczii/plastika-grudi": {
-    heroImageSrc: "/images/operations/mammoplasty-hero.png",
+    heroImageSrc: operationCategoryFallbackImages.breast,
     heroDescription: "Маммопластика помогает подобрать способ коррекции груди под ваши задачи — увеличение, подтяжка, уменьшение или сочетание методов.",
     promotion: {
       description: "Оперируйтесь у доктора Коробова и получите в подарок процедуру стоимостью до 350 000 ₽ — липофилинг рук или интимную пластику на выбор. Предложение действует ограниченное время.",
@@ -103,47 +104,39 @@ const operationPageOverrides: Partial<Record<CmsMigratedOperationPath, Partial<O
 };
 
 function getHeroImageSrc(path: CmsMigratedOperationPath): string {
-  if (path.includes("plastika-grudi") || path.includes("lipofiling-grudi")) {
-    return "/images/operations/mammoplasty-hero.png";
+  if (path.includes("plastika-grudi")) {
+    return operationCategoryFallbackImages.breast;
   }
 
   if (path.includes("rf-lifting")) {
-    return "/images/operations/heroes/rf-face-neck.png";
+    return operationCategoryFallbackImages["non-surgical-rf-lifting"];
   }
 
   if (path.includes("intimnaya-plastika")) {
-    return "/images/operations/heroes/intimate.png";
+    return operationCategoryFallbackImages["intimate-surgery"];
   }
 
-  if (
-    path.includes("lipofiling-yagodic") ||
-    path.includes("podtyazhka-yagodic") ||
-    path.includes("podtyazhka-beder") ||
-    path.includes("muzhskaya-podtyazhka-yagodic")
-  ) {
-    return "/images/operations/heroes/hips.png";
+  if (path.includes("plasticheskaya-hirurgiya-posle-rodov")) {
+    return operationCategoryFallbackImages.postpartum;
   }
 
-  if (
-    path.includes("podtyazhka-ruk") ||
-    path.includes("liposakcziya-ruk") ||
-    path.includes("atletizaciya-plech-i-ruk")
-  ) {
-    return "/images/operations/heroes/arms.png";
-  }
-
-  if (
-    path.includes("liposakcziya-spiny") ||
-    path.includes("vdovego-gorbika")
-  ) {
-    return "/images/operations/heroes/back-neck.png";
+  if (path.includes("plasticheskaya-hirurgiya-posle-pohudeniya")) {
+    return operationCategoryFallbackImages["after-weight-loss"];
   }
 
   if (path.includes("muzhskaya-plastika")) {
-    return "/images/operations/heroes/male-torso.png";
+    return operationCategoryFallbackImages["male-athletic-contouring"];
   }
 
-  return "/images/operations/heroes/abdomen.png";
+  if (
+    path.includes("liposkulptura") ||
+    path.includes("lipofiling") ||
+    path.includes("liposakcziya")
+  ) {
+    return operationCategoryFallbackImages["body-contouring"];
+  }
+
+  return operationCategoryFallbackImages["abdomen-and-waist"];
 }
 
 export function getOperationPageEnhancement(
