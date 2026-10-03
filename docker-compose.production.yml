@@ -7,7 +7,9 @@ services:
     env_file:
       - ./deploy/env/amo.env
     volumes:
-      - ./deploy/secrets/amo_auth.set:/run/amo/auth.set:rw
+      # Mount a dedicated writable directory so OAuth refresh-token rotation
+      # can atomically replace auth.set without exposing other project secrets.
+      - ./deploy/secrets/amo:/run/amo:rw
     expose:
       - "8080"
     restart: unless-stopped
