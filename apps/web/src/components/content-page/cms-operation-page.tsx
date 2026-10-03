@@ -13,6 +13,7 @@ import {
 } from "@drkav/ui";
 
 import { DoctorProfile } from "@/components/doctor-profile/doctor-profile";
+import { ContributionPatent } from "@/components/contribution-patent/contribution-patent";
 import { OperationRelatedContent } from "@/components/operation-related-content/operation-related-content";
 import { BlocksRenderer } from "@/components/operation-content/blocks-renderer";
 import { OperationContentRenderer } from "@/components/operation-content/operation-content-renderer";
@@ -140,9 +141,16 @@ export async function CmsOperationPage({
       section !== introSection &&
       section !== promotionSection,
   );
-  const heroLinks = getOperationHeroLinks(contentSections);
+  const patentSection = path === "/operaczii/diastaz-myshc-zhivota"
+    ? contentSections.find((section) => section.heading === "Патент")
+    : undefined;
+  const renderedContentSections = patentSection
+    ? contentSections.filter((section) => section !== patentSection)
+    : contentSections;
+  const heroLinks = getOperationHeroLinks(renderedContentSections);
   const contentNavigation = [
-    ...getOperationContentLinks(contentSections),
+    ...(patentSection ? [{ id: "operation-patent", label: "Патент" }] : []),
+    ...getOperationContentLinks(renderedContentSections),
     { id: "operation-consultation", label: "Консультация", variant: "accent" as const },
   ];
 
@@ -163,14 +171,6 @@ export async function CmsOperationPage({
         />
         <div className="operation-page__content">
           <div className="operation-page__layout">
-            {contentNavigation.length > 0 ? (
-              <SectionNavigation
-                ariaLabel={`Содержание страницы «${content.heading}»`}
-                className="operation-page__navigation"
-                items={contentNavigation}
-              />
-            ) : null}
-
             <div className="operation-page__main">
               {promotion ? (
                 <PromotionBanner
@@ -190,9 +190,16 @@ export async function CmsOperationPage({
                   <VideoCard {...enhancement.video} location={content.heading} showDetails={false} year="" />
                 </section>
               ) : null}
+              {patentSection ? (
+                <div id="operation-patent">
+                  <ContributionPatent
+                    lead={patentSection.type === "rich-text" ? extractText(patentSection.body) : undefined}
+                  />
+                </div>
+              ) : null}
               <OperationContentRenderer
                 prices={content.prices}
-                sections={contentSections}
+                sections={renderedContentSections}
                 showNavigation={false}
               />
               <section
@@ -230,6 +237,15 @@ export async function CmsOperationPage({
                 name="Ольга"
               />
             </div>
+
+            {contentNavigation.length > 0 ? (
+              <SectionNavigation
+                ariaLabel={`Содержание страницы «${content.heading}»`}
+                backLink={{ href: "/operaczii", label: "Все операции" }}
+                className="operation-page__navigation"
+                items={contentNavigation}
+              />
+            ) : null}
           </div>
         </div>
       </main>

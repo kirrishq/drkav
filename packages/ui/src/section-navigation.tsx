@@ -13,6 +13,10 @@ export type SectionNavigationItem = {
 
 export type SectionNavigationProps = {
   ariaLabel: string;
+  backLink?: {
+    href: string;
+    label: string;
+  };
   className?: string;
   items: readonly SectionNavigationItem[];
   title?: string;
@@ -87,7 +91,7 @@ function SectionLinks({
   );
 }
 
-export function SectionNavigation({ ariaLabel, className, items, title }: SectionNavigationProps) {
+export function SectionNavigation({ ariaLabel, backLink, className, items, title }: SectionNavigationProps) {
   const mobilePanelId = useId();
   const firstItemId = items[0]?.id ?? "";
   const [activeId, setActiveId] = useState(firstItemId);
@@ -130,6 +134,12 @@ export function SectionNavigation({ ariaLabel, className, items, title }: Sectio
     <>
       <aside className={cn("section-navigation__desktop", className)}>
         <nav aria-label={ariaLabel} className="section-navigation__panel">
+          {backLink ? (
+            <a className="type-overline section-navigation__back-link" href={backLink.href}>
+              <span aria-hidden="true">←</span>
+              <span>{formatRussianText(backLink.label)}</span>
+            </a>
+          ) : null}
           {title ? <p className="type-overline section-navigation__title">{title}</p> : null}
           <SectionLinks activeId={activeId} availableIds={availableIds} items={items} />
         </nav>
@@ -140,6 +150,12 @@ export function SectionNavigation({ ariaLabel, className, items, title }: Sectio
           className={cn("section-navigation__mobile-list", !mobileOpen && "section-navigation__mobile-list--hidden")}
           id={mobilePanelId}
         >
+          {backLink ? (
+            <a className="type-overline section-navigation__back-link" href={backLink.href} onClick={() => setMobileOpen(false)}>
+              <span aria-hidden="true">←</span>
+              <span>{formatRussianText(backLink.label)}</span>
+            </a>
+          ) : null}
           {title ? <p className="type-overline section-navigation__title">{title}</p> : null}
           <nav aria-label={ariaLabel}>
             <SectionLinks

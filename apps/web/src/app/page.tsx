@@ -111,33 +111,17 @@ export default async function HomePage() {
     ? finalResults.groups
       .filter((group) => !homeFinalResultExcludedCategoryKeys.has(group.key))
       .map((group) => ({ id: group.key, label: group.name }))
-    : homeFinalResultFallbacks.map(({ id, label }) => ({ id, label }));
-  const resultItems = resultTabs.flatMap((tab) => {
-    const cmsItems = finalResults.results.filter((result) => result.categoryKey === tab.id);
-
-    if (cmsItems.length > 0) {
-      return cmsItems.map((result) => ({
-        href: result.operation.canonicalPath,
-        id: result.slug,
-        imageAlt: result.image.alternativeText ?? `${result.title} — финальный результат`,
-        imageSrc: result.image.url,
-        label: result.title,
-        tabId: result.categoryKey,
-      }));
-    }
-
-    const fallback = homeFinalResultFallbacks.find((item) => item.id === tab.id);
-    const group = finalResults.groups.find((item) => item.key === tab.id);
-
-    return [{
-      href: group?.featuredOperation.canonicalPath ?? fallback?.href ?? "/operaczii",
-      id: `placeholder-${tab.id}`,
-      imageAlt: `Заглушка для результатов: ${tab.label}`,
-      imageSrc: "/images/before-after/results-placeholder.svg",
-      label: tab.label,
-      tabId: tab.id,
-    }];
-  });
+    : [];
+  const resultItems = finalResults.results
+    .filter((result) => !homeFinalResultExcludedCategoryKeys.has(result.categoryKey))
+    .map((result) => ({
+      href: result.operation.canonicalPath,
+      id: result.slug,
+      imageAlt: result.image.alternativeText ?? `${result.title} — финальный результат`,
+      imageSrc: result.image.url,
+      label: result.title,
+      tabId: result.categoryKey,
+    }));
   const operationItems = finalResults.groups.length > 0
     ? finalResults.groups.map((group) => ({
         id: group.key,
@@ -183,13 +167,13 @@ export default async function HomePage() {
             </div>
             <div className="home-hero__portrait">
               <Image
-                alt="Артём Владимирович Коробов в чёрном костюме и белом медицинском халате, портрет по пояс"
+                alt="Артём Владимирович Коробов в медицинском халате"
                 className="home-hero__portrait-image"
                 fill
                 priority
                 quality={75}
                 sizes="(min-width: 80rem) 30rem, (min-width: 40rem) 36vw, calc(100vw - 2rem)"
-                src="/images/home/doctor-hero-suit-half.webp"
+                src="/images/home/doctor-hero-man.png"
               />
             </div>
           </div>
@@ -197,15 +181,17 @@ export default async function HomePage() {
         <BenefitsStrip items={getHomeBenefits(benefitCards)} />
         <VideoHighlights ctaHref="/obo-mne/vystupleniya" items={homeVideoHighlights} />
         {doctorSection ? <SharedSectionContent section={doctorSection} /> : <DoctorProfile />}
-        <FinalResultsSlider
-          links={[
-            { href: "/pacientam/portfolio", label: "Портфолио кейсов" },
-            { href: "/pacientam/do-i-posle", label: "Фото до/после" },
-            { href: "/pacientam/otzyvy", label: "Отзывы пациентов" },
-          ]}
-          items={resultItems}
-          tabs={resultTabs}
-        />
+        {resultItems.length > 0 && resultTabs.length > 0 ? (
+          <FinalResultsSlider
+            links={[
+              { href: "/pacientam/portfolio", label: "Портфолио кейсов" },
+              { href: "/pacientam/do-i-posle", label: "Фото до/после" },
+              { href: "/pacientam/otzyvy", label: "Отзывы пациентов" },
+            ]}
+            items={resultItems}
+            tabs={resultTabs}
+          />
+        ) : null}
         {operationsSection ? <SharedSectionContent section={operationsSection} /> : <OperationsCards items={operationItems} />}
         {reviewsSection ? <SharedSectionContent section={reviewsSection} /> : <ReviewsSlider ctaHref="/pacientam/otzyvy" filterGroups={reviewFilterGroups} items={reviewItems} />}
         {consultationSection ? <SharedSectionContent section={consultationSection} /> : <ConsultationSection captchaSiteKey={process.env.NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY} submitUrl="/api/forms/consultation" />}

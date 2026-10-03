@@ -79,7 +79,7 @@
     }
 
     .operation-page__layout {
-      grid-template-columns: var(--container-operation-sidebar) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) var(--container-operation-sidebar);
       align-items: start;
       gap: var(--space-5);
     }

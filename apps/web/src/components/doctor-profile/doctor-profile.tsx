@@ -49,7 +49,7 @@ export function DoctorProfile() {
             fill
             loading="lazy"
             sizes="(min-width: 64rem) 18rem, (min-width: 48rem) 30vw, 40vw"
-            src="/images/doctor-operating-room.png"
+            src="/images/doctor-profile.png"
           />
         </div>
         <ProdoctorovRatingBanner className="doctor-profile__rating" />

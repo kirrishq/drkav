@@ -10,7 +10,7 @@
     "develop": "strapi develop",
     "seed": "node scripts/seed.js",
     "seed:blog": "node scripts/seed-blog.js",
-    "seed:before-after": "node scripts/seed-before-after.js",
+    "cleanup:placeholder-results": "node scripts/remove-placeholder-results.js",
     "seed:reviews": "node scripts/seed-reviews.js",
     "seed:conditions": "node scripts/seed-conditions.js",
     "seed:media-publications": "node scripts/seed-media-publications.js",

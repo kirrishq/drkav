@@ -107,7 +107,7 @@ function SectionContent({
     return (
       <>
         <SectionHeading heading={section.heading} level={headingLevel} />
-        <BlocksRenderer blocks={section.body} />
+        <BlocksRenderer blocks={section.body} listVariant="accent" />
       </>
     );
   }
@@ -116,7 +116,7 @@ function SectionContent({
     return (
       <>
         <SectionHeading heading={section.heading} level={headingLevel} />
-        {section.intro ? <BlocksRenderer blocks={section.intro} /> : null}
+        {section.intro ? <BlocksRenderer blocks={section.intro} listVariant="accent" /> : null}
         <ol className="operation-content__steps">
           {section.steps.map((step, index) => (
             <li className="operation-content__step" key={`${step.title}-${index}`}>
@@ -132,7 +132,7 @@ function SectionContent({
             </li>
           ))}
         </ol>
-        {section.outro ? <BlocksRenderer blocks={section.outro} /> : null}
+        {section.outro ? <BlocksRenderer blocks={section.outro} listVariant="accent" /> : null}
       </>
     );
   }
@@ -141,11 +141,11 @@ function SectionContent({
     return (
       <>
         <SectionHeading heading={section.heading} level={headingLevel} />
-        {section.intro ? <BlocksRenderer blocks={section.intro} /> : null}
+        {section.intro ? <BlocksRenderer blocks={section.intro} listVariant="accent" /> : null}
         <PriceList prices={prices} />
         {section.disclaimer ? (
           <div className="operation-content__disclaimer">
-            <BlocksRenderer blocks={section.disclaimer} />
+          <BlocksRenderer blocks={section.disclaimer} listVariant="accent" />
           </div>
         ) : null}
       </>
@@ -155,12 +155,12 @@ function SectionContent({
   return (
     <>
       <SectionHeading heading={section.heading} level={headingLevel} />
-      {section.intro ? <BlocksRenderer blocks={section.intro} /> : null}
+      {section.intro ? <BlocksRenderer blocks={section.intro} listVariant="accent" /> : null}
       <TextItems
         checklist={section.type === "checklist"}
         items={section.items}
       />
-      {section.outro ? <BlocksRenderer blocks={section.outro} /> : null}
+      {section.outro ? <BlocksRenderer blocks={section.outro} listVariant="accent" /> : null}
     </>
   );
 }
