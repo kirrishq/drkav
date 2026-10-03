@@ -145,7 +145,7 @@ export function getCmsFetchCacheOptions(
   return {
     next: {
       revalidate: resolveCmsRevalidateSeconds(),
-      tags: [cacheTag],
+      tags: [cacheTag, "cms"],
     },
   };
 }
