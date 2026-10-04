@@ -1,13 +1,14 @@
 import { ArrowUpRightIcon, ConsultationTrigger, RecordCard, buttonVariants, cn } from "@drkav/ui";
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { ProdoctorovRatingBanner } from "@/components/prodoctorov-rating-banner/prodoctorov-rating-banner";
 
 const doctorHighlights = [
   {
     href: "/obo-mne#about-doctor",
     id: "sime",
-    title: <>Один из первых в России применил <strong>SIME</strong> — безопасный липофилинг груди</>,
+    title: <>Один из первых в России применил <strong>SIME</strong> — безопасный липофилинг ягодиц</>,
   },
   {
     href: "/obo-mne#patents",
@@ -38,7 +39,17 @@ const doctorLinks = [
   { href: "/obo-mne/vystupleniya", label: "Видео" },
 ] as const;
 
-export function DoctorProfile() {
+export function DoctorProfile({
+  description,
+  highlights = doctorHighlights,
+  links = doctorLinks,
+  title = "О докторе",
+}: {
+  description?: string;
+  highlights?: readonly { href: string; id: string; title: ReactNode }[];
+  links?: readonly { href: string; label: string }[];
+  title?: string;
+}) {
   return (
     <section aria-labelledby="doctor-profile-title" className="doctor-profile">
       <div className="doctor-profile__visual">
@@ -56,14 +67,11 @@ export function DoctorProfile() {
       </div>
 
       <div className="doctor-profile__content">
-        <h2 className="type-h2 doctor-profile__title" id="doctor-profile-title">О докторе</h2>
-        <p className="doctor-profile__lead">
-          Доктор Коробов — пластический хирург, <span>кандидат медицинских наук</span>.<br />
-          16+ лет практики в мужской и женской пластике.
-        </p>
+        <h2 className="type-h2 doctor-profile__title" id="doctor-profile-title">{title}</h2>
+        <p className="doctor-profile__lead">{description ?? <>Доктор Коробов — пластический хирург, <span>кандидат медицинских наук</span>.<br />16+ лет практики в мужской и женской пластике.</>}</p>
 
         <div className="doctor-profile__highlights">
-          {doctorHighlights.map((highlight) => (
+          {highlights.map((highlight) => (
             <RecordCard
               className="doctor-profile__highlight"
               href={highlight.href}
@@ -74,7 +82,7 @@ export function DoctorProfile() {
         </div>
 
         <nav aria-label="Материалы о докторе" className="doctor-profile__links">
-          {doctorLinks.map((link) => (
+          {links.map((link) => (
             <Link className="doctor-profile__link" href={link.href} key={link.href}>
               {link.label}
               <span aria-hidden="true" className="record-card__arrow record-card__arrow--inline">

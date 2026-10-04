@@ -801,6 +801,28 @@ function mapSharedSection(
 ): SharedSection {
   const label = `${ownerLabel}.sharedSections[${index}]`;
   const section = requireRecord(value, label);
+  const details = Array.isArray(section.details)
+    ? section.details.map((detail, detailIndex) => requireString(detail, `${label}.details[${detailIndex}]`))
+    : undefined;
+  const highlights = Array.isArray(section.highlights)
+    ? section.highlights.map((highlight, highlightIndex) => {
+      const item = requireRecord(highlight, `${label}.highlights[${highlightIndex}]`);
+      return {
+        href: requireNavigationHref(item.href, `${label}.highlights[${highlightIndex}].href`),
+        id: requireString(item.id, `${label}.highlights[${highlightIndex}].id`),
+        title: requireString(item.title, `${label}.highlights[${highlightIndex}].title`),
+      };
+    })
+    : undefined;
+  const links = Array.isArray(section.links)
+    ? section.links.map((link, linkIndex) => {
+      const item = requireRecord(link, `${label}.links[${linkIndex}]`);
+      return {
+        href: requireNavigationHref(item.href, `${label}.links[${linkIndex}].href`),
+        label: requireString(item.label, `${label}.links[${linkIndex}].label`),
+      };
+    })
+    : undefined;
 
   return {
     sectionKey: requireString(section.sectionKey, `${label}.sectionKey`),
@@ -809,6 +831,15 @@ function mapSharedSection(
     heading: optionalString(section.heading, `${label}.heading`),
     description: optionalString(section.description, `${label}.description`),
     body: optionalBlocks(section.body, `${label}.body`, baseUrl),
+    personName: optionalString(section.personName, `${label}.personName`),
+    personRole: optionalString(section.personRole, `${label}.personRole`),
+    ctaLabel: optionalString(section.ctaLabel, `${label}.ctaLabel`),
+    ctaHref: section.ctaHref === undefined || section.ctaHref === null
+      ? undefined
+      : requireNavigationHref(section.ctaHref, `${label}.ctaHref`),
+    details,
+    highlights,
+    links,
   };
 }
 
@@ -2510,7 +2541,7 @@ export class StrapiContentRepository implements ContentRepository {
   }
 
   private populateArticleSharedSections(params: URLSearchParams): void {
-    ["sectionKey", "internalName", "type", "heading", "description", "body"].forEach((field, index) => {
+    ["sectionKey", "internalName", "type", "heading", "description", "body", "personName", "personRole", "ctaLabel", "ctaHref", "details", "highlights", "links"].forEach((field, index) => {
       params.set(`populate[sharedSections][fields][${index}]`, field);
     });
   }
@@ -2655,7 +2686,7 @@ export class StrapiContentRepository implements ContentRepository {
       );
     });
 
-    ["sectionKey", "internalName", "type", "heading", "description", "body"].forEach((field, index) => {
+    ["sectionKey", "internalName", "type", "heading", "description", "body", "personName", "personRole", "ctaLabel", "ctaHref", "details", "highlights", "links"].forEach((field, index) => {
       params.set(`populate[sharedSections][fields][${index}]`, field);
     });
   }

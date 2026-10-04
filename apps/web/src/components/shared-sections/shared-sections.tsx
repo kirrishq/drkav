@@ -17,14 +17,24 @@ import { getOptimizedImageSrcSet } from "@/content/optimized-image";
 
 export async function SharedSectionContent({ section }: { section: SharedSection }) {
   if (section.type === "doctor-profile") {
-    return <DoctorProfile />;
+    return (
+      <DoctorProfile
+        description={section.description}
+        highlights={section.highlights}
+        links={section.links}
+        title={section.heading}
+      />
+    );
   }
 
   if (section.type === "consultation") {
     return (
       <ConsultationSection
         captchaSiteKey={process.env.NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY}
+        description={section.description}
+        details={section.details}
         submitUrl="/api/forms/consultation"
+        title={section.heading}
       />
     );
   }
@@ -34,10 +44,12 @@ export async function SharedSectionContent({ section }: { section: SharedSection
       <AdministratorCta
         avatarSrc="/images/home/administrator-avatar.png"
         backgroundSrc="/images/home/administrator-cta-background.png"
-        ctaHref={administratorContact.whatsappHref}
-        ctaLabel="Написать Ольге"
-        description="Если нужно уточнить детали операции, формат консультации, свободные даты или просто задать вопрос, напишите Ольге. Она сориентирует и поможет организовать запись."
-        name="Ольга"
+        ctaHref={section.ctaHref ?? administratorContact.whatsappHref}
+        ctaLabel={section.ctaLabel ?? "Написать Ольге"}
+        description={section.description ?? "Если нужно уточнить детали операции, формат консультации, свободные даты или просто задать вопрос, напишите Ольге. Она сориентирует и поможет организовать запись."}
+        name={section.personName ?? "Ольга"}
+        role={section.personRole}
+        title={section.heading}
       />
     );
   }
@@ -62,6 +74,7 @@ export async function SharedSectionContent({ section }: { section: SharedSection
   if (section.type === "operations-catalog") {
     return (
       <OperationsCards
+        description={section.description}
         items={operationGroups.map((group) => ({
           id: group.key,
           imageAlt: group.image?.alternativeText ?? `Иллюстрация: ${group.name}`,
@@ -74,6 +87,7 @@ export async function SharedSectionContent({ section }: { section: SharedSection
           })),
           title: group.name,
         }))}
+        title={section.heading}
       />
     );
   }
@@ -83,9 +97,12 @@ export async function SharedSectionContent({ section }: { section: SharedSection
 
   return (
     <ReviewsSlider
-      ctaHref="/pacientam/otzyvy"
+      ctaHref={section.ctaHref ?? "/pacientam/otzyvy"}
+      ctaLabel={section.ctaLabel}
+      description={section.description}
       filterGroups={reviews.length > 0 ? getReviewFilterGroups(reviews, operationGroups) : []}
       items={reviewItems}
+      title={section.heading}
     />
   );
 }

@@ -113,6 +113,7 @@ export function PortfolioCaseContent({
           <SectionNavigation
             ariaLabel="Содержание кейса"
             className="portfolio-case__navigation"
+            disableUnavailable={false}
             items={navigationItems}
             title="Содержание"
           />

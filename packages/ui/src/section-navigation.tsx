@@ -18,6 +18,7 @@ export type SectionNavigationProps = {
     label: string;
   };
   className?: string;
+  disableUnavailable?: boolean;
   items: readonly SectionNavigationItem[];
   title?: string;
 };
@@ -91,7 +92,7 @@ function SectionLinks({
   );
 }
 
-export function SectionNavigation({ ariaLabel, backLink, className, items, title }: SectionNavigationProps) {
+export function SectionNavigation({ ariaLabel, backLink, className, disableUnavailable = true, items, title }: SectionNavigationProps) {
   const mobilePanelId = useId();
   const firstItemId = items[0]?.id ?? "";
   const [activeId, setActiveId] = useState(firstItemId);
@@ -141,7 +142,7 @@ export function SectionNavigation({ ariaLabel, backLink, className, items, title
             </a>
           ) : null}
           {title ? <p className="type-overline section-navigation__title">{title}</p> : null}
-          <SectionLinks activeId={activeId} availableIds={availableIds} items={items} />
+          <SectionLinks activeId={activeId} availableIds={disableUnavailable ? availableIds : new Set(items.map((item) => item.id))} items={items} />
         </nav>
       </aside>
 
@@ -160,7 +161,7 @@ export function SectionNavigation({ ariaLabel, backLink, className, items, title
           <nav aria-label={ariaLabel}>
             <SectionLinks
               activeId={activeId}
-              availableIds={availableIds}
+              availableIds={disableUnavailable ? availableIds : new Set(items.map((item) => item.id))}
               items={items}
               onNavigate={() => setMobileOpen(false)}
             />

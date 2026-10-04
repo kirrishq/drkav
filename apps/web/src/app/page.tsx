@@ -20,6 +20,7 @@ import { getReviewFilterGroups, mapReviewsToSliderItems } from "@/content/review
 import { getStaticPageContent } from "@/content/static-page";
 import { getCardGridItems } from "@/content/static-page-text";
 import { getOptimizedImageSrcSet } from "@/content/optimized-image";
+import type { ContentAction } from "@drkav/content-contracts";
 import academicBackgroundAnimation from "@/assets/lottie/home-benefits/academic-background.json";
 import doctorHealthAnimation from "@/assets/lottie/home-benefits/doctor-health.json";
 import headquarterAnimation from "@/assets/lottie/home-benefits/headquarter.json";
@@ -86,6 +87,17 @@ const homeFinalResultFallbacks = [
 
 const homeFinalResultExcludedCategoryKeys = new Set(["intimate-surgery"]);
 
+function HomeAction({ action, fallback, primary = false }: { action?: ContentAction; fallback: ContentAction; primary?: boolean }) {
+  const current = action ?? fallback;
+  const className = buttonVariants({ size: "md", variant: primary ? "primary" : "outline" });
+
+  if (primary && (current.href.startsWith("#") || current.href.includes("konsult"))) {
+    return <ConsultationTrigger className={className}>{current.label}</ConsultationTrigger>;
+  }
+
+  return <Link className={cn(className, !primary && "home-hero__secondary-action")} href={current.href}>{current.label}</Link>;
+}
+
 export const metadata = getPageMetadata("/");
 
 export default async function HomePage() {
@@ -96,6 +108,8 @@ export default async function HomePage() {
   ]);
   const heroTitle = cmsHome?.heading ?? "Пластический хирург Артём Владимирович Коробов";
   const heroDescription = cmsHome?.heroDescription ?? "Специализируюсь на абдоминопластике, маммопластике, липоскульптуре, комплексном восстановлении фигуры и мужской атлетизации.";
+  const primaryHeroAction: ContentAction = { href: "#consultation", label: "Записаться на консультацию", openInNewTab: false, variant: "primary" };
+  const secondaryHeroAction: ContentAction = { href: "/ceny", label: "Услуги и цены", openInNewTab: false, variant: "outline" };
   const sharedSections = new Map(cmsHome?.sharedSections.map((section) => [section.type, section]) ?? []);
   const doctorSection = sharedSections.get("doctor-profile");
   const operationsSection = sharedSections.get("operations-catalog");
@@ -161,8 +175,8 @@ export default async function HomePage() {
               <h1 className="type-h1 home-hero__title" id="home-hero-title">{formatRussianText(heroTitle)}</h1>
               <p className="home-hero__description">{formatRussianText(heroDescription)}</p>
               <div className="home-hero__actions">
-                <ConsultationTrigger className={buttonVariants({ size: "md", variant: "primary" })}>Записаться на консультацию</ConsultationTrigger>
-                <Link className={cn(buttonVariants({ size: "md", variant: "outline" }), "home-hero__secondary-action")} href="/ceny">Услуги и цены</Link>
+                <HomeAction action={cmsHome?.primaryAction} fallback={primaryHeroAction} primary />
+                <HomeAction action={cmsHome?.secondaryAction} fallback={secondaryHeroAction} />
               </div>
             </div>
             <div className="home-hero__portrait">

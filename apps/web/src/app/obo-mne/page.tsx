@@ -131,7 +131,7 @@ export default async function AboutPage() {
                   <ul className="content-card__list">
                     {(profileHighlights ?? [
                       {
-                        content: <>Один из первых в России применил <strong>SIME</strong> — безопасный липофилинг груди.</>,
+                        content: <>Один из первых в России применил <strong>SIME</strong> — безопасный липофилинг ягодиц.</>,
                         key: "sime",
                       },
                       {

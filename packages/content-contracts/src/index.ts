@@ -156,6 +156,13 @@ export interface SharedSection {
   heading?: string;
   description?: string;
   body?: readonly RichTextBlock[];
+  personName?: string;
+  personRole?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  details?: readonly string[];
+  highlights?: readonly { id: string; title: string; href: string }[];
+  links?: readonly { label: string; href: string }[];
 }
 
 export interface StaticPageTextItem {

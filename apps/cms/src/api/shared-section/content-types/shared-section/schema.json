@@ -46,6 +46,13 @@
       "type": "blocks",
       "required": false
     },
+    "personName": { "type": "string", "required": false },
+    "personRole": { "type": "string", "required": false },
+    "ctaLabel": { "type": "string", "required": false },
+    "ctaHref": { "type": "string", "required": false },
+    "details": { "type": "json", "required": false },
+    "highlights": { "type": "json", "required": false },
+    "links": { "type": "json", "required": false },
     "staticPages": {
       "type": "relation",
       "relation": "manyToMany",

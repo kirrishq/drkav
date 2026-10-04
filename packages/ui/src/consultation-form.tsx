@@ -268,7 +268,7 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
   );
 }
 
-export function ConsultationSection({ captchaSiteKey, submitUrl }: Pick<ConsultationFormProps, "captchaSiteKey" | "submitUrl">) {
+export function ConsultationSection({ captchaSiteKey, description = "Выберите формат встречи и удобный способ связи — администратор поможет согласовать дату и ответит на организационные вопросы.", details = ["После заявки администратор свяжется с вами"], submitUrl, title = "Запись на консультацию" }: Pick<ConsultationFormProps, "captchaSiteKey" | "submitUrl"> & { description?: string; details?: readonly string[]; title?: string }) {
   return (
     <section aria-labelledby="consultation-section-title" className="consultation-section">
       <div className="consultation-section__layout">
@@ -278,12 +278,12 @@ export function ConsultationSection({ captchaSiteKey, submitUrl }: Pick<Consulta
             className="consultation-section__visual"
             role="img"
           />
-          <h2 className="type-h2 consultation-section__title" id="consultation-section-title">Запись на консультацию</h2>
+          <h2 className="type-h2 consultation-section__title" id="consultation-section-title">{title}</h2>
           <p className="type-text-base consultation-section__description">
-            Выберите формат встречи и удобный способ связи — администратор поможет согласовать дату и ответит на организационные вопросы.
+            {description}
           </p>
           <ul className="consultation-section__details">
-            <li className="type-text-base consultation-section__detail">После заявки администратор свяжется с вами</li>
+            {details.map((detail) => <li className="type-text-base consultation-section__detail" key={detail}>{detail}</li>)}
           </ul>
         </div>
         <ConsultationForm captchaSiteKey={captchaSiteKey} submitUrl={submitUrl} />

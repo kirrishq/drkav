@@ -11,6 +11,7 @@ export type AdministratorCtaProps = {
   ctaLabel?: string;
   description: ReactNode;
   external?: boolean;
+  title?: ReactNode;
   name: string;
   role?: string;
 };
@@ -25,6 +26,7 @@ export function AdministratorCta({
   external = true,
   name,
   role = "Личный администратор",
+  title = "Есть вопрос или нужна помощь с записью?",
 }: AdministratorCtaProps) {
   const titleId = useId();
 
@@ -48,7 +50,7 @@ export function AdministratorCta({
           </div>
         </div>
         <div className="administrator-cta__copy">
-          <h2 className="type-h3 administrator-cta__title" id={titleId}>Есть вопрос или нужна помощь с записью?</h2>
+          <h2 className="type-h3 administrator-cta__title" id={titleId}>{title}</h2>
           <p className="type-text-base administrator-cta__description">{description}</p>
         </div>
         <a

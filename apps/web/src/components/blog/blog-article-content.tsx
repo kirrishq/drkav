@@ -45,7 +45,7 @@ function ArticleTableOfContents({ article }: { article: BlogArticle }) {
 
   if (items.length === 0) return null;
 
-  return <SectionNavigation ariaLabel="Содержание статьи" items={items} title="Содержание" />;
+  return <SectionNavigation ariaLabel="Содержание статьи" disableUnavailable={false} items={items} title="Содержание" />;
 }
 
 function ArticleNeighborNavigation({ articles, cardVariant }: { articles: readonly BlogArticleSummary[]; cardVariant: "default" | "compact" }) {

@@ -27,7 +27,9 @@ export type OperationsCardItem = {
 export type OperationsCardsProps = {
   ariaLabel?: string;
   className?: string;
+  description?: string;
   items: readonly OperationsCardItem[];
+  title?: string;
 };
 
 function CloseIcon() {
@@ -108,15 +110,17 @@ function OperationsDialog({
 export function OperationsCards({
   ariaLabel = "Операции",
   className,
+  description = "Операции любой сложности",
   items,
+  title = "Операции",
 }: OperationsCardsProps) {
   const [activeItem, setActiveItem] = useState<OperationsCardItem | null>(null);
 
   return (
     <section aria-label={ariaLabel} className={cn("operations-cards", className)}>
       <div className="operations-cards__intro">
-        <h2 className="type-h2 operations-cards__title">Операции</h2>
-        <p className="type-text-base operations-cards__description">Операции любой сложности</p>
+        <h2 className="type-h2 operations-cards__title">{title}</h2>
+        <p className="type-text-base operations-cards__description">{description}</p>
       </div>
       {items.length > 0 ? <div className="operations-cards__grid">
         {items.map((item) => (
