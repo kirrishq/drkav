@@ -51,39 +51,14 @@ export const excludedRedirectCandidates: readonly ExcludedRedirectCandidate[] = 
     reason: "normalization-only",
   },
   {
-    source: "/ceny/lechenie-ginekompastii.html",
-    destination: "/operaczii/muzhskaya-plastika/lechenie-ginekompastii",
-    reason: "canonical-destination-not-confirmed",
-  },
-  {
     source: "/operaczii/lechenie-ginekompastii",
     destination: "/operaczii/muzhskaya-plastika/lechenie-ginekompastii",
     reason: "normalization-only",
   },
   {
-    source: "/obo-mne/otzyvy.html",
-    destination: "/pacientam/otzyvy",
-    reason: "source-confirmed-destination-not-confirmed",
-  },
-  {
     source: "/pacientam/otzyvy.html",
     destination: "/pacientam/otzyvy",
     reason: "normalization-only",
-  },
-  {
-    source: "/pacientam/kak-vsyo-budet.html",
-    destination: "/pacientam/kak-vse-budet",
-    reason: "source-confirmed-destination-not-confirmed",
-  },
-  {
-    source: "/pacientam/spisok-analizov.html",
-    destination: "/pacientam/spisok-analizov",
-    reason: "source-confirmed-destination-not-confirmed",
-  },
-  {
-    source: "/pacientam/lichnyy-assistent.html",
-    destination: "/pacientam/lichnyy-assistent",
-    reason: "source-confirmed-destination-not-confirmed",
   },
 ];
 
