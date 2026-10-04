@@ -64,6 +64,7 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaExecuteSignal, setCaptchaExecuteSignal] = useState(0);
   const [captchaResetSignal, setCaptchaResetSignal] = useState(0);
   const formStartedAt = useRef(Date.now());
   const idempotencyKey = useRef<string | null>(null);
@@ -84,7 +85,7 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
     setError(null);
 
     if (captchaSiteKey && !captchaToken) {
-      setError("Подтвердите, что вы не робот.");
+      setCaptchaExecuteSignal((value) => value + 1);
       return;
     }
 
@@ -251,6 +252,7 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
       </div>
 
       <SmartCaptcha
+        executeSignal={captchaExecuteSignal}
         onTokenChange={handleCaptchaTokenChange}
         resetSignal={captchaResetSignal}
         siteKey={captchaSiteKey}

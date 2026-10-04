@@ -7,12 +7,14 @@ type SmartCaptchaWidget = {
   render: (
     container: HTMLElement,
     options: {
-      callback?: (token: string) => void;
-      hl?: string;
-      sitekey: string;
+    callback?: (token: string) => void;
+    hl?: string;
+    invisible?: boolean;
+    sitekey: string;
     },
   ) => string | number;
   reset?: (widgetId?: string | number) => void;
+  execute?: (widgetId?: string | number) => void;
 };
 
 declare global {
@@ -24,10 +26,11 @@ declare global {
 export type SmartCaptchaProps = {
   onTokenChange: (token: string | null) => void;
   resetSignal?: number;
+  executeSignal?: number;
   siteKey?: string;
 };
 
-export function SmartCaptcha({ onTokenChange, resetSignal = 0, siteKey }: SmartCaptchaProps) {
+export function SmartCaptcha({ executeSignal = 0, onTokenChange, resetSignal = 0, siteKey }: SmartCaptchaProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | number | null>(null);
 
@@ -46,6 +49,7 @@ export function SmartCaptcha({ onTokenChange, resetSignal = 0, siteKey }: SmartC
       widgetIdRef.current = window.smartCaptcha.render(containerRef.current, {
         callback: (token) => onTokenChange(token || null),
         hl: "ru",
+        invisible: true,
         sitekey: siteKey,
       });
     };
@@ -70,6 +74,11 @@ export function SmartCaptcha({ onTokenChange, resetSignal = 0, siteKey }: SmartC
       }
     };
   }, [onTokenChange, siteKey]);
+
+  useEffect(() => {
+    if (executeSignal === 0 || widgetIdRef.current === null) return;
+    window.smartCaptcha?.execute?.(widgetIdRef.current);
+  }, [executeSignal]);
 
   useEffect(() => {
     if (resetSignal === 0 || widgetIdRef.current === null) return;

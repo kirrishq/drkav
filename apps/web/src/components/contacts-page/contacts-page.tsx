@@ -86,6 +86,7 @@ function FeedbackForm({ captchaSiteKey }: { captchaSiteKey?: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaExecuteSignal, setCaptchaExecuteSignal] = useState(0);
   const [captchaResetSignal, setCaptchaResetSignal] = useState(0);
   const handleCaptchaTokenChange = useCallback((token: string | null) => setCaptchaToken(token), []);
   const idempotencyKey = useRef<string | null>(null);
@@ -100,7 +101,7 @@ function FeedbackForm({ captchaSiteKey }: { captchaSiteKey?: string }) {
     setError(null);
 
     if (captchaSiteKey && !captchaToken) {
-      setError("Подтвердите, что вы не робот.");
+      setCaptchaExecuteSignal((value) => value + 1);
       return;
     }
 
@@ -183,6 +184,7 @@ function FeedbackForm({ captchaSiteKey }: { captchaSiteKey?: string }) {
         </label>
       </div>
       <SmartCaptcha
+        executeSignal={captchaExecuteSignal}
         onTokenChange={handleCaptchaTokenChange}
         resetSignal={captchaResetSignal}
         siteKey={captchaSiteKey}
