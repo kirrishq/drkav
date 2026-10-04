@@ -398,41 +398,61 @@
   }
 
   .portfolio-case__image-dialog {
-    max-width: 92vw;
-    max-height: 92vh;
-    padding: var(--space-3);
-    border: 0;
-    border-radius: var(--radius-md);
-    background: var(--background);
+    width: min(100% - var(--space-8), var(--container-modal));
+    margin: auto;
+    padding: 0;
+    border: var(--border-width-default) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-raised);
   }
 
   .portfolio-case__image-dialog::backdrop {
-    background: rgb(0 0 0 / 0.72);
+    background: var(--overlay);
+    backdrop-filter: blur(var(--blur-modal));
+    -webkit-backdrop-filter: blur(var(--blur-modal));
+  }
+
+  .portfolio-case__image-dialog-content {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 12rem;
+    max-height: 90vh;
+    padding: var(--space-5);
   }
 
   .portfolio-case__image-dialog-image {
     display: block;
     width: auto;
-    max-width: calc(92vw - var(--space-6));
+    max-width: 100%;
     height: auto;
-    max-height: calc(92vh - var(--space-6));
+    max-height: calc(90vh - var(--space-10));
     object-fit: contain;
   }
 
   .portfolio-case__image-dialog-close {
     position: absolute;
-    top: var(--space-2);
-    right: var(--space-2);
+    top: var(--space-3);
+    right: var(--space-3);
     z-index: 1;
-    width: var(--space-8);
-    height: var(--space-8);
-    border: 0;
-    border-radius: 999px;
-    background: var(--surface-inverse);
-    color: var(--text-inverse);
-    font-size: var(--type-h3-size);
-    line-height: 1;
+    width: var(--space-10);
+    height: var(--space-10);
+    border: var(--border-width-default) solid var(--border-subtle);
+    border-radius: var(--radius-full);
+    background: var(--surface);
+    color: var(--text-primary);
     cursor: pointer;
+  }
+
+  .portfolio-case__image-dialog-close svg {
+    width: var(--space-5);
+    height: var(--space-5);
+  }
+
+  .portfolio-case__image-dialog-close:hover,
+  .portfolio-case__image-dialog-close:focus-visible {
+    background: var(--surface-muted);
   }
 
   .portfolio-case__cover,

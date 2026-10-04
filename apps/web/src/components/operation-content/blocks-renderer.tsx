@@ -7,6 +7,7 @@ import type {
 } from "@drkav/content-contracts";
 import { formatRussianText } from "@drkav/ui";
 import Image from "next/image";
+import { PortfolioImageViewer } from "@/components/portfolio/portfolio-image-viewer";
 
 function TextMarks({ node }: { node: RichTextText }) {
   let content: ReactNode = formatRussianText(node.text);
@@ -64,10 +65,12 @@ export function BlocksRenderer({
   className = "operation-content__blocks",
   listVariant = "default",
   headingIdPrefix,
+  interactiveImages = false,
 }: {
   blocks: readonly RichTextBlock[];
   className?: string;
   headingIdPrefix?: string;
+  interactiveImages?: boolean;
   listVariant?: "default" | "accent";
 }) {
   return (
@@ -91,6 +94,10 @@ export function BlocksRenderer({
         }
 
         if (block.type === "image") {
+          if (interactiveImages) {
+            return <PortfolioImageViewer asset={{ alternativeText: block.image.alternativeText, height: block.image.height, url: block.image.url, width: block.image.width }} key={index} />;
+          }
+
           return (
             <Image
               alt={block.image.alternativeText ?? ""}

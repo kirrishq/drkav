@@ -4,6 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { ImageAsset } from "@drkav/content-contracts";
 
+function CloseIcon() {
+  return <svg aria-hidden="true" fill="none" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" strokeLinecap="round" strokeWidth="1.75" /></svg>;
+}
+
 export function PortfolioImageViewer({ asset, className = "" }: { asset: ImageAsset; className?: string }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -27,8 +31,10 @@ export function PortfolioImageViewer({ asset, className = "" }: { asset: ImageAs
           onClick={(event) => { if (event.target === event.currentTarget) setIsOpen(false); }}
           ref={dialogRef}
         >
-          <button aria-label="Закрыть фотографию" className="portfolio-case__image-dialog-close" onClick={() => setIsOpen(false)} type="button">×</button>
-          <Image alt={asset.alternativeText ?? ""} className="portfolio-case__image-dialog-image" height={asset.height ?? 900} sizes="92vw" src={asset.url} width={asset.width ?? 1200} />
+          <div className="portfolio-case__image-dialog-content">
+            <button aria-label="Закрыть фотографию" className="portfolio-case__image-dialog-close" onClick={() => setIsOpen(false)} type="button"><CloseIcon /></button>
+            <Image alt={asset.alternativeText ?? ""} className="portfolio-case__image-dialog-image" height={asset.height ?? 900} sizes="92vw" src={asset.url} width={asset.width ?? 1200} />
+          </div>
         </dialog>
       ) : null}
     </>

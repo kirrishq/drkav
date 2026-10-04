@@ -131,7 +131,7 @@ export function PortfolioCaseContent({
                   {section.eyebrow ? <p className="type-overline">{section.eyebrow}</p> : null}
                   {section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}
                 </div> : null}
-                <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" headingIdPrefix={`portfolio-${section.sectionKey}`} listVariant="accent" />
+                <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" headingIdPrefix={`portfolio-${section.sectionKey}`} interactiveImages listVariant="accent" />
               </section>
             );
           }
@@ -156,7 +156,7 @@ export function PortfolioCaseContent({
                 <div className="portfolio-case__stage-copy">
                   <p className="type-overline portfolio-case__term">{section.term}</p>
                   {section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}
-                  <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" headingIdPrefix={`portfolio-${section.sectionKey}`} listVariant="accent" />
+                  <BlocksRenderer blocks={section.body} className="portfolio-case__blocks" headingIdPrefix={`portfolio-${section.sectionKey}`} interactiveImages listVariant="accent" />
                 </div>
                 {section.media.length > 0 ? <div className="portfolio-case__stage-media">{section.media.map((asset) => <PortfolioMedia asset={asset} key={asset.url} />)}</div> : null}
               </section>
