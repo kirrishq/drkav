@@ -620,6 +620,7 @@ export interface BlogArticle extends BlogArticleSummary {
   contentSections: readonly BlogContentSection[];
   relatedOperations: readonly OperationCatalogLink[];
   relatedArticles: readonly BlogArticleSummary[];
+  sharedSections?: readonly SharedSection[];
 }
 
 export interface BlogIndexContent {

@@ -35,6 +35,12 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::blog-article.blog-article"
+    },
+    "sharedSections": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::shared-section.shared-section",
+      "inversedBy": "blogArticles"
     }
   }
 }

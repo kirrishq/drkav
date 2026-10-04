@@ -1,9 +1,9 @@
 import type { BlogArticle, BlogArticleSummary } from "@drkav/content-contracts";
-import { FeatureLinkCard, OperationsCards, RecordCard, ReviewsSlider, SectionNavigation } from "@drkav/ui";
+import { FeatureLinkCard, RecordCard, SectionNavigation } from "@drkav/ui";
 
-import { DoctorProfile } from "@/components/doctor-profile/doctor-profile";
 import { BlogArticleCard } from "@/components/blog/blog-index";
 import { getHeadingAnchorId, BlocksRenderer } from "@/components/operation-content/blocks-renderer";
+import { SharedSections } from "@/components/shared-sections/shared-sections";
 import type { ArticleSupportData } from "@/content/article-support-data";
 
 function formatPublishedAt(value: string): string {
@@ -104,13 +104,19 @@ function ArticleRelatedOperations({ article, operationItems }: { article: BlogAr
   );
 }
 
-function ArticleCrossSections({ support }: { support: ArticleSupportData }) {
+function ArticleCrossSections({ article }: { article: BlogArticle }) {
+  if (article.sharedSections?.length) {
+    return <SharedSections sections={article.sharedSections} />;
+  }
+
   return (
-    <>
-      <DoctorProfile />
-      <OperationsCards items={support.operationItems} />
-      <ReviewsSlider ctaHref="/pacientam/otzyvy" filterGroups={support.reviewFilterGroups} items={support.reviewItems} />
-    </>
+    <div className="shared-sections">
+      <SharedSections sections={[
+        { sectionKey: "doctor-profile", internalName: "Профиль доктора", type: "doctor-profile" },
+        { sectionKey: "operations-catalog", internalName: "Каталог операций", type: "operations-catalog" },
+        { sectionKey: "reviews", internalName: "Отзывы", type: "reviews" },
+      ]} />
+    </div>
   );
 }
 
@@ -168,7 +174,7 @@ export function BlogArticleContent({
       <aside className="content-card content-card--muted blog-article__disclaimer">Материал носит информационный характер и не заменяет очную консультацию врача.</aside>
       <ArticleRelatedOperations article={article} operationItems={support.operationItems} />
       <ArticleNeighborNavigation articles={adjacentArticles} cardVariant={articleKind === "condition" ? "compact" : "default"} />
-      <ArticleCrossSections support={support} />
+      <ArticleCrossSections article={article} />
     </article>
   );
 }

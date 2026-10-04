@@ -797,8 +797,9 @@ function mapSharedSection(
   value: unknown,
   index: number,
   baseUrl: string,
+  ownerLabel = "staticPage",
 ): SharedSection {
-  const label = `staticPage.sharedSections[${index}]`;
+  const label = `${ownerLabel}.sharedSections[${index}]`;
   const section = requireRecord(value, label);
 
   return {
@@ -2481,6 +2482,7 @@ export class StrapiContentRepository implements ContentRepository {
     this.populateRelatedBlogArticles(params, source.includeCategories);
     params.set("populate[relatedOperations][fields][0]", "canonicalPath");
     params.set("populate[relatedOperations][fields][1]", "heading");
+    this.populateArticleSharedSections(params);
 
     const article = await this.getFirst(
       source.endpoint,
@@ -2499,7 +2501,18 @@ export class StrapiContentRepository implements ContentRepository {
       relatedArticles: requireArray(article.relatedArticles, "blog.relatedArticles").map((relatedArticle, index) =>
         mapBlogArticleSummary(relatedArticle, index, this.baseUrl),
       ),
+      sharedSections: Array.isArray(article.sharedSections)
+        ? requireArray(article.sharedSections, "blog.sharedSections").map((section, index) =>
+          mapSharedSection(section, index, this.baseUrl, "blog"),
+        )
+        : [],
     };
+  }
+
+  private populateArticleSharedSections(params: URLSearchParams): void {
+    ["sectionKey", "internalName", "type", "heading", "description", "body"].forEach((field, index) => {
+      params.set(`populate[sharedSections][fields][${index}]`, field);
+    });
   }
 
   private createPublishedParams(fields: readonly string[]): URLSearchParams {
