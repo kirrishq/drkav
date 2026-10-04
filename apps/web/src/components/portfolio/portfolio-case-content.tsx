@@ -4,16 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BlocksRenderer, getHeadingAnchorId } from "@/components/operation-content/blocks-renderer";
+import { PortfolioImageViewer } from "@/components/portfolio/portfolio-image-viewer";
 
 function PortfolioImage({ asset, className = "" }: { asset: ImageAsset; className?: string }) {
-  return <Image
-    alt={asset.alternativeText ?? ""}
-    className={className}
-    height={asset.height ?? 900}
-    sizes="(min-width: 64rem) 58rem, 100vw"
-    src={asset.url}
-    width={asset.width ?? 1200}
-  />;
+  return <PortfolioImageViewer asset={asset} className={className} />;
 }
 
 function PortfolioMedia({ asset }: { asset: PortfolioMediaAsset }) {

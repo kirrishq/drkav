@@ -197,6 +197,10 @@
     margin: 0;
   }
 
+  .blog-article__blocks .content-card__heading--h3 {
+    margin: 0;
+  }
+
   .blog-article__blocks ul,
   .blog-article__blocks ol {
     display: grid;

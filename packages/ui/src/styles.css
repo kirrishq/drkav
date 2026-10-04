@@ -3387,7 +3387,7 @@ html[data-vision="low-vision"] a {
     width: 100%;
     aspect-ratio: 4 / 3;
     border-radius: var(--radius-md);
-    background: url("/images/header/consultation-doctor.png") center / cover no-repeat;
+    background: url("/images/header/consultation-doctor-new.jpg") center / cover no-repeat;
     box-shadow: var(--shadow-subtle);
   }
 

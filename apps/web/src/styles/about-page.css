@@ -338,6 +338,81 @@
     display: none;
   }
 
+  .license-section {
+    margin-top: var(--space-8);
+  }
+
+  .license-section__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+
+  .license-section__item {
+    display: block;
+    padding: 0;
+    border: var(--border-width-default) solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    cursor: zoom-in;
+    overflow: hidden;
+  }
+
+  .license-section__item img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .license-section__item:hover,
+  .license-section__item:focus-visible {
+    border-color: var(--accent);
+  }
+
+  .license-section__item:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 var(--focus-ring-offset) var(--background), 0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width)) var(--accent);
+  }
+
+  .license-section__dialog {
+    max-width: 92vw;
+    max-height: 92vh;
+    padding: var(--space-3);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: var(--background);
+  }
+
+  .license-section__dialog::backdrop {
+    background: rgb(0 0 0 / 0.72);
+  }
+
+  .license-section__dialog-image {
+    display: block;
+    width: auto;
+    max-width: calc(92vw - var(--space-6));
+    height: auto;
+    max-height: calc(92vh - var(--space-6));
+    object-fit: contain;
+  }
+
+  .license-section__close {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    z-index: 1;
+    width: var(--space-8);
+    height: var(--space-8);
+    border: 0;
+    border-radius: 999px;
+    background: var(--surface-inverse);
+    color: var(--text-inverse);
+    font-size: var(--type-h3-size);
+    line-height: 1;
+    cursor: pointer;
+  }
+
   @media (min-width: 40rem) {
     .about-subpage-page {
       width: min(100% - var(--space-12), var(--container-wide));
@@ -362,6 +437,10 @@
 
     .certificate-section__grid:not(.certificate-section__grid--expanded) .certificate-section__item:nth-child(n + 7) {
       display: none;
+    }
+
+    .license-section__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
   }

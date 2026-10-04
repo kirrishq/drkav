@@ -18,14 +18,25 @@ function getInlineText(children: readonly { type: "text" | "link"; text?: string
   return children.map((node) => node.type === "text" ? node.text ?? "" : node.children?.map((child) => child.text).join("") ?? "").join("");
 }
 
+function getSectionHeadingId(sectionKey: string, heading: string): string {
+  return getHeadingAnchorId(`article-${sectionKey}`, 0, [{ type: "text", text: heading }]);
+}
+
 function getTableOfContents(article: BlogArticle) {
   return article.contentSections.flatMap((section) => {
     if (section.type === "faq") return [];
 
-    return section.body.flatMap((block, index) => block.type === "heading" ? [{
-      id: getHeadingAnchorId(`article-${section.sectionKey}`, index, block.children),
+    const sectionHeading = section.type === "rich-text" ? section.heading : section.type === "callout" ? section.title : undefined;
+    const sectionItems = sectionHeading ? [{
+      id: getSectionHeadingId(section.sectionKey, sectionHeading),
+      label: sectionHeading,
+    }] : [];
+    const bodyItems = section.body.flatMap((block, index) => block.type === "heading" ? [{
+      id: getHeadingAnchorId(`article-${section.sectionKey}`, index + 1, block.children),
       label: getInlineText(block.children),
     }] : []);
+
+    return [...sectionItems, ...bodyItems];
   });
 }
 
@@ -144,10 +155,10 @@ export function BlogArticleContent({
           <div className="blog-article__sections">
             {article.contentSections.map((section) => {
               if (section.type === "faq") {
-                return <section className="blog-article__section" key={section.sectionKey}>{section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}<dl className="blog-article__faq">{section.items.map((item) => <div key={item.question}><dt>{item.question}</dt><dd>{item.answer}</dd></div>)}</dl></section>;
+                return <section className="blog-article__section" key={section.sectionKey}>{section.heading ? <h2 className="content-card__heading content-card__heading--h2" id={getSectionHeadingId(section.sectionKey, section.heading)}>{section.heading}</h2> : null}<dl className="blog-article__faq">{section.items.map((item) => <div key={item.question}><dt>{item.question}</dt><dd>{item.answer}</dd></div>)}</dl></section>;
               }
 
-              return <section className={section.type === "callout" ? "content-card content-card--muted blog-article__callout" : "blog-article__section"} key={section.sectionKey}>{section.type === "rich-text" && section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}{section.type === "callout" && section.title ? <h2 className="content-card__heading content-card__heading--h3">{section.title}</h2> : null}<BlocksRenderer blocks={section.body} className="blog-article__blocks" headingIdPrefix={`article-${section.sectionKey}`} listVariant="accent" /></section>;
+              return <section className={section.type === "callout" ? "content-card content-card--muted blog-article__callout" : "blog-article__section"} key={section.sectionKey}>{section.type === "rich-text" && section.heading ? <h2 className="content-card__heading content-card__heading--h2" id={getSectionHeadingId(section.sectionKey, section.heading)}>{section.heading}</h2> : null}{section.type === "callout" && section.title ? <h2 className="content-card__heading content-card__heading--h3" id={getSectionHeadingId(section.sectionKey, section.title)}>{section.title}</h2> : null}<BlocksRenderer blocks={section.body} className="blog-article__blocks" headingIdPrefix={`article-${section.sectionKey}`} listVariant="accent" /></section>;
             })}
           </div>
         </div>

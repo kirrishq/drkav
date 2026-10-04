@@ -1,25 +1,23 @@
 "use client";
 
-import { useRef, type MouseEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { TextLink } from "@drkav/ui";
 
 const patentImageSrc = "/images/patents/patent-diastaz.webp";
 
 export function ContributionPatent({ lead }: { lead?: string }) {
-  const imageRef = useRef<HTMLImageElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
-  function openFullscreen() {
-    void imageRef.current?.requestFullscreen();
-  }
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (isOpen && dialog && !dialog.open) dialog.showModal();
+    if (!isOpen && dialog?.open) dialog.close();
+  }, [isOpen]);
 
-  function closeFullscreen(event: MouseEvent<HTMLImageElement>) {
-    if (!document.fullscreenElement) {
-      return;
-    }
-
-    event.stopPropagation();
-    void document.exitFullscreen();
+  function closeDialog() {
+    setIsOpen(false);
   }
 
   return (
@@ -29,20 +27,41 @@ export function ContributionPatent({ lead }: { lead?: string }) {
       <button
         aria-label="Открыть патент на весь экран"
         className="contribution-patent__preview"
-        onClick={openFullscreen}
+        onClick={() => setIsOpen(true)}
         type="button"
       >
         <Image
           alt="Патент № 2801500 на способ хирургического лечения диастаза прямых мышц живота"
           className="contribution-patent__image"
           fill
-          onClick={closeFullscreen}
-          ref={imageRef}
           sizes="(min-width: 40rem) 44rem, 100vw"
           src={patentImageSrc}
         />
         <span aria-hidden="true" className="contribution-patent__preview-label">Открыть патент</span>
       </button>
+      {isOpen ? (
+        <dialog
+          aria-label="Патент на способ хирургического лечения диастаза"
+          className="contribution-patent__dialog"
+          onCancel={(event) => {
+            event.preventDefault();
+            closeDialog();
+          }}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) closeDialog();
+          }}
+          ref={dialogRef}
+        >
+          <button aria-label="Закрыть патент" className="contribution-patent__dialog-close" onClick={closeDialog} type="button">×</button>
+          <Image
+            alt="Патент № 2801500 на способ хирургического лечения диастаза прямых мышц живота"
+            className="contribution-patent__dialog-image"
+            height={1600}
+            src={patentImageSrc}
+            width={1200}
+          />
+        </dialog>
+      ) : null}
     </section>
   );
 }
