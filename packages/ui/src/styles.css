@@ -3534,11 +3534,17 @@ html[data-vision="low-vision"] a {
   }
 
   .smart-captcha {
-    min-height: 100px;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .smart-captcha__notice {
-    margin: calc(var(--space-4) * -1) 0 0;
+    margin: 0;
     color: var(--text-muted);
   }
 

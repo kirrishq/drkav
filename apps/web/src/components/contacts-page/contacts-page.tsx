@@ -189,7 +189,7 @@ function FeedbackForm({ captchaSiteKey }: { captchaSiteKey?: string }) {
         resetSignal={captchaResetSignal}
         siteKey={captchaSiteKey}
       />
-      {captchaSiteKey ? <p className="type-text-xs smart-captcha__notice">Форма защищена SmartCaptcha.</p> : null}
+      {captchaSiteKey ? <p className="type-text-xs smart-captcha__notice">Форма защищена SmartCaptcha. <a href="/policy" rel="noreferrer" target="_blank">Подробнее о политике обработки данных</a>.</p> : null}
       {error ? <p aria-live="polite" className="contacts-page__feedback-error" role="alert">{error}</p> : null}
       <Button disabled={isSubmitting} size="lg" type="submit">
         {isSubmitting ? "Отправляем…" : "Отправить сообщение"}

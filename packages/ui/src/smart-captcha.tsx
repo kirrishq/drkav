@@ -9,6 +9,7 @@ type SmartCaptchaWidget = {
     options: {
     callback?: (token: string) => void;
     hl?: string;
+    hideShield?: boolean;
     invisible?: boolean;
     sitekey: string;
     },
@@ -49,6 +50,7 @@ export function SmartCaptcha({ executeSignal = 0, onTokenChange, resetSignal = 0
       widgetIdRef.current = window.smartCaptcha.render(containerRef.current, {
         callback: (token) => onTokenChange(token || null),
         hl: "ru",
+        hideShield: true,
         invisible: true,
         sitekey: siteKey,
       });

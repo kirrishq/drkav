@@ -257,7 +257,7 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
         resetSignal={captchaResetSignal}
         siteKey={captchaSiteKey}
       />
-      {captchaSiteKey ? <p className="type-text-xs smart-captcha__notice">Форма защищена SmartCaptcha.</p> : null}
+      {captchaSiteKey ? <p className="type-text-xs smart-captcha__notice">Форма защищена SmartCaptcha. <a className="consultation-form__legal-link" href="/policy" rel="noreferrer" target="_blank">Подробнее о политике обработки данных</a>.</p> : null}
 
       {error ? <p aria-live="polite" className="type-text-sm consultation-form__error" role="alert">{error}</p> : null}
       <Button className="consultation-form__submit" disabled={isSubmitting} size="lg" type="submit">
