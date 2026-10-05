@@ -86,6 +86,7 @@ function FeedbackForm({ captchaSiteKey }: { captchaSiteKey?: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaActive, setCaptchaActive] = useState(false);
   const [captchaExecuteSignal, setCaptchaExecuteSignal] = useState(0);
   const [captchaResetSignal, setCaptchaResetSignal] = useState(0);
   const handleCaptchaTokenChange = useCallback((token: string | null) => setCaptchaToken(token), []);
@@ -155,7 +156,7 @@ function FeedbackForm({ captchaSiteKey }: { captchaSiteKey?: string }) {
   }
 
   return (
-    <form className="contacts-page__feedback-form" onSubmit={handleSubmit}>
+    <form className="contacts-page__feedback-form" onFocus={() => setCaptchaActive(true)} onSubmit={handleSubmit}>
       <input aria-hidden="true" autoComplete="off" className="sr-only" name="website" tabIndex={-1} />
       <div className="contacts-page__form-field">
         <Label htmlFor="feedback-name" required>Имя</Label>
@@ -184,6 +185,7 @@ function FeedbackForm({ captchaSiteKey }: { captchaSiteKey?: string }) {
         </label>
       </div>
       <SmartCaptcha
+        active={captchaActive}
         executeSignal={captchaExecuteSignal}
         onTokenChange={handleCaptchaTokenChange}
         resetSignal={captchaResetSignal}

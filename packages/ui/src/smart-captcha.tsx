@@ -25,18 +25,19 @@ declare global {
 }
 
 export type SmartCaptchaProps = {
+  active?: boolean;
   onTokenChange: (token: string | null) => void;
   resetSignal?: number;
   executeSignal?: number;
   siteKey?: string;
 };
 
-export function SmartCaptcha({ executeSignal = 0, onTokenChange, resetSignal = 0, siteKey }: SmartCaptchaProps) {
+export function SmartCaptcha({ active = false, executeSignal = 0, onTokenChange, resetSignal = 0, siteKey }: SmartCaptchaProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | number | null>(null);
 
   useEffect(() => {
-    if (!siteKey || !containerRef.current) {
+    if (!active || !siteKey || !containerRef.current) {
       onTokenChange(null);
       return;
     }
@@ -65,6 +66,14 @@ export function SmartCaptcha({ executeSignal = 0, onTokenChange, resetSignal = 0
       timeoutId = setTimeout(waitForApi, 100);
     };
 
+    if (!document.querySelector('script[data-drkav-smartcaptcha="true"]')) {
+      const script = document.createElement("script");
+      script.async = true;
+      script.dataset.drkavSmartcaptcha = "true";
+      script.src = "https://smartcaptcha.cloud.yandex.ru/captcha.js";
+      document.head.appendChild(script);
+    }
+
     waitForApi();
 
     return () => {
@@ -75,7 +84,7 @@ export function SmartCaptcha({ executeSignal = 0, onTokenChange, resetSignal = 0
         widgetIdRef.current = null;
       }
     };
-  }, [onTokenChange, siteKey]);
+  }, [active, onTokenChange, siteKey]);
 
   useEffect(() => {
     if (executeSignal === 0 || widgetIdRef.current === null) return;
@@ -89,7 +98,7 @@ export function SmartCaptcha({ executeSignal = 0, onTokenChange, resetSignal = 0
     window.smartCaptcha?.reset?.(widgetIdRef.current);
   }, [onTokenChange, resetSignal]);
 
-  if (!siteKey) return null;
+  if (!active || !siteKey) return null;
 
   return <div aria-label="Проверка безопасности формы" className="smart-captcha" ref={containerRef} />;
 }

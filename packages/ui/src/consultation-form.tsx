@@ -64,6 +64,7 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaActive, setCaptchaActive] = useState(false);
   const [captchaExecuteSignal, setCaptchaExecuteSignal] = useState(0);
   const [captchaResetSignal, setCaptchaResetSignal] = useState(0);
   const formStartedAt = useRef(Date.now());
@@ -147,7 +148,7 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
   }
 
   return (
-    <form className={cn("consultation-form", compact && "consultation-form--compact", className)} onSubmit={handleSubmit}>
+    <form className={cn("consultation-form", compact && "consultation-form--compact", className)} onFocus={() => setCaptchaActive(true)} onSubmit={handleSubmit}>
       <input aria-hidden="true" autoComplete="off" className="sr-only" name="website" tabIndex={-1} />
       <div className="consultation-form__field">
         <Label htmlFor={nameId} required>Имя</Label>
@@ -254,6 +255,7 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
       </div>
 
       <SmartCaptcha
+        active={captchaActive}
         executeSignal={captchaExecuteSignal}
         onTokenChange={handleCaptchaTokenChange}
         resetSignal={captchaResetSignal}

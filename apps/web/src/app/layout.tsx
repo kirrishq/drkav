@@ -75,12 +75,6 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeBootstrapScript }}
         />
-        {smartCaptchaSiteKey ? (
-          <Script
-            src="https://smartcaptcha.cloud.yandex.ru/captcha.js"
-            strategy="afterInteractive"
-          />
-        ) : null}
       </head>
       <body className={GeistSans.variable}>
         <StructuredData data={{

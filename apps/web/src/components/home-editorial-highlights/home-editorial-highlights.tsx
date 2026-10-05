@@ -26,7 +26,7 @@ const highlights = [
     imageSrc: "/images/media-videos/sobchak.jpg",
     linkLabel: "Смотреть интервью",
     title: "Интервью Ксении Собчак",
-    videoSrc: "https://drkav.ru/videos/smi/sobchak.mp4",
+    videoSrc: "https://s3.ru1.storage.beget.cloud/39799ed5839c-drkav-media/sobchak.mp4",
   },
 ] as const;
 

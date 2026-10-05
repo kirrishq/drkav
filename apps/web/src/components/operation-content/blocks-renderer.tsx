@@ -73,6 +73,8 @@ export function BlocksRenderer({
   interactiveImages?: boolean;
   listVariant?: "default" | "accent";
 }) {
+  let previousHeadingLevel = 1;
+
   return (
     <div className={className}>
       {blocks.map((block, index) => {
@@ -85,9 +87,13 @@ export function BlocksRenderer({
         }
 
         if (block.type === "heading") {
-          const Heading = `h${block.level}` as "h2" | "h3" | "h4" | "h5" | "h6";
+          // Rich text headings are nested below the page h1. Repair skipped levels
+          // from CMS content without changing the heading text or block order.
+          const level = Math.min(Math.max(block.level, 2), previousHeadingLevel + 1, 6);
+          previousHeadingLevel = level;
+          const Heading = `h${level}` as "h2" | "h3" | "h4" | "h5" | "h6";
           return (
-            <Heading className={`content-card__heading content-card__heading--h${Math.min(block.level, 4)}`} id={headingIdPrefix ? getHeadingAnchorId(headingIdPrefix, index, block.children) : undefined} key={index}>
+            <Heading className={`content-card__heading content-card__heading--h${Math.min(level, 4)}`} id={headingIdPrefix ? getHeadingAnchorId(headingIdPrefix, index, block.children) : undefined} key={index}>
               <InlineContent>{block.children}</InlineContent>
             </Heading>
           );

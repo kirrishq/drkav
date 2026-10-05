@@ -55,23 +55,23 @@ function getHomeBenefits(labels?: readonly { title: string }[]) {
 const homeVideoHighlights = [
   {
     contentPosition: "before",
-    dialogVideoSrc: "https://drkav.ru/videos/homepage/video-1.mp4",
+    dialogVideoSrc: "https://s3.ru1.storage.beget.cloud/39799ed5839c-drkav-media/video-1.mp4",
     description: "MOMMY MAKEOVER по версии Всероссийской премии «ХРУСТАЛЬНЫЙ ЛОТОС»",
     posterAlt: "Церемония премии «Хрустальный лотос»",
     posterSrc: "/videos/doctor-award-poster.jpg",
     title: "Лучший хирург",
-    videoSrc: "/videos/doctor-award.mp4",
-    webmSrc: "/videos/doctor-award.webm",
+    videoSrc: "https://s3.ru1.storage.beget.cloud/39799ed5839c-drkav-media/doctor-award.mp4",
+    webmSrc: "https://s3.ru1.storage.beget.cloud/39799ed5839c-drkav-media/doctor-award.webm",
   },
   {
     contentPosition: "after",
-    dialogVideoSrc: "https://drkav.ru/videos/homepage/video-2.mp4",
+    dialogVideoSrc: "https://s3.ru1.storage.beget.cloud/39799ed5839c-drkav-media/video-2.mp4",
     description: "Пластическая хирургия, эстетическая медицина и косметология",
     posterAlt: "Доктор Коробов выступает на Национальном конгрессе имени Миланова",
     posterSrc: "/videos/milanov-congress-poster.jpg",
     title: "XI Национальный конгресс имени Миланова",
-    videoSrc: "/videos/milanov-congress.mp4",
-    webmSrc: "/videos/milanov-congress.webm",
+    videoSrc: "https://s3.ru1.storage.beget.cloud/39799ed5839c-drkav-media/milanov-congress.mp4",
+    webmSrc: "https://s3.ru1.storage.beget.cloud/39799ed5839c-drkav-media/milanov-congress.webm",
   },
 ] as const;
 
