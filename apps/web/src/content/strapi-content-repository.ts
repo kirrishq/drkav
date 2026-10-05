@@ -951,7 +951,8 @@ function mapImage(
   const isLegacyLocalUpload =
     path.startsWith("/uploads/")
     || path.startsWith("http://cms:1337/uploads/")
-    || path.startsWith("http://localhost:1337/uploads/");
+    || path.startsWith("http://localhost:1337/uploads/")
+    || path.startsWith("http://127.0.0.1:1337/uploads/");
   const normalizedPath = isLegacyLocalUpload && publicMediaUrl
     ? `${publicMediaUrl}${path.replace(/^https?:\/\/[^/]+/, "").replace(/^\/uploads(?=\/)/, "")}`
     : path;
@@ -1018,7 +1019,8 @@ function mapSiteImagePath(value: unknown, label: string): ImageAsset {
   const isLegacyLocalUpload =
     path.startsWith("/uploads/")
     || path.startsWith("http://cms:1337/uploads/")
-    || path.startsWith("http://localhost:1337/uploads/");
+    || path.startsWith("http://localhost:1337/uploads/")
+    || path.startsWith("http://127.0.0.1:1337/uploads/");
 
   if (isLegacyLocalUpload && publicMediaUrl) {
     return {
