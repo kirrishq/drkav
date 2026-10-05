@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_portfolio_videos",
+  "info": { "displayName": "Portfolio Video" },
+  "attributes": {
+    "sectionKey": { "type": "string", "required": true },
+    "heading": { "type": "string", "required": false },
+    "poster": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"]
+    },
+    "mp4": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["videos"]
+    },
+    "webm": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["videos"]
+    },
+    "caption": { "type": "text", "required": false }
+  }
+}

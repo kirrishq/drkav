@@ -53,6 +53,7 @@ import type {
   SharedSectionType,
   StaticPageContent,
   StaticPageContentSection,
+  VideoCase,
 } from "@drkav/content-contracts";
 import { formatPriceItem } from "@drkav/content-contracts";
 import type { ReviewKind } from "@drkav/content-contracts";
@@ -1615,6 +1616,18 @@ function mapPortfolioContentSection(
     };
   }
 
+  if (component === "portfolio.video") {
+    return {
+      type: "video",
+      sectionKey,
+      heading: optionalString(section.heading, `${label}.heading`),
+      poster: requireImage(section.poster, baseUrl, `${label}.poster`),
+      mp4: mapPortfolioMedia(section.mp4, baseUrl, `${label}.mp4`),
+      webm: section.webm ? mapPortfolioMedia(section.webm, baseUrl, `${label}.webm`) : undefined,
+      caption: optionalString(section.caption, `${label}.caption`),
+    };
+  }
+
   throw new CmsInvalidResponseError(
     `Invalid Strapi response: unsupported portfolio section ${component}.`,
   );
@@ -2315,6 +2328,32 @@ export class StrapiContentRepository implements ContentRepository {
     };
   }
 
+  async getVideoCases(): Promise<readonly VideoCase[]> {
+    const params = this.createPublishedParams(["slug", "title", "location", "year", "sortOrder"]);
+    params.set("pagination[pageSize]", "100");
+    params.set("sort[0]", "sortOrder:asc");
+    ["poster", "mp4", "webm"].forEach((relation) => {
+      ["url", "alternativeText", "width", "height", "mime"].forEach((field, index) => {
+        params.set(`populate[${relation}][fields][${index}]`, field);
+      });
+    });
+
+    const entries = await this.getMany("/api/video-cases", params, "video-cases");
+    return entries.map((value, index) => {
+      const label = `videoCases[${index}]`;
+      const item = requireRecord(value, label);
+      return {
+        slug: requireString(item.slug, `${label}.slug`),
+        title: requireString(item.title, `${label}.title`),
+        location: requireString(item.location, `${label}.location`),
+        year: optionalString(item.year, `${label}.year`) ?? "",
+        poster: requireImage(item.poster, this.baseUrl, `${label}.poster`),
+        mp4: requireImage(item.mp4, this.baseUrl, `${label}.mp4`).url,
+        webm: item.webm ? requireImage(item.webm, this.baseUrl, `${label}.webm`).url : undefined,
+      };
+    });
+  }
+
   async getPortfolioCaseBySlug(slug: string): Promise<PortfolioCase | null> {
     const params = this.createPublishedParams([
       "slug",
@@ -2942,6 +2981,20 @@ export class StrapiContentRepository implements ContentRepository {
         `populate[contentSections][on][portfolio.quote][fields][${index}]`,
         field,
       );
+    });
+    ["sectionKey", "heading", "caption"].forEach((field, index) => {
+      params.set(
+        `populate[contentSections][on][portfolio.video][fields][${index}]`,
+        field,
+      );
+    });
+    ["poster", "mp4", "webm"].forEach((relation) => {
+      ["url", "alternativeText", "width", "height", "mime"].forEach((field, index) => {
+        params.set(
+          `populate[contentSections][on][portfolio.video][populate][${relation}][fields][${index}]`,
+          field,
+        );
+      });
     });
   }
 

@@ -174,6 +174,20 @@ export function PortfolioCaseContent({
             );
           }
 
+          if (section.type === "video") {
+            return (
+              <figure className="content-card content-card--spacious portfolio-case__video-section" id={sectionId} key={section.sectionKey}>
+                {section.heading ? <h2 className="content-card__heading content-card__heading--h2">{section.heading}</h2> : null}
+                <video className="portfolio-case__video" controls playsInline preload="metadata" poster={section.poster.url}>
+                  {section.webm ? <source src={section.webm.url} type="video/webm" /> : null}
+                  <source src={section.mp4.url} type="video/mp4" />
+                  Ваш браузер не поддерживает воспроизведение видео.
+                </video>
+                {section.caption ? <figcaption>{section.caption}</figcaption> : null}
+              </figure>
+            );
+          }
+
           return (
             <figure className="content-card portfolio-case__quote" id={sectionId} key={section.sectionKey}>
               <blockquote className="type-h2">«{section.text}»</blockquote>

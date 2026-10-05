@@ -661,6 +661,16 @@ export interface MediaPublicationIndexContent {
   publications: readonly MediaPublicationSummary[];
 }
 
+export interface VideoCase {
+  slug: string;
+  title: string;
+  location: string;
+  year: string;
+  poster: ImageAsset;
+  mp4: string;
+  webm?: string;
+}
+
 export interface PortfolioCaseSummary {
   slug: string;
   canonicalPath: string;
@@ -733,13 +743,24 @@ export interface PortfolioQuoteSection {
   note?: string;
 }
 
+export interface PortfolioVideoSection {
+  type: "video";
+  sectionKey: string;
+  heading?: string;
+  poster: ImageAsset;
+  mp4: PortfolioMediaAsset;
+  webm?: PortfolioMediaAsset;
+  caption?: string;
+}
+
 export type PortfolioContentSection =
   | PortfolioRichTextSection
   | PortfolioStatementSection
   | PortfolioComparisonSection
   | PortfolioTimelineStageSection
   | PortfolioGallerySection
-  | PortfolioQuoteSection;
+  | PortfolioQuoteSection
+  | PortfolioVideoSection;
 
 export interface PortfolioCase extends PortfolioCaseSummary {
   seo: SeoData;
@@ -779,6 +800,7 @@ export interface ContentRepository {
   getMediaPublicationIndex(): Promise<MediaPublicationIndexContent>;
   getMediaPublicationBySlug(slug: string): Promise<MediaPublication | null>;
   getPortfolioIndex(): Promise<PortfolioIndexContent>;
+  getVideoCases(): Promise<readonly VideoCase[]>;
   getPortfolioCaseBySlug(slug: string): Promise<PortfolioCase | null>;
   getConditionIndex(): Promise<ConditionIndexContent>;
   getConditionArticleBySlug(slug: string): Promise<ConditionArticle | null>;

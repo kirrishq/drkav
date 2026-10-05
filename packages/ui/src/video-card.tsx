@@ -10,6 +10,7 @@ export type VideoCardItem = {
   posterSrc: string;
   title: string;
   videoSrc: string;
+  webmSrc?: string;
   year: string;
 };
 
@@ -63,13 +64,14 @@ export function VideoCard({
   showDetails = true,
   title,
   videoSrc,
+  webmSrc,
   year,
 }: VideoCardProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const currentItem: VideoCardItem = { location, posterAlt, posterSrc, title, videoSrc, year };
+  const currentItem: VideoCardItem = { location, posterAlt, posterSrc, title, videoSrc, webmSrc, year };
   const navigationItems = dialogItems?.length ? dialogItems : [currentItem];
   const selectedItem = navigationItems[selectedIndex] ?? currentItem;
 
@@ -192,7 +194,10 @@ export function VideoCard({
                 </button>
               </>
             ) : null}
-            <video autoPlay className="video-card__player" controls key={selectedItem.videoSrc} poster={selectedItem.posterSrc} src={selectedItem.videoSrc} />
+            <video autoPlay className="video-card__player" controls key={selectedItem.videoSrc} poster={selectedItem.posterSrc}>
+              {selectedItem.webmSrc ? <source src={selectedItem.webmSrc} type="video/webm" /> : null}
+              <source src={selectedItem.videoSrc} type="video/mp4" />
+            </video>
           </div>
         </dialog>
       ) : null}

@@ -49,7 +49,8 @@
         "portfolio.comparison",
         "portfolio.timeline-stage",
         "portfolio.gallery",
-        "portfolio.quote"
+        "portfolio.quote",
+        "portfolio.video"
       ]
     }
   }

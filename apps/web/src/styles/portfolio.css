@@ -547,6 +547,7 @@
   }
 
   .portfolio-case__stage-media,
+  .portfolio-case__video-section,
   .portfolio-case__gallery-grid {
     display: grid;
     gap: var(--space-3);
