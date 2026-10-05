@@ -96,6 +96,25 @@ redirects.push({
   permanent: true,
 });
 
+redirects.push({
+  source: "/konsultacii/konsultaciya-po-ankete.html",
+  destination: "/",
+  permanent: true,
+});
+
+redirects.push(
+  {
+    source: "/konsultacii/onlayn-konsultaciya.html",
+    destination: "/",
+    permanent: true,
+  },
+  {
+    source: "/konsultacii/ochnaya-konsultaciya-v-klinike.html",
+    destination: "/",
+    permanent: true,
+  },
+);
+
 const redirectSources = new Set<string>();
 
 for (const redirect of redirects) {
