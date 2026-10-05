@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import type { RichTextBlock } from "@drkav/content-contracts";
-
 import {
   AdministratorCta,
   OperationHero,
   PromotionBanner,
   SectionNavigation,
-  VideoCard,
   buttonVariants,
   ConsultationTrigger,
 } from "@drkav/ui";
@@ -78,7 +75,6 @@ export async function CmsOperationPage({
           { href: "/operaczii", label: "Операции" },
           { label: content.breadcrumbLabel ?? content.heading },
         ]}
-        description={content.heroDescription ?? ""}
         title={content.heading}
       >
         <OperationContentRenderer
@@ -130,12 +126,6 @@ export async function CmsOperationPage({
     !isPlaceholderIntro(introText)
       ? introSection.body
       : null;
-  const introDescription =
-    getShortIntro(
-      enhancement.heroDescription ??
-        getFirstParagraphText(introBlocks) ??
-        content.heroDescription,
-    );
   const contentSections = content.contentSections.filter(
     (section) =>
       section !== introSection &&
@@ -165,7 +155,6 @@ export async function CmsOperationPage({
             content.heading,
             content.breadcrumbLabel,
           )}
-          description={introDescription}
           links={heroLinks}
           title={content.heading}
         />
@@ -183,11 +172,6 @@ export async function CmsOperationPage({
               {introBlocks ? (
                 <section className="content-card content-card--spacious operation-page__intro">
                   <BlocksRenderer blocks={introBlocks} />
-                </section>
-              ) : null}
-              {enhancement.video ? (
-                <section aria-label="Видео об операции" className="content-card operation-page__video">
-                  <VideoCard {...enhancement.video} location={content.heading} showDetails={false} year="" />
                 </section>
               ) : null}
               {patentSection ? (
@@ -280,35 +264,6 @@ const placeholderIntro = "Наслаждайтесь собой и своим т
 function isPlaceholderIntro(value: string): boolean {
   return value.trim().replace(/\s+/g, " ").toLocaleLowerCase("ru-RU") ===
     placeholderIntro.toLocaleLowerCase("ru-RU");
-}
-
-function getFirstParagraphText(
-  blocks: readonly RichTextBlock[] | null,
-): string | undefined {
-  const paragraph = blocks?.find((block) => block.type === "paragraph");
-
-  if (!paragraph || paragraph.type !== "paragraph") {
-    return undefined;
-  }
-
-  return extractText(paragraph.children);
-}
-
-function getShortIntro(value?: string): string | undefined {
-  const normalized = value?.replace(/\s+/g, " ").trim();
-
-  if (!normalized || isPlaceholderIntro(normalized)) {
-    return undefined;
-  }
-
-  const firstSentence = normalized.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? normalized;
-
-  if (firstSentence.length <= 220) {
-    return firstSentence;
-  }
-
-  const shortened = firstSentence.slice(0, 217).replace(/[\s,;:—-]+$/, "");
-  return `${shortened}…`;
 }
 
 const operationBreadcrumbCategories: Readonly<Record<string, { href: string; label: string }>> = {
