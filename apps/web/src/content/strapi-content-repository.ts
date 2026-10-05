@@ -2831,7 +2831,11 @@ export class StrapiContentRepository implements ContentRepository {
     ];
 
     for (const component of sectionComponents) {
-      sectionFields.forEach((field, index) => {
+      const fields = component === "operation.video"
+        ? ["sectionKey", "anchor", "showInPageNavigation"]
+        : sectionFields;
+
+      fields.forEach((field, index) => {
         params.set(
           `populate[contentSections][on][${component}][fields][${index}]`,
           field,
