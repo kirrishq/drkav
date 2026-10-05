@@ -107,17 +107,20 @@ export async function CmsOperationPage({
   const promotionSection = content.contentSections.find(
     (section) => section.heading === "Операция в подарок",
   );
-  const promotion = enhancement.promotion ?? (promotionSection
+  const promotion = promotionSection
     ? {
-        description: extractText(promotionSection.type === "rich-text" ? promotionSection.body : []),
+        description: extractText(
+          promotionSection.type === "rich-text" ? promotionSection.body : [],
+        ),
         href: "/akcii",
         title: promotionSection.heading ?? "Операция в подарок",
       }
-    : {
-        description: "Узнайте об актуальных предложениях для этой операции и условиях их получения на консультации.",
+    : enhancement.promotion ?? {
+        description:
+          "Узнайте об актуальных предложениях для этой операции и условиях их получения на консультации.",
         href: "/akcii",
         title: "Актуальные предложения",
-      });
+      };
   const introText =
     introSection?.type === "rich-text" ? extractText(introSection.body) : "";
   const introBlocks =
