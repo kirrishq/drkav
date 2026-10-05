@@ -644,6 +644,16 @@ function mapContentSection(
     };
   }
 
+  if (component === "operation.video") {
+    return {
+      ...base,
+      type: "video",
+      poster: requireImage(section.poster, baseUrl, `${label}.poster`),
+      mp4: mapPortfolioMedia(section.mp4, baseUrl, `${label}.mp4`),
+      webm: section.webm ? mapPortfolioMedia(section.webm, baseUrl, `${label}.webm`) : undefined,
+    };
+  }
+
   throw new CmsInvalidResponseError(
     `Invalid Strapi response: unsupported operation section ${component}.`,
   );
@@ -2817,6 +2827,7 @@ export class StrapiContentRepository implements ContentRepository {
       "operation.steps-section",
       "operation.checklist-section",
       "operation.price-section",
+      "operation.video",
     ];
 
     for (const component of sectionComponents) {
@@ -2876,6 +2887,15 @@ export class StrapiContentRepository implements ContentRepository {
       "populate[contentSections][on][operation.price-section][fields][6]",
       "disclaimer",
     );
+
+    for (const field of ["sectionKey", "anchor", "showInPageNavigation"]) {
+      params.set(`populate[contentSections][on][operation.video][fields][${["sectionKey", "anchor", "showInPageNavigation"].indexOf(field)}]`, field);
+    }
+    for (const relation of ["poster", "mp4", "webm"]) {
+      ["url", "alternativeText", "width", "height", "mime"].forEach((field, index) => {
+        params.set(`populate[contentSections][on][operation.video][populate][${relation}][fields][${index}]`, field);
+      });
+    }
 
     const priceFields = [
       "key",

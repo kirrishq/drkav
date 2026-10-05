@@ -152,6 +152,16 @@ function SectionContent({
     );
   }
 
+  if (section.type === "video") {
+    return (
+      <video className="operation-content__video" controls playsInline preload="metadata" poster={section.poster.url}>
+        {section.webm ? <source src={section.webm.url} type={section.webm.mime} /> : null}
+        <source src={section.mp4.url} type={section.mp4.mime} />
+        Ваш браузер не поддерживает воспроизведение видео.
+      </video>
+    );
+  }
+
   return (
     <>
       <SectionHeading heading={section.heading} level={headingLevel} />

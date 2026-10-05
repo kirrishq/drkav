@@ -429,12 +429,20 @@ export interface OperationPriceSection extends OperationSectionBase {
   disclaimer?: readonly RichTextBlock[];
 }
 
+export interface OperationVideoSection extends OperationSectionBase {
+  type: "video";
+  poster: ImageAsset;
+  mp4: PortfolioMediaAsset;
+  webm?: PortfolioMediaAsset;
+}
+
 export type OperationContentSection =
   | OperationRichTextSection
   | OperationListSection
   | OperationStepsSection
   | OperationChecklistSection
-  | OperationPriceSection;
+  | OperationPriceSection
+  | OperationVideoSection;
 
 export type PriceType =
   | "fixed"

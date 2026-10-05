@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_operation_videos",
+  "info": { "displayName": "Operation Video" },
+  "attributes": {
+    "sectionKey": { "type": "string", "required": true },
+    "anchor": { "type": "string", "required": false },
+    "showInPageNavigation": { "type": "boolean", "required": true, "default": false },
+    "poster": { "type": "media", "multiple": false, "required": true, "allowedTypes": ["images"] },
+    "mp4": { "type": "media", "multiple": false, "required": true, "allowedTypes": ["videos"] },
+    "webm": { "type": "media", "multiple": false, "required": false, "allowedTypes": ["videos"] }
+  },
+  "config": {}
+}
