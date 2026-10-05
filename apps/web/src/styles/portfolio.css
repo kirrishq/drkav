@@ -377,9 +377,9 @@
 
   .portfolio-case__image-button {
     display: block;
-    max-width: 42rem;
+    max-width: var(--space-80);
     width: 100%;
-    justify-self: center;
+    justify-self: start;
     padding: 0;
     border: 0;
     background: transparent;
@@ -457,10 +457,6 @@
   .portfolio-case__image-dialog-close:hover,
   .portfolio-case__image-dialog-close:focus-visible {
     background: var(--surface-muted);
-  }
-
-  .portfolio-case__blocks .portfolio-case__image-button {
-    margin-inline: auto;
   }
 
   .portfolio-case__cover,

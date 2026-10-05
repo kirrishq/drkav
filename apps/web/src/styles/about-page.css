@@ -376,43 +376,64 @@
   }
 
   .license-section__dialog {
-    width: min(100% - var(--space-8), var(--container-modal));
-    max-width: 92vw;
-    max-height: 92vh;
+    width: min(100% - var(--space-8), var(--container-wide));
+    max-height: calc(100dvh - var(--space-8));
     margin: auto;
-    padding: var(--space-3);
-    border: 0;
-    border-radius: var(--radius-md);
-    background: var(--background);
+    padding: 0;
+    border: var(--border-width-default) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-raised);
   }
 
   .license-section__dialog::backdrop {
-    background: rgb(0 0 0 / 0.72);
+    background: var(--overlay);
+    backdrop-filter: blur(var(--blur-modal));
+    -webkit-backdrop-filter: blur(var(--blur-modal));
+  }
+
+  .license-section__dialog-content {
+    position: relative;
+    display: grid;
+    max-height: calc(100dvh - var(--space-8));
+    padding: var(--space-4);
   }
 
   .license-section__dialog-image {
     display: block;
     width: auto;
-    max-width: calc(92vw - var(--space-6));
+    max-width: 100%;
     height: auto;
-    max-height: calc(92vh - var(--space-6));
+    max-height: calc(100dvh - var(--space-16));
     object-fit: contain;
   }
 
   .license-section__close {
     position: absolute;
-    top: var(--space-2);
-    right: var(--space-2);
+    top: var(--space-3);
+    right: var(--space-3);
     z-index: 1;
+    display: inline-flex;
     width: var(--space-8);
     height: var(--space-8);
+    align-items: center;
+    justify-content: center;
+    padding: 0;
     border: 0;
-    border-radius: 999px;
-    background: var(--surface-inverse);
-    color: var(--text-inverse);
-    font-size: var(--type-h3-size);
-    line-height: 1;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text-primary);
     cursor: pointer;
+  }
+
+  .license-section__close svg {
+    width: var(--space-5);
+    height: var(--space-5);
+  }
+
+  .license-section__close:hover,
+  .license-section__close:focus-visible {
+    background: var(--surface-muted);
   }
 
   @media (min-width: 40rem) {

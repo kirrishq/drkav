@@ -10,6 +10,10 @@ const licenses = [
   ["asbeauty-license-04.webp", "Приложение к санитарно-эпидемиологическому заключению ASBeauty"],
 ] as const;
 
+function CloseIcon() {
+  return <svg aria-hidden="true" fill="none" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" strokeLinecap="round" strokeWidth="1.75" /></svg>;
+}
+
 export function LicenseSection() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [selected, setSelected] = useState<number | null>(null);
@@ -40,8 +44,10 @@ export function LicenseSection() {
           onClick={(event) => { if (event.target === event.currentTarget) setSelected(null); }}
           ref={dialogRef}
         >
-          <button aria-label="Закрыть документ" className="license-section__close" onClick={() => setSelected(null)} type="button">×</button>
-          <Image alt={selectedLicense[1]} className="license-section__dialog-image" height={1600} src={`/images/licenses/${selectedLicense[0]}`} width={1200} />
+          <div className="license-section__dialog-content">
+            <button aria-label="Закрыть документ" className="license-section__close" onClick={() => setSelected(null)} type="button"><CloseIcon /></button>
+            <Image alt={selectedLicense[1]} className="license-section__dialog-image" height={1600} src={`/images/licenses/${selectedLicense[0]}`} width={1200} />
+          </div>
         </dialog>
       ) : null}
     </section>

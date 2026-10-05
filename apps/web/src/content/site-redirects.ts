@@ -90,6 +90,12 @@ const mediaPublicationRedirects: readonly SiteRedirect[] = [
 
 redirects.push(...mediaPublicationRedirects);
 
+redirects.push({
+  source: "/uslugi.html",
+  destination: "/operaczii",
+  permanent: true,
+});
+
 const redirectSources = new Set<string>();
 
 for (const redirect of redirects) {
