@@ -11,6 +11,7 @@ import { CookieConsent } from "@/components/cookie-consent/cookie-consent";
 import { MarketingAttribution } from "@/components/marketing-attribution/marketing-attribution";
 import { NavigationScrollRestoration } from "@/components/navigation-scroll-restoration/navigation-scroll-restoration";
 import { YandexMetrika } from "@/components/yandex-metrika/yandex-metrika";
+import { StructuredData } from "@/components/structured-data/structured-data";
 import { getSiteUrl } from "@/content/seo";
 import { getSiteNavigation } from "@/content/site-navigation";
 
@@ -82,6 +83,41 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         ) : null}
       </head>
       <body className={GeistSans.variable}>
+        <StructuredData data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Physician",
+              "@id": `${getSiteUrl().toString().replace(/\/$/, "")}/#doctor`,
+              name: "Артём Владимирович Коробов",
+              url: getSiteUrl().toString(),
+              jobTitle: "Пластический хирург",
+              worksFor: { "@id": `${getSiteUrl().toString().replace(/\/$/, "")}/#clinic` },
+            },
+            {
+              "@type": "MedicalClinic",
+              "@id": `${getSiteUrl().toString().replace(/\/$/, "")}/#clinic`,
+              name: "ASBeauty",
+              url: getSiteUrl().toString(),
+              telephone: "+7 495 151-42-06",
+              email: "admin@drkav.ru",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Москва",
+                streetAddress: "Рублёво-Успенское шоссе, 123Б, этаж 2, кабинет 1",
+                addressCountry: "RU",
+              },
+            },
+            {
+              "@type": "WebSite",
+              "@id": `${getSiteUrl().toString().replace(/\/$/, "")}/#website`,
+              name: "DrKAV",
+              url: getSiteUrl().toString(),
+              publisher: { "@id": `${getSiteUrl().toString().replace(/\/$/, "")}/#doctor` },
+              inLanguage: "ru-RU",
+            },
+          ],
+        }} />
         <YandexMetrika />
         <MarketingAttribution />
         <NavigationScrollRestoration />

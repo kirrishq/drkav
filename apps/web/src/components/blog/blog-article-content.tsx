@@ -4,6 +4,7 @@ import { FeatureLinkCard, RecordCard, SectionNavigation } from "@drkav/ui";
 import { BlogArticleCard } from "@/components/blog/blog-index";
 import { getHeadingAnchorId, BlocksRenderer } from "@/components/operation-content/blocks-renderer";
 import { SharedSections } from "@/components/shared-sections/shared-sections";
+import { StructuredData } from "@/components/structured-data/structured-data";
 import type { ArticleSupportData } from "@/content/article-support-data";
 
 function formatPublishedAt(value: string): string {
@@ -147,6 +148,16 @@ export function BlogArticleContent({
 }) {
   return (
     <article className="blog-article">
+      <StructuredData data={{
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: article.title,
+        description: article.excerpt,
+        datePublished: article.publishedAt,
+        author: { "@type": "Person", name: "Артём Владимирович Коробов" },
+        publisher: { "@type": "Organization", name: "DrKAV" },
+        mainEntityOfPage: { "@type": "WebPage", "@id": article.canonicalPath },
+      }} />
       <header className="content-card content-card--intro blog-article__header">
         <p className="blog-article__meta">{[article.categories.map((category) => category.name).join(" · "), showPublishedAt ? formatPublishedAt(article.publishedAt) : "", `${article.readingTimeMinutes} мин чтения`].filter(Boolean).join(" · ")}</p>
         <h1 className="type-h1 blog-article__title">{article.title}</h1>

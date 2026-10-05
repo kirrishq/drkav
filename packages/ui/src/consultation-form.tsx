@@ -58,8 +58,8 @@ export type ConsultationFormProps = {
 
 export function ConsultationForm({ captchaSiteKey, className, compact = false, onSuccess, submitUrl }: ConsultationFormProps) {
   const idPrefix = useId().replaceAll(":", "");
-  const [consultationFormat, setConsultationFormat] = useState<ConsultationFormat>("clinic");
-  const [contactMethod, setContactMethod] = useState<ContactMethod>("phone");
+  const [consultationFormat, setConsultationFormat] = useState<ConsultationFormat | null>(null);
+  const [contactMethod, setContactMethod] = useState<ContactMethod | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -167,6 +167,7 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
             className="consultation-form__option"
             name="consultation-format"
             onChange={() => setConsultationFormat("clinic")}
+            required
             value="clinic"
           >
             Очно — 2 500 ₽
@@ -187,14 +188,14 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
         <legend className="type-label consultation-form__legend">Удобный способ связи</legend>
         <div className="consultation-form__options consultation-form__options--contacts">
           <RadioButton
-            checked={contactMethod === "phone"}
+            checked={contactMethod === "whatsapp"}
             className="consultation-form__option"
-            icon={<ContactActionIcon kind="phone" />}
+            icon={<ContactActionIcon kind="whatsapp" />}
             name="contact-method"
-            onChange={() => setContactMethod("phone")}
-            value="phone"
+            onChange={() => setContactMethod("whatsapp")}
+            value="whatsapp"
           >
-            Позвонить
+            WhatsApp
           </RadioButton>
           <RadioButton
             checked={contactMethod === "telegram"}
@@ -217,14 +218,15 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
             MAX
           </RadioButton>
           <RadioButton
-            checked={contactMethod === "whatsapp"}
+            checked={contactMethod === "phone"}
             className="consultation-form__option"
-            icon={<ContactActionIcon kind="whatsapp" />}
+            icon={<ContactActionIcon kind="phone" />}
             name="contact-method"
-            onChange={() => setContactMethod("whatsapp")}
-            value="whatsapp"
+            onChange={() => setContactMethod("phone")}
+            required
+            value="phone"
           >
-            WhatsApp
+            Позвонить
           </RadioButton>
         </div>
       </fieldset>
