@@ -175,8 +175,8 @@ export default async function HomePage() {
               <h1 className="type-h1 home-hero__title" id="home-hero-title">{formatRussianText(heroTitle)}</h1>
               <p className="home-hero__description">{formatRussianText(heroDescription)}</p>
               <div className="home-hero__actions">
-                <HomeAction action={cmsHome?.primaryAction} fallback={primaryHeroAction} primary />
-                <HomeAction action={cmsHome?.secondaryAction} fallback={secondaryHeroAction} />
+                <HomeAction fallback={primaryHeroAction} primary />
+                <HomeAction fallback={secondaryHeroAction} />
               </div>
             </div>
             <div className="home-hero__portrait">
