@@ -15,6 +15,12 @@ www.{$SITE_DOMAIN} {
     redir https://{$SITE_DOMAIN}{uri} permanent
 }
 
+# Redirect the HTTP www variant directly to the canonical HTTPS host instead
+# of letting Caddy emit an intermediate HTTP -> HTTPS redirect first.
+http://www.{$SITE_DOMAIN} {
+    redir https://{$SITE_DOMAIN}{uri} permanent
+}
+
 {$CMS_DOMAIN} {
     log {
         output stdout
