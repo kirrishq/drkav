@@ -57,8 +57,6 @@ import type {
 } from "@drkav/content-contracts";
 import { formatPriceItem } from "@drkav/content-contracts";
 import type { ReviewKind } from "@drkav/content-contracts";
-import { getPageByRoute } from "./page-registry";
-
 import {
   getBlogArticleCacheTag,
   getBlogIndexCacheTag,
@@ -1720,19 +1718,49 @@ export class StrapiContentRepository implements ContentRepository {
       "heading",
       "heroDescription",
     ]);
-    const resolvedPageKey = canonicalPath ? getPageByRoute(canonicalPath)?.key : pageKey;
-    if (!resolvedPageKey) return null;
-    params.set("filters[pageKey][$eq]", resolvedPageKey);
+    if (canonicalPath) {
+      // Dynamic static pages are addressed by the SEO canonical path. Fixed
+      // pages keep working through the registry/pageKey lookup below.
+      params.set("filters[seo][canonicalPath][$eq]", canonicalPath);
+    } else {
+      if (!pageKey) return null;
+      params.set("filters[pageKey][$eq]", pageKey);
+    }
     this.populatePageFields(params);
     params.delete("populate[primaryAction]");
     params.delete("populate[secondaryAction]");
     this.populateStaticPageContent(params);
-    const page = await this.getFirst(
+    let page = await this.getFirst(
       "/api/static-pages",
       params,
       `static-page:${encodeURIComponent(canonicalPath ?? pageKey)}`,
       { noStore: Boolean(canonicalPath) },
     );
+
+    // New CMS pages can use pageKey as their URL slug. This keeps page
+    // creation self-contained in Strapi while preserving canonicalPath for
+    // existing fixed pages.
+    if (!page && canonicalPath) {
+      const pageKeyFromPath = canonicalPath.replace(/^\//, "");
+      if (pageKeyFromPath) {
+        const fallbackParams = this.createPublishedParams([
+          "pageKey",
+          "heading",
+          "heroDescription",
+        ]);
+        fallbackParams.set("filters[pageKey][$eq]", pageKeyFromPath);
+        this.populatePageFields(fallbackParams);
+        fallbackParams.delete("populate[primaryAction]");
+        fallbackParams.delete("populate[secondaryAction]");
+        this.populateStaticPageContent(fallbackParams);
+        page = await this.getFirst(
+          "/api/static-pages",
+          fallbackParams,
+          `static-page:${encodeURIComponent(canonicalPath)}:page-key`,
+          { noStore: true },
+        );
+      }
+    }
 
     if (!page) {
       return null;
@@ -1745,10 +1773,12 @@ export class StrapiContentRepository implements ContentRepository {
       : [];
     validateUniqueStaticPageSectionKeys(contentSections);
 
+    const seo = mapSeo(page.seo, this.baseUrl, "staticPage.seo");
+
     return {
       pageKey: requireString(page.pageKey, "staticPage.pageKey"),
-      canonicalPath: canonicalPath ?? undefined,
-      seo: mapSeo(page.seo, this.baseUrl, "staticPage.seo"),
+      canonicalPath: canonicalPath ?? seo.canonicalPath,
+      seo,
       heading: optionalString(page.heading, "staticPage.heading"),
       heroDescription: optionalString(
         page.heroDescription,
