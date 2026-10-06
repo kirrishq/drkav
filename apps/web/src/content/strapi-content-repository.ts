@@ -515,18 +515,6 @@ function optionalBlocks(
   return mapBlocks(value, label, baseUrl);
 }
 
-function requireAnchor(value: unknown, label: string): string | undefined {
-  const anchor = optionalString(value, label);
-
-  if (anchor && !/^[a-z][a-z0-9-]*$/.test(anchor)) {
-    throw new CmsInvalidResponseError(
-      `Invalid Strapi response: ${label} must be a lowercase HTML anchor.`,
-    );
-  }
-
-  return anchor;
-}
-
 function mapTextItem(value: unknown, label: string): OperationTextItem {
   const item = requireRecord(value, label);
   const sortOrder = optionalInteger(item.sortOrder, `${label}.sortOrder`);
@@ -1021,24 +1009,6 @@ function mapPortfolioMedia(
     mediaType,
     mime,
   };
-}
-
-function mapSiteImagePath(value: unknown, label: string): ImageAsset {
-  const path = requireString(value, label);
-  const publicMediaUrl = process.env.MEDIA_PUBLIC_URL?.trim().replace(/\/$/, "");
-  const isLegacyLocalUpload =
-    path.startsWith("/uploads/")
-    || path.startsWith("http://cms:1337/uploads/")
-    || path.startsWith("http://localhost:1337/uploads/")
-    || path.startsWith("http://127.0.0.1:1337/uploads/");
-
-  if (isLegacyLocalUpload && publicMediaUrl) {
-    return {
-      url: `${publicMediaUrl}${path.replace(/^https?:\/\/[^/]+/, "").replace(/^\/uploads(?=\/)/, "")}`,
-    };
-  }
-
-  return { url: requireCanonicalPath(path, label) };
 }
 
 function requireCanonicalPath(value: unknown, label: string): string {

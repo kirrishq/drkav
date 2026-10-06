@@ -62,7 +62,6 @@ export default async function MediaPublicationPage({ params }: MediaPublicationP
     seo: publication.seo,
     contentSections: publication.contentSections,
     relatedOperations: [],
-    relatedArticles: [],
   };
 
   return <><SiteHeader /><main className="page-intro blog-article-page"><Breadcrumbs items={[{ href: "/", label: "Главная" }, { href: "/obo-mne", label: "Обо мне" }, { href: "/obo-mne/smi", label: "СМИ" }, { label: publication.title }]} /><div className="page-intro__content"><BlogArticleContent article={article} showPublishedAt={false} source={{ href: publication.sourceUrl, label: publication.sourceName }} support={support} /></div></main></>;
