@@ -923,17 +923,6 @@ function mapPrice(value: unknown, index: number): PriceItem | null {
   };
 }
 
-function requireContentStatus(
-  value: unknown,
-  label: string,
-): OperationContent["contentStatus"] {
-  if (value !== "empty" && value !== "partial" && value !== "ready") {
-    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} is unsupported.`);
-  }
-
-  return value;
-}
-
 function mapImage(
   value: unknown,
   baseUrl: string,
@@ -1236,10 +1225,6 @@ function mapBuilderPage(
     seo: mapSeo(value.seo, baseUrl, "builderPage.seo"),
     theme: mapBuilderTheme(value.theme, "builderPage.theme"),
     blocks,
-    contentStatus: requireContentStatus(
-      value.contentStatus,
-      "builderPage.contentStatus",
-    ),
   };
 }
 
@@ -2135,24 +2120,24 @@ export class StrapiContentRepository implements ContentRepository {
       getBeforeAfterCasesCacheTag(),
     );
 
-    return cases.map((entry, index) => {
+    return cases.flatMap((entry, index) => {
       const label = `beforeAfterCases[${index}]`;
       const item = requireRecord(entry, label);
       const image = mapImage(item.image, this.baseUrl, `${label}.image`);
 
       if (!image) {
-        return null;
+        return [];
       }
 
-      return {
+      return [{
         slug: requireString(item.slug, `${label}.slug`),
         title: requireString(item.title, `${label}.title`),
         image,
         operation: mapCatalogLink(item.operation, `${label}.operation`),
         date: optionalString(item.date, `${label}.date`),
         isFeatured: optionalBoolean(item.isFeatured, `${label}.isFeatured`) ?? false,
-      };
-    }).filter((item): item is BeforeAfterCase => item !== null);
+      }];
+    });
   }
 
   async getBeforeAfterCaseBySlug(slug: string): Promise<BeforeAfterCase | null> {

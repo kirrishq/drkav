@@ -52,6 +52,8 @@ export interface BuilderHeroBlock extends BuilderBlockBase {
   heading: string;
   description?: string;
   image?: ImageAsset;
+  primaryAction?: ContentAction;
+  secondaryAction?: ContentAction;
   align: "left" | "center";
 }
 

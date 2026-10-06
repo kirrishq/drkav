@@ -109,5 +109,4 @@ export const builderPageFixture = {
       ],
     },
   ],
-  contentStatus: "ready",
 } satisfies BuilderPage;
