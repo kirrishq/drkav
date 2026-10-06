@@ -96,6 +96,19 @@ redirects.push({
   permanent: true,
 });
 
+redirects.push(
+  {
+    source: "/operaczii/muzhskaya-plastika/prorisovka-grudnykh-myshcz",
+    destination: "/operaczii/muzhskaya-plastika",
+    permanent: true,
+  },
+  {
+    source: "/muzhskaya-plastika/ginekomastiya",
+    destination: "/operaczii/muzhskaya-plastika/ginekomastiya",
+    permanent: true,
+  },
+);
+
 redirects.push({
   source: "/konsultacii/konsultaciya-po-ankete.html",
   destination: "/",
