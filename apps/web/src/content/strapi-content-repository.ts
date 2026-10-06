@@ -152,6 +152,16 @@ function optionalHttpUrl(value: unknown, label: string): string | undefined {
   }
 }
 
+function requireHttpUrl(value: unknown, label: string): string {
+  const url = optionalHttpUrl(value, label);
+
+  if (!url) {
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be an absolute HTTP(S) URL.`);
+  }
+
+  return url;
+}
+
 function requireBoolean(value: unknown, label: string): boolean {
   if (typeof value !== "boolean") {
     throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be a boolean.`);
@@ -2190,13 +2200,9 @@ export class StrapiContentRepository implements ContentRepository {
       getReviewsCacheTag(),
     );
 
-    return reviews.flatMap((entry, index) => {
+    return reviews.map((entry, index) => {
       const label = `reviews[${index}]`;
       const item = requireRecord(entry, label);
-
-      // Existing records may not have been migrated to the new Media field
-      // yet. Keep them out of the public slider until an image is uploaded.
-      if (!item.image) return [];
 
       const kind = requireString(item.kind, `${label}.kind`);
 
@@ -2208,7 +2214,7 @@ export class StrapiContentRepository implements ContentRepository {
         ? undefined
         : mapCatalogLink(item.operation, `${label}.operation`);
 
-      return [{
+      return {
         slug: requireString(item.slug, `${label}.slug`),
         title: requireString(item.title, `${label}.title`),
         text: requireString(item.text, `${label}.text`),
@@ -2221,7 +2227,7 @@ export class StrapiContentRepository implements ContentRepository {
         },
         externalUrl: optionalHttpUrl(item.externalUrl, `${label}.externalUrl`),
         operation,
-      }];
+      };
     });
   }
 
