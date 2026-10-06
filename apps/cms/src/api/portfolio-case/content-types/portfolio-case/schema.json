@@ -15,7 +15,6 @@
       "required": true,
       "unique": true
     },
-    "canonicalPath": { "type": "string", "required": true, "unique": true },
     "excerpt": { "type": "text", "required": false },
     "caseLabel": { "type": "string", "required": true },
     "resultTerm": { "type": "string", "required": true },
@@ -29,7 +28,6 @@
     },
     "date": { "type": "date", "required": false },
     "isFeatured": { "type": "boolean", "required": true, "default": false },
-    "sortOrder": { "type": "integer", "required": true, "min": 0 },
     "seo": {
       "type": "component",
       "component": "shared.seo",

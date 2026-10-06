@@ -58,18 +58,6 @@
       "relation": "manyToMany",
       "target": "api::static-page.static-page",
       "mappedBy": "sharedSections"
-    },
-    "blogArticles": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::blog-article.blog-article",
-      "mappedBy": "sharedSections"
-    },
-    "conditionArticles": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::condition-article.condition-article",
-      "mappedBy": "sharedSections"
     }
   },
   "config": {}

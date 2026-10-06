@@ -182,7 +182,7 @@ async function run() {
       const allText = [...intro, ...content]
         .flatMap((block) => block.children.map((child) => child.type === 'link' ? child.children.map((item) => item.text).join('') : child.text))
         .join(' ');
-      const data = { title: entry.title, slug, canonicalPath: `/pacientam/pro-bolezni/${slug}`, excerpt, readingTimeMinutes: Math.max(1, Math.ceil(allText.split(/\s+/).length / 180)), sortOrder: entry.sortOrder, isFeatured: false, contentSections: [{ __component: 'blog.rich-text-section', sectionKey: 'content', body: content }], seo: { ...seo, canonicalPath: `/pacientam/pro-bolezni/${slug}`, noIndex: false } };
+      const data = { title: entry.title, slug, excerpt, isFeatured: false, contentSections: [{ __component: 'blog.rich-text-section', sectionKey: 'content', body: content }], seo: { ...seo, canonicalPath: `/pacientam/pro-bolezni/${slug}`, noIndex: false } };
       const result = existing ? await strapi.documents(UID).update({ documentId: existing.documentId, data, status: 'draft' }) : await strapi.documents(UID).create({ data, status: 'draft' });
       await strapi.documents(UID).publish({ documentId: result.documentId });
     }

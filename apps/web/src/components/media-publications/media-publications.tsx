@@ -28,13 +28,13 @@ function PublicationCard({ publication }: { publication: MediaPublicationSummary
   const content = (
     <>
       <div className="media-publication-card__visual">
-        {publication.imagePath ? (
+        {publication.image ? (
           <Image
-            alt={publication.imageAlt ?? ""}
+            alt={publication.image.alternativeText ?? publication.title}
             className="media-publication-card__image"
             fill
             sizes="(min-width: 64rem) 36vw, 100vw"
-            src={publication.imagePath}
+            src={publication.image.url}
           />
         ) : null}
       </div>
@@ -60,15 +60,15 @@ function FeaturedPublication({ publication }: { publication: MediaPublicationSum
   if (!href) return null;
 
   return (
-    <PublicationLink className={`media-publication-featured${publication.imagePath ? "" : " media-publication-featured--text-only"}`} href={href} publication={publication}>
-      {publication.imagePath ? (
+    <PublicationLink className={`media-publication-featured${publication.image ? "" : " media-publication-featured--text-only"}`} href={href} publication={publication}>
+        {publication.image ? (
         <span className="media-publication-featured__visual">
           <Image
-            alt={publication.imageAlt ?? ""}
+            alt={publication.image.alternativeText ?? publication.title}
             className="media-publication-featured__image"
             fill
             sizes="5rem"
-            src={publication.imagePath}
+            src={publication.image.url}
           />
         </span>
       ) : null}

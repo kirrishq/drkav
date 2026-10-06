@@ -8,10 +8,6 @@
   "attributes": {
     "sectionKey": {
       "type": "string",
-      "required": true
-    },
-    "anchor": {
-      "type": "string",
       "required": false
     },
     "heading": {

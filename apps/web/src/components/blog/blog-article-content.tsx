@@ -33,7 +33,7 @@ function getTableOfContents(article: BlogArticle) {
       label: sectionHeading,
     }] : [];
     const bodyItems = section.body.flatMap((block, index) => block.type === "heading" ? [{
-      id: getHeadingAnchorId(`article-${section.sectionKey}`, index + 1, block.children),
+      id: getHeadingAnchorId(`article-${section.sectionKey}`, index, block.children),
       label: getInlineText(block.children),
     }] : []);
 

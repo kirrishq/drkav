@@ -3,11 +3,14 @@ import type { NextConfig } from "next";
 import { siteRedirects } from "./src/content/site-redirects";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
+const developmentCmsImageSources = isDevelopment
+  ? " http://localhost:1337 http://127.0.0.1:1337"
+  : "";
 const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ""} https://mc.yandex.ru https://smartcaptcha.cloud.yandex.ru`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https:",
+  `img-src 'self' data: blob: https:${developmentCmsImageSources}`,
   "font-src 'self' data:",
   "media-src 'self' blob: https:",
   "connect-src 'self' https://mc.yandex.ru wss://mc.yandex.ru https://smartcaptcha.cloud.yandex.ru",

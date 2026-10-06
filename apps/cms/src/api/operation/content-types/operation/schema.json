@@ -49,18 +49,6 @@
       "required": false,
       "allowedTypes": ["images"]
     },
-    "primaryAction": {
-      "type": "component",
-      "component": "shared.action",
-      "repeatable": false,
-      "required": false
-    },
-    "secondaryAction": {
-      "type": "component",
-      "component": "shared.action",
-      "repeatable": false,
-      "required": false
-    },
     "seo": {
       "type": "component",
       "component": "shared.seo",
@@ -89,12 +77,6 @@
       "relation": "manyToMany",
       "target": "api::price-item.price-item",
       "inversedBy": "operations"
-    },
-    "contentStatus": {
-      "type": "enumeration",
-      "enum": ["empty", "partial", "ready"],
-      "required": true,
-      "default": "empty"
     }
   },
   "config": {}

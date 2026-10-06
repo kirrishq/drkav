@@ -52,8 +52,6 @@ export interface BuilderHeroBlock extends BuilderBlockBase {
   heading: string;
   description?: string;
   image?: ImageAsset;
-  primaryAction?: ContentAction;
-  secondaryAction?: ContentAction;
   align: "left" | "center";
 }
 
@@ -124,7 +122,6 @@ export interface BuilderPage {
   seo: SeoData;
   theme: BuilderTheme;
   blocks: readonly BuilderBlock[];
-  contentStatus: ContentStatus;
 }
 
 export interface StaticPageContent {
@@ -134,11 +131,8 @@ export interface StaticPageContent {
   heading?: string;
   heroDescription?: string;
   heroImage?: ImageAsset;
-  primaryAction?: ContentAction;
-  secondaryAction?: ContentAction;
   contentSections: readonly StaticPageContentSection[];
   sharedSections: readonly SharedSection[];
-  contentStatus: ContentStatus;
 }
 
 export type SharedSectionType =
@@ -578,13 +572,10 @@ export interface OperationContent {
   breadcrumbLabel?: string;
   heroDescription?: string;
   heroImage?: ImageAsset;
-  primaryAction?: ContentAction;
-  secondaryAction?: ContentAction;
   seo: SeoData;
   categories: readonly OperationCategorySummary[];
   prices: readonly PriceItem[];
   contentSections: readonly OperationContentSection[];
-  contentStatus: ContentStatus;
 }
 
 export interface BlogCategorySummary {
@@ -634,8 +625,6 @@ export interface BlogArticle extends BlogArticleSummary {
   seo: SeoData;
   contentSections: readonly BlogContentSection[];
   relatedOperations: readonly OperationCatalogLink[];
-  relatedArticles: readonly BlogArticleSummary[];
-  sharedSections?: readonly SharedSection[];
 }
 
 export interface BlogIndexContent {
@@ -654,8 +643,7 @@ export interface MediaPublicationSummary {
   externalUrl?: string;
   isExternal: boolean;
   layoutVariant: "primary" | "featured";
-  imagePath?: string;
-  imageAlt?: string;
+  image?: ImageAsset;
   sortOrder: number;
   readingTimeMinutes?: number;
 }

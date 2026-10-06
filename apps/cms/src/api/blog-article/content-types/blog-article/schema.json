@@ -10,10 +10,8 @@
   "attributes": {
     "title": { "type": "string", "required": true },
     "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
-    "canonicalPath": { "type": "string", "required": true, "unique": true },
     "excerpt": { "type": "text", "required": true },
     "cover": { "type": "media", "multiple": false, "required": false, "allowedTypes": ["images"] },
-    "readingTimeMinutes": { "type": "integer", "required": false, "min": 1 },
     "isFeatured": { "type": "boolean", "required": true, "default": false },
     "seo": { "type": "component", "component": "shared.seo", "repeatable": false, "required": true },
     "categories": {
@@ -30,17 +28,6 @@
     "contentSections": {
       "type": "dynamiczone",
       "components": ["blog.rich-text-section", "blog.callout", "blog.faq"]
-    },
-    "relatedArticles": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::blog-article.blog-article"
-    },
-    "sharedSections": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::shared-section.shared-section",
-      "inversedBy": "blogArticles"
     }
   }
 }

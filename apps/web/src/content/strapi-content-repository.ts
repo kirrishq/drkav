@@ -57,6 +57,7 @@ import type {
 } from "@drkav/content-contracts";
 import { formatPriceItem } from "@drkav/content-contracts";
 import type { ReviewKind } from "@drkav/content-contracts";
+import { getPageByRoute } from "./page-registry";
 
 import {
   getBlogArticleCacheTag,
@@ -582,8 +583,8 @@ function mapContentSection(
   const section = requireRecord(value, label);
   const component = requireString(section.__component, `${label}.__component`);
   const base = {
-    sectionKey: requireString(section.sectionKey, `${label}.sectionKey`),
-    anchor: requireAnchor(section.anchor, `${label}.anchor`),
+    sectionKey: optionalString(section.sectionKey, `${label}.sectionKey`) ?? `section-${index + 1}`,
+    anchor: optionalString(section.sectionKey, `${label}.sectionKey`) ?? `section-${index + 1}`,
     heading: optionalString(section.heading, `${label}.heading`),
     showInPageNavigation: requireBoolean(
       section.showInPageNavigation,
@@ -1345,23 +1346,38 @@ function mapBlogCategory(value: unknown, index: number): BlogCategorySummary {
   };
 }
 
+const READING_TIME_WORDS_PER_MINUTE = 180;
+
+function collectArticleText(value: unknown, key?: string): string {
+  if (typeof value === "string") {
+    return key === "__component" || key === "sectionKey" ? "" : value;
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => collectArticleText(item)).join(" ");
+  }
+  if (!isRecord(value)) return "";
+
+  return Object.entries(value)
+    .filter(([entryKey]) => !["id", "documentId", "createdAt", "updatedAt", "publishedAt", "__component", "sectionKey"].includes(entryKey))
+    .map(([entryKey, entryValue]) => collectArticleText(entryValue, entryKey))
+    .join(" ");
+}
+
+function calculateArticleReadingTime(contentSections: unknown): number {
+  const wordCount = collectArticleText(contentSections).trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(wordCount / READING_TIME_WORDS_PER_MINUTE));
+}
+
 function mapMediaPublicationSummary(
   value: unknown,
   index: number,
+  baseUrl: string,
 ): MediaPublicationSummary {
   const label = `mediaPublications[${index}]`;
   const publication = requireRecord(value, label);
-  const canonicalPath = optionalString(
-    publication.canonicalPath,
-    `${label}.canonicalPath`,
-  );
   const externalUrl = optionalString(
     publication.externalUrl,
     `${label}.externalUrl`,
-  );
-  const readingTimeMinutes = optionalInteger(
-    publication.readingTimeMinutes,
-    `${label}.readingTimeMinutes`,
   );
   const layoutVariant = requireString(
     publication.layoutVariant,
@@ -1372,8 +1388,6 @@ function mapMediaPublicationSummary(
       `Invalid Strapi response: ${label}.layoutVariant must be primary or featured.`,
     );
   }
-  const imagePath = optionalString(publication.imagePath, `${label}.imagePath`);
-  const imageAlt = optionalString(publication.imageAlt, `${label}.imageAlt`);
   const sortOrder = optionalInteger(publication.sortOrder, `${label}.sortOrder`);
   if (sortOrder === undefined || sortOrder < 0) {
     throw new CmsInvalidResponseError(
@@ -1383,7 +1397,7 @@ function mapMediaPublicationSummary(
 
   return {
     slug: requireString(publication.slug, `${label}.slug`),
-    ...(canonicalPath ? { canonicalPath } : {}),
+    canonicalPath: `/obo-mne/smi/${requireString(publication.slug, `${label}.slug`)}`,
     title: requireString(publication.title, `${label}.title`),
     excerpt: requireString(publication.excerpt, `${label}.excerpt`),
     sourceName: requireString(publication.sourceName, `${label}.sourceName`),
@@ -1394,10 +1408,9 @@ function mapMediaPublicationSummary(
     ...(externalUrl ? { externalUrl } : {}),
     isExternal: requireBoolean(publication.isExternal, `${label}.isExternal`),
     layoutVariant,
-    ...(imagePath ? { imagePath } : {}),
-    ...(imageAlt ? { imageAlt } : {}),
+    image: mapImage(publication.image, baseUrl, `${label}.image`),
     sortOrder,
-    ...(readingTimeMinutes !== undefined ? { readingTimeMinutes } : {}),
+    readingTimeMinutes: calculateArticleReadingTime(publication.contentSections),
   };
 }
 
@@ -1405,26 +1418,14 @@ function mapBlogArticleSummary(
   value: unknown,
   index: number,
   baseUrl: string,
+  pathPrefix = "/pacientam/blog",
 ): BlogArticleSummary {
   const label = `blog.articles[${index}]`;
   const article = requireRecord(value, label);
-  const readingTimeMinutes = optionalInteger(
-    article.readingTimeMinutes,
-    `${label}.readingTimeMinutes`,
-  );
-
-  if (readingTimeMinutes === undefined || readingTimeMinutes < 1) {
-    throw new CmsInvalidResponseError(
-      `Invalid Strapi response: ${label}.readingTimeMinutes must be positive.`,
-    );
-  }
-
+  const slug = requireString(article.slug, `${label}.slug`);
   return {
-    slug: requireString(article.slug, `${label}.slug`),
-    canonicalPath: requireCanonicalPath(
-      article.canonicalPath,
-      `${label}.canonicalPath`,
-    ),
+    slug,
+    canonicalPath: `${pathPrefix}/${slug}`,
     title: requireString(article.title, `${label}.title`),
     excerpt: requireString(article.excerpt, `${label}.excerpt`),
     cover: mapImage(article.cover, baseUrl, `${label}.cover`),
@@ -1432,7 +1433,7 @@ function mapBlogArticleSummary(
       ? []
       : requireArray(article.categories, `${label}.categories`).map(mapBlogCategory),
     publishedAt: requireString(article.publishedAt, `${label}.publishedAt`),
-    readingTimeMinutes,
+    readingTimeMinutes: calculateArticleReadingTime(article.contentSections),
     isFeatured: requireBoolean(article.isFeatured, `${label}.isFeatured`),
   };
 }
@@ -1495,10 +1496,7 @@ function mapPortfolioCaseSummary(
 
   return {
     slug: requireString(portfolioCase.slug, `${label}.slug`),
-    canonicalPath: requireCanonicalPath(
-      portfolioCase.canonicalPath,
-      `${label}.canonicalPath`,
-    ),
+    canonicalPath: `/pacientam/portfolio/${requireString(portfolioCase.slug, `${label}.slug`)}`,
     title: requireString(portfolioCase.title, `${label}.title`),
     excerpt: optionalString(portfolioCase.excerpt, `${label}.excerpt`) ?? "",
     caseLabel: requireString(portfolioCase.caseLabel, `${label}.caseLabel`),
@@ -1719,13 +1717,15 @@ export class StrapiContentRepository implements ContentRepository {
   async getStaticPage(pageKey: string, canonicalPath?: string): Promise<StaticPageContent | null> {
     const params = this.createPublishedParams([
       "pageKey",
-      "canonicalPath",
       "heading",
       "heroDescription",
-      "contentStatus",
     ]);
-    params.set(`filters[${canonicalPath ? "canonicalPath" : "pageKey"}][$eq]`, canonicalPath ?? pageKey);
+    const resolvedPageKey = canonicalPath ? getPageByRoute(canonicalPath)?.key : pageKey;
+    if (!resolvedPageKey) return null;
+    params.set("filters[pageKey][$eq]", resolvedPageKey);
     this.populatePageFields(params);
+    params.delete("populate[primaryAction]");
+    params.delete("populate[secondaryAction]");
     this.populateStaticPageContent(params);
     const page = await this.getFirst(
       "/api/static-pages",
@@ -1747,7 +1747,7 @@ export class StrapiContentRepository implements ContentRepository {
 
     return {
       pageKey: requireString(page.pageKey, "staticPage.pageKey"),
-      canonicalPath: optionalString(page.canonicalPath, "staticPage.canonicalPath"),
+      canonicalPath: canonicalPath ?? undefined,
       seo: mapSeo(page.seo, this.baseUrl, "staticPage.seo"),
       heading: optionalString(page.heading, "staticPage.heading"),
       heroDescription: optionalString(
@@ -1759,24 +1759,12 @@ export class StrapiContentRepository implements ContentRepository {
         this.baseUrl,
         "staticPage.heroImage",
       ),
-      primaryAction: mapAction(
-        page.primaryAction,
-        "staticPage.primaryAction",
-      ),
-      secondaryAction: mapAction(
-        page.secondaryAction,
-        "staticPage.secondaryAction",
-      ),
       contentSections,
       sharedSections: Array.isArray(page.sharedSections)
         ? requireArray(page.sharedSections, "staticPage.sharedSections").map(
           (section, index) => mapSharedSection(section, index, this.baseUrl),
         )
         : [],
-      contentStatus: requireContentStatus(
-        page.contentStatus,
-        "staticPage.contentStatus",
-      ),
     };
   }
 
@@ -1808,10 +1796,11 @@ export class StrapiContentRepository implements ContentRepository {
       "heading",
       "breadcrumbLabel",
       "heroDescription",
-      "contentStatus",
     ]);
     params.set("filters[canonicalPath][$eq]", path);
     this.populatePageFields(params);
+    params.delete("populate[primaryAction]");
+    params.delete("populate[secondaryAction]");
     params.set("populate[categories][fields][0]", "key");
     params.set("populate[categories][fields][1]", "name");
     params.set("populate[categories][fields][2]", "description");
@@ -1870,22 +1859,10 @@ export class StrapiContentRepository implements ContentRepository {
         this.baseUrl,
         "operation.heroImage",
       ),
-      primaryAction: mapAction(
-        operation.primaryAction,
-        "operation.primaryAction",
-      ),
-      secondaryAction: mapAction(
-        operation.secondaryAction,
-        "operation.secondaryAction",
-      ),
       seo: mapSeo(operation.seo, this.baseUrl, "operation.seo"),
       categories,
       prices,
       contentSections,
-      contentStatus: requireContentStatus(
-        operation.contentStatus,
-        "operation.contentStatus",
-      ),
     };
   }
 
@@ -1926,8 +1903,6 @@ export class StrapiContentRepository implements ContentRepository {
       params.set(`populate[featuredOperation][fields][${index}]`, field);
       params.set(`populate[operations][fields][${index}]`, field);
     });
-    params.set("populate[operations][filters][publishedAt][$notNull]", "true");
-    params.set("populate[operations][sort][0]", "catalogOrder:asc");
 
     const categories = await this.getMany(
       "/api/operation-categories",
@@ -1947,7 +1922,6 @@ export class StrapiContentRepository implements ContentRepository {
       "accent",
       "note",
       "kind",
-      "sortOrder",
     ]);
     params.set("pagination[pageSize]", "100");
     params.set("sort[0]", "sortOrder:asc");
@@ -2023,7 +1997,6 @@ export class StrapiContentRepository implements ContentRepository {
 
   async getPromotions(): Promise<readonly Promotion[]> {
     const params = this.createPublishedParams([
-      "key",
       "title",
       "subtitle",
       "href",
@@ -2061,7 +2034,7 @@ export class StrapiContentRepository implements ContentRepository {
         .map((paragraph) => paragraph.text);
 
       return {
-        key: requireString(promotion.key, `${label}.key`),
+        key: `promotion-${index + 1}`,
         title: requireString(promotion.title, `${label}.title`),
         subtitle: optionalString(promotion.subtitle, `${label}.subtitle`),
         description,
@@ -2144,15 +2117,15 @@ export class StrapiContentRepository implements ContentRepository {
     const params = this.createPublishedParams([
       "slug",
       "title",
-      "imagePath",
       "date",
       "isFeatured",
-      "sortOrder",
     ]);
     params.set("pagination[pageSize]", "100");
     params.set("sort[0]", "isFeatured:desc");
     params.set("sort[1]", "date:desc");
-    params.set("sort[2]", "sortOrder:asc");
+    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+      params.set(`populate[image][fields][${index}]`, field);
+    });
     params.set("populate[operation][fields][0]", "canonicalPath");
     params.set("populate[operation][fields][1]", "heading");
 
@@ -2165,27 +2138,34 @@ export class StrapiContentRepository implements ContentRepository {
     return cases.map((entry, index) => {
       const label = `beforeAfterCases[${index}]`;
       const item = requireRecord(entry, label);
+      const image = mapImage(item.image, this.baseUrl, `${label}.image`);
+
+      if (!image) {
+        return null;
+      }
 
       return {
         slug: requireString(item.slug, `${label}.slug`),
         title: requireString(item.title, `${label}.title`),
-        image: mapSiteImagePath(item.imagePath, `${label}.imagePath`),
+        image,
         operation: mapCatalogLink(item.operation, `${label}.operation`),
         date: optionalString(item.date, `${label}.date`),
         isFeatured: optionalBoolean(item.isFeatured, `${label}.isFeatured`) ?? false,
       };
-    });
+    }).filter((item): item is BeforeAfterCase => item !== null);
   }
 
   async getBeforeAfterCaseBySlug(slug: string): Promise<BeforeAfterCase | null> {
     const params = this.createPublishedParams([
       "slug",
       "title",
-      "imagePath",
       "date",
       "isFeatured",
     ]);
     params.set("filters[slug][$eq]", slug);
+    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+      params.set(`populate[image][fields][${index}]`, field);
+    });
     params.set("populate[operation][fields][0]", "canonicalPath");
     params.set("populate[operation][fields][1]", "heading");
 
@@ -2204,7 +2184,7 @@ export class StrapiContentRepository implements ContentRepository {
     return {
       slug: requireString(item.slug, `beforeAfterCase:${slug}.slug`),
       title: requireString(item.title, `beforeAfterCase:${slug}.title`),
-      image: mapSiteImagePath(item.imagePath, `beforeAfterCase:${slug}.imagePath`),
+      image: requireImage(item.image, this.baseUrl, `beforeAfterCase:${slug}.image`),
       operation: mapCatalogLink(item.operation, `beforeAfterCase:${slug}.operation`),
       date: optionalString(item.date, `beforeAfterCase:${slug}.date`),
       isFeatured: optionalBoolean(item.isFeatured, `beforeAfterCase:${slug}.isFeatured`) ?? false,
@@ -2268,12 +2248,13 @@ export class StrapiContentRepository implements ContentRepository {
     const params = this.createPublishedParams([
       "slug",
       "title",
-      "imagePath",
-      "imageAlt",
-      "sortOrder",
+      "date",
     ]);
     params.set("pagination[pageSize]", "100");
-    params.set("sort[0]", "sortOrder:asc");
+    params.set("sort[0]", "date:desc");
+    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+      params.set(`populate[image][fields][${index}]`, field);
+    });
     params.set("populate[operation][fields][0]", "canonicalPath");
     params.set("populate[operation][fields][1]", "heading");
     params.set("populate[operationCategory][fields][0]", "key");
@@ -2293,8 +2274,8 @@ export class StrapiContentRepository implements ContentRepository {
         slug: requireString(item.slug, `${label}.slug`),
         title: requireString(item.title, `${label}.title`),
         image: {
-          ...mapSiteImagePath(item.imagePath, `${label}.imagePath`),
-          alternativeText: optionalString(item.imageAlt, `${label}.imageAlt`),
+          ...requireImage(item.image, this.baseUrl, `${label}.image`),
+          alternativeText: requireString(item.title, `${label}.title`),
         },
         categoryKey: requireString(category.key, `${label}.operationCategory.key`),
         operation: mapCatalogLink(item.operation, `${label}.operation`),
@@ -2317,7 +2298,7 @@ export class StrapiContentRepository implements ContentRepository {
     return {
       categories: categories.map(mapBlogCategory),
       articles: articles.map((article, index) =>
-        mapBlogArticleSummary(article, index, this.baseUrl),
+        mapBlogArticleSummary(article, index, this.baseUrl, "/pacientam/blog"),
       ),
     };
   }
@@ -2367,7 +2348,6 @@ export class StrapiContentRepository implements ContentRepository {
   async getPortfolioCaseBySlug(slug: string): Promise<PortfolioCase | null> {
     const params = this.createPublishedParams([
       "slug",
-      "canonicalPath",
       "title",
       "excerpt",
       "caseLabel",
@@ -2412,7 +2392,7 @@ export class StrapiContentRepository implements ContentRepository {
 
   async getConditionIndex(): Promise<BlogIndexContent> {
     const articleParams = this.createArticleSummaryParams();
-    articleParams.set("sort[0]", "sortOrder:asc");
+    articleParams.set("sort[0]", "publishedAt:desc");
     this.populateBlogSummaryFields(articleParams, false);
     const articles = await this.getMany(
       "/api/condition-articles",
@@ -2423,7 +2403,7 @@ export class StrapiContentRepository implements ContentRepository {
     return {
       categories: [],
       articles: articles.map((article, index) =>
-        mapBlogArticleSummary(article, index, this.baseUrl),
+        mapBlogArticleSummary(article, index, this.baseUrl, "/pacientam/pro-bolezni"),
       ),
     };
   }
@@ -2433,13 +2413,13 @@ export class StrapiContentRepository implements ContentRepository {
       endpoint: "/api/blog-articles",
       cacheTag: getBlogArticleCacheTag(slug),
       includeCategories: true,
+      pathPrefix: "/pacientam/blog",
     });
   }
 
   async getMediaPublicationIndex(): Promise<MediaPublicationIndexContent> {
     const params = this.createPublishedParams([
       "slug",
-      "canonicalPath",
       "title",
       "excerpt",
       "sourceName",
@@ -2448,13 +2428,13 @@ export class StrapiContentRepository implements ContentRepository {
       "externalUrl",
       "isExternal",
       "layoutVariant",
-      "imagePath",
-      "imageAlt",
-      "sortOrder",
-      "readingTimeMinutes",
     ]);
     params.set("pagination[pageSize]", "100");
     params.set("sort[0]", "sortOrder:asc");
+    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+      params.set(`populate[image][fields][${index}]`, field);
+    });
+    params.set("populate[contentSections][populate]", "*");
 
     const publications = await this.getMany(
       "/api/media-publications",
@@ -2464,7 +2444,7 @@ export class StrapiContentRepository implements ContentRepository {
 
     return {
       publications: publications.map((publication, index) =>
-        mapMediaPublicationSummary(publication, index),
+        mapMediaPublicationSummary(publication, index, this.baseUrl),
       ),
     };
   }
@@ -2474,7 +2454,6 @@ export class StrapiContentRepository implements ContentRepository {
   ): Promise<MediaPublication | null> {
     const params = this.createPublishedParams([
       "slug",
-      "canonicalPath",
       "title",
       "excerpt",
       "sourceName",
@@ -2483,12 +2462,12 @@ export class StrapiContentRepository implements ContentRepository {
       "externalUrl",
       "isExternal",
       "layoutVariant",
-      "imagePath",
-      "imageAlt",
       "sortOrder",
-      "readingTimeMinutes",
     ]);
     params.set("filters[slug][$eq]", slug);
+    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+      params.set(`populate[image][fields][${index}]`, field);
+    });
     params.set("populate[seo][fields][0]", "metaTitle");
     params.set("populate[seo][fields][1]", "metaDescription");
     params.set("populate[seo][fields][2]", "canonicalPath");
@@ -2521,7 +2500,7 @@ export class StrapiContentRepository implements ContentRepository {
     );
 
     return {
-      ...mapMediaPublicationSummary(publication, 0),
+      ...mapMediaPublicationSummary(publication, 0, this.baseUrl),
       seo: publication.seo
         ? mapSeo(publication.seo, this.baseUrl, "mediaPublication.seo")
         : undefined,
@@ -2534,15 +2513,16 @@ export class StrapiContentRepository implements ContentRepository {
       endpoint: "/api/condition-articles",
       cacheTag: getConditionArticleCacheTag(slug),
       includeCategories: false,
+      pathPrefix: "/pacientam/pro-bolezni",
     });
   }
 
   private async getArticleBySlug(
     slug: string,
-    source: { endpoint: string; cacheTag: string; includeCategories: boolean },
+    source: { endpoint: string; cacheTag: string; includeCategories: boolean; pathPrefix: string },
   ): Promise<BlogArticle | null> {
     const params = this.createPublishedParams([
-      "slug", "canonicalPath", "title", "excerpt", "readingTimeMinutes", "isFeatured", "publishedAt",
+      "slug", "title", "excerpt", "isFeatured", "publishedAt",
     ]);
     params.set("filters[slug][$eq]", slug);
     this.populateBlogSummaryFields(params, source.includeCategories);
@@ -2561,10 +2541,8 @@ export class StrapiContentRepository implements ContentRepository {
     params.set("populate[contentSections][on][blog.faq][fields][1]", "heading");
     params.set("populate[contentSections][on][blog.faq][populate][items][fields][0]", "question");
     params.set("populate[contentSections][on][blog.faq][populate][items][fields][1]", "answer");
-    this.populateRelatedBlogArticles(params, source.includeCategories);
     params.set("populate[relatedOperations][fields][0]", "canonicalPath");
     params.set("populate[relatedOperations][fields][1]", "heading");
-    this.populateArticleSharedSections(params);
 
     const article = await this.getFirst(
       source.endpoint,
@@ -2574,27 +2552,13 @@ export class StrapiContentRepository implements ContentRepository {
     if (!article) return null;
 
     return {
-      ...mapBlogArticleSummary(article, 0, this.baseUrl),
+      ...mapBlogArticleSummary(article, 0, this.baseUrl, source.pathPrefix),
       seo: mapSeo(article.seo, this.baseUrl, "blog.seo"),
       contentSections: requireArray(article.contentSections, "blog.contentSections").map((section, index) => mapBlogContentSection(section, index, this.baseUrl)),
       relatedOperations: requireArray(article.relatedOperations, "blog.relatedOperations").map((operation, index) =>
         mapCatalogLink(operation, `blog.relatedOperations[${index}]`),
       ),
-      relatedArticles: requireArray(article.relatedArticles, "blog.relatedArticles").map((relatedArticle, index) =>
-        mapBlogArticleSummary(relatedArticle, index, this.baseUrl),
-      ),
-      sharedSections: Array.isArray(article.sharedSections)
-        ? requireArray(article.sharedSections, "blog.sharedSections").map((section, index) =>
-          mapSharedSection(section, index, this.baseUrl, "blog"),
-        )
-        : [],
     };
-  }
-
-  private populateArticleSharedSections(params: URLSearchParams): void {
-    ["sectionKey", "internalName", "type", "heading", "description", "body", "personName", "personRole", "ctaLabel", "ctaHref", "details", "highlights", "links"].forEach((field, index) => {
-      params.set(`populate[sharedSections][fields][${index}]`, field);
-    });
   }
 
   private createPublishedParams(fields: readonly string[]): URLSearchParams {
@@ -2627,7 +2591,7 @@ export class StrapiContentRepository implements ContentRepository {
 
   private createArticleSummaryParams(): URLSearchParams {
     const params = this.createPublishedParams([
-      "slug", "canonicalPath", "title", "excerpt", "readingTimeMinutes", "isFeatured", "publishedAt",
+      "slug", "title", "excerpt", "isFeatured", "publishedAt",
     ]);
     params.set("pagination[pageSize]", "100");
     params.set("sort[0]", "isFeatured:desc");
@@ -2638,7 +2602,6 @@ export class StrapiContentRepository implements ContentRepository {
   private createPortfolioSummaryParams(): URLSearchParams {
     const params = this.createPublishedParams([
       "slug",
-      "canonicalPath",
       "title",
       "excerpt",
       "caseLabel",
@@ -2647,12 +2610,10 @@ export class StrapiContentRepository implements ContentRepository {
       "tags",
       "date",
       "isFeatured",
-      "sortOrder",
     ]);
     params.set("pagination[pageSize]", "100");
     params.set("sort[0]", "isFeatured:desc");
     params.set("sort[1]", "date:desc");
-    params.set("sort[2]", "sortOrder:asc");
     return params;
   }
 
@@ -2817,7 +2778,6 @@ export class StrapiContentRepository implements ContentRepository {
   private populateOperationContent(params: URLSearchParams): void {
     const sectionFields = [
       "sectionKey",
-      "anchor",
       "heading",
       "showInPageNavigation",
     ];
@@ -2832,7 +2792,7 @@ export class StrapiContentRepository implements ContentRepository {
 
     for (const component of sectionComponents) {
       const fields = component === "operation.video"
-        ? ["sectionKey", "anchor", "showInPageNavigation"]
+        ? ["sectionKey", "showInPageNavigation"]
         : sectionFields;
 
       fields.forEach((field, index) => {
@@ -2892,8 +2852,8 @@ export class StrapiContentRepository implements ContentRepository {
       "disclaimer",
     );
 
-    for (const field of ["sectionKey", "anchor", "showInPageNavigation"]) {
-      params.set(`populate[contentSections][on][operation.video][fields][${["sectionKey", "anchor", "showInPageNavigation"].indexOf(field)}]`, field);
+    for (const field of ["sectionKey", "showInPageNavigation"]) {
+      params.set(`populate[contentSections][on][operation.video][fields][${["sectionKey", "showInPageNavigation"].indexOf(field)}]`, field);
     }
     for (const relation of ["poster", "mp4", "webm"]) {
       ["url", "alternativeText", "width", "height", "mime"].forEach((field, index) => {
@@ -2926,6 +2886,7 @@ export class StrapiContentRepository implements ContentRepository {
   }
 
   private populateBlogSummaryFields(params: URLSearchParams, includeCategories: boolean): void {
+    params.set("populate[contentSections][populate]", "*");
     ["url", "alternativeText", "width", "height"].forEach((field, index) => {
       params.set(`populate[cover][fields][${index}]`, field);
     });
@@ -3022,19 +2983,6 @@ export class StrapiContentRepository implements ContentRepository {
     });
   }
 
-  private populateRelatedBlogArticles(params: URLSearchParams, includeCategories: boolean): void {
-    ["slug", "canonicalPath", "title", "excerpt", "readingTimeMinutes", "isFeatured", "publishedAt"].forEach((field, index) => {
-      params.set(`populate[relatedArticles][fields][${index}]`, field);
-    });
-    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
-      params.set(`populate[relatedArticles][populate][cover][fields][${index}]`, field);
-    });
-    if (includeCategories) {
-      params.set("populate[relatedArticles][populate][categories][fields][0]", "key");
-      params.set("populate[relatedArticles][populate][categories][fields][1]", "name");
-    }
-  }
-
   private async getFirst(
     endpoint: string,
     params: URLSearchParams,
@@ -3104,7 +3052,7 @@ export class StrapiContentRepository implements ContentRepository {
 
     if (!response.ok) {
       throw new CmsInvalidResponseError(
-        "CMS returned an unexpected HTTP response.",
+        `CMS returned HTTP ${response.status} for ${endpoint}.`,
       );
     }
 

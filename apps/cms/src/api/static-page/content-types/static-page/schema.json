@@ -21,12 +21,6 @@
       "required": true,
       "unique": true
     },
-    "canonicalPath": {
-      "type": "string",
-      "required": false,
-      "unique": true,
-      "regex": "^\\/[a-z0-9-]+(?:\\/[a-z0-9-]+)*$"
-    },
     "seo": {
       "type": "component",
       "component": "shared.seo",
@@ -47,18 +41,6 @@
       "required": false,
       "allowedTypes": ["images"]
     },
-    "primaryAction": {
-      "type": "component",
-      "component": "shared.action",
-      "repeatable": false,
-      "required": false
-    },
-    "secondaryAction": {
-      "type": "component",
-      "component": "shared.action",
-      "repeatable": false,
-      "required": false
-    },
     "contentSections": {
       "type": "dynamiczone",
       "components": [
@@ -74,12 +56,6 @@
       "relation": "manyToMany",
       "target": "api::shared-section.shared-section",
       "inversedBy": "staticPages"
-    },
-    "contentStatus": {
-      "type": "enumeration",
-      "enum": ["empty", "partial", "ready"],
-      "required": true,
-      "default": "empty"
     }
   },
   "config": {}

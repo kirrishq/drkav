@@ -13,7 +13,6 @@ export const blogArticles = [
   {
     title: "Как подготовиться к консультации пластического хирурга",
     slug: "kak-podgotovitsya-k-konsultacii-plasticheskogo-hirurga",
-    canonicalPath: "/pacientam/blog/kak-podgotovitsya-k-konsultacii-plasticheskogo-hirurga",
     excerpt: "Что вспомнить заранее, какие вопросы задать и почему честный разговор о здоровье помогает составить безопасный план.",
     readingTimeMinutes: 4,
     isFeatured: true,
@@ -61,7 +60,6 @@ export const blogArticles = [
   {
     title: "Почему план восстановления обсуждают до операции",
     slug: "pochemu-vazhen-plan-vosstanovleniya",
-    canonicalPath: "/pacientam/blog/pochemu-vazhen-plan-vosstanovleniya",
     excerpt: "Восстановление — часть общего плана: как заранее организовать быт, работу и поддержку близких.",
     readingTimeMinutes: 3,
     isFeatured: false,
@@ -99,7 +97,6 @@ export const blogArticles = [
   {
     title: "Какие вопросы обсудить перед пластикой груди",
     slug: "voprosy-pered-plastikoy-grudi",
-    canonicalPath: "/pacientam/blog/voprosy-pered-plastikoy-grudi",
     excerpt: "Короткий список тем для консультации: цель операции, обследования, план восстановления и реалистичные ожидания.",
     readingTimeMinutes: 4,
     isFeatured: false,
@@ -131,7 +128,6 @@ export const blogArticles = [
   {
     title: "Как формируется индивидуальный план коррекции фигуры",
     slug: "individualnyy-plan-korrekcii-figury",
-    canonicalPath: "/pacientam/blog/individualnyy-plan-korrekcii-figury",
     excerpt: "Почему одинаковых планов не бывает: цели, анатомические особенности, безопасность и время на восстановление.",
     readingTimeMinutes: 3,
     isFeatured: false,

@@ -10,9 +10,13 @@
   "attributes": {
     "title": { "type": "string", "required": true },
     "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
-    "imagePath": { "type": "string", "required": true },
-    "imageAlt": { "type": "string" },
-    "sortOrder": { "type": "integer", "required": true, "min": 0 },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"]
+    },
+    "date": { "type": "date", "required": true },
     "operation": { "type": "relation", "relation": "manyToOne", "target": "api::operation.operation", "required": true },
     "operationCategory": { "type": "relation", "relation": "manyToOne", "target": "api::operation-category.operation-category", "required": true }
   }

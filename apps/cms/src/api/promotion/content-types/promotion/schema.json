@@ -12,16 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "internalName": {
-      "type": "string",
-      "required": true
-    },
-    "key": {
-      "type": "uid",
-      "targetField": "internalName",
-      "required": true,
-      "unique": true
-    },
     "title": {
       "type": "string",
       "required": true

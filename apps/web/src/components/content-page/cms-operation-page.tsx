@@ -152,13 +152,14 @@ export async function CmsOperationPage({
       <SiteHeader />
       <main className="operation-page">
         <OperationHero
-          backgroundSrc={enhancement.heroImageSrc}
+          backgroundSrc={content.heroImage?.url ?? enhancement.heroImageSrc}
           breadcrumbs={getOperationBreadcrumbs(
             path,
             content.heading,
             content.breadcrumbLabel,
           )}
           links={heroLinks}
+          description={content.heroDescription}
           title={content.heading}
         />
         <div className="operation-page__content">
