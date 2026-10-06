@@ -105,11 +105,7 @@ function ArticleRelatedOperations({ article, operationItems }: { article: BlogAr
   );
 }
 
-function ArticleCrossSections({ article }: { article: BlogArticle }) {
-  if (article.sharedSections?.length) {
-    return <SharedSections sections={article.sharedSections} />;
-  }
-
+function ArticleCrossSections() {
   return (
     <div className="shared-sections">
       <SharedSections sections={[
@@ -185,7 +181,7 @@ export function BlogArticleContent({
       <aside className="content-card content-card--muted blog-article__disclaimer">Материал носит информационный характер и не заменяет очную консультацию врача.</aside>
       <ArticleRelatedOperations article={article} operationItems={support.operationItems} />
       <ArticleNeighborNavigation articles={adjacentArticles} cardVariant={articleKind === "condition" ? "compact" : "default"} />
-      <ArticleCrossSections article={article} />
+      <ArticleCrossSections />
     </article>
   );
 }
