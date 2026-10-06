@@ -3,37 +3,11 @@ import type { CSSProperties, ReactNode } from "react";
 import type {
   BuilderBlock,
   BuilderPage,
-  ContentAction,
 } from "@drkav/content-contracts";
-import { buttonVariants, cn } from "@drkav/ui";
+import { cn } from "@drkav/ui";
 import Image from "next/image";
-import Link from "next/link";
 
 import { BlocksRenderer } from "@/components/operation-content/blocks-renderer";
-
-function BuilderAction({ action }: { action: ContentAction }) {
-  const className = buttonVariants({
-    size: "md",
-    variant: action.variant,
-  });
-  const props = action.openInNewTab
-    ? { rel: "noreferrer", target: "_blank" }
-    : undefined;
-
-  if (action.href.startsWith("/")) {
-    return (
-      <Link className={className} href={action.href} {...props}>
-        {action.label}
-      </Link>
-    );
-  }
-
-  return (
-    <a className={className} href={action.href} {...props}>
-      {action.label}
-    </a>
-  );
-}
 
 function HeroBlock({ block }: { block: Extract<BuilderBlock, { type: "hero" }> }) {
   return (
@@ -50,12 +24,6 @@ function HeroBlock({ block }: { block: Extract<BuilderBlock, { type: "hero" }> }
           {block.heading}
         </h1>
         {block.description ? <p className="builder-page__hero-description">{block.description}</p> : null}
-        {block.primaryAction || block.secondaryAction ? (
-          <div className="builder-page__actions">
-            {block.primaryAction ? <BuilderAction action={block.primaryAction} /> : null}
-            {block.secondaryAction ? <BuilderAction action={block.secondaryAction} /> : null}
-          </div>
-        ) : null}
       </div>
       {block.image ? (
         <Image
