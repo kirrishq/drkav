@@ -2183,13 +2183,14 @@ export class StrapiContentRepository implements ContentRepository {
       "text",
       "source",
       "kind",
-      "imageUrl",
-      "imageAlt",
+      "date",
       "externalUrl",
-      "sortOrder",
     ]);
     params.set("pagination[pageSize]", "100");
-    params.set("sort[0]", "sortOrder:asc");
+    params.set("sort[0]", "date:desc");
+    ["url", "alternativeText", "width", "height"].forEach((field, index) => {
+      params.set(`populate[image][fields][${index}]`, field);
+    });
     params.set("populate[operation][fields][0]", "canonicalPath");
     params.set("populate[operation][fields][1]", "heading");
 
@@ -2219,9 +2220,10 @@ export class StrapiContentRepository implements ContentRepository {
         text: requireString(item.text, `${label}.text`),
         source: requireString(item.source, `${label}.source`),
         kind: kind as ReviewKind,
+        date: optionalString(item.date, `${label}.date`),
         image: {
-          url: requireHttpUrl(item.imageUrl, `${label}.imageUrl`),
-          alternativeText: optionalString(item.imageAlt, `${label}.imageAlt`),
+          ...requireImage(item.image, this.baseUrl, `${label}.image`),
+          alternativeText: requireString(item.text, `${label}.text`),
         },
         externalUrl: optionalHttpUrl(item.externalUrl, `${label}.externalUrl`),
         operation,

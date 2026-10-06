@@ -13,10 +13,9 @@
     "text": { "type": "text", "required": true },
     "source": { "type": "string", "required": true },
     "kind": { "type": "enumeration", "enum": ["patient", "prodoctorov", "social", "video"], "required": true, "default": "patient" },
-    "imageUrl": { "type": "string", "required": true },
-    "imageAlt": { "type": "string" },
+    "image": { "type": "media", "multiple": false, "required": true, "allowedTypes": ["images"] },
     "externalUrl": { "type": "string" },
-    "sortOrder": { "type": "integer", "required": true, "min": 0 },
+    "date": { "type": "date", "required": true },
     "operation": { "type": "relation", "relation": "manyToOne", "target": "api::operation.operation" }
   }
 }

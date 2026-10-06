@@ -311,6 +311,7 @@ export interface Review {
   source: string;
   kind: ReviewKind;
   image: ImageAsset;
+  date?: string;
   externalUrl?: string;
   operation?: OperationCatalogLink;
 }
