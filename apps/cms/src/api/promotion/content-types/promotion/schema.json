@@ -4,7 +4,7 @@
   "info": {
     "singularName": "promotion",
     "pluralName": "promotions",
-    "displayName": "Promotion",
+    "displayName": "Акция",
     "description": "Public promotion cards"
   },
   "options": {
@@ -26,12 +26,6 @@
     },
     "content": {
       "type": "blocks",
-      "required": false
-    },
-    "description": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.text-item",
       "required": false
     },
     "href": {

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "before-after-case",
     "pluralName": "before-after-cases",
-    "displayName": "Before / After Case"
+    "displayName": "Результат до и после"
   },
   "options": { "draftAndPublish": true },
   "attributes": {

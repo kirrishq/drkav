@@ -4,7 +4,7 @@
   "info": {
     "singularName": "builder-page",
     "pluralName": "builder-pages",
-    "displayName": "Builder Page",
+    "displayName": "Страница конструктора",
     "description": "Pages composed from the controlled visual editor block library"
   },
   "options": {

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "operation",
     "pluralName": "operations",
-    "displayName": "Operation",
+    "displayName": "Операция",
     "description": "One operation record reused across multiple categories"
   },
   "options": {

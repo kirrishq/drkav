@@ -1,7 +1,7 @@
 {
   "kind": "collectionType",
   "collectionName": "video_cases",
-  "info": { "singularName": "video-case", "pluralName": "video-cases", "displayName": "Video Case" },
+  "info": { "singularName": "video-case", "pluralName": "video-cases", "displayName": "Видеокейс" },
   "options": { "draftAndPublish": true },
   "attributes": {
     "title": { "type": "string", "required": true },

@@ -1993,7 +1993,6 @@ export class StrapiContentRepository implements ContentRepository {
     params.set("pagination[pageSize]", "100");
     params.set("sort[0]", "date:desc");
     params.set("filters[isActive][$eq]", "true");
-    params.set("populate[description][fields][0]", "text");
     params.set("populate[content]", "true");
 
     const promotions = await this.getMany(
@@ -2007,18 +2006,11 @@ export class StrapiContentRepository implements ContentRepository {
     return promotions.map((value, index) => {
       const label = `promotions[${index}]`;
       const promotion = requireRecord(value, label);
-      const description = requireArray(promotion.description, `${label}.description`)
-        .map((item, itemIndex) => {
-          const paragraph = requireRecord(item, `${label}.description[${itemIndex}]`);
-          return requireString(paragraph.text, `${label}.description[${itemIndex}].text`);
-        });
-
       return {
         key: `promotion-${index + 1}`,
         title: requireString(promotion.title, `${label}.title`),
         subtitle: optionalString(promotion.subtitle, `${label}.subtitle`),
         cardDescription: optionalString(promotion.cardDescription, `${label}.cardDescription`),
-        description,
         content: optionalBlocks(promotion.content, `${label}.content`, this.baseUrl),
         href: requireString(promotion.href, `${label}.href`),
         validUntil: optionalString(promotion.validUntil, `${label}.validUntil`),

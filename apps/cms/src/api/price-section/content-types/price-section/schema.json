@@ -4,7 +4,7 @@
   "info": {
     "singularName": "price-section",
     "pluralName": "price-sections",
-    "displayName": "Price catalog section",
+    "displayName": "Раздел прайса",
     "description": "A group of prices displayed on the public price catalog"
   },
   "options": {

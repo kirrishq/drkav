@@ -1,7 +1,7 @@
 {
   "kind": "collectionType",
   "collectionName": "condition_articles",
-  "info": { "singularName": "condition-article", "pluralName": "condition-articles", "displayName": "Condition Article" },
+  "info": { "singularName": "condition-article", "pluralName": "condition-articles", "displayName": "Статья «Про болезни»" },
   "options": { "draftAndPublish": true },
   "attributes": {
     "title": { "type": "string", "required": true },

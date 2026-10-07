@@ -490,7 +490,6 @@ export interface Promotion {
   title: string;
   subtitle?: string;
   cardDescription?: string;
-  description: readonly string[];
   content?: readonly RichTextBlock[];
   href: string;
   date?: string;

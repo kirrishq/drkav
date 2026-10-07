@@ -4,7 +4,7 @@
   "info": {
     "singularName": "blog-article",
     "pluralName": "blog-articles",
-    "displayName": "Blog Article"
+    "displayName": "Статья блога"
   },
   "options": { "draftAndPublish": true },
   "attributes": {

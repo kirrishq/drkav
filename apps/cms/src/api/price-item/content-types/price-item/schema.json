@@ -4,7 +4,7 @@
   "info": {
     "singularName": "price-item",
     "pluralName": "price-items",
-    "displayName": "Price Item",
+    "displayName": "Позиция прайса",
     "description": "Reusable structured price shared by operations and future price surfaces"
   },
   "options": {

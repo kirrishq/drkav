@@ -4,7 +4,7 @@
   "info": {
     "singularName": "operation-category",
     "pluralName": "operation-categories",
-    "displayName": "Operation Category",
+    "displayName": "Категория операций",
     "description": "Editorial and user-facing groups for operations"
   },
   "options": {

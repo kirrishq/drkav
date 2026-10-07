@@ -4,7 +4,7 @@
   "info": {
     "singularName": "shared-section",
     "pluralName": "shared-sections",
-    "displayName": "Shared Section",
+    "displayName": "Сквозной блок",
     "description": "Reusable site sections rendered by the existing frontend components"
   },
   "options": {

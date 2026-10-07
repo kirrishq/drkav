@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: PromotionEntryPageProps): Pro
   }
 
   return {
-    description: matchingPromotion.subtitle ?? matchingPromotion.description[0],
+    description: matchingPromotion.subtitle ?? "Специальное предложение доктора Коробова.",
     title: matchingPromotion.title,
   };
 }
@@ -65,8 +65,7 @@ export default async function PromotionEntryPage({ params }: PromotionEntryPageP
     .map((promotion) => promotion.subtitle)
     .filter((value): value is string => Boolean(value))
     .at(0);
-  const description = matchingPromotions.flatMap((promotion) => promotion.description);
   const content = matchingPromotions.flatMap((promotion) => promotion.content ?? []);
 
-  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/akcii", label: "Акции" }, { label: title }]} description={subtitle ?? "Специальное предложение доктора Коробова."} title={title}><article className="promotion-detail"><div className="content-card content-card--spacious"><div className="promotion-detail__body">{content.length > 0 ? <BlocksRenderer blocks={content} className="promotion-detail__content" headingIdPrefix="promotion" /> : description.length > 0 ? description.map((paragraph) => <p className="promotion-detail__lead" key={paragraph}>{paragraph}</p>) : <p className="promotion-detail__lead">При записи на операцию условия предложения уточняются на консультации.</p>}</div></div><section className="content-card content-card--muted"><h2 className="content-card__heading content-card__heading--h3">Почему нужна консультация</h2><p>На консультации врач определит показания, подберёт безопасный вариант коррекции, составит персональный план операции и уточнит условия предложения.</p></section></article><ConsultationSection captchaSiteKey={process.env.NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY} submitUrl="/api/forms/consultation" /></StaticPage>;
+  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/akcii", label: "Акции" }, { label: title }]} description={subtitle ?? "Специальное предложение доктора Коробова."} title={title}><article className="promotion-detail"><div className="content-card content-card--spacious"><div className="promotion-detail__body">{content.length > 0 ? <BlocksRenderer blocks={content} className="promotion-detail__content" headingIdPrefix="promotion" /> : <p className="promotion-detail__lead">Добавьте содержание акции в поле Rich Text в Strapi.</p>}</div></div><section className="content-card content-card--muted"><h2 className="content-card__heading content-card__heading--h3">Почему нужна консультация</h2><p>На консультации врач определит показания, подберёт безопасный вариант коррекции, составит персональный план операции и уточнит условия предложения.</p></section></article><ConsultationSection captchaSiteKey={process.env.NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY} submitUrl="/api/forms/consultation" /></StaticPage>;
 }

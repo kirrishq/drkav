@@ -4,7 +4,7 @@
   "info": {
     "singularName": "static-page",
     "pluralName": "static-pages",
-    "displayName": "Static Page",
+    "displayName": "Статическая страница",
     "description": "Content for a fixed frontend route bound by a stable pageKey"
   },
   "options": {
