@@ -11,7 +11,7 @@ import { cn } from "./lib/cn";
 export type ReviewSliderItem = {
   id: string;
   imageAlt: string;
-  imageSrc: string;
+  imageSrc?: string;
   label: string;
   blurImage?: boolean;
   filterIds?: readonly string[];
@@ -232,7 +232,7 @@ function ReviewDialog({
         <button aria-label="Следующий отзыв" className="reviews-slider__navigation reviews-slider__navigation--next focus-ring" onClick={() => selectRelativeReview("next")} type="button">
           <DialogArrowIcon direction="next" />
         </button>
-        <img alt={item.imageAlt} className="reviews-slider__dialog-image" src={item.imageSrc} />
+        {item.imageSrc ? <img alt={item.imageAlt} className="reviews-slider__dialog-image" src={item.imageSrc} /> : null}
         <p className="type-text-sm reviews-slider__dialog-counter">{currentIndex + 1} из {items.length}</p>
         <p className="type-text-base reviews-slider__dialog-text">{item.text}</p>
         {item.externalUrl ? (
@@ -420,7 +420,7 @@ export function ReviewsSlider({
                 onClick={() => openReview(item)}
                 type="button"
               >
-                <img alt={item.imageAlt} className={cn("reviews-slider__image", item.blurImage !== false && "reviews-slider__image--blurred")} loading="lazy" src={item.imageSrc} />
+                {item.imageSrc ? <img alt={item.imageAlt} className={cn("reviews-slider__image", item.blurImage !== false && "reviews-slider__image--blurred")} loading="lazy" src={item.imageSrc} /> : null}
                 <span className="reviews-slider__card-content">
                   <span className="type-text-xs reviews-slider__source">{item.source}</span>
                   <span className="type-h4 reviews-slider__card-label">{item.label}</span>

@@ -1984,17 +1984,17 @@ export class StrapiContentRepository implements ContentRepository {
     const params = this.createPublishedParams([
       "title",
       "subtitle",
+      "cardDescription",
       "href",
       "validUntil",
-      "sortOrder",
+      "date",
       "isActive",
     ]);
     params.set("pagination[pageSize]", "100");
-    params.set("sort[0]", "sortOrder:asc");
+    params.set("sort[0]", "date:desc");
     params.set("filters[isActive][$eq]", "true");
     params.set("populate[description][fields][0]", "text");
-    params.set("populate[description][fields][1]", "sortOrder");
-    params.set("populate[description][sort][0]", "sortOrder:asc");
+    params.set("populate[content]", "true");
 
     const promotions = await this.getMany(
       "/api/promotions",
@@ -2010,22 +2010,19 @@ export class StrapiContentRepository implements ContentRepository {
       const description = requireArray(promotion.description, `${label}.description`)
         .map((item, itemIndex) => {
           const paragraph = requireRecord(item, `${label}.description[${itemIndex}]`);
-          return {
-            text: requireString(paragraph.text, `${label}.description[${itemIndex}].text`),
-            sortOrder: optionalInteger(paragraph.sortOrder, `${label}.description[${itemIndex}].sortOrder`),
-          };
-        })
-        .sort((left, right) => (left.sortOrder ?? 0) - (right.sortOrder ?? 0))
-        .map((paragraph) => paragraph.text);
+          return requireString(paragraph.text, `${label}.description[${itemIndex}].text`);
+        });
 
       return {
         key: `promotion-${index + 1}`,
         title: requireString(promotion.title, `${label}.title`),
         subtitle: optionalString(promotion.subtitle, `${label}.subtitle`),
+        cardDescription: optionalString(promotion.cardDescription, `${label}.cardDescription`),
         description,
+        content: optionalBlocks(promotion.content, `${label}.content`, this.baseUrl),
         href: requireString(promotion.href, `${label}.href`),
         validUntil: optionalString(promotion.validUntil, `${label}.validUntil`),
-        sortOrder: optionalInteger(promotion.sortOrder, `${label}.sortOrder`),
+        date: optionalString(promotion.date, `${label}.date`),
       };
     }).filter((promotion) => !promotion.validUntil || promotion.validUntil.slice(0, 10) >= today);
   }
@@ -2221,10 +2218,12 @@ export class StrapiContentRepository implements ContentRepository {
         source: requireString(item.source, `${label}.source`),
         kind: kind as ReviewKind,
         date: optionalString(item.date, `${label}.date`),
-        image: {
-          ...requireImage(item.image, this.baseUrl, `${label}.image`),
-          alternativeText: requireString(item.text, `${label}.text`),
-        },
+        image: item.image
+          ? {
+              ...requireImage(item.image, this.baseUrl, `${label}.image`),
+              alternativeText: requireString(item.text, `${label}.text`),
+            }
+          : undefined,
         externalUrl: optionalHttpUrl(item.externalUrl, `${label}.externalUrl`),
         operation,
       };

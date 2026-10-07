@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { StaticPage } from "@/components/content-page/static-page";
+import { BlocksRenderer } from "@/components/operation-content/blocks-renderer";
 import { getPromotionsContent } from "@/content/promotions";
+import { ConsultationSection } from "@drkav/ui";
 
 type PromotionEntryPageProps = {
   params: Promise<{ slug: string }>;
@@ -64,6 +66,7 @@ export default async function PromotionEntryPage({ params }: PromotionEntryPageP
     .filter((value): value is string => Boolean(value))
     .at(0);
   const description = matchingPromotions.flatMap((promotion) => promotion.description);
+  const content = matchingPromotions.flatMap((promotion) => promotion.content ?? []);
 
-  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/akcii", label: "Акции" }, { label: title }]} description={subtitle ?? "Специальное предложение доктора Коробова."} title={title}><article className="promotion-detail"><div className="content-card content-card--spacious"><div className="promotion-detail__body">{description.length > 0 ? description.map((paragraph) => <p className="promotion-detail__lead" key={paragraph}>{paragraph}</p>) : <p className="promotion-detail__lead">При записи на операцию условия предложения уточняются на консультации.</p>}</div></div><section className="content-card content-card--muted"><h2 className="content-card__heading content-card__heading--h3">Почему нужна консультация</h2><p>На консультации врач определит показания, подберёт безопасный вариант коррекции, составит персональный план операции и уточнит условия предложения.</p></section></article></StaticPage>;
+  return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/akcii", label: "Акции" }, { label: title }]} description={subtitle ?? "Специальное предложение доктора Коробова."} title={title}><article className="promotion-detail"><div className="content-card content-card--spacious"><div className="promotion-detail__body">{content.length > 0 ? <BlocksRenderer blocks={content} className="promotion-detail__content" headingIdPrefix="promotion" /> : description.length > 0 ? description.map((paragraph) => <p className="promotion-detail__lead" key={paragraph}>{paragraph}</p>) : <p className="promotion-detail__lead">При записи на операцию условия предложения уточняются на консультации.</p>}</div></div><section className="content-card content-card--muted"><h2 className="content-card__heading content-card__heading--h3">Почему нужна консультация</h2><p>На консультации врач определит показания, подберёт безопасный вариант коррекции, составит персональный план операции и уточнит условия предложения.</p></section></article><ConsultationSection captchaSiteKey={process.env.NEXT_PUBLIC_SMARTCAPTCHA_SITE_KEY} submitUrl="/api/forms/consultation" /></StaticPage>;
 }

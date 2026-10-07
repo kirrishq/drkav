@@ -20,6 +20,14 @@
       "type": "string",
       "required": false
     },
+    "cardDescription": {
+      "type": "text",
+      "required": false
+    },
+    "content": {
+      "type": "blocks",
+      "required": false
+    },
     "description": {
       "type": "component",
       "repeatable": true,
@@ -34,10 +42,9 @@
       "type": "date",
       "required": false
     },
-    "sortOrder": {
-      "type": "integer",
-      "required": true,
-      "default": 0
+    "date": {
+      "type": "date",
+      "required": false
     },
     "isActive": {
       "type": "boolean",

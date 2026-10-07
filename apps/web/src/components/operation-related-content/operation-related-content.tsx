@@ -26,8 +26,8 @@ export function OperationRelatedContent({
   const reviewItems = reviews.map((review) => ({
     blurImage: review.kind === "patient",
     id: review.slug,
-    imageAlt: review.image.alternativeText ?? `Фото отзыва: ${review.title}`,
-    imageSrc: review.image.url,
+    imageAlt: review.image?.alternativeText ?? `Фото отзыва: ${review.title}`,
+    imageSrc: review.image?.url,
     label: review.title,
     source: review.source,
     text: review.text,

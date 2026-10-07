@@ -310,7 +310,7 @@ export interface Review {
   text: string;
   source: string;
   kind: ReviewKind;
-  image: ImageAsset;
+  image?: ImageAsset;
   date?: string;
   externalUrl?: string;
   operation?: OperationCatalogLink;
@@ -489,10 +489,12 @@ export interface Promotion {
   key: string;
   title: string;
   subtitle?: string;
+  cardDescription?: string;
   description: readonly string[];
+  content?: readonly RichTextBlock[];
   href: string;
+  date?: string;
   validUntil?: string;
-  sortOrder?: number;
 }
 
 export interface AboutEducationRecord {

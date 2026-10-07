@@ -13,7 +13,7 @@
     "text": { "type": "text", "required": true },
     "source": { "type": "string", "required": true },
     "kind": { "type": "enumeration", "enum": ["patient", "prodoctorov", "social", "video"], "required": true, "default": "patient" },
-    "image": { "type": "media", "multiple": false, "required": true, "allowedTypes": ["images"] },
+    "image": { "type": "media", "multiple": false, "required": false, "allowedTypes": ["images"] },
     "externalUrl": { "type": "string" },
     "date": { "type": "date", "required": true },
     "operation": { "type": "relation", "relation": "manyToOne", "target": "api::operation.operation" }
