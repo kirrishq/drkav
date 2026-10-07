@@ -1985,6 +1985,7 @@ export class StrapiContentRepository implements ContentRepository {
       "title",
       "subtitle",
       "cardDescription",
+      "content",
       "href",
       "validUntil",
       "date",
