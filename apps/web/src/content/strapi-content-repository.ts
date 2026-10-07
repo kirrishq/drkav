@@ -1993,7 +1993,6 @@ export class StrapiContentRepository implements ContentRepository {
     params.set("pagination[pageSize]", "100");
     params.set("sort[0]", "date:desc");
     params.set("filters[isActive][$eq]", "true");
-    params.set("populate[content]", "true");
 
     const promotions = await this.getMany(
       "/api/promotions",
