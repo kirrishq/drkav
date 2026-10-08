@@ -2,7 +2,6 @@ import { VideoCard } from "@drkav/ui";
 
 const videos = [
   {
-    location: "Санкт-Петербург",
     posterAlt: "Превью выступления на Всероссийском съезде герниологов",
     posterSrc: "/images/speaking-videos/spb.jpg",
     title: "VI Всероссийский съезд герниологов",
@@ -10,7 +9,6 @@ const videos = [
     year: "2023",
   },
   {
-    location: "Москва",
     posterAlt: "Превью выступления на Инновационной школе эстетической медицины",
     posterSrc: "/images/speaking-videos/innovation.jpg",
     title: "Инновационная школа эстетической медицины. Обзор конференции ИШЭМ",
@@ -18,7 +16,6 @@ const videos = [
     year: "2023",
   },
   {
-    location: "Москва",
     posterAlt: "Превью выступления на Национальном конгрессе имени Н.О. Миланова",
     posterSrc: "/images/speaking-videos/congress.jpg",
     title: "XI Национальный конгресс имени Миланова. Пластическая хирургия, эстетическая медицина и косметология",
@@ -27,11 +24,11 @@ const videos = [
   },
 ] as const;
 
-export function SpeakingVideos({ copy }: { copy?: readonly { title: string; location?: string; year?: string }[] }) {
+export function SpeakingVideos({ copy }: { copy?: readonly { title: string; year?: string }[] }) {
   return (
     <section aria-label="Видеозаписи выступлений" className="speaking-videos">
       <div className="content-card__grid speaking-videos__grid">
-        {videos.map((video, index) => <VideoCard key={video.videoSrc} {...video} location={copy?.[index]?.location ?? video.location} title={copy?.[index]?.title ?? video.title} year={copy?.[index]?.year ?? video.year} />)}
+        {videos.map((video, index) => <VideoCard key={video.videoSrc} {...video} title={copy?.[index]?.title ?? video.title} year={copy?.[index]?.year ?? video.year} />)}
       </div>
     </section>
   );

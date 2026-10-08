@@ -12,6 +12,7 @@
     "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
     "excerpt": { "type": "text", "required": true },
     "cover": { "type": "media", "multiple": false, "required": false, "allowedTypes": ["images"] },
+    "date": { "type": "date", "required": false },
     "isFeatured": { "type": "boolean", "required": true, "default": false },
     "seo": { "type": "component", "component": "shared.seo", "repeatable": false, "required": true },
     "categories": {

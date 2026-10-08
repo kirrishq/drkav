@@ -5,12 +5,11 @@
   "options": { "draftAndPublish": true },
   "attributes": {
     "title": { "type": "string", "required": true },
-    "location": { "type": "string", "required": true },
-    "slug": { "type": "uid", "targetField": "title", "required": true, "unique": true },
-    "year": { "type": "string", "required": false },
+    "slug": { "type": "uid", "targetField": "title", "required": false, "unique": true },
+    "date": { "type": "date", "required": false },
+    "isFeatured": { "type": "boolean", "required": true, "default": false },
     "poster": { "type": "media", "multiple": false, "required": true, "allowedTypes": ["images"] },
     "mp4": { "type": "media", "multiple": false, "required": true, "allowedTypes": ["videos"] },
-    "webm": { "type": "media", "multiple": false, "required": false, "allowedTypes": ["videos"] },
-    "sortOrder": { "type": "integer", "required": true, "min": 0 }
+    "webm": { "type": "media", "multiple": false, "required": false, "allowedTypes": ["videos"] }
   }
 }

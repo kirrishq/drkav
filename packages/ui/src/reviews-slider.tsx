@@ -12,6 +12,7 @@ export type ReviewSliderItem = {
   id: string;
   imageAlt: string;
   imageSrc?: string;
+  videoSrc?: string;
   label: string;
   blurImage?: boolean;
   filterIds?: readonly string[];
@@ -232,7 +233,7 @@ function ReviewDialog({
         <button aria-label="Следующий отзыв" className="reviews-slider__navigation reviews-slider__navigation--next focus-ring" onClick={() => selectRelativeReview("next")} type="button">
           <DialogArrowIcon direction="next" />
         </button>
-        {item.imageSrc ? <img alt={item.imageAlt} className="reviews-slider__dialog-image" src={item.imageSrc} /> : null}
+        {item.videoSrc ? <video className="reviews-slider__dialog-image" controls playsInline preload="none" src={item.videoSrc} /> : item.imageSrc ? <img alt={item.imageAlt} className="reviews-slider__dialog-image" src={item.imageSrc} /> : null}
         <p className="type-text-sm reviews-slider__dialog-counter">{currentIndex + 1} из {items.length}</p>
         <p className="type-text-base reviews-slider__dialog-text">{item.text}</p>
         {item.externalUrl ? (

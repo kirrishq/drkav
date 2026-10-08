@@ -5,7 +5,6 @@ import { useState } from "react";
 
 const mediaVideos = [
   {
-    location: "Интервью Ксении Собчак",
     posterAlt: "Превью интервью о липосакции",
     posterSrc: "/images/media-videos/sobchak.jpg",
     title: "Липосакция: самая опасная операция в пластической хирургии? Опыт звезд и мнение врачей.",
@@ -13,7 +12,6 @@ const mediaVideos = [
     year: "",
   },
   {
-    location: "Интервью для шоу «ТОП ПЕРСОНА»",
     posterAlt: "Превью интервью о пластической хирургии",
     posterSrc: "/images/media-videos/interview.jpg",
     title: "Как сделать тело мечты без спортзала и диет.",
@@ -23,7 +21,7 @@ const mediaVideos = [
 ] as const;
 
 export type MediaVideoProjectsProps = {
-  copy?: readonly { description?: string; location?: string; title: string }[];
+  copy?: readonly { description?: string; title: string }[];
   items?: readonly VideoCardProps[];
   title?: string;
   tone?: "muted" | "surface";
@@ -33,7 +31,6 @@ export function MediaVideoProjects({ copy, items = mediaVideos, title = "Вид�
   const resolvedItems = items.map((item, index) => ({
     ...item,
     description: copy?.[index]?.description ?? item.description,
-    location: copy?.[index]?.location ?? item.location,
     title: copy?.[index]?.title ?? item.title,
   }));
   const [visibleCount, setVisibleCount] = useState(Math.min(3, resolvedItems.length));

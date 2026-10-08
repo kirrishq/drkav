@@ -5,13 +5,12 @@ import { useEffect, useId, useRef, useState } from "react";
 import { cn } from "./lib/cn";
 
 export type VideoCardItem = {
-  location: string;
   posterAlt: string;
   posterSrc: string;
   title: string;
   videoSrc: string;
   webmSrc?: string;
-  year: string;
+  year?: string;
 };
 
 export type VideoCardProps = VideoCardItem & {
@@ -56,7 +55,6 @@ function DialogArrowIcon({ direction }: { direction: "next" | "previous" }) {
 export function VideoCard({
   className,
   description,
-  location,
   posterAlt,
   posterSrc,
   dialogItems,
@@ -71,7 +69,7 @@ export function VideoCard({
   const titleId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const currentItem: VideoCardItem = { location, posterAlt, posterSrc, title, videoSrc, webmSrc, year };
+  const currentItem: VideoCardItem = { posterAlt, posterSrc, title, videoSrc, webmSrc, year };
   const navigationItems = dialogItems?.length ? dialogItems : [currentItem];
   const selectedItem = navigationItems[selectedIndex] ?? currentItem;
 
@@ -123,7 +121,7 @@ export function VideoCard({
             </span>
             {showDetails ? (
               <span className="video-card__content">
-                <span className="video-card__meta">{[location, year].filter(Boolean).join(", ")}</span>
+                <span className="video-card__meta">{year}</span>
                 <span className="card-title video-card__title">{title}</span>
                 {description ? <span className="video-card__description">{description}</span> : null}
               </span>
@@ -143,7 +141,7 @@ export function VideoCard({
             </button>
             {showDetails ? (
               <div className="video-card__content">
-                <p className="video-card__meta">{[location, year].filter(Boolean).join(", ")}</p>
+                <p className="video-card__meta">{year}</p>
                 <h3 className="card-title video-card__title">{title}</h3>
               </div>
             ) : null}

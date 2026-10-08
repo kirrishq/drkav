@@ -17,9 +17,7 @@
     },
     "excerpt": { "type": "text", "required": false },
     "caseLabel": { "type": "string", "required": true },
-    "resultTerm": { "type": "string", "required": true },
     "procedureSummary": { "type": "text", "required": true },
-    "tags": { "type": "json", "required": true, "default": [] },
     "cover": {
       "type": "media",
       "multiple": false,

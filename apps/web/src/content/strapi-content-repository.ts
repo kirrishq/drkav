@@ -1385,6 +1385,7 @@ function mapBlogArticleSummary(
     categories: article.categories === undefined
       ? []
       : requireArray(article.categories, `${label}.categories`).map(mapBlogCategory),
+    date: optionalString(article.date, `${label}.date`),
     publishedAt: requireString(article.publishedAt, `${label}.publishedAt`),
     readingTimeMinutes: calculateArticleReadingTime(article.contentSections),
     isFeatured: requireBoolean(article.isFeatured, `${label}.isFeatured`),
@@ -1443,22 +1444,16 @@ function mapPortfolioCaseSummary(
 ): PortfolioCaseSummary {
   const label = `portfolio.cases[${index}]`;
   const portfolioCase = requireRecord(value, label);
-  const tags = requireArray(portfolioCase.tags, `${label}.tags`).map(
-    (tag, tagIndex) => requireString(tag, `${label}.tags[${tagIndex}]`),
-  );
-
   return {
     slug: requireString(portfolioCase.slug, `${label}.slug`),
     canonicalPath: `/pacientam/portfolio/${requireString(portfolioCase.slug, `${label}.slug`)}`,
     title: requireString(portfolioCase.title, `${label}.title`),
     excerpt: optionalString(portfolioCase.excerpt, `${label}.excerpt`) ?? "",
     caseLabel: requireString(portfolioCase.caseLabel, `${label}.caseLabel`),
-    resultTerm: requireString(portfolioCase.resultTerm, `${label}.resultTerm`),
     procedureSummary: requireString(
       portfolioCase.procedureSummary,
       `${label}.procedureSummary`,
     ),
-    tags,
     cover: requireImage(portfolioCase.cover, baseUrl, `${label}.cover`),
     operations: requireArray(
       portfolioCase.operations,
@@ -2167,10 +2162,8 @@ export class StrapiContentRepository implements ContentRepository {
 
   async getReviews(): Promise<readonly Review[]> {
     const params = this.createPublishedParams([
-      "slug",
       "title",
       "text",
-      "source",
       "kind",
       "date",
       "externalUrl",
@@ -2179,6 +2172,9 @@ export class StrapiContentRepository implements ContentRepository {
     params.set("sort[0]", "date:desc");
     ["url", "alternativeText", "width", "height"].forEach((field, index) => {
       params.set(`populate[image][fields][${index}]`, field);
+    });
+    ["url", "mime"].forEach((field, index) => {
+      params.set(`populate[video][fields][${index}]`, field);
     });
     params.set("populate[operation][fields][0]", "canonicalPath");
     params.set("populate[operation][fields][1]", "heading");
@@ -2204,10 +2200,15 @@ export class StrapiContentRepository implements ContentRepository {
         : mapCatalogLink(item.operation, `${label}.operation`);
 
       return {
-        slug: requireString(item.slug, `${label}.slug`),
         title: requireString(item.title, `${label}.title`),
         text: requireString(item.text, `${label}.text`),
-        source: requireString(item.source, `${label}.source`),
+        source: item.kind === "prodoctorov"
+          ? "ПроДокторов"
+          : item.kind === "social"
+            ? "Социальные сети"
+            : item.kind === "video"
+              ? "Видеоотзыв"
+              : "Отзыв пациента",
         kind: kind as ReviewKind,
         date: optionalString(item.date, `${label}.date`),
         image: item.image
@@ -2216,6 +2217,7 @@ export class StrapiContentRepository implements ContentRepository {
               alternativeText: requireString(item.text, `${label}.text`),
             }
           : undefined,
+        videoSrc: item.video ? requireImage(item.video, this.baseUrl, `${label}.video`).url : undefined,
         externalUrl: optionalHttpUrl(item.externalUrl, `${label}.externalUrl`),
         operation,
       };
@@ -2265,7 +2267,7 @@ export class StrapiContentRepository implements ContentRepository {
     const categoryParams = this.createPublishedParams(["key", "name", "order"]);
     categoryParams.set("pagination[pageSize]", "100");
     categoryParams.set("sort[0]", "order:asc");
-    const articleParams = this.createArticleSummaryParams();
+    const articleParams = this.createArticleSummaryParams(true);
     this.populateBlogSummaryFields(articleParams, true);
 
     const [categories, articles] = await Promise.all([
@@ -2298,9 +2300,10 @@ export class StrapiContentRepository implements ContentRepository {
   }
 
   async getVideoCases(): Promise<readonly VideoCase[]> {
-    const params = this.createPublishedParams(["slug", "title", "location", "year", "sortOrder"]);
+    const params = this.createPublishedParams(["slug", "title", "date", "isFeatured"]);
     params.set("pagination[pageSize]", "100");
-    params.set("sort[0]", "sortOrder:asc");
+    params.set("sort[0]", "isFeatured:desc");
+    params.set("sort[1]", "date:desc");
     ["poster", "mp4", "webm"].forEach((relation) => {
       ["url", "alternativeText", "width", "height", "mime"].forEach((field, index) => {
         params.set(`populate[${relation}][fields][${index}]`, field);
@@ -2314,8 +2317,8 @@ export class StrapiContentRepository implements ContentRepository {
       return {
         slug: requireString(item.slug, `${label}.slug`),
         title: requireString(item.title, `${label}.title`),
-        location: requireString(item.location, `${label}.location`),
-        year: optionalString(item.year, `${label}.year`) ?? "",
+        date: optionalString(item.date, `${label}.date`),
+        isFeatured: item.isFeatured === true,
         poster: requireImage(item.poster, this.baseUrl, `${label}.poster`),
         mp4: requireImage(item.mp4, this.baseUrl, `${label}.mp4`).url,
         webm: item.webm ? requireImage(item.webm, this.baseUrl, `${label}.webm`).url : undefined,
@@ -2329,9 +2332,7 @@ export class StrapiContentRepository implements ContentRepository {
       "title",
       "excerpt",
       "caseLabel",
-      "resultTerm",
       "procedureSummary",
-      "tags",
       "date",
       "isFeatured",
     ]);
@@ -2500,7 +2501,7 @@ export class StrapiContentRepository implements ContentRepository {
     source: { endpoint: string; cacheTag: string; includeCategories: boolean; pathPrefix: string },
   ): Promise<BlogArticle | null> {
     const params = this.createPublishedParams([
-      "slug", "title", "excerpt", "isFeatured", "publishedAt",
+      "slug", "title", "excerpt", ...(source.endpoint === "/api/blog-articles" ? ["date"] : []), "isFeatured", "publishedAt",
     ]);
     params.set("filters[slug][$eq]", slug);
     this.populateBlogSummaryFields(params, source.includeCategories);
@@ -2567,13 +2568,14 @@ export class StrapiContentRepository implements ContentRepository {
     return params;
   }
 
-  private createArticleSummaryParams(): URLSearchParams {
+  private createArticleSummaryParams(includeDate = false): URLSearchParams {
     const params = this.createPublishedParams([
-      "slug", "title", "excerpt", "isFeatured", "publishedAt",
+      "slug", "title", "excerpt", ...(includeDate ? ["date"] : []), "isFeatured", "publishedAt",
     ]);
     params.set("pagination[pageSize]", "100");
     params.set("sort[0]", "isFeatured:desc");
-    params.set("sort[1]", "publishedAt:desc");
+    params.set("sort[1]", includeDate ? "date:desc" : "publishedAt:desc");
+    params.set("sort[2]", "publishedAt:desc");
     return params;
   }
 
@@ -2583,9 +2585,7 @@ export class StrapiContentRepository implements ContentRepository {
       "title",
       "excerpt",
       "caseLabel",
-      "resultTerm",
       "procedureSummary",
-      "tags",
       "date",
       "isFeatured",
     ]);

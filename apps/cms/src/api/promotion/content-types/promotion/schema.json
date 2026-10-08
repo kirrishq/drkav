@@ -24,20 +24,21 @@
       "type": "text",
       "required": false
     },
-    "content": {
-      "type": "blocks",
-      "required": false
-    },
     "href": {
       "type": "string",
-      "required": true
+      "required": true,
+      "unique": true
+    },
+    "date": {
+      "type": "date",
+      "required": false
     },
     "validUntil": {
       "type": "date",
       "required": false
     },
-    "date": {
-      "type": "date",
+    "content": {
+      "type": "blocks",
       "required": false
     },
     "isActive": {
@@ -45,6 +46,5 @@
       "required": true,
       "default": true
     }
-  },
-  "config": {}
+  }
 }

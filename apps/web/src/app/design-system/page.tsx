@@ -707,7 +707,6 @@ export default function DesignSystemPage() {
             <Subsection title="Usage">
               <div className="max-w-md">
                 <VideoCard
-                  location="Санкт-Петербург"
                   posterAlt="Превью выступления"
                   posterSrc="/images/speaking-videos/spb.jpg"
                   title="VI Всероссийский съезд герниологов"
@@ -718,7 +717,6 @@ export default function DesignSystemPage() {
               <CodeBlock>{`import { VideoCard } from "@drkav/ui";
 
 <VideoCard
-  location="Санкт-Петербург"
   year="2023"
   title="VI Всероссийский съезд герниологов"
   posterSrc="/images/speaking-videos/spb.jpg"

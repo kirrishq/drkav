@@ -305,12 +305,12 @@ export interface BeforeAfterCase {
 export type ReviewKind = "patient" | "prodoctorov" | "social" | "video";
 
 export interface Review {
-  slug: string;
   title: string;
   text: string;
   source: string;
   kind: ReviewKind;
   image?: ImageAsset;
+  videoSrc?: string;
   date?: string;
   externalUrl?: string;
   operation?: OperationCatalogLink;
@@ -594,6 +594,7 @@ export interface BlogArticleSummary {
   excerpt: string;
   cover?: ImageAsset;
   categories: readonly BlogCategorySummary[];
+  date?: string;
   publishedAt: string;
   readingTimeMinutes: number;
   isFeatured: boolean;
@@ -664,8 +665,8 @@ export interface MediaPublicationIndexContent {
 export interface VideoCase {
   slug: string;
   title: string;
-  location: string;
-  year: string;
+  date?: string;
+  isFeatured: boolean;
   poster: ImageAsset;
   mp4: string;
   webm?: string;
@@ -677,9 +678,7 @@ export interface PortfolioCaseSummary {
   title: string;
   excerpt: string;
   caseLabel: string;
-  resultTerm: string;
   procedureSummary: string;
-  tags: readonly string[];
   cover: ImageAsset;
   operations: readonly OperationCatalogLink[];
   date?: string;

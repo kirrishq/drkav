@@ -48,12 +48,13 @@ export function mapReviewsToSliderItems(
         getReviewSourceId(review.kind),
         ...(operationCategoryId ? [`body:${operationCategoryId}`] : []),
       ],
-      id: review.slug,
+      id: `${review.kind}-${review.title}`,
       imageAlt: review.image?.alternativeText ?? `Фото отзыва: ${review.title}`,
       imageSrc: review.image?.url,
       label: review.title,
       source: review.source,
       text: review.text,
+      videoSrc: review.videoSrc,
     };
   });
 }

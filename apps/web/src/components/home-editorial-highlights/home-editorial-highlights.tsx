@@ -51,7 +51,6 @@ export function HomeEditorialHighlights({ copy }: { copy?: readonly { descriptio
                   className="home-editorial-highlights__video"
                   description={highlight.description}
                   fullCard
-                  location="Интервью Ксении Собчак"
                   posterAlt={highlight.imageAlt}
                   posterSrc={highlight.imageSrc}
                   title={highlight.title}
