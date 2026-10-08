@@ -67,6 +67,9 @@ export async function SiteFooter({
   return (
     <footer className="site-footer">
       <div className="site-footer__container">
+        <p className="type-text-xs site-footer__medical-disclaimer">
+          Имеются противопоказания. Необходима консультация специалиста.
+        </p>
         <div className="site-footer__main">
           <div className="site-footer__identity">
             <Link aria-label="Доктор Коробов — на главную" className="site-footer__brand" href="/">

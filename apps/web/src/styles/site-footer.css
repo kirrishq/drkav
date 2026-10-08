@@ -20,6 +20,13 @@
     gap: var(--space-10);
   }
 
+  .site-footer__medical-disclaimer {
+    margin: 0 0 var(--space-8);
+    padding-bottom: var(--space-5);
+    border-bottom: var(--border-width-default) solid rgb(255 255 255 / 0.18);
+    color: var(--text-inverse-muted);
+  }
+
   .site-footer__identity {
     display: grid;
     max-width: 28rem;
@@ -223,6 +230,10 @@
   }
 
   @media (min-width: 64rem) {
+    .site-footer__medical-disclaimer {
+      text-align: center;
+    }
+
     .site-footer__main {
       grid-template-columns: minmax(15rem, 0.9fr) minmax(0, 2fr);
       gap: var(--space-12);
