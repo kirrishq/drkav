@@ -62,7 +62,7 @@ function RecordCardContent({ description, details = [], icon, meta, title }: Rec
           {meta ? <span className="record-card__meta">{formatRussianText(meta)}</span> : null}
         </div>
       ) : null}
-      <h3 className="card-title record-card__title">{typeof title === "string" ? formatRussianText(title) : title}</h3>
+      <div className="card-title record-card__title">{typeof title === "string" ? formatRussianText(title) : title}</div>
       {description ? <p className="record-card__description">{formatRussianText(description)}</p> : null}
       {visibleDetails.length > 0 ? (
         <ul className="record-card__details">

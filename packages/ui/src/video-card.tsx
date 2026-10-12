@@ -142,7 +142,7 @@ export function VideoCard({
             {showDetails ? (
               <div className="video-card__content">
                 <p className="video-card__meta">{year}</p>
-                <h3 className="card-title video-card__title">{title}</h3>
+                <div className="card-title video-card__title">{title}</div>
               </div>
             ) : null}
           </>

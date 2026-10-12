@@ -106,7 +106,7 @@ function VideoHighlightItem({ item }: { item: VideoHighlight }) {
 
   const content = (
     <div className="video-highlights__content">
-      <h3 className="type-h4 video-highlights__title">{item.title}</h3>
+      <div className="type-h4 video-highlights__title">{item.title}</div>
       <p className="type-text-sm video-highlights__description">{item.description}</p>
     </div>
   );

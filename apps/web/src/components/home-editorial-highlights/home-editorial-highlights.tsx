@@ -67,7 +67,7 @@ export function HomeEditorialHighlights({ copy }: { copy?: readonly { descriptio
                 <Image alt={highlight.imageAlt} fill loading="lazy" sizes="(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw" src={highlight.imageSrc} />
               </figure>
               <div className="home-editorial-highlights__content">
-                <h3 className="type-h3 home-editorial-highlights__card-title">{highlight.title}</h3>
+                <div className="type-h3 home-editorial-highlights__card-title">{highlight.title}</div>
                 <p className="home-editorial-highlights__description">{highlight.description}</p>
                 <span className="home-editorial-highlights__read-more">{highlight.linkLabel}</span>
               </div>
