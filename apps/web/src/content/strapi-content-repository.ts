@@ -2407,6 +2407,7 @@ export class StrapiContentRepository implements ContentRepository {
       "externalUrl",
       "isExternal",
       "layoutVariant",
+      "sortOrder",
     ]);
     params.set("pagination[pageSize]", "100");
     params.set("sort[0]", "sortOrder:asc");
