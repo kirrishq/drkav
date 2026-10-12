@@ -6,12 +6,18 @@ import { createContentRepository } from "@/content/content-repository";
 import { getPageMetadata } from "@/content/page-registry";
 import { getStaticPageMetadata } from "@/content/static-page";
 
-export async function generateMetadata() {
-  return getStaticPageMetadata("blog", getPageMetadata("/pacientam/blog", {
+export async function generateMetadata({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }): Promise<Metadata> {
+  const params = await searchParams;
+  const hasQuery = Object.keys(params).length > 0;
+  const metadata = await getStaticPageMetadata("blog", getPageMetadata("/pacientam/blog", {
     title: "Блог доктора Коробова",
     description: "Статьи и профессиональные комментарии о пластической хирургии.",
     canonicalPath: "/pacientam/blog",
   }));
+
+  return hasQuery
+    ? { ...metadata, robots: { index: false, follow: true } }
+    : metadata;
 }
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
@@ -21,3 +27,4 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
 
   return <StaticPage breadcrumbs={[{ href: "/", label: "Главная" }, { href: "/pacientam", label: "Пациентам" }, { label: "Блог доктора" }]} className="patient-subpage-page" description="Статьи и профессиональные комментарии о пластической хирургии, подготовке и восстановлении." pageKey="blog" title="Блог доктора Коробова"><PatientSubpageLayout><BlogIndex {...blog} activeCategory={activeCategory} /></PatientSubpageLayout><PatientRelatedPages currentHref="/pacientam/blog" /></StaticPage>;
 }
+import type { Metadata } from "next";
