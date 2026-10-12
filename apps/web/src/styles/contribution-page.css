@@ -23,12 +23,15 @@
   }
 
   .contribution-patent__dialog {
-    max-width: min(92vw, 62rem);
-    max-height: 92vh;
-    padding: var(--space-3);
-    border: 0;
-    border-radius: var(--radius-md);
-    background: var(--background);
+    width: min(100% - var(--space-8), var(--container-wide));
+    max-height: calc(100dvh - var(--space-8));
+    margin: auto;
+    padding: 0;
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-raised);
   }
 
   .contribution-patent__dialog::backdrop {
@@ -38,9 +41,9 @@
   .contribution-patent__dialog-image {
     display: block;
     width: auto;
-    max-width: calc(92vw - var(--space-6));
+    max-width: 100%;
     height: auto;
-    max-height: calc(92vh - var(--space-6));
+    max-height: calc(100dvh - var(--space-16));
     object-fit: contain;
   }
 
