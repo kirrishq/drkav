@@ -96,6 +96,12 @@ redirects.push({
   permanent: true,
 });
 
+redirects.push({
+  source: "/index.html",
+  destination: "/",
+  permanent: true,
+});
+
 redirects.push(
   {
     source: "/operaczii/muzhskaya-plastika/prorisovka-grudnykh-myshcz",
