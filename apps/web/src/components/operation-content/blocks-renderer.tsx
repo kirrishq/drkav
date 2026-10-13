@@ -60,6 +60,22 @@ export function getHeadingAnchorId(prefix: string, index: number, children: read
   return `${prefix}-${index}-${slug || "heading"}`;
 }
 
+export function getRichTextHeadingLinks(
+  blocks: readonly RichTextBlock[],
+  prefix: string,
+): readonly { id: string; label: string }[] {
+  return blocks.flatMap((block, index) => {
+    if (block.type !== "heading") {
+      return [];
+    }
+
+    return [{
+      id: getHeadingAnchorId(prefix, index, block.children),
+      label: getInlineText(block.children),
+    }];
+  });
+}
+
 export function BlocksRenderer({
   blocks,
   className = "operation-content__blocks",
@@ -73,7 +89,7 @@ export function BlocksRenderer({
   interactiveImages?: boolean;
   listVariant?: "default" | "accent";
 }) {
-  let previousHeadingLevel = 1;
+  let previousHeadingLevel = 2;
 
   return (
     <div className={className}>

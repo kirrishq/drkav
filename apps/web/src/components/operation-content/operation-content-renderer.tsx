@@ -6,7 +6,7 @@ import type {
 import { formatPriceItem } from "@drkav/content-contracts";
 import { formatRussianText } from "@drkav/ui";
 
-import { BlocksRenderer } from "./blocks-renderer";
+import { BlocksRenderer, getRichTextHeadingLinks } from "./blocks-renderer";
 
 type OperationContentRendererProps = {
   prices: readonly PriceItem[];
@@ -107,7 +107,7 @@ function SectionContent({
     return (
       <>
         <SectionHeading heading={section.heading} level={headingLevel} />
-        <BlocksRenderer blocks={section.body} listVariant="accent" />
+        <BlocksRenderer blocks={section.body} headingIdPrefix={`operation-${section.sectionKey}`} listVariant="accent" />
       </>
     );
   }
@@ -180,11 +180,22 @@ export function OperationContentRenderer({
   sections,
   showNavigation = true,
 }: OperationContentRendererProps) {
-  const navigation = sections.flatMap((section) =>
-    section.showInPageNavigation && section.anchor && section.heading
+  const navigation = sections.flatMap((section) => {
+    const sectionLink = section.showInPageNavigation && section.anchor && section.heading
       ? [{ anchor: section.anchor, heading: section.heading }]
-      : [],
-  );
+      : [];
+
+    if (section.type !== "rich-text") {
+      return sectionLink;
+    }
+
+    const headingLinks = getRichTextHeadingLinks(
+      section.body,
+      `operation-${section.sectionKey}`,
+    ).map((heading) => ({ anchor: heading.id, heading: heading.label }));
+
+    return [...sectionLink, ...headingLinks];
+  });
 
   return (
     <div className="operation-content">
