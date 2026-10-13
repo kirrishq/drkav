@@ -124,9 +124,9 @@ function SectionContent({
                 {index + 1}
               </div>
               <div>
-                <h3 className="content-card__heading content-card__heading--h3">
+                <p className="type-label operation-content__step-title">
                   {formatRussianText(step.title)}
-                </h3>
+                </p>
                 {step.description ? <p>{formatRussianText(step.description)}</p> : null}
               </div>
             </li>

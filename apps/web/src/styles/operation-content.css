@@ -133,12 +133,11 @@
     display: grid;
     grid-template-columns: var(--space-10) minmax(0, 1fr);
     gap: var(--space-3);
-    padding-block: var(--space-4);
-    border-top: var(--border-width-default) solid var(--border-subtle);
-  }
-
-  .operation-content__step:first-child {
-    border-top: 0;
+    padding: var(--space-5);
+    border: var(--border-width-default) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-muted);
+    box-shadow: var(--shadow-subtle);
   }
 
   .operation-content__step-number {
@@ -153,9 +152,13 @@
     font-weight: var(--type-label-weight);
   }
 
-  .operation-content__step .content-card__heading--h3,
+  .operation-content__step-title,
   .operation-content__price-item .content-card__heading--h3 {
     margin-bottom: var(--space-2);
+  }
+
+  .operation-content__step-title {
+    color: var(--accent);
   }
 
   .operation-content__price-item {
