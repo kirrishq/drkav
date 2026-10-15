@@ -165,7 +165,11 @@ export function BeforeAfterGallery({
         <div className="before-after-modal__media">
           <Image alt={modal.item.image.alternativeText ?? modal.item.title} className="before-after-modal__image" fill sizes="(min-width: 64rem) 42rem, calc(100vw - 2rem)" src={modal.item.image.url} />
         </div>
-        <div className="before-after-modal__content"><p>Операция</p><Link className="text-link" href={modal.item.operation.canonicalPath}>{modal.item.operation.heading}</Link></div>
+        <div className="before-after-modal__content">
+          <h2 className="type-h3 before-after-modal__title">{modal.item.title}</h2>
+          <p>Операция</p>
+          <Link className="text-link" href={modal.item.operation.canonicalPath}>{modal.item.operation.heading}</Link>
+        </div>
       </div>
     </div>, document.body) : null}
   </>;
