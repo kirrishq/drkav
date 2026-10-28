@@ -157,7 +157,7 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
 
       <div className="consultation-form__field">
         <Label htmlFor={phoneId} required>Телефон</Label>
-        <PhoneInput id={phoneId} name="phone" required />
+        <PhoneInput countrySelector id={phoneId} name="phone" required />
       </div>
 
       <fieldset className="consultation-form__fieldset">

@@ -121,6 +121,11 @@ function normalizePhone(phone: string): string {
   return digits.length === 10 ? `7${digits}` : digits;
 }
 
+function isValidPhone(phone: string): boolean {
+  const digits = phone.replace(/\D/g, "");
+  return digits.length >= 8 && digits.length <= 15;
+}
+
 function isRateLimited(key: string): boolean {
   const now = Date.now();
 
@@ -199,7 +204,7 @@ function getFormError(kind: FormKind, payload: ConsultationPayload | FeedbackPay
     const consultationFormat = consultation.consultationFormat;
     const contactMethod = consultation.contactMethod;
 
-    if (!phone) return "Проверьте телефон.";
+    if (!phone || !isValidPhone(phone)) return "Проверьте телефон.";
     if (consultationFormat !== "clinic" && consultationFormat !== "online") return "Проверьте формат консультации.";
     if (!contactMethod || !["phone", "telegram", "max", "whatsapp"].includes(String(contactMethod))) return "Проверьте способ связи.";
     if (!isBooleanTrue(consultation.personalDataConsent) || !isBooleanTrue(consultation.privacyPolicyConsent)) {

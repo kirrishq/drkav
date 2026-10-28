@@ -1463,10 +1463,20 @@ export default function DesignSystemPage() {
                 >
                   <PhoneInput name="masked-phone" />
                 </FormField>
+                <FormField
+                  description="Россия использует маску; для другой страны доступны только цифры номера."
+                  id="input-phone-country"
+                  label="Телефон с выбором страны"
+                  required
+                >
+                  <PhoneInput countrySelector name="masked-phone-country" />
+                </FormField>
               </FieldGrid>
               <p className="type-text-sm mt-3 text-secondary">
                 PhoneInput нормализует 8 или 7 в префикс +7, удаляет буквы и
-                ограничивает номер десятью национальными цифрами.
+                ограничивает номер десятью национальными цифрами. С prop
+                countrySelector можно оставить маску для России и включить
+                цифровой ввод международного номера.
               </p>
             </Subsection>
 
@@ -1796,9 +1806,10 @@ import { PhoneInput } from "@drkav/ui/phone-input";
             <Subsection title="API">
               <p className="type-text-base max-w-reading text-secondary">
                 Input принимает стандартные InputHTMLAttributes и ref. PhoneInput
-                добавляет маску российского номера. FormField добавляет только
-                композиционные props: id, label, description, message, status,
-                disabled, required и optional.
+                добавляет маску российского номера, а countrySelector — выбор
+                России или цифровой ввод международного номера. FormField
+                добавляет только композиционные props: id, label, description,
+                message, status, disabled, required и optional.
               </p>
             </Subsection>
           </Section>

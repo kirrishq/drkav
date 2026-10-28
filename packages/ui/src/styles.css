@@ -516,6 +516,98 @@ html[data-vision="low-vision"] a {
 }
 
 @layer components {
+  .phone-input {
+    display: flex;
+    min-width: 0;
+    overflow: hidden;
+    border: var(--border-width-default) solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-subtle);
+    transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
+  }
+
+  .phone-input:hover {
+    border-color: var(--text-muted);
+  }
+
+  .phone-input:focus-within {
+    border-color: var(--accent);
+    box-shadow:
+      0 0 0 var(--focus-ring-offset) var(--color-background),
+      0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width)) var(--color-focus-ring);
+  }
+
+  .phone-input__country-control {
+    position: relative;
+    flex: 0 0 auto;
+    max-width: 10rem;
+  }
+
+  .phone-input__country {
+    min-height: var(--space-11);
+    width: 100%;
+    padding: var(--space-2) var(--space-8) var(--space-2) var(--space-3);
+    border: 0;
+    border-right: var(--border-width-default) solid var(--border-subtle);
+    background: var(--surface);
+    color: var(--text-primary);
+    outline: none;
+    appearance: none;
+  }
+
+  .phone-input__country:focus-visible {
+    background: var(--surface-muted);
+  }
+
+  .phone-input__country-arrow {
+    position: absolute;
+    top: 50%;
+    right: var(--space-4);
+    width: var(--space-2);
+    height: var(--space-2);
+    border-right: var(--border-width-default) solid currentColor;
+    border-bottom: var(--border-width-default) solid currentColor;
+    color: var(--text-secondary);
+    pointer-events: none;
+    transform: translateY(-70%) rotate(45deg);
+  }
+
+  .phone-input__country:disabled {
+    cursor: not-allowed;
+    background: var(--surface-muted);
+    color: var(--text-muted);
+  }
+
+  .phone-input__input {
+    min-width: 0;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .phone-input__input:focus-visible {
+    border-color: transparent !important;
+  }
+
+  .phone-input[data-disabled="true"] {
+    background: var(--surface-muted);
+  }
+
+  .phone-input[data-disabled="true"] .phone-input__country {
+    cursor: not-allowed;
+  }
+
+  .phone-input[data-disabled="true"] .phone-input__country-arrow {
+    color: var(--text-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .phone-input {
+      transition: none;
+    }
+  }
+
   @keyframes contact-fab-panel-in {
     from {
       opacity: 0;
