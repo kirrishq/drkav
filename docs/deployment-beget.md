@@ -12,11 +12,13 @@ Internet
   +-- Caddy :80/:443
         |
         +-- drkav.ru       -> web:3000
+        +-- drkav.ru/media -> Beget S3 (public media proxy)
         +-- cms.drkav.ru   -> cms:1337 (Basic Auth)
 
 web:3000 -- Docker network --> cms:1337
 cms:1337 -- private network --> Beget PostgreSQL
 cms:1337 ---------------------> Beget S3
+Browser -----------------------> drkav.ru/media/* -> Beget S3
 ```
 
 PostgreSQL не публикуется на VPS и не получает публичный IP. Публичный доступ
@@ -68,6 +70,16 @@ docker compose --env-file deploy/env/compose.env -f docker-compose.production.ym
 read-only API token в админке. До первого запуска Next.js токен нужно сохранить
 в `deploy/secrets/strapi_api_token` и в `deploy/env/web.env`.
 
+`MEDIA_PUBLIC_URL` в `deploy/env/compose.env` и `deploy/env/web.env` должен
+указывать на same-origin прокси сайта, например:
+
+```env
+MEDIA_PUBLIC_URL=https://drkav.ru/media/39799ed5839c-drkav-media
+```
+
+Это позволяет браузеру получать медиа через Caddy на VPS, не подключаясь к
+Beget S3 напрямую.
+
 Сборка web выполняется после того, как CMS уже запущена: проект генерирует
 часть CMS-страниц во время `next build`.
 
@@ -83,6 +95,7 @@ docker compose --env-file deploy/env/compose.env -f docker-compose.production.ym
 curl -I https://staging.drkav.ru
 curl -I https://staging.drkav.ru/robots.txt
 curl -I https://staging.drkav.ru/sitemap.xml
+curl -I https://staging.drkav.ru/media/39799ed5839c-drkav-media/original_review_1_88897dc8f4.jpg
 ```
 
 Публичный API Strapi должен быть закрыт. Проверять endpoint нужно без токена:

@@ -7,8 +7,21 @@
     @known_scanners path /.env /.env/* /.git /.git/* /cgi-bin /cgi-bin/* /phpmyadmin /phpmyadmin/* /server-status /vendor/phpunit /vendor/phpunit/* /wp-admin /wp-admin/* /wp-login.php /xmlrpc.php
     respond @known_scanners 404
 
-    encode zstd gzip
-    reverse_proxy web:3000
+    # Keep the public media bucket on the site origin so client networks do
+    # not need to connect to Beget S3 directly. Restrict the proxy to the
+    # project's bucket instead of exposing an open S3 proxy.
+    @media path /media/39799ed5839c-drkav-media/*
+    handle @media {
+        uri strip_prefix /media
+        reverse_proxy https://s3.ru1.storage.beget.cloud {
+            header_up Host s3.ru1.storage.beget.cloud
+        }
+    }
+
+    handle {
+        encode zstd gzip
+        reverse_proxy web:3000
+    }
 }
 
 www.{$SITE_DOMAIN} {

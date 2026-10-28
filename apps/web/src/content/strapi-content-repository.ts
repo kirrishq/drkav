@@ -935,14 +935,31 @@ function mapImage(
   const image = requireRecord(value, label);
   const path = requireString(image.url, `${label}.url`);
   const publicMediaUrl = process.env.MEDIA_PUBLIC_URL?.trim().replace(/\/$/, "");
+  const begetS3Hostname = "s3.ru1.storage.beget.cloud";
   const isLegacyLocalUpload =
     path.startsWith("/uploads/")
     || path.startsWith("http://cms:1337/uploads/")
     || path.startsWith("http://localhost:1337/uploads/")
     || path.startsWith("http://127.0.0.1:1337/uploads/");
-  const normalizedPath = isLegacyLocalUpload && publicMediaUrl
-    ? `${publicMediaUrl}${path.replace(/^https?:\/\/[^/]+/, "").replace(/^\/uploads(?=\/)/, "")}`
-    : path;
+  let normalizedPath = path;
+
+  if (isLegacyLocalUpload && publicMediaUrl) {
+    normalizedPath = `${publicMediaUrl}${path.replace(/^https?:\/\/[^/]+/, "").replace(/^\/uploads(?=\/)/, "")}`;
+  } else if (publicMediaUrl) {
+    try {
+      const parsedPath = new URL(path);
+      const isPathStyleS3Url = parsedPath.hostname === begetS3Hostname;
+      const isVirtualHostedS3Url = parsedPath.hostname.endsWith(`.${begetS3Hostname}`);
+
+      if (isPathStyleS3Url || isVirtualHostedS3Url) {
+        const pathSegments = parsedPath.pathname.split("/").filter(Boolean);
+        const objectPath = isPathStyleS3Url ? pathSegments.slice(1).join("/") : pathSegments.join("/");
+        normalizedPath = `${publicMediaUrl}/${objectPath}${parsedPath.search}${parsedPath.hash}`;
+      }
+    } catch {
+      // The URL validation below reports malformed media URLs consistently.
+    }
+  }
   const url = new URL(normalizedPath, `${baseUrl}/`);
 
   if (url.protocol !== "http:" && url.protocol !== "https:") {
