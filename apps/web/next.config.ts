@@ -54,6 +54,27 @@ const cmsImageRemotePatterns = (() => {
   }
 })();
 
+const siteImageRemotePatterns = (() => {
+  const siteUrl = process.env.SITE_URL;
+
+  if (!siteUrl) {
+    return [];
+  }
+
+  try {
+    const parsedUrl = new URL(siteUrl);
+
+    return [{
+      hostname: parsedUrl.hostname,
+      pathname: "/**",
+      port: parsedUrl.port || undefined,
+      protocol: parsedUrl.protocol.replace(":", "") as "http" | "https",
+    }];
+  } catch {
+    return [];
+  }
+})();
+
 const s3ImageRemotePatterns = [{
   hostname: "s3.ru1.storage.beget.cloud",
   pathname: "/**",
@@ -65,6 +86,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       ...cmsImageRemotePatterns,
+      ...siteImageRemotePatterns,
       ...s3ImageRemotePatterns,
     ],
   },
