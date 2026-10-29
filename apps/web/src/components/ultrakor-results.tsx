@@ -30,20 +30,22 @@ export function UltrakorResults() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   return (
-    <section className="ultrakor-results" aria-labelledby="ultrakor-results-title">
-      <div className="ultrakor-results__intro">
-        <h2 className="ultrakor__heading" id="ultrakor-results-title">На что способен<br /><span>Ультракор</span></h2>
+    <section className="ultrakor__section ultrakor-results" aria-labelledby="ultrakor-results-title">
+      <div className="ultrakor__inner">
+        <div className="ultrakor-results__intro">
+          <h2 className="ultrakor__heading" id="ultrakor-results-title">На что способен<br /><span>Ультракор</span></h2>
+        </div>
+        <div className="ultrakor-results__grid">
+          {results.map((result, index) => (
+            <article className={`ultrakor-results__card${activeIndex === index ? " is-active" : ""}`} key={`${result.label}-${index}`}>
+              <Image alt={`Результат мужской атлетизации: ${result.label}`} fill sizes="(max-width: 700px) 50vw, 16vw" src={result.imageSrc} />
+              <span className="ultrakor-results__state">{result.label}</span>
+              <VideoTrigger active={activeIndex === index} onClick={() => setActiveIndex(activeIndex === index ? null : index)} />
+            </article>
+          ))}
+        </div>
+        <p className="ultrakor-results__description">Методика сочетает удаление лишних жировых отложений и точное<br className="ultrakor-results__desktop-break" /> моделирование пропорций с учётом мужской анатомии. Цель — не просто<br className="ultrakor-results__desktop-break" /> уменьшить объём, а сделать силуэт более рельефным и гармоничным.</p>
       </div>
-      <div className="ultrakor-results__grid">
-        {results.map((result, index) => (
-          <article className={`ultrakor-results__card${activeIndex === index ? " is-active" : ""}`} key={`${result.label}-${index}`}>
-            <Image alt={`Результат мужской атлетизации: ${result.label}`} fill sizes="(max-width: 700px) 50vw, 16vw" src={result.imageSrc} />
-            <span className="ultrakor-results__state">{result.label}</span>
-            <VideoTrigger active={activeIndex === index} onClick={() => setActiveIndex(activeIndex === index ? null : index)} />
-          </article>
-        ))}
-      </div>
-      <p className="ultrakor-results__description">Методика сочетает удаление лишних жировых отложений и точное<br className="ultrakor-results__desktop-break" /> моделирование пропорций с учётом мужской анатомии. Цель — не просто<br className="ultrakor-results__desktop-break" /> уменьшить объём, а сделать силуэт более рельефным и гармоничным.</p>
     </section>
   );
 }

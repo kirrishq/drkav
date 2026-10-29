@@ -8,8 +8,8 @@ const safetyItems = [
 
 export function UltrakorSafety() {
   return (
-    <section className="ultrakor-safety" aria-labelledby="ultrakor-safety-title">
-      <div className="ultrakor-safety__inner">
+    <section className="ultrakor__section ultrakor-safety" aria-labelledby="ultrakor-safety-title">
+      <div className="ultrakor__inner">
         <h2 className="ultrakor__heading" id="ultrakor-safety-title">Как мы обеспечиваем<br />безопасность</h2>
         <div className="ultrakor-safety__list">
           {safetyItems.map(([title, text]) => (

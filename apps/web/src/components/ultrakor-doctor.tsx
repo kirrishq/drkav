@@ -44,8 +44,8 @@ export function UltrakorDoctor() {
   }, [selectedCertificateIndex]);
 
   return (
-    <section className="ultrakor-doctor" aria-labelledby="ultrakor-doctor-title">
-      <div className="ultrakor-doctor__inner">
+    <section className="ultrakor__section ultrakor-doctor" aria-labelledby="ultrakor-doctor-title">
+      <div className="ultrakor__inner">
         <h2 className="ultrakor__heading" id="ultrakor-doctor-title">О докторе Коробове</h2>
 
         <div className="ultrakor-doctor__profile">

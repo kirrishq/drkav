@@ -16,8 +16,8 @@ const defaultCases: UltrakorCase[] = [{
 
 export function UltrakorPortfolio({ cases = defaultCases }: { cases?: UltrakorCase[] }) {
   return (
-    <section className="ultrakor-portfolio" aria-labelledby="ultrakor-portfolio-title">
-      <div className="ultrakor-portfolio__inner">
+    <section className="ultrakor__section ultrakor-portfolio" aria-labelledby="ultrakor-portfolio-title">
+      <div className="ultrakor__inner">
         <h2 className="ultrakor__heading" id="ultrakor-portfolio-title">Примеры до/после</h2>
         {cases.map((item) => <article className="ultrakor-portfolio__case" key={item.title}>
           <div className="ultrakor-portfolio__images">
@@ -27,7 +27,7 @@ export function UltrakorPortfolio({ cases = defaultCases }: { cases?: UltrakorCa
           <div className="ultrakor-portfolio__content">
             <h3>{item.title}</h3>
             <p>{item.description}</p>
-            <a className="ultrakor__button ultrakor__button--solid" href="/konsultaciya">Записаться на консультацию</a>
+            <a className="ultrakor__button ultrakor__button--outline" href="/konsultaciya">Подробнее</a>
           </div>
         </article>)}
       </div>

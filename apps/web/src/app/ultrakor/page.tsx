@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import { UltrakorResults } from "@/components/ultrakor-results";
 import { UltrakorIndications } from "@/components/ultrakor-indications";
@@ -6,6 +5,9 @@ import { UltrakorPortfolio } from "@/components/ultrakor-portfolio";
 import { UltrakorDoctor } from "@/components/ultrakor-doctor";
 import { UltrakorSafety } from "@/components/ultrakor-safety";
 import { UltrakorPricing } from "@/components/ultrakor-pricing";
+import { UltrakorConsultation } from "@/components/ultrakor-consultation";
+import { UltrakorKnowledge } from "@/components/ultrakor-knowledge";
+import { UltrakorQuestions } from "@/components/ultrakor-questions";
 
 export default function UltrakorPage() {
   return (
@@ -30,6 +32,9 @@ export default function UltrakorPage() {
       <UltrakorDoctor />
       <UltrakorSafety />
       <UltrakorPricing />
+      <UltrakorConsultation />
+      <UltrakorKnowledge />
+      <UltrakorQuestions />
     </main>
   );
 }

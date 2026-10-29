@@ -20,7 +20,7 @@ function FooterLinkList({ links }: { links: SiteNavigation["footerColumns"][numb
   );
 }
 
-function SocialIcon({ kind }: { kind: SiteNavigation["socialLinks"][number]["kind"] }) {
+export function SocialIcon({ kind }: { kind: SiteNavigation["socialLinks"][number]["kind"] }) {
   if (kind === "telegram") {
     return (
       <svg aria-hidden="true" viewBox="0 0 24 24">

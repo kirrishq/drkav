@@ -22,8 +22,8 @@ export function UltrakorIndications() {
   }, []);
 
   return (
-    <section className={`ultrakor-indications${visible ? " is-visible" : ""}`} ref={sectionRef} aria-labelledby="ultrakor-indications-title">
-      <div className="ultrakor-indications__inner">
+    <section className={`ultrakor__section ultrakor-indications${visible ? " is-visible" : ""}`} ref={sectionRef} aria-labelledby="ultrakor-indications-title">
+      <div className="ultrakor__inner">
         <h2 className="ultrakor__heading" id="ultrakor-indications-title">Кому подходит<br /><span>методика</span></h2>
         <div className="ultrakor-indications__rule ultrakor-indications__rule--top" aria-hidden="true" />
         <div className="ultrakor-indications__grid">

@@ -51,7 +51,7 @@ export type {
   FormMessageProps,
 } from "./form-field";
 export { ConsultationForm, ConsultationProvider, ConsultationSection, ConsultationTrigger } from "./consultation-form";
-export type { ConsultationFormProps, ConsultationTriggerProps } from "./consultation-form";
+export type { ConsultationFormProps, ConsultationFormVariant, ConsultationTriggerProps } from "./consultation-form";
 export { ContactFab } from "./contact-fab";
 export { ContactActionIcon } from "./contact-fab";
 export { ContactActionList } from "./contact-fab";

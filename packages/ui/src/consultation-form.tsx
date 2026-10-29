@@ -25,6 +25,7 @@ import { cn } from "./lib/cn";
 
 type ConsultationFormat = "clinic" | "online";
 type ContactMethod = "telegram" | "phone" | "max" | "whatsapp";
+export type ConsultationFormVariant = "default" | "ultrakor";
 
 function createIdempotencyKey(): string {
   return typeof crypto.randomUUID === "function"
@@ -54,10 +55,12 @@ export type ConsultationFormProps = {
   compact?: boolean;
   onSuccess?: () => void;
   submitUrl?: string;
+  variant?: ConsultationFormVariant;
 };
 
-export function ConsultationForm({ captchaSiteKey, className, compact = false, onSuccess, submitUrl }: ConsultationFormProps) {
+export function ConsultationForm({ captchaSiteKey, className, compact = false, onSuccess, submitUrl, variant = "default" }: ConsultationFormProps) {
   const idPrefix = useId().replaceAll(":", "");
+  const isUltrakor = variant === "ultrakor";
   const [consultationFormat, setConsultationFormat] = useState<ConsultationFormat | null>(null);
   const [contactMethod, setContactMethod] = useState<ContactMethod | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -148,111 +151,111 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
   }
 
   return (
-    <form className={cn("consultation-form", compact && "consultation-form--compact", className)} onFocus={() => setCaptchaActive(true)} onSubmit={handleSubmit}>
+    <form className={cn("consultation-form", isUltrakor && "consultation-form--ultrakor", compact && "consultation-form--compact", className)} onFocus={() => setCaptchaActive(true)} onSubmit={handleSubmit}>
       <input aria-hidden="true" autoComplete="off" className="sr-only" name="website" tabIndex={-1} />
       <div className="consultation-form__field">
-        <Label htmlFor={nameId} required>Имя</Label>
-        <Input autoComplete="name" id={nameId} name="name" placeholder="Как к вам обращаться" required />
-      </div>
+            <Label htmlFor={nameId} required>Имя</Label>
+            <Input autoComplete="name" id={nameId} name="name" placeholder="Как к вам обращаться" required />
+          </div>
 
-      <div className="consultation-form__field">
-        <Label htmlFor={phoneId} required>Телефон</Label>
-        <PhoneInput countrySelector id={phoneId} name="phone" required />
-      </div>
+          <div className="consultation-form__field">
+            <Label htmlFor={phoneId} required>Телефон</Label>
+            <PhoneInput countrySelector id={phoneId} name="phone" required />
+          </div>
 
-      <fieldset className="consultation-form__fieldset">
-        <legend className="type-label consultation-form__legend">Формат консультации</legend>
-        <div className="consultation-form__options consultation-form__options--formats">
-          <RadioButton
-            checked={consultationFormat === "clinic"}
-            className="consultation-form__option"
-            name="consultation-format"
-            onChange={() => setConsultationFormat("clinic")}
-            required
-            value="clinic"
-          >
-            Очно — 2 500 ₽
-          </RadioButton>
-          <RadioButton
-            checked={consultationFormat === "online"}
-            className="consultation-form__option"
-            name="consultation-format"
-            onChange={() => setConsultationFormat("online")}
-            value="online"
-          >
-            Онлайн — 2 500 ₽
-          </RadioButton>
-        </div>
-      </fieldset>
+          <fieldset className="consultation-form__fieldset">
+            <legend className="type-label consultation-form__legend">Формат консультации</legend>
+            <div className="consultation-form__options consultation-form__options--formats">
+              <RadioButton
+                checked={consultationFormat === "clinic"}
+                className="consultation-form__option"
+                name="consultation-format"
+                onChange={() => setConsultationFormat("clinic")}
+                required
+                value="clinic"
+              >
+                Очно — 2 500 ₽
+              </RadioButton>
+              <RadioButton
+                checked={consultationFormat === "online"}
+                className="consultation-form__option"
+                name="consultation-format"
+                onChange={() => setConsultationFormat("online")}
+                value="online"
+              >
+                Онлайн — 2 500 ₽
+              </RadioButton>
+            </div>
+          </fieldset>
 
-      <fieldset className="consultation-form__fieldset">
-        <legend className="type-label consultation-form__legend">Удобный способ связи</legend>
-        <div className="consultation-form__options consultation-form__options--contacts">
-          <RadioButton
-            checked={contactMethod === "whatsapp"}
-            className="consultation-form__option"
-            icon={<ContactActionIcon kind="whatsapp" />}
-            name="contact-method"
-            onChange={() => setContactMethod("whatsapp")}
-            value="whatsapp"
-          >
-            WhatsApp
-          </RadioButton>
-          <RadioButton
-            checked={contactMethod === "telegram"}
-            className="consultation-form__option"
-            icon={<ContactActionIcon kind="telegram" />}
-            name="contact-method"
-            onChange={() => setContactMethod("telegram")}
-            value="telegram"
-          >
-            Telegram
-          </RadioButton>
-          <RadioButton
-            checked={contactMethod === "max"}
-            className="consultation-form__option"
-            icon={<ContactActionIcon kind="max" />}
-            name="contact-method"
-            onChange={() => setContactMethod("max")}
-            value="max"
-          >
-            MAX
-          </RadioButton>
-          <RadioButton
-            checked={contactMethod === "phone"}
-            className="consultation-form__option"
-            icon={<ContactActionIcon kind="phone" />}
-            name="contact-method"
-            onChange={() => setContactMethod("phone")}
-            required
-            value="phone"
-          >
-            Позвонить
-          </RadioButton>
-        </div>
-      </fieldset>
+          <fieldset className="consultation-form__fieldset">
+            <legend className="type-label consultation-form__legend">Удобный способ связи</legend>
+            <div className="consultation-form__options consultation-form__options--contacts">
+              <RadioButton
+                checked={contactMethod === "whatsapp"}
+                className="consultation-form__option"
+                icon={<ContactActionIcon kind="whatsapp" />}
+                name="contact-method"
+                onChange={() => setContactMethod("whatsapp")}
+                value="whatsapp"
+              >
+                WhatsApp
+              </RadioButton>
+              <RadioButton
+                checked={contactMethod === "telegram"}
+                className="consultation-form__option"
+                icon={<ContactActionIcon kind="telegram" />}
+                name="contact-method"
+                onChange={() => setContactMethod("telegram")}
+                value="telegram"
+              >
+                Telegram
+              </RadioButton>
+              <RadioButton
+                checked={contactMethod === "max"}
+                className="consultation-form__option"
+                icon={<ContactActionIcon kind="max" />}
+                name="contact-method"
+                onChange={() => setContactMethod("max")}
+                value="max"
+              >
+                MAX
+              </RadioButton>
+              <RadioButton
+                checked={contactMethod === "phone"}
+                className="consultation-form__option"
+                icon={<ContactActionIcon kind="phone" />}
+                name="contact-method"
+                onChange={() => setContactMethod("phone")}
+                required
+                value="phone"
+              >
+                Позвонить
+              </RadioButton>
+            </div>
+          </fieldset>
 
-      {contactMethod === "telegram" ? (
-        <div className="consultation-form__field">
-          <Label htmlFor={telegramUsernameId}>Имя пользователя</Label>
-          <Input autoComplete="username" id={telegramUsernameId} name="telegram-username" placeholder="@username" />
-        </div>
-      ) : null}
+          {contactMethod === "telegram" ? (
+            <div className="consultation-form__field">
+              <Label htmlFor={telegramUsernameId}>Имя пользователя</Label>
+              <Input autoComplete="username" id={telegramUsernameId} name="telegram-username" placeholder="@username" />
+            </div>
+          ) : null}
 
-      <div className="consultation-form__consents">
-        <label className="consultation-form__consent">
-          <Checkbox name="personal-data" required />
-          <span>Согласен на <a className="consultation-form__legal-link" href="/consent" rel="noreferrer" target="_blank">обработку персональных данных</a></span>
-        </label>
-        <label className="consultation-form__consent">
-          <Checkbox name="privacy-policy" required />
-          <span>Соглашаюсь с <a className="consultation-form__legal-link" href="/policy" rel="noreferrer" target="_blank">политикой конфиденциальности</a></span>
-        </label>
-        <label className="consultation-form__consent">
-          <Checkbox name="marketing-consent" />
-          <span>Соглашаюсь на получение <a className="consultation-form__legal-link" href="/consent-marketing" rel="noreferrer" target="_blank">рекламной и информационной рассылки</a></span>
-        </label>
-      </div>
+          <div className="consultation-form__consents">
+            <label className="consultation-form__consent">
+              <Checkbox name="personal-data" required />
+              <span>Согласен на <a className="consultation-form__legal-link" href="/consent" rel="noreferrer" target="_blank">обработку персональных данных</a></span>
+            </label>
+            <label className="consultation-form__consent">
+              <Checkbox name="privacy-policy" required />
+              <span>Соглашаюсь с <a className="consultation-form__legal-link" href="/policy" rel="noreferrer" target="_blank">политикой конфиденциальности</a></span>
+            </label>
+            <label className="consultation-form__consent">
+              <Checkbox name="marketing-consent" />
+              <span>Соглашаюсь на получение <a className="consultation-form__legal-link" href="/consent-marketing" rel="noreferrer" target="_blank">рекламной и информационной рассылки</a></span>
+            </label>
+          </div>
 
       <SmartCaptcha
         active={captchaActive}
@@ -265,7 +268,7 @@ export function ConsultationForm({ captchaSiteKey, className, compact = false, o
 
       {error ? <p aria-live="polite" className="type-text-sm consultation-form__error" role="alert">{error}</p> : null}
       <Button className="consultation-form__submit" disabled={isSubmitting} size="lg" type="submit">
-        {isSubmitting ? "Отправляем…" : "Записаться на консультацию"}
+        {isSubmitting ? "Отправляем…" : isUltrakor ? "Записаться" : "Записаться на консультацию"}
       </Button>
       <p className="type-text-sm consultation-form__note">
         После отправки заявки администратор свяжется с вами для подтверждения записи.
