@@ -2,8 +2,7 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
-import { useEffect, useRef, useState } from "react";
-import type { CSSProperties, MutableRefObject } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Group, PerspectiveCamera } from "three";
 
 type StageSide = "left" | "right";
@@ -121,6 +120,10 @@ const mobilePoses: readonly Pose[] = [
   { rotation: 0.12, position: [0.15, -1.5, 0], scale: 2.3, camera: [0, 4.6, 10], target: [0, -1.7, 0], fov: 36 },
 ];
 
+const MODEL_TRANSITION_SECONDS = 1.6;
+const TEXT_TRANSITION_MS = 1300;
+const GESTURE_LOCK_MS = 1750;
+
 function interpolate(from: number, to: number, amount: number) {
   return from + (to - from) * amount;
 }
@@ -129,55 +132,74 @@ function smoothstep(amount: number) {
   return amount * amount * (3 - 2 * amount);
 }
 
-function getPoseFrame(progress: number, poses: readonly Pose[]) {
-  // Each text stage owns the exact pose at its visual center; interpolation happens between centers.
-  const position = Math.min(poses.length - 1, Math.max(0, progress * poses.length - 0.5));
-  const index = Math.floor(position);
-  const nextIndex = Math.min(poses.length - 1, index + 1);
-  return { amount: smoothstep(position - index), from: poses[index], target: poses[nextIndex] };
-}
+function SceneCamera({ mobile, reducedMotion, stageIndex }: { mobile: boolean; reducedMotion: boolean; stageIndex: number }) {
+  const { camera, invalidate } = useThree();
+  const targetPosition = useRef<[number, number, number]>([...(mobile ? mobilePoses[0].target : desktopPoses[0].target)]);
+  const fromCamera = useRef<[number, number, number]>([camera.position.x, camera.position.y, camera.position.z]);
+  const fromTarget = useRef<[number, number, number]>([...targetPosition.current]);
+  const fromFov = useRef((camera as PerspectiveCamera).fov);
+  const elapsed = useRef(MODEL_TRANSITION_SECONDS);
 
-function SceneCamera({ mobile, progress }: { mobile: boolean; progress: MutableRefObject<number> }) {
-  const { camera } = useThree();
+  useEffect(() => {
+    fromCamera.current = [camera.position.x, camera.position.y, camera.position.z];
+    fromTarget.current = [...targetPosition.current];
+    fromFov.current = (camera as PerspectiveCamera).fov;
+    elapsed.current = reducedMotion ? MODEL_TRANSITION_SECONDS : 0;
+    invalidate();
+  }, [camera, invalidate, mobile, reducedMotion, stageIndex]);
 
   useFrame((_, delta) => {
-    const { amount, from, target } = getPoseFrame(progress.current, mobile ? mobilePoses : desktopPoses);
-    const easing = Math.min(delta * 5.5, 1);
-    camera.position.x += (interpolate(from.camera[0], target.camera[0], amount) - camera.position.x) * easing;
-    camera.position.y += (interpolate(from.camera[1], target.camera[1], amount) - camera.position.y) * easing;
-    camera.position.z += (interpolate(from.camera[2], target.camera[2], amount) - camera.position.z) * easing;
-    camera.lookAt(
-      interpolate(from.target[0], target.target[0], amount),
-      interpolate(from.target[1], target.target[1], amount),
-      interpolate(from.target[2], target.target[2], amount),
-    );
+    const pose = (mobile ? mobilePoses : desktopPoses)[stageIndex];
+    elapsed.current = Math.min(MODEL_TRANSITION_SECONDS, elapsed.current + delta);
+    const amount = reducedMotion ? 1 : smoothstep(elapsed.current / MODEL_TRANSITION_SECONDS);
+    camera.position.x = interpolate(fromCamera.current[0], pose.camera[0], amount);
+    camera.position.y = interpolate(fromCamera.current[1], pose.camera[1], amount);
+    camera.position.z = interpolate(fromCamera.current[2], pose.camera[2], amount);
+    targetPosition.current[0] = interpolate(fromTarget.current[0], pose.target[0], amount);
+    targetPosition.current[1] = interpolate(fromTarget.current[1], pose.target[1], amount);
+    targetPosition.current[2] = interpolate(fromTarget.current[2], pose.target[2], amount);
+    camera.lookAt(...targetPosition.current);
     const perspectiveCamera = camera as PerspectiveCamera;
-    const nextFov = interpolate(from.fov, target.fov, amount);
-    if (Math.abs(perspectiveCamera.fov - nextFov) > 0.01) {
-      perspectiveCamera.fov = nextFov;
-      perspectiveCamera.updateProjectionMatrix();
-    }
+    perspectiveCamera.fov = interpolate(fromFov.current, pose.fov, amount);
+    perspectiveCamera.updateProjectionMatrix();
+    if (elapsed.current < MODEL_TRANSITION_SECONDS) invalidate();
   });
 
   return null;
 }
 
-function AthleteModel({ mobile, progress }: { mobile: boolean; progress: MutableRefObject<number> }) {
+function AthleteModel({ mobile, reducedMotion, stageIndex }: { mobile: boolean; reducedMotion: boolean; stageIndex: number }) {
   const group = useRef<Group>(null);
   const { scene } = useGLTF("/models/ultrakor/athlete.glb");
+  const { invalidate } = useThree();
+  const fromRotation = useRef((mobile ? mobilePoses[0] : desktopPoses[0]).rotation);
+  const fromPosition = useRef<[number, number, number]>([...(mobile ? mobilePoses[0] : desktopPoses[0]).position]);
+  const fromScale = useRef((mobile ? mobilePoses[0] : desktopPoses[0]).scale);
+  const elapsed = useRef(MODEL_TRANSITION_SECONDS);
+
+  useEffect(() => {
+    if (group.current) {
+      fromRotation.current = group.current.rotation.y;
+      fromPosition.current = [group.current.position.x, group.current.position.y, group.current.position.z];
+      fromScale.current = group.current.scale.x;
+    }
+    elapsed.current = reducedMotion ? MODEL_TRANSITION_SECONDS : 0;
+    invalidate();
+  }, [invalidate, mobile, reducedMotion, stageIndex]);
 
   useFrame((_, delta) => {
     if (!group.current) return;
-    const { amount, from, target } = getPoseFrame(progress.current, mobile ? mobilePoses : desktopPoses);
-    const easing = Math.min(delta * 5.5, 1);
-    group.current.rotation.y += (interpolate(from.rotation, target.rotation, amount) - group.current.rotation.y) * easing;
-    group.current.position.x += (interpolate(from.position[0], target.position[0], amount) - group.current.position.x) * easing;
-    group.current.position.y += (interpolate(from.position[1], target.position[1], amount) - group.current.position.y) * easing;
-    group.current.position.z += (interpolate(from.position[2], target.position[2], amount) - group.current.position.z) * easing;
-    const nextScale = interpolate(from.scale, target.scale, amount);
-    group.current.scale.x += (nextScale - group.current.scale.x) * easing;
+    const pose = (mobile ? mobilePoses : desktopPoses)[stageIndex];
+    elapsed.current = Math.min(MODEL_TRANSITION_SECONDS, elapsed.current + delta);
+    const amount = reducedMotion ? 1 : smoothstep(elapsed.current / MODEL_TRANSITION_SECONDS);
+    group.current.rotation.y = interpolate(fromRotation.current, pose.rotation, amount);
+    group.current.position.x = interpolate(fromPosition.current[0], pose.position[0], amount);
+    group.current.position.y = interpolate(fromPosition.current[1], pose.position[1], amount);
+    group.current.position.z = interpolate(fromPosition.current[2], pose.position[2], amount);
+    group.current.scale.x = interpolate(fromScale.current, pose.scale, amount);
     group.current.scale.y = group.current.scale.x;
     group.current.scale.z = group.current.scale.x;
+    if (elapsed.current < MODEL_TRANSITION_SECONDS) invalidate();
   });
 
   const initialPose = mobile ? mobilePoses[0] : desktopPoses[0];
@@ -204,13 +226,16 @@ useGLTF.preload("/models/ultrakor/athlete.glb");
 
 export function UltrakorModelSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const progress = useRef(0);
   const stageRef = useRef(0);
+  const gestureDelta = useRef(0);
+  const gestureLocked = useRef(false);
+  const touchStart = useRef<number | null>(null);
   const transitionTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const gestureTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [stageIndex, setStageIndex] = useState(0);
   const [leavingStageIndex, setLeavingStageIndex] = useState<number | null>(null);
-  const [lightProgress, setLightProgress] = useState(0);
   const [mobile, setMobile] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 700px)");
@@ -221,38 +246,123 @@ export function UltrakorModelSection() {
   }, []);
 
   useEffect(() => {
-    let animationFrame = 0;
-    const updateProgress = () => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateReducedMotion = () => setReducedMotion(media.matches);
+    updateReducedMotion();
+    media.addEventListener("change", updateReducedMotion);
+    return () => media.removeEventListener("change", updateReducedMotion);
+  }, []);
+
+  const activateStage = useCallback((nextStage: number, scroll = true) => {
+    const clampedStage = Math.min(stages.length - 1, Math.max(0, nextStage));
+    if (clampedStage === stageRef.current) return;
+    setLeavingStageIndex(stageRef.current);
+    stageRef.current = clampedStage;
+    setStageIndex(clampedStage);
+    if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
+    transitionTimeout.current = setTimeout(() => setLeavingStageIndex(null), reducedMotion ? 0 : TEXT_TRANSITION_MS);
+    if (scroll && sectionRef.current) {
+      const sectionTop = window.scrollY + sectionRef.current.getBoundingClientRect().top;
+      window.scrollTo({ top: sectionTop + clampedStage * window.innerHeight, behavior: reducedMotion ? "auto" : "smooth" });
+    }
+  }, [reducedMotion]);
+
+  useEffect(() => {
+    const isSectionActive = () => {
       if (!sectionRef.current) return;
       const bounds = sectionRef.current.getBoundingClientRect();
-      const nextProgress = Math.min(1, Math.max(0, -bounds.top / Math.max(bounds.height - window.innerHeight, 1)));
-      const nextStage = Math.min(stages.length - 1, Math.floor(nextProgress * stages.length));
-      progress.current = nextProgress;
-      if (nextStage !== stageRef.current) {
-        setLeavingStageIndex(stageRef.current);
-        stageRef.current = nextStage;
-        setStageIndex(nextStage);
-        if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
-        transitionTimeout.current = setTimeout(() => setLeavingStageIndex(null), 620);
-      }
-      setLightProgress(Math.min(1, Math.max(0, (nextProgress - 0.875) / 0.125)));
-      animationFrame = window.requestAnimationFrame(updateProgress);
+      return bounds.top <= 2 && bounds.bottom >= window.innerHeight - 2;
     };
-    updateProgress();
+    const lockGesture = () => {
+      gestureLocked.current = true;
+      if (gestureTimeout.current) clearTimeout(gestureTimeout.current);
+      gestureTimeout.current = setTimeout(() => {
+        gestureLocked.current = false;
+        gestureDelta.current = 0;
+      }, reducedMotion ? 180 : GESTURE_LOCK_MS);
+    };
+    const moveStage = (direction: -1 | 1) => {
+      const nextStage = stageRef.current + direction;
+      if (nextStage < 0 || nextStage >= stages.length) return false;
+      lockGesture();
+      activateStage(nextStage);
+      return true;
+    };
+    const handleWheel = (event: WheelEvent) => {
+      if (!isSectionActive() || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      const leavingSection = (stageRef.current === 0 && event.deltaY < 0) || (stageRef.current === stages.length - 1 && event.deltaY > 0);
+      if (leavingSection) return;
+      event.preventDefault();
+      if (gestureLocked.current) return;
+      gestureDelta.current += event.deltaY;
+      if (Math.abs(gestureDelta.current) < 42) return;
+      moveStage(gestureDelta.current > 0 ? 1 : -1);
+      gestureDelta.current = 0;
+    };
+    const handleTouchStart = (event: TouchEvent) => {
+      if (!isSectionActive()) return;
+      touchStart.current = event.touches[0]?.clientY ?? null;
+    };
+    const handleTouchMove = (event: TouchEvent) => {
+      if (touchStart.current === null || !isSectionActive()) return;
+      const currentY = event.touches[0]?.clientY;
+      if (currentY === undefined) return;
+      const delta = touchStart.current - currentY;
+      const leavingSection = (stageRef.current === 0 && delta < 0) || (stageRef.current === stages.length - 1 && delta > 0);
+      if (!leavingSection) event.preventDefault();
+    };
+    const handleTouchEnd = (event: TouchEvent) => {
+      if (touchStart.current === null || !isSectionActive()) return;
+      const endY = event.changedTouches[0]?.clientY ?? touchStart.current;
+      const delta = touchStart.current - endY;
+      touchStart.current = null;
+      if (gestureLocked.current || Math.abs(delta) < 42) return;
+      moveStage(delta > 0 ? 1 : -1);
+    };
+    const syncStageFromScroll = () => {
+      if (!sectionRef.current || gestureLocked.current) return;
+      const sectionTop = window.scrollY + sectionRef.current.getBoundingClientRect().top;
+      const localScroll = window.scrollY - sectionTop;
+      if (localScroll < 0 || localScroll > sectionRef.current.offsetHeight - window.innerHeight) return;
+      const nextStage = Math.min(stages.length - 1, Math.max(0, Math.round(localScroll / window.innerHeight)));
+      if (nextStage !== stageRef.current) activateStage(nextStage, false);
+    };
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+    window.addEventListener("scroll", syncStageFromScroll, { passive: true });
     return () => {
-      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("scroll", syncStageFromScroll);
       if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
+      if (gestureTimeout.current) clearTimeout(gestureTimeout.current);
     };
+  }, [activateStage, reducedMotion]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (!sectionRef.current) return;
+      const sectionTop = window.scrollY + sectionRef.current.getBoundingClientRect().top;
+      const sectionBottom = sectionTop + sectionRef.current.offsetHeight;
+      if (window.scrollY >= sectionTop && window.scrollY <= sectionBottom - window.innerHeight) {
+        window.scrollTo({ top: sectionTop + stageRef.current * window.innerHeight });
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const hotspot = stages[stageIndex].hotspot?.[mobile ? "mobile" : "desktop"];
 
   return (
     <section
-      className={`ultrakor-model-section${lightProgress > 0.56 ? " is-light" : ""}`}
+      className={`ultrakor-model-section${stageIndex === stages.length - 1 ? " is-light" : ""}`}
       aria-labelledby="ultrakor-model-title"
       ref={sectionRef}
-      style={{ "--ultrakor-light-progress": lightProgress } as CSSProperties}
     >
       <div className="ultrakor-model-section__sticky">
         {leavingStageIndex !== null ? <StageCopy index={leavingStageIndex} leaving /> : null}
@@ -269,11 +379,16 @@ export function UltrakorModelSection() {
           />
         ) : null}
         <div className="ultrakor-model-section__stage" aria-label="3D-модель атлетичного мужского тела">
-          <Canvas camera={{ fov: mobile ? 34 : 32, position: mobile ? [0, 0.2, 9.2] : [0, 0.2, 7] }}>
+          <Canvas
+            camera={{ fov: mobile ? 34 : 32, position: mobile ? [0, 0.2, 9.2] : [0, 0.2, 7] }}
+            dpr={[1, 1.5]}
+            frameloop="demand"
+            gl={{ antialias: !mobile, powerPreference: "high-performance" }}
+          >
             <ambientLight intensity={2.2} />
             <directionalLight intensity={3} position={[3, 5, 4]} />
-            <SceneCamera mobile={mobile} progress={progress} />
-            <AthleteModel mobile={mobile} progress={progress} />
+            <SceneCamera mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} />
+            <AthleteModel mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} />
           </Canvas>
         </div>
       </div>
