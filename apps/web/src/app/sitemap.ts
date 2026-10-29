@@ -14,7 +14,14 @@ function isLocalPath(path: string): boolean {
   return path.startsWith("/") && !path.startsWith("//");
 }
 
-const excludedStaticRoutes = new Set(["/konsultaciya"]);
+const excludedStaticRoutes = new Set([
+  "/konsultaciya",
+  "/policy",
+  "/consent",
+  "/consent-marketing",
+  "/cookies",
+  "/oferta",
+]);
 
 function getStaticEntries(): MetadataRoute.Sitemap {
   const paths = new Set(
