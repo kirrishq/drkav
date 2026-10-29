@@ -81,7 +81,7 @@
 .ultrakor-footer__legal-links a:hover, .ultrakor-footer__legal-links a:focus-visible, .ultrakor-footer__legal-links button:hover, .ultrakor-footer__legal-links button:focus-visible { color: rgb(255 255 255 / .78); }
 .ultrakor-footer__seal { align-items: center; aspect-ratio: 1; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-start; margin: var(--space-12) auto -22rem; overflow: visible; padding-top: 7rem; position: relative; text-align: center; width: min(35.5rem, 86vw); }
 .ultrakor-footer__seal-ring { animation: ultrakor-footer-seal-spin 28s linear infinite; color: rgb(255 255 255 / .78); height: 100%; inset: 0; overflow: visible; position: absolute; transform-box: fill-box; transform-origin: center; width: 100%; }
-.ultrakor-footer__seal-ring circle { stroke: currentColor; stroke-width: 1; }
+.ultrakor-footer__seal-ring circle { display: none; }
 .ultrakor-footer__seal-ring text { fill: currentColor; font-family: var(--ultrakor-body-font); font-size: 18px; letter-spacing: .42em; text-anchor: middle; text-transform: uppercase; }
 .ultrakor-footer__seal-title { color: var(--ultrakor-white); font-family: var(--ultrakor-heading-font); font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 700; letter-spacing: .02em; line-height: .85; margin: 0; position: relative; }
 .ultrakor-footer__seal-byline { color: rgb(255 255 255 / .55); font-family: var(--ultrakor-heading-font); font-size: clamp(.9rem, 1.5vw, 1.25rem); letter-spacing: .06em; line-height: 1; margin: var(--space-2) 0 0; position: relative; }
@@ -120,6 +120,8 @@ body:has(.ultrakor) .site-footer { display: none; }
 body:has(.ultrakor) {
   --ultrakor-black: #0e0e0e;
   --ultrakor-white: #fff;
+  --ultrakor-heading-font: "Vipnagorgialla", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  --ultrakor-body-font: "DejaVu Sans", Arial, sans-serif;
   --ultrakor-radius: 2px;
   --ultrakor-glass-surface-strong: rgb(14 14 14 / .72);
   --ultrakor-glass-toggle: rgb(14 14 14 / .64);
@@ -132,6 +134,26 @@ body:has(.ultrakor) .contact-actions__action:hover, body:has(.ultrakor) .contact
 body:has(.ultrakor) .contact-fab__toggle { -webkit-backdrop-filter: blur(.75rem) saturate(125%); backdrop-filter: blur(.75rem) saturate(125%); background: var(--ultrakor-glass-toggle); border: 1px solid var(--ultrakor-glass-border); color: var(--ultrakor-white); box-shadow: 0 1rem 2.5rem rgb(0 0 0 / .32), inset 0 1px 0 rgb(255 255 255 / .18); }
 body:has(.ultrakor) .contact-fab__toggle:hover { background: var(--ultrakor-glass-toggle); transform: none; }
 body:has(.ultrakor) .contact-fab__toggle:focus-visible { outline-color: var(--ultrakor-white); }
+body:has(.ultrakor) .cookie-consent { color: var(--ultrakor-white); font-family: var(--ultrakor-body-font); }
+body:has(.ultrakor) .cookie-consent__inner { -webkit-backdrop-filter: blur(1rem) saturate(120%); backdrop-filter: blur(1rem) saturate(120%); background: var(--ultrakor-glass-surface-strong); border-color: var(--ultrakor-glass-border); border-radius: var(--ultrakor-radius); box-shadow: 0 1rem 2.5rem rgb(0 0 0 / .42), inset 0 1px 0 rgb(255 255 255 / .12); }
+body:has(.ultrakor) .cookie-consent__title { color: var(--ultrakor-white); font-family: var(--ultrakor-heading-font); font-weight: 700; letter-spacing: .02em; }
+body:has(.ultrakor) .cookie-consent__eyebrow { color: rgb(255 255 255 / .7); font-family: var(--ultrakor-body-font); }
+body:has(.ultrakor) .cookie-consent__description, body:has(.ultrakor) .cookie-consent__category-description { color: rgb(255 255 255 / .72); }
+body:has(.ultrakor) .cookie-consent__description a { color: var(--ultrakor-white); }
+body:has(.ultrakor) .cookie-consent__categories { border-color: var(--ultrakor-glass-border); }
+body:has(.ultrakor) .cookie-consent__category { border-color: var(--ultrakor-glass-border); }
+body:has(.ultrakor) .cookie-consent__category-marker, body:has(.ultrakor) .cookie-consent__category-label { color: var(--ultrakor-white); }
+body:has(.ultrakor) .cookie-consent__category-status { color: rgb(255 255 255 / .52); }
+body:has(.ultrakor) .cookie-consent__switch-track { background: rgb(255 255 255 / .25); }
+body:has(.ultrakor) .cookie-consent__switch-track::after { background: var(--ultrakor-white); box-shadow: 0 .125rem .5rem rgb(0 0 0 / .32); }
+body:has(.ultrakor) .cookie-consent__switch input:checked + .cookie-consent__switch-track, body:has(.ultrakor) .cookie-consent__switch input:disabled + .cookie-consent__switch-track { background: var(--ultrakor-white); }
+body:has(.ultrakor) .cookie-consent__switch input:checked + .cookie-consent__switch-track::after, body:has(.ultrakor) .cookie-consent__switch input:disabled + .cookie-consent__switch-track::after { background: var(--ultrakor-black); }
+body:has(.ultrakor) .cookie-consent__switch input:focus-visible + .cookie-consent__switch-track { outline-color: var(--ultrakor-white); }
+body:has(.ultrakor) .cookie-consent__actions button { border-radius: var(--ultrakor-radius); font-family: var(--ultrakor-body-font); }
+body:has(.ultrakor) .cookie-consent__actions button:first-child { background: var(--ultrakor-white); color: var(--ultrakor-black); }
+body:has(.ultrakor) .cookie-consent__actions button:first-child:hover, body:has(.ultrakor) .cookie-consent__actions button:first-child:focus-visible { background: rgb(255 255 255 / .86); color: var(--ultrakor-black); }
+body:has(.ultrakor) .cookie-consent__actions button:last-child { background: transparent; border-color: var(--ultrakor-glass-border); color: var(--ultrakor-white); }
+body:has(.ultrakor) .cookie-consent__actions button:last-child:hover, body:has(.ultrakor) .cookie-consent__actions button:last-child:focus-visible { background: rgb(255 255 255 / .12); color: var(--ultrakor-white); }
 
 .ultrakor-doctor { background: var(--ultrakor-light); color: var(--ultrakor-black); }
 .ultrakor-doctor .ultrakor__heading { color: var(--ultrakor-black); }
@@ -339,11 +361,15 @@ body:has(.ultrakor) .contact-fab__toggle:focus-visible { outline-color: var(--ul
 .ultrakor-results__description { color: rgb(255 255 255 / 0.68); font-size: 16px; line-height: 1.45; margin: var(--space-12) 0 0; }
 .ultrakor-results__description::first-line { color: var(--ultrakor-white); }
 @keyframes ultrakor-results-spin { to { transform: rotate(360deg); } }
-.ultrakor-model-section { background: transparent; height: 800vh; position: relative; transition: background 850ms ease, color 650ms ease; }
-.ultrakor-model-section.is-light { background: var(--ultrakor-light); }
-.ultrakor-model-section__sticky { height: 100vh; inset: 0; overflow: hidden; position: sticky; }
-.ultrakor-model-section__copy { animation: ultrakor-copy-in-left 650ms cubic-bezier(.2, 0, 0, 1) both; left: clamp(24px, 9.5vw, 136px); max-width: 560px; position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; }
-.ultrakor-model-section__copy--from-right { animation-name: ultrakor-copy-in-right; }
+.ultrakor-model-section { background: var(--ultrakor-black); height: 800vh; position: relative; }
+.ultrakor-model-section__sticky { background: var(--ultrakor-black); height: 100vh; inset: 0; overflow: hidden; position: sticky; }
+.ultrakor-model-section__sticky::before { background: var(--ultrakor-light); content: ""; inset: 0; opacity: var(--ultrakor-light-progress); pointer-events: none; position: absolute; z-index: 0; }
+.ultrakor-model-section__copy { left: clamp(24px, 9.5vw, 136px); max-width: 560px; position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; }
+.ultrakor-model-section__copy--right { left: auto; right: clamp(24px, 9.5vw, 136px); }
+.ultrakor-model-section__copy.is-entering.ultrakor-model-section__copy--left { animation: ultrakor-copy-in-left 620ms cubic-bezier(.2, 0, 0, 1) both; }
+.ultrakor-model-section__copy.is-entering.ultrakor-model-section__copy--right { animation: ultrakor-copy-in-right 620ms cubic-bezier(.2, 0, 0, 1) both; }
+.ultrakor-model-section__copy.is-leaving.ultrakor-model-section__copy--left { animation: ultrakor-copy-out-left 520ms cubic-bezier(.4, 0, 1, 1) both; pointer-events: none; }
+.ultrakor-model-section__copy.is-leaving.ultrakor-model-section__copy--right { animation: ultrakor-copy-out-right 520ms cubic-bezier(.4, 0, 1, 1) both; pointer-events: none; }
 .ultrakor-model-section__copy p { color: rgb(255 255 255 / 0.68); font-size: 18px; line-height: 1.4; margin: 24px 0 0; max-width: 470px; }
 .ultrakor-model-section__copy p span { color: var(--ultrakor-white); }
 .ultrakor-model-section__price { color: var(--ultrakor-white) !important; font-size: 24px !important; margin-top: 28px !important; }
@@ -355,11 +381,16 @@ body:has(.ultrakor) .contact-fab__toggle:focus-visible { outline-color: var(--ul
 .ultrakor-model-section__progress { bottom: 48px; display: flex; gap: 12px; left: clamp(24px, 9.5vw, 136px); position: absolute; z-index: 3; }
 .ultrakor-model-section__progress span { color: rgb(255 255 255 / 0.35); font-size: 12px; }
 .ultrakor-model-section__progress span.is-active { color: var(--ultrakor-white); }
-.ultrakor-model-section__hotspot { animation: ultrakor-hotspot-pulse 2.4s ease-in-out infinite; border: 3px dashed #ef3d3d; border-radius: 50%; box-shadow: 0 0 0 0 rgb(239 61 61 / 0.3); display: block; pointer-events: none; position: absolute; transform: translate(-50%, -50%); transition: left 650ms cubic-bezier(.2, 0, 0, 1), opacity 350ms ease, top 650ms cubic-bezier(.2, 0, 0, 1); z-index: 3; }
-.ultrakor-model-section__hotspot::after { background: rgb(239 61 61 / 0.16); border-radius: 50%; content: ""; inset: 12%; position: absolute; }
-@keyframes ultrakor-hotspot-pulse { 0%, 100% { opacity: .82; transform: translate(-50%, -50%) scale(.96); } 50% { box-shadow: 0 0 0 14px rgb(239 61 61 / 0); opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+.ultrakor-model-section.is-light .ultrakor-model-section__progress span { color: rgb(14 14 14 / 0.35); }
+.ultrakor-model-section.is-light .ultrakor-model-section__progress span.is-active { color: var(--ultrakor-black); }
+.ultrakor-model-section__hotspot { animation: ultrakor-hotspot-in 520ms cubic-bezier(.2, 0, 0, 1) both, ultrakor-hotspot-pulse 2.4s 520ms ease-in-out infinite; border: 3px dashed #ab0000; border-radius: 50%; box-shadow: 0 0 0 0 rgb(171 0 0 / 0.3); display: block; pointer-events: none; position: absolute; transform: translate(-50%, -50%); z-index: 4; }
+.ultrakor-model-section__hotspot::after { background: rgb(171 0 0 / 0.18); border-radius: 50%; content: ""; inset: 12%; position: absolute; }
+@keyframes ultrakor-hotspot-in { from { opacity: 0; transform: translate(-50%, -50%) scale(.72); } to { opacity: .86; transform: translate(-50%, -50%) scale(.96); } }
+@keyframes ultrakor-hotspot-pulse { 0%, 100% { opacity: .86; transform: translate(-50%, -50%) scale(.96); } 50% { box-shadow: 0 0 0 14px rgb(171 0 0 / 0); opacity: 1; transform: translate(-50%, -50%) scale(1); } }
 @keyframes ultrakor-copy-in-left { from { opacity: 0; transform: translate(-42px, -50%); } to { opacity: 1; transform: translate(0, -50%); } }
 @keyframes ultrakor-copy-in-right { from { opacity: 0; transform: translate(42px, -50%); } to { opacity: 1; transform: translate(0, -50%); } }
+@keyframes ultrakor-copy-out-left { from { opacity: 1; transform: translate(0, -50%); } to { opacity: 0; transform: translate(-52px, -50%); } }
+@keyframes ultrakor-copy-out-right { from { opacity: 1; transform: translate(0, -50%); } to { opacity: 0; transform: translate(52px, -50%); } }
 .ultrakor-model-section__stage { inset: 0; position: absolute; z-index: 1; }
 .ultrakor-model-section__stage canvas { height: 100% !important; touch-action: none; width: 100% !important; }
 .ultrakor-indications { background: transparent; overflow: hidden; }
@@ -429,16 +460,23 @@ body:has(.ultrakor) .contact-fab__toggle:focus-visible { outline-color: var(--ul
   .ultrakor-results__desktop-break { display: none; }
   .ultrakor-model-section { height: 800vh; padding: 0; }
   .ultrakor-model-section__sticky { min-height: 100vh; }
-  .ultrakor-model-section__copy { animation-name: ultrakor-copy-in-left-mobile; bottom: 56px; left: 16px; max-width: none; padding: 18px 18px 20px; right: 16px; top: auto; transform: none; }
-  .ultrakor-model-section__copy--from-right { animation-name: ultrakor-copy-in-right-mobile; }
+  .ultrakor-model-section__copy { backdrop-filter: blur(18px); background: rgb(14 14 14 / .7); border: 1px solid rgb(255 255 255 / .2); bottom: 52px; left: 16px; max-width: none; padding: 18px 18px 20px; right: 16px; top: auto; transform: none; }
+  .ultrakor-model-section__copy--right { left: 16px; right: 16px; }
+  .ultrakor-model-section.is-light .ultrakor-model-section__copy { background: rgb(236 236 236 / .72); border-color: rgb(14 14 14 / .18); }
+  .ultrakor-model-section__copy.is-entering.ultrakor-model-section__copy--left { animation-name: ultrakor-copy-in-left-mobile; }
+  .ultrakor-model-section__copy.is-entering.ultrakor-model-section__copy--right { animation-name: ultrakor-copy-in-right-mobile; }
+  .ultrakor-model-section__copy.is-leaving.ultrakor-model-section__copy--left { animation-name: ultrakor-copy-out-left-mobile; }
+  .ultrakor-model-section__copy.is-leaving.ultrakor-model-section__copy--right { animation-name: ultrakor-copy-out-right-mobile; }
   .ultrakor-model-section__copy p { font-size: 14px; }
   .ultrakor-model-section__price { font-size: 18px !important; margin-top: 16px !important; }
   .ultrakor-model-section__stage { height: auto; min-height: 0; }
-  .ultrakor-model-section__progress { bottom: 28px; left: 24px; }
-  .ultrakor-model-section__hotspot { border-width: 2px; height: 28vw !important; width: 28vw !important; }
+  .ultrakor-model-section__progress { bottom: 22px; left: 24px; }
+  .ultrakor-model-section__hotspot { border-width: 2px; }
 }
 @keyframes ultrakor-copy-in-left-mobile { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes ultrakor-copy-in-right-mobile { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes ultrakor-copy-out-left-mobile { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(-34px); } }
+@keyframes ultrakor-copy-out-right-mobile { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(34px); } }
 
 .ultrakor-consultation { background: var(--ultrakor-light); color: var(--ultrakor-black); }
 .ultrakor-consultation .ultrakor__heading { color: var(--ultrakor-black); font-size: clamp(2.75rem, 5vw, 4rem); max-width: 56rem; }

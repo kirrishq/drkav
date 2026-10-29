@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { UltrakorResults } from "@/components/ultrakor-results";
+import { UltrakorModelSection } from "@/components/ultrakor-model-section";
 import { UltrakorIndications } from "@/components/ultrakor-indications";
 import { UltrakorPortfolio } from "@/components/ultrakor-portfolio";
 import { UltrakorDoctor } from "@/components/ultrakor-doctor";
@@ -26,6 +27,7 @@ export default function UltrakorPage() {
       </section>
 
       <UltrakorResults />
+      <UltrakorModelSection />
 
       <UltrakorIndications />
       <UltrakorPortfolio />
