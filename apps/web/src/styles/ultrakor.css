@@ -560,7 +560,7 @@ body:has(.ultrakor-zone-overlay[open]) :is(.ultrakor-model-section__copy, .ultra
 @keyframes ultrakor-copy-out-left { from { opacity: 1; transform: translate(0, -50%); } to { opacity: 0; transform: translate(-52px, -50%); } }
 @keyframes ultrakor-copy-out-right { from { opacity: 1; transform: translate(0, -50%); } to { opacity: 0; transform: translate(52px, -50%); } }
 .ultrakor-model-section__stage { inset: 0; position: absolute; z-index: 1; }
-.ultrakor-model-section__stage canvas { height: 100% !important; touch-action: none; width: 100% !important; }
+.ultrakor-model-section__stage canvas { height: 100% !important; touch-action: pan-y; width: 100% !important; }
 .ultrakor-indications { background: transparent; overflow: hidden; }
 .ultrakor-indications__grid { display: grid; gap: 22px 52px; grid-template-columns: repeat(3, 1fr); margin: var(--space-12) 0 var(--space-10); }
 .ultrakor-indications__item { color: rgb(255 255 255 / 0.68); display: flex; font-size: 16px; line-height: 1.4; margin: 0; opacity: 0; transform: translateY(18px); transition: opacity 500ms ease, transform 650ms cubic-bezier(.2, 0, 0, 1); }

@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export function UltrakorZoneOverlay({ children }: { children: ReactNode }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
+  const active = pathname !== "/ultrakor";
   useEffect(() => {
     const element = dialog.current;
-    if (!element) return;
+    if (!element || !active) return;
     const savedScroll = sessionStorage.getItem("ultrakor-model-return");
     const scrollY = savedScroll === null ? window.scrollY : Number(savedScroll);
     const previousOverflow = document.body.style.overflow;
@@ -27,7 +29,8 @@ export function UltrakorZoneOverlay({ children }: { children: ReactNode }) {
       // Browser history restoration runs after dialog focus restoration.
       window.setTimeout(() => window.scrollTo({ top: scrollY, behavior: "instant" }), 150);
     };
-  }, []);
+  }, [active]);
+  if (!active) return null;
   return <dialog className="ultrakor-zone-overlay" aria-label="Подробнее о зоне Ультракора" ref={dialog} onCancel={event => { event.preventDefault(); router.back(); }}>
     <button type="button" className="ultrakor-zone-overlay__back" onClick={() => router.back()}>← К модели</button>
     {children}
