@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import type { ComponentProps } from "react";
 import { ultrakorZones } from "@/content/ultrakor-zones";
 import { useGLTF } from "@react-three/drei";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Box3, Vector3 } from "three";
 import type { CSSProperties, RefObject } from "react";
 import type { Group, PerspectiveCamera } from "three";
@@ -190,9 +190,10 @@ function SceneCamera({ mobile, reducedMotion, stageIndex }: { mobile: boolean; r
   return null;
 }
 
-function AthleteModel({ mobile, reducedMotion, stageIndex, marker }: { mobile: boolean; reducedMotion: boolean; stageIndex: number; marker: RefObject<SVGSVGElement | null> }) {
+function AthleteModel({ mobile, reducedMotion, stageIndex, marker, source = "/models/ultrakor/athlete.glb" }: { mobile: boolean; reducedMotion: boolean; stageIndex: number; marker: RefObject<SVGSVGElement | null>; source?: string }) {
   const group = useRef<Group>(null);
-  const { scene } = useGLTF("/models/ultrakor/athlete.glb");
+  const { scene: loadedScene } = useGLTF(source);
+  const scene = useMemo(() => loadedScene.clone(), [loadedScene]);
   const { invalidate } = useThree();
   const fromRotation = useRef((mobile ? mobilePoses[0] : desktopPoses[0]).rotation);
   const fromPosition = useRef<[number, number, number]>([...(mobile ? mobilePoses[0] : desktopPoses[0]).position]);
@@ -283,7 +284,27 @@ function StageCopy({ index, leaving = false }: { index: number; leaving?: boolea
   );
 }
 
-useGLTF.preload("/models/ultrakor/athlete.glb");
+// Resolve the viewport before loading so phones never download the desktop GLB.
+
+/** Development comparison uses the production poses and lighting unchanged. */
+export function UltrakorPosePreview({ stageIndex, source, mobile }: { stageIndex: number; source: string; mobile: boolean }) {
+  const marker = useRef<SVGSVGElement>(null);
+  const pose = (mobile ? mobilePoses : desktopPoses)[stageIndex];
+  return <Canvas camera={{ fov: pose.fov, position: [...pose.camera] }} dpr={1} frameloop="demand" gl={{ antialias: !mobile }}>
+    <ambientLight intensity={2.2} /><directionalLight intensity={3} position={[3,5,4]} />
+    <SceneCamera stageIndex={stageIndex} mobile={mobile} reducedMotion />
+    <AthleteModel stageIndex={stageIndex} source={source} mobile={mobile} reducedMotion marker={marker} />
+  </Canvas>;
+}
+
+function FootModel({ source }: { source: string }) {
+  const { scene } = useGLTF(source);
+  const copy = useMemo(() => scene.clone(), [scene]);
+  return <primitive object={copy} />;
+}
+export function UltrakorFootPreview({ source, side }: { source: string; side: boolean }) {
+  return <Canvas key={String(side)} camera={{ fov: 25, position: side ? [1.1,-.9,0] : [0,-.9,1.1] }} onCreated={({camera})=>camera.lookAt(0,-.9,0)} dpr={1.5} frameloop="demand"><ambientLight intensity={2.2}/><directionalLight intensity={3} position={[3,5,4]}/><FootModel source={source}/></Canvas>;
+}
 
 export function UltrakorModelSection() {
   const pathname = usePathname();
@@ -299,6 +320,7 @@ export function UltrakorModelSection() {
   const [stageIndex, setStageIndex] = useState(preservedStage);
   const [leavingStageIndex, setLeavingStageIndex] = useState<number | null>(null);
   const [mobile, setMobile] = useState(false);
+  const [viewportReady, setViewportReady] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -312,7 +334,7 @@ export function UltrakorModelSection() {
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 700px)");
-    const updateMobile = () => setMobile(media.matches);
+    const updateMobile = () => { setMobile(media.matches); setViewportReady(true); };
     updateMobile();
     media.addEventListener("change", updateMobile);
     return () => media.removeEventListener("change", updateMobile);
@@ -461,7 +483,7 @@ export function UltrakorModelSection() {
           ><circle className="ultrakor-model-section__hotspot-ring" cx="50" cy="50" r="47" pathLength="1" /></svg>
         ) : null}
         <div className="ultrakor-model-section__stage" aria-label="3D-модель атлетичного мужского тела">
-          <Canvas
+          {viewportReady ? <Canvas
             camera={{ fov: mobile ? 34 : 32, position: mobile ? [0, 0.2, 9.2] : [0, 0.2, 7] }}
             dpr={[1, 1.5]}
             frameloop="demand"
@@ -470,8 +492,8 @@ export function UltrakorModelSection() {
             <ambientLight intensity={2.2} />
             <directionalLight intensity={3} position={[3, 5, 4]} />
             <SceneCamera mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} />
-            <AthleteModel mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} marker={markerRef} />
-          </Canvas>
+            <AthleteModel mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} marker={markerRef} source={mobile ? "/models/ultrakor/athlete-mobile-100k.glb?feet=1" : "/models/ultrakor/athlete.glb?feet=1"} />
+          </Canvas> : null}
         </div>
       </div>
     </section>

@@ -407,6 +407,14 @@ body:has(.ultrakor) .cookie-consent__actions button:last-child:hover, body:has(.
 
 .ultrakor *, .ultrakor *::before, .ultrakor *::after { box-sizing: border-box; }
 .ultrakor a { color: inherit; text-decoration: none; }
+.ultrakor-comparison { padding: var(--space-6); color: white; }
+.ultrakor-comparison nav { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.ultrakor-comparison button { padding: var(--space-3); border: 1px solid #777; background: #222; color: white; cursor: pointer; }
+.ultrakor-comparison button[aria-pressed="true"] { background: white; color: black; }
+.ultrakor-comparison__grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: var(--space-3); }
+.ultrakor-comparison__grid h2 { font-size: 14px; margin-block: var(--space-4); }
+.ultrakor-comparison__canvas { height: 620px; background: #0e0e0e; }
+@media(max-width:700px) { .ultrakor-comparison__grid { grid-template-columns: 1fr; } }
 .ultrakor-model-section__details { display: inline-flex; align-items: center; gap: var(--space-3); min-height: var(--space-11); margin-top: var(--space-3); color: rgb(255 255 255 / .7) !important; font-family: var(--ultrakor-body-font); font-size: 14px; font-weight: 400; text-transform: uppercase; text-decoration: none; }
 .ultrakor-model-section__details:hover, .ultrakor-model-section__details:focus-visible { color: var(--ultrakor-white) !important; border-color: currentColor; }
 .ultrakor-model-section__details { line-height: 1; }
