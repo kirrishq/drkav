@@ -107,7 +107,7 @@ export function CookieConsent() {
       <div className="cookie-consent__inner">
         <div className="cookie-consent__content">
           <h2 className="type-h3 cookie-consent__title">Помогите сделать сайт удобнее</h2>
-          <p className="type-text-sm cookie-consent__description">
+          <p className="type-text-xs cookie-consent__description">
             Мы используем обязательные cookies для работы сайта. С вашего разрешения подключаем Яндекс.Метрику и сохраняем данные рекламных переходов, чтобы анализировать посещаемость и улучшать сайт. Подробности — в <Link href="/cookies" rel="noreferrer" target="_blank">политике cookies</Link>.
           </p>
         </div>
