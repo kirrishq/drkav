@@ -9,6 +9,6 @@ export const metadata: Metadata = {
   description: "Мужская атлетизация и хирургическая коррекция тела с Артёмом Коробовым.",
 };
 
-export default function UltrakorLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <div className="ultrakor"><UltrakorAtmosphere />{children}<UltrakorFooter /></div>;
+export default function UltrakorLayout({ children, detail }: Readonly<{ children: React.ReactNode; detail: React.ReactNode }>) {
+  return <div className="ultrakor"><UltrakorAtmosphere />{children}<UltrakorFooter />{detail}</div>;
 }

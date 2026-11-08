@@ -1,11 +1,29 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { ConsultationTrigger } from "@drkav/ui";
+import NextLink from "next/link";
+import { usePathname } from "next/navigation";
+import type { ComponentProps } from "react";
+import { ultrakorZones } from "@/content/ultrakor-zones";
 import { useGLTF } from "@react-three/drei";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Box3, Vector3 } from "three";
+import type { CSSProperties, RefObject } from "react";
 import type { Group, PerspectiveCamera } from "three";
 
 type StageSide = "left" | "right";
+let preservedStage = 0;
+
+function Link(props: ComponentProps<typeof NextLink>) {
+  return <NextLink {...props} scroll={false} onClick={event => {
+    props.onClick?.(event);
+    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    sessionStorage.setItem("ultrakor-model-return", String(window.scrollY));
+    preservedStage = Math.max(0, stages.findIndex(stage => stage.title.toUpperCase() === document.querySelector("#ultrakor-model-title")?.textContent?.toUpperCase()));
+    document.body.dataset.ultrakorDetail = "true";
+  }} />;
+}
 
 type Hotspot = {
   desktop: { left: string; top: string; size: string };
@@ -99,7 +117,7 @@ const stages: readonly Stage[] = [
 ];
 
 const desktopPoses: readonly Pose[] = [
-  { rotation: Math.PI / 2, position: [1.6, -3.4, 0], scale: 4.9, camera: [0, 0.2, 7], target: [0, -0.3, 0], fov: 32 },
+  { rotation: 0, position: [1.6, -3.4, 0], scale: 4.9, camera: [0, 0.2, 7], target: [0, -0.3, 0], fov: 32 },
   { rotation: 0, position: [1.45, -1.7, 0], scale: 4.7, camera: [0, 0.25, 6.3], target: [0, -0.25, 0], fov: 32 },
   { rotation: 0, position: [1.3, -2.25, 0], scale: 4.15, camera: [0, 0.15, 6.6], target: [0, -0.65, 0], fov: 32 },
   { rotation: -Math.PI * 0.28, position: [-1.45, -2.75, 0], scale: 4.65, camera: [0, 0.2, 6.2], target: [0, -0.2, 0], fov: 32 },
@@ -110,7 +128,7 @@ const desktopPoses: readonly Pose[] = [
 ];
 
 const mobilePoses: readonly Pose[] = [
-  { rotation: Math.PI / 2, position: [0.3, -1.7, 0], scale: 2.35, camera: [0, 0.2, 9.2], target: [0, -1.1, 0], fov: 34 },
+  { rotation: 0, position: [0.3, -1.7, 0], scale: 2.35, camera: [0, 0.2, 9.2], target: [0, -1.1, 0], fov: 34 },
   { rotation: 0, position: [0.15, -1.8, 0], scale: 2.45, camera: [0, 0.2, 8.9], target: [0, -0.9, 0], fov: 34 },
   { rotation: 0, position: [0.05, -1.7, 0], scale: 2.35, camera: [0, 0.15, 9.1], target: [0, -1.15, 0], fov: 34 },
   { rotation: -Math.PI * 0.28, position: [-0.1, -1.75, 0], scale: 2.35, camera: [0, 0.2, 9], target: [0, -1, 0], fov: 34 },
@@ -138,20 +156,24 @@ function SceneCamera({ mobile, reducedMotion, stageIndex }: { mobile: boolean; r
   const fromCamera = useRef<[number, number, number]>([camera.position.x, camera.position.y, camera.position.z]);
   const fromTarget = useRef<[number, number, number]>([...targetPosition.current]);
   const fromFov = useRef((camera as PerspectiveCamera).fov);
-  const elapsed = useRef(MODEL_TRANSITION_SECONDS);
+  const transitionStartedAt = useRef<number | null>(null);
 
   useEffect(() => {
     fromCamera.current = [camera.position.x, camera.position.y, camera.position.z];
     fromTarget.current = [...targetPosition.current];
     fromFov.current = (camera as PerspectiveCamera).fov;
-    elapsed.current = reducedMotion ? MODEL_TRANSITION_SECONDS : 0;
+    transitionStartedAt.current = performance.now();
     invalidate();
   }, [camera, invalidate, mobile, reducedMotion, stageIndex]);
 
-  useFrame((_, delta) => {
+  useFrame(() => {
     const pose = (mobile ? mobilePoses : desktopPoses)[stageIndex];
-    elapsed.current = Math.min(MODEL_TRANSITION_SECONDS, elapsed.current + delta);
-    const amount = reducedMotion ? 1 : smoothstep(elapsed.current / MODEL_TRANSITION_SECONDS);
+    // Demand rendering pauses the frame clock while idle. Measure this transition
+    // from its own start so the first frame cannot skip the animation.
+    const elapsed = transitionStartedAt.current === null
+      ? MODEL_TRANSITION_SECONDS
+      : Math.min(MODEL_TRANSITION_SECONDS, (performance.now() - transitionStartedAt.current) / 1000);
+    const amount = reducedMotion ? 1 : smoothstep(elapsed / MODEL_TRANSITION_SECONDS);
     camera.position.x = interpolate(fromCamera.current[0], pose.camera[0], amount);
     camera.position.y = interpolate(fromCamera.current[1], pose.camera[1], amount);
     camera.position.z = interpolate(fromCamera.current[2], pose.camera[2], amount);
@@ -162,20 +184,33 @@ function SceneCamera({ mobile, reducedMotion, stageIndex }: { mobile: boolean; r
     const perspectiveCamera = camera as PerspectiveCamera;
     perspectiveCamera.fov = interpolate(fromFov.current, pose.fov, amount);
     perspectiveCamera.updateProjectionMatrix();
-    if (elapsed.current < MODEL_TRANSITION_SECONDS) invalidate();
+    if (!reducedMotion && elapsed < MODEL_TRANSITION_SECONDS) invalidate();
   });
 
   return null;
 }
 
-function AthleteModel({ mobile, reducedMotion, stageIndex }: { mobile: boolean; reducedMotion: boolean; stageIndex: number }) {
+function AthleteModel({ mobile, reducedMotion, stageIndex, marker }: { mobile: boolean; reducedMotion: boolean; stageIndex: number; marker: RefObject<SVGSVGElement | null> }) {
   const group = useRef<Group>(null);
   const { scene } = useGLTF("/models/ultrakor/athlete.glb");
   const { invalidate } = useThree();
   const fromRotation = useRef((mobile ? mobilePoses[0] : desktopPoses[0]).rotation);
   const fromPosition = useRef<[number, number, number]>([...(mobile ? mobilePoses[0] : desktopPoses[0]).position]);
   const fromScale = useRef((mobile ? mobilePoses[0] : desktopPoses[0]).scale);
-  const elapsed = useRef(MODEL_TRANSITION_SECONDS);
+  const transitionStartedAt = useRef<number | null>(null);
+  const bounds = useRef<Box3 | null>(null);
+  const point = useRef(new Vector3());
+  const edge = useRef(new Vector3());
+  const { camera, size } = useThree();
+
+  useEffect(() => {
+    // Measure the asset before applying the presentation pose.
+    const clone = scene.clone();
+    clone.position.set(0, 0, 0);
+    clone.rotation.set(0, 0, 0);
+    clone.scale.setScalar(1);
+    bounds.current = new Box3().setFromObject(clone);
+  }, [scene]);
 
   useEffect(() => {
     if (group.current) {
@@ -183,15 +218,19 @@ function AthleteModel({ mobile, reducedMotion, stageIndex }: { mobile: boolean; 
       fromPosition.current = [group.current.position.x, group.current.position.y, group.current.position.z];
       fromScale.current = group.current.scale.x;
     }
-    elapsed.current = reducedMotion ? MODEL_TRANSITION_SECONDS : 0;
+    transitionStartedAt.current = performance.now();
     invalidate();
   }, [invalidate, mobile, reducedMotion, stageIndex]);
 
-  useFrame((_, delta) => {
+  useFrame(() => {
     if (!group.current) return;
     const pose = (mobile ? mobilePoses : desktopPoses)[stageIndex];
-    elapsed.current = Math.min(MODEL_TRANSITION_SECONDS, elapsed.current + delta);
-    const amount = reducedMotion ? 1 : smoothstep(elapsed.current / MODEL_TRANSITION_SECONDS);
+    // Demand rendering pauses the frame clock while idle. Measure this transition
+    // from its own start so the first frame cannot skip the animation.
+    const elapsed = transitionStartedAt.current === null
+      ? MODEL_TRANSITION_SECONDS
+      : Math.min(MODEL_TRANSITION_SECONDS, (performance.now() - transitionStartedAt.current) / 1000);
+    const amount = reducedMotion ? 1 : smoothstep(elapsed / MODEL_TRANSITION_SECONDS);
     group.current.rotation.y = interpolate(fromRotation.current, pose.rotation, amount);
     group.current.position.x = interpolate(fromPosition.current[0], pose.position[0], amount);
     group.current.position.y = interpolate(fromPosition.current[1], pose.position[1], amount);
@@ -199,10 +238,31 @@ function AthleteModel({ mobile, reducedMotion, stageIndex }: { mobile: boolean; 
     group.current.scale.x = interpolate(fromScale.current, pose.scale, amount);
     group.current.scale.y = group.current.scale.x;
     group.current.scale.z = group.current.scale.x;
-    if (elapsed.current < MODEL_TRANSITION_SECONDS) invalidate();
+    const zones = [null, [-0.05, 0.717, 0.10, 0.055], [0, 0.625, 0.10, 0.085], [0.14, 0.70, 0.01, 0.075], [0, 0.65, -0.10, 0.14], [0.06, 0.465, -0.09, 0.065]] as const;
+    const zone = zones[stageIndex];
+    if (zone && bounds.current && marker.current) {
+      const box = bounds.current;
+      const height = box.max.y - box.min.y;
+      const centerX = (box.min.x + box.max.x) / 2;
+      const centerZ = (box.min.z + box.max.z) / 2;
+      point.current.set(centerX + zone[0] * height, box.min.y + zone[1] * height, centerZ + zone[2] * height);
+      group.current.updateWorldMatrix(true, false);
+      group.current.localToWorld(point.current);
+      edge.current.copy(point.current);
+      // Camera-right radius keeps the overlay circular at every viewing angle.
+      edge.current.addScaledVector(new Vector3().setFromMatrixColumn(camera.matrixWorld, 0), zone[3] * height * group.current.scale.x);
+      point.current.project(camera);
+      edge.current.project(camera);
+      const diameter = Math.abs(edge.current.x - point.current.x) * size.width;
+      marker.current.style.left = `${(point.current.x + 1) * size.width / 2}px`;
+      marker.current.style.top = `${(1 - point.current.y) * size.height / 2}px`;
+      marker.current.style.width = `${diameter}px`;
+      marker.current.style.height = `${diameter}px`;
+    }
+    if (!reducedMotion && elapsed < MODEL_TRANSITION_SECONDS) invalidate();
   });
 
-  const initialPose = mobile ? mobilePoses[0] : desktopPoses[0];
+  const initialPose = useRef((mobile ? mobilePoses : desktopPoses)[stageIndex]).current;
   return <primitive object={scene} ref={group} rotation={[0, initialPose.rotation, 0]} scale={initialPose.scale} position={initialPose.position} />;
 }
 
@@ -216,8 +276,9 @@ function StageCopy({ index, leaving = false }: { index: number; leaving?: boolea
     >
       <h2 className="ultrakor__heading" id={leaving ? undefined : "ultrakor-model-title"}>{stage.title}</h2>
       <p>{stage.text}</p>
-      {stage.price ? <p className="ultrakor-model-section__price">{stage.price}</p> : null}
-      {index === stages.length - 1 ? <a className="ultrakor__button ultrakor__button--solid ultrakor-model-section__cta" href="#contact">Записаться на консультацию</a> : null}
+      {index > 0 && stage.price ? <p className="ultrakor-model-section__price">{stage.price}</p> : null}
+      {index >= 1 && index <= ultrakorZones.length ? <Link className="ultrakor-model-section__details" href={`/ultrakor/${ultrakorZones[index - 1].slug}`} tabIndex={leaving ? -1 : undefined}>Подробнее <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14"><path d="M10.8101 1.96222L0.726954 12.0453L1.66171 12.9801L11.7448 2.89698L11.9344 9.4447L13.208 9.07311L13.0134 2.35278C12.9877 1.46249 12.2434 0.718185 11.3531 0.692412L4.80762 0.502924L4.43487 1.77539L10.8101 1.96222Z" fill="currentColor" stroke="currentColor" strokeWidth="0.542084" /></svg><span className="sr-only">: {stage.title}</span></Link> : null}
+      {index === stages.length - 1 ? <ConsultationTrigger className="ultrakor__button ultrakor__button--solid ultrakor-model-section__cta">Записаться на консультацию</ConsultationTrigger> : null}
     </div>
   );
 }
@@ -225,17 +286,29 @@ function StageCopy({ index, leaving = false }: { index: number; leaving?: boolea
 useGLTF.preload("/models/ultrakor/athlete.glb");
 
 export function UltrakorModelSection() {
+  const pathname = usePathname();
   const sectionRef = useRef<HTMLElement>(null);
-  const stageRef = useRef(0);
+  const markerRef = useRef<SVGSVGElement>(null);
+  const [leavingMarker, setLeavingMarker] = useState<CSSProperties | null>(null);
+  const stageRef = useRef(preservedStage);
   const gestureDelta = useRef(0);
   const gestureLocked = useRef(false);
   const touchStart = useRef<number | null>(null);
   const transitionTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const gestureTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [stageIndex, setStageIndex] = useState(0);
+  const [stageIndex, setStageIndex] = useState(preservedStage);
   const [leavingStageIndex, setLeavingStageIndex] = useState<number | null>(null);
   const [mobile, setMobile] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const zone = ultrakorZones.findIndex(item => pathname === `/ultrakor/${item.slug}`);
+    if (zone < 0) return;
+    const selectedStage = zone + 1;
+    preservedStage = selectedStage;
+    stageRef.current = selectedStage;
+    setStageIndex(selectedStage);
+  }, [pathname]);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 700px)");
@@ -256,6 +329,8 @@ export function UltrakorModelSection() {
   const activateStage = useCallback((nextStage: number, scroll = true) => {
     const clampedStage = Math.min(stages.length - 1, Math.max(0, nextStage));
     if (clampedStage === stageRef.current) return;
+    const marker = markerRef.current;
+    setLeavingMarker(marker ? { left: marker.style.left, top: marker.style.top, width: marker.style.width, height: marker.style.height } : null);
     setLeavingStageIndex(stageRef.current);
     stageRef.current = clampedStage;
     setStageIndex(clampedStage);
@@ -269,6 +344,7 @@ export function UltrakorModelSection() {
 
   useEffect(() => {
     const isSectionActive = () => {
+      if (document.querySelector("dialog[open]")) return false;
       if (!sectionRef.current) return;
       const bounds = sectionRef.current.getBoundingClientRect();
       return bounds.top <= 2 && bounds.bottom >= window.innerHeight - 2;
@@ -320,6 +396,7 @@ export function UltrakorModelSection() {
       moveStage(delta > 0 ? 1 : -1);
     };
     const syncStageFromScroll = () => {
+      if (document.body.dataset.ultrakorDetail || document.querySelector(".ultrakor-zone-overlay")) return;
       if (!sectionRef.current || gestureLocked.current) return;
       const sectionTop = window.scrollY + sectionRef.current.getBoundingClientRect().top;
       const localScroll = window.scrollY - sectionTop;
@@ -356,7 +433,7 @@ export function UltrakorModelSection() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const hotspot = stages[stageIndex].hotspot?.[mobile ? "mobile" : "desktop"];
+  const hotspot = stages[stageIndex].hotspot;
 
   return (
     <section
@@ -367,16 +444,21 @@ export function UltrakorModelSection() {
       <div className="ultrakor-model-section__sticky">
         {leavingStageIndex !== null ? <StageCopy index={leavingStageIndex} leaving /> : null}
         <StageCopy index={stageIndex} />
-        <div className="ultrakor-model-section__progress" aria-hidden="true">
-          {stages.map((stage, index) => <span className={index === stageIndex ? "is-active" : ""} key={stage.title}>{String(index + 1).padStart(2, "0")}</span>)}
-        </div>
+        {leavingMarker && leavingStageIndex !== null ? <svg viewBox="0 0 100 100" className="ultrakor-model-section__hotspot is-leaving" style={leavingMarker} aria-hidden="true"><circle className="ultrakor-model-section__hotspot-ring" cx="50" cy="50" r="47" pathLength="1" /></svg> : null}
+        {stageIndex < stages.length - 1 ? <button className="ultrakor-model-section__progress ultrakor-model-section__skip" type="button" onClick={() => {
+          gestureLocked.current = true;
+          if (gestureTimeout.current) clearTimeout(gestureTimeout.current);
+          activateStage(stages.length - 1);
+          gestureTimeout.current = setTimeout(() => { gestureLocked.current = false; gestureDelta.current = 0; }, GESTURE_LOCK_MS);
+        }}>Пропустить анимацию <svg className="ultrakor-model-section__skip-arrow" aria-hidden="true" width="10" height="10" viewBox="0 0 14 14"><path d="M10.8101 1.96222L0.726954 12.0453L1.66171 12.9801L11.7448 2.89698L11.9344 9.4447L13.208 9.07311L13.0134 2.35278C12.9877 1.46249 12.2434 0.718185 11.3531 0.692412L4.80762 0.502924L4.43487 1.77539L10.8101 1.96222Z" fill="currentColor" stroke="currentColor" strokeWidth="0.542084" /></svg></button> : null}
         {hotspot ? (
-          <span
+          <svg
+            ref={markerRef}
+            viewBox="0 0 100 100"
             className="ultrakor-model-section__hotspot"
             key={`hotspot-${stageIndex}`}
-            style={{ height: hotspot.size, left: hotspot.left, top: hotspot.top, width: hotspot.size }}
             aria-hidden="true"
-          />
+          ><circle className="ultrakor-model-section__hotspot-ring" cx="50" cy="50" r="47" pathLength="1" /></svg>
         ) : null}
         <div className="ultrakor-model-section__stage" aria-label="3D-модель атлетичного мужского тела">
           <Canvas
@@ -388,7 +470,7 @@ export function UltrakorModelSection() {
             <ambientLight intensity={2.2} />
             <directionalLight intensity={3} position={[3, 5, 4]} />
             <SceneCamera mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} />
-            <AthleteModel mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} />
+            <AthleteModel mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} marker={markerRef} />
           </Canvas>
         </div>
       </div>

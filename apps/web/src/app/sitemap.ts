@@ -3,6 +3,7 @@ import type { MetadataRoute } from "next";
 import { createContentRepository } from "@/content/content-repository";
 import { allPageRegistryItems } from "@/content/page-registry";
 import { getSiteUrl } from "@/content/seo";
+import { ultrakorZones } from "@/content/ultrakor-zones";
 
 export const revalidate = 3_600;
 
@@ -37,6 +38,7 @@ function getStaticEntries(): MetadataRoute.Sitemap {
       .map((item) => item.route),
   );
 
+  for (const zone of ultrakorZones) paths.add(`/ultrakor/${zone.slug}`);
   return [...paths].map((path) => ({ url: toAbsoluteUrl(path) }));
 }
 

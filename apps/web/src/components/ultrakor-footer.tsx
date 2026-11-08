@@ -55,7 +55,7 @@ export function UltrakorFooter() {
 
         <nav aria-label="Навигация в подвале" className="ultrakor-footer__navigation">
           {sectionLinks.map((link) => (
-            <a href={link.href} key={link.label}>{link.label}</a>
+            <a href={`/ultrakor${link.href}`} key={link.label}>{link.label}</a>
           ))}
         </nav>
 
