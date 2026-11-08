@@ -140,6 +140,7 @@ const mobilePoses: readonly Pose[] = [
 
 const MODEL_TRANSITION_SECONDS = 1.6;
 const TEXT_TRANSITION_MS = 1300;
+const GESTURE_LOCK_MS = 1750;
 
 function interpolate(from: number, to: number, amount: number) {
   return from + (to - from) * amount;
@@ -343,6 +344,10 @@ export function UltrakorModelSection() {
   const scrollTarget = useRef(preservedStage);
   const scrollCurrent = useRef(preservedStage);
   const wakeScene = useRef<(() => void) | null>(null);
+  const gestureDelta = useRef(0);
+  const gestureLocked = useRef(false);
+  const touchStart = useRef<number | null>(null);
+  const gestureTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const transitionTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [stageIndex, setStageIndex] = useState(preservedStage);
   const [leavingStageIndex, setLeavingStageIndex] = useState<number | null>(null);
@@ -403,7 +408,8 @@ export function UltrakorModelSection() {
       const bounds = section.getBoundingClientRect();
       const distance = Math.max(1, section.offsetHeight - window.innerHeight);
       const progress = Math.min(stages.length - 1, Math.max(0, -bounds.top / distance * (stages.length - 1)));
-      if (scrollTarget.current !== progress) {
+      if (mobile && gestureLocked.current) return;
+      if (!mobile && scrollTarget.current !== progress) {
         scrollTarget.current = progress;
         wakeScene.current?.();
       }
@@ -421,7 +427,77 @@ export function UltrakorModelSection() {
       window.cancelAnimationFrame(pendingFrame);
       if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
     };
-  }, [activateStage]);
+  }, [activateStage, mobile]);
+
+  useEffect(() => {
+    if (!mobile || !viewportReady) return;
+    const isSectionActive = () => {
+      if (document.querySelector("dialog[open]")) return false;
+      if (!sectionRef.current) return;
+      const bounds = sectionRef.current.getBoundingClientRect();
+      return bounds.top <= 2 && bounds.bottom >= window.innerHeight - 2;
+    };
+    const lockGesture = () => {
+      gestureLocked.current = true;
+      if (gestureTimeout.current) clearTimeout(gestureTimeout.current);
+      gestureLocked.current = false;
+      gestureDelta.current = 0;
+      touchStart.current = null;
+      gestureTimeout.current = setTimeout(() => {
+        gestureLocked.current = false;
+        gestureDelta.current = 0;
+      }, reducedMotion ? 180 : GESTURE_LOCK_MS);
+    };
+    const moveStage = (direction: -1 | 1) => {
+      const nextStage = stageRef.current + direction;
+      if (nextStage < 0 || nextStage >= stages.length) return false;
+      lockGesture();
+      activateStage(nextStage);
+      return true;
+    };
+    const handleWheel = (event: WheelEvent) => {
+      if (!isSectionActive() || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      const leavingSection = (stageRef.current === 0 && event.deltaY < 0) || (stageRef.current === stages.length - 1 && event.deltaY > 0);
+      if (leavingSection) return;
+      event.preventDefault();
+      if (gestureLocked.current) return;
+      gestureDelta.current += event.deltaY;
+      if (Math.abs(gestureDelta.current) < 42) return;
+      moveStage(gestureDelta.current > 0 ? 1 : -1);
+      gestureDelta.current = 0;
+    };
+    const handleTouchStart = (event: TouchEvent) => {
+      if (!isSectionActive()) return;
+      touchStart.current = event.touches[0]?.clientY ?? null;
+    };
+    const handleTouchMove = (event: TouchEvent) => {
+      if (touchStart.current === null || !isSectionActive()) return;
+      const currentY = event.touches[0]?.clientY;
+      if (currentY === undefined) return;
+      const delta = touchStart.current - currentY;
+      const leavingSection = (stageRef.current === 0 && delta < 0) || (stageRef.current === stages.length - 1 && delta > 0);
+      if (!leavingSection) event.preventDefault();
+    };
+    const handleTouchEnd = (event: TouchEvent) => {
+      if (touchStart.current === null || !isSectionActive()) return;
+      const endY = event.changedTouches[0]?.clientY ?? touchStart.current;
+      const delta = touchStart.current - endY;
+      touchStart.current = null;
+      if (gestureLocked.current || Math.abs(delta) < 42) return;
+      moveStage(delta > 0 ? 1 : -1);
+    };
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+      if (gestureTimeout.current) clearTimeout(gestureTimeout.current);
+    };
+  }, [activateStage, reducedMotion, mobile, viewportReady]);
 
   const hotspot = stages[stageIndex].hotspot;
 
@@ -436,6 +512,13 @@ export function UltrakorModelSection() {
         <StageCopy index={stageIndex} />
         {leavingMarker && leavingStageIndex !== null ? <svg viewBox="0 0 100 100" className="ultrakor-model-section__hotspot is-leaving" style={leavingMarker} aria-hidden="true"><circle className="ultrakor-model-section__hotspot-ring" cx="50" cy="50" r="47" pathLength="1" /></svg> : null}
         {stageIndex < stages.length - 1 ? <button className="ultrakor-model-section__progress ultrakor-model-section__skip" type="button" onClick={() => {
+          if (mobile) {
+            gestureLocked.current = true;
+            if (gestureTimeout.current) clearTimeout(gestureTimeout.current);
+            activateStage(stages.length - 1);
+            gestureTimeout.current = setTimeout(() => { gestureLocked.current = false; gestureDelta.current = 0; }, GESTURE_LOCK_MS);
+            return;
+          }
           const section = sectionRef.current;
           if (!section) return;
           window.scrollTo({ top: window.scrollY + section.getBoundingClientRect().top + section.offsetHeight - window.innerHeight, behavior: reducedMotion ? "auto" : "smooth" });
@@ -459,9 +542,9 @@ export function UltrakorModelSection() {
           >
             <ambientLight intensity={2.2} />
             <directionalLight intensity={3} position={[3, 5, 4]} />
-            <ScrollProgress target={scrollTarget} current={scrollCurrent} reducedMotion={reducedMotion} />
-            <SceneCamera mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} scrollProgress={scrollCurrent} />
-            <AthleteModel mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} marker={markerRef} scrollProgress={scrollCurrent} source={mobile ? "/models/ultrakor/athlete-mobile-100k.glb?feet=1" : "/models/ultrakor/athlete.glb?feet=1"} />
+            {!mobile ? <ScrollProgress target={scrollTarget} current={scrollCurrent} reducedMotion={reducedMotion} /> : null}
+            <SceneCamera mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} scrollProgress={mobile ? undefined : scrollCurrent} />
+            <AthleteModel mobile={mobile} reducedMotion={reducedMotion} stageIndex={stageIndex} marker={markerRef} scrollProgress={mobile ? undefined : scrollCurrent} source={mobile ? "/models/ultrakor/athlete-mobile-100k.glb?feet=1" : "/models/ultrakor/athlete.glb?feet=1"} />
           </Canvas> : null}
         </div>
       </div>
