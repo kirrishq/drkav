@@ -505,9 +505,10 @@ body:has(.ultrakor-zone-overlay[open]) :is(.ultrakor-model-section__copy, .ultra
 .ultrakor-results { background: transparent; }
 .ultrakor-results__intro { margin-bottom: var(--space-12); }
 .ultrakor-results__grid { display: grid; gap: 20px; grid-template-columns: repeat(6, minmax(0, 1fr)); }
-.ultrakor-results__card { aspect-ratio: 190 / 346; background: var(--ultrakor-black); overflow: hidden; position: relative; }
+.ultrakor-results__card { aspect-ratio: 190 / 346; background: var(--ultrakor-black); overflow: visible; position: relative; }
+.ultrakor-results__card.is-active, .ultrakor-results__card:has(.ultrakor-results__video-trigger:hover) { z-index: 2; }
 .ultrakor-results__card::after { background: linear-gradient(180deg, rgb(0 0 0 / 0.18), transparent 35%, rgb(0 0 0 / 0.2)); content: ""; inset: 0; pointer-events: none; position: absolute; }
-.ultrakor-results__photo { background: transparent; border: 0; cursor: zoom-in; height: 100%; inset: 0; padding: 0; position: absolute; width: 100%; }
+.ultrakor-results__photo { background: transparent; border: 0; cursor: zoom-in; height: 100%; inset: 0; overflow: hidden; padding: 0; position: absolute; width: 100%; }
 .ultrakor-results__photo:focus-visible { outline: 2px solid var(--ultrakor-white); outline-offset: -4px; }
 .ultrakor-results__card img { object-fit: cover; object-position: center top; }
 .ultrakor-results__card video { pointer-events: none; background: var(--ultrakor-black); height: 100%; inset: 0; object-fit: contain; position: absolute; width: 100%; z-index: 1; }
@@ -617,15 +618,15 @@ body:has(.ultrakor-zone-overlay[open]) :is(.ultrakor-model-section__copy, .ultra
 }
 .ultrakor-pricing__offer-content li { overflow-wrap: anywhere; }
 @media (max-width: 700px) {
-  .ultrakor h1, .ultrakor h2, .ultrakor h3 { hyphens: auto; max-width: 100%; overflow-wrap: anywhere; word-break: normal; }
+  .ultrakor h1, .ultrakor h2, .ultrakor h3 { hyphens: none; line-height: 1.02; max-width: 100%; overflow-wrap: normal; word-break: normal; }
   .ultrakor__hero { background: transparent; min-height: 718px; padding: 138px 36px 136px; }
-  .ultrakor__hero::after { background: linear-gradient(180deg, transparent 55%, var(--ultrakor-gray) 78%, var(--ultrakor-gray) 100%); bottom: 0; content: ""; height: 52%; left: 0; pointer-events: none; position: absolute; right: 0; z-index: 1; }
-  .ultrakor__hero-model { bottom: 110px; height: 65%; left: 0; opacity: .75; transform: scaleX(-1); width: 84%; z-index: 0; }
+  .ultrakor__hero::after { background: linear-gradient(180deg, transparent 0%, var(--ultrakor-black) 76%, var(--ultrakor-black) 100%); bottom: 0; content: ""; height: 62%; left: 0; pointer-events: none; position: absolute; right: 0; z-index: 1; }
+  .ultrakor__hero-model { bottom: 0; height: 72%; left: 0; opacity: .75; transform: scaleX(-1); width: 84%; z-index: 0; }
   .ultrakor__hero-copy { z-index: 2; }
   .ultrakor__hero-eyebrow { font-size: 12px; }
-  .ultrakor__heading { font-size: clamp(1.75rem, 8vw, 2.375rem); hyphens: auto; max-width: 100%; overflow-wrap: anywhere; word-break: normal; }
+  .ultrakor__heading { font-size: clamp(1.75rem, 8vw, 2.375rem); hyphens: none; line-height: .98; max-width: 100%; overflow-wrap: normal; word-break: normal; }
   .ultrakor__display { max-width: 310px; }
-  .ultrakor__word-ultra, .ultrakor__word-kor { font-size: clamp(56px, 17vw, 82px); line-height: .82; z-index: 3; }
+  .ultrakor__word-ultra, .ultrakor__word-kor { font-size: clamp(56px, 17vw, 82px); line-height: .9; z-index: 3; }
   .ultrakor__hero-description { margin-top: 205px; }
   .ultrakor__hero-description > p:not(.ultrakor__hero-lead), .ultrakor__hero-lead { font-size: 12px; }
   .ultrakor__button { font-size: 11px; padding: 13px 12px; }
@@ -660,13 +661,18 @@ body:has(.ultrakor-zone-overlay[open]) :is(.ultrakor-model-section__copy, .ultra
   .ultrakor-model-section__copy.is-entering.ultrakor-model-section__copy--right { animation-name: ultrakor-copy-in-right-mobile; }
   .ultrakor-model-section__copy.is-leaving.ultrakor-model-section__copy--left { animation-name: ultrakor-copy-out-left-mobile; }
   .ultrakor-model-section__copy.is-leaving.ultrakor-model-section__copy--right { animation-name: ultrakor-copy-out-right-mobile; }
-  .ultrakor-model-section__copy p { font-size: 14px; }
+  .ultrakor-model-section__copy p { font-size: 14px; margin-top: 12px; }
   .ultrakor-model-section__price { font-size: 18px !important; margin-top: 16px !important; }
+  .ultrakor-model-section__details { min-height: 0; margin-top: 12px; padding-block: 0; }
   .ultrakor-model-section__stage { height: auto; min-height: 0; }
   .ultrakor-model-section__progress { bottom: 22px; left: 24px; }
   .ultrakor-model-section__skip { top: max(16px, env(safe-area-inset-top)); bottom: auto; color: rgb(255 255 255 / .5); font-size: 12px; min-height: 44px; text-decoration: none; }
   .ultrakor-model-section__skip:hover, .ultrakor-model-section__skip:focus-visible { color: rgb(255 255 255 / .8); }
   .ultrakor-model-section__hotspot { border-width: 2px; }
+  .ultrakor-safety__card { min-height: 0; }
+  .ultrakor-safety__card h3 { line-height: 1.05; }
+  .ultrakor-consultation .ultrakor__heading { line-height: 1.02; }
+  .ultrakor-consultation .consultation-form--ultrakor .consultation-form__options--formats .consultation-form__option > span { justify-content: center; text-align: center; }
 }
 @keyframes ultrakor-copy-in-left-mobile { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes ultrakor-copy-in-right-mobile { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: translateX(0); } }
@@ -727,7 +733,7 @@ body:has(.ultrakor-zone-overlay[open]) :is(.ultrakor-model-section__copy, .ultra
 .ultrakor-consultation .consultation-form--ultrakor .consultation-form__error { color: #ab0000; }
 
 @media (max-width: 700px) {
-  .ultrakor-consultation .ultrakor__heading { font-size: clamp(1.875rem, 8vw, 2.5rem); overflow-wrap: anywhere; white-space: normal; }
+  .ultrakor-consultation .ultrakor__heading { font-size: clamp(1.875rem, 8vw, 2.5rem); overflow-wrap: normal; white-space: normal; }
   .ultrakor-consultation__description { font-size: .9375rem; margin-bottom: var(--space-6); }
   .ultrakor-consultation__card { border: 0; background: transparent; padding: 0; }
   .ultrakor-consultation .consultation-form--ultrakor { width: 100%; max-width: none; }

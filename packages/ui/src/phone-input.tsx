@@ -189,11 +189,11 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
     }
 
     return (
-      <div className="phone-input" data-disabled={props.disabled || undefined}>
+      <div className="phone-input" data-country={country} data-disabled={props.disabled || undefined}>
         <label className="sr-only" htmlFor={props.id ? `${props.id}-country` : undefined}>
           Страна телефона
         </label>
-        <div className="phone-input__country-control">
+        <div className="phone-input__country-control" data-country={country}>
           <select
             aria-label="Страна телефона"
             className="phone-input__country"
@@ -202,7 +202,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
             onChange={handleCountryChange}
             value={country}
           >
-            <option value="ru">Россия (+7)</option>
+            <option value="ru">+7</option>
             <option value="other">Другая страна</option>
           </select>
           <span aria-hidden="true" className="phone-input__country-arrow" />
