@@ -100,3 +100,5 @@ export { VideoCard } from "./video-card";
 export type { VideoCardItem, VideoCardProps } from "./video-card";
 export { VideoHighlights } from "./video-highlights";
 export type { VideoHighlight, VideoHighlightsProps } from "./video-highlights";
+export { ImageGalleryDialog } from "./image-gallery-dialog";
+export type { ImageGalleryDialogProps, ImageGalleryItem } from "./image-gallery-dialog";

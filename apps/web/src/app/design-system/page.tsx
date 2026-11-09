@@ -699,6 +699,21 @@ export default function DesignSystemPage() {
             </Subsection>
           </Section>
 
+          <Section id="image-gallery-dialog" title="Image Gallery Dialog" description="Полноэкранная галерея фотографий с циклической навигацией и управлением с клавиатуры.">
+            <Subsection title="Usage">
+              <CodeBlock>{`import { ImageGalleryDialog } from "@drkav/ui";
+
+<ImageGalleryDialog
+  items={[{ src: "/images/example.webp", alt: "Описание фото", label: "Подпись" }]}
+  index={selectedIndex}
+  onIndexChange={setSelectedIndex}
+  onClose={() => setSelectedIndex(null)}
+/>
+// index: null — закрыто; число — выбранная фотография.
+// ← / → переключают фото, Escape закрывает окно.`}</CodeBlock>
+            </Subsection>
+          </Section>
+
           <Section
             description="VideoCard показывает превью видеозаписи и открывает встроенный плеер в модальном окне."
             id="video-card"

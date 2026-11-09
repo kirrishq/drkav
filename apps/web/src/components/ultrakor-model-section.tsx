@@ -296,16 +296,23 @@ function AthleteModel({ mobile, reducedMotion, stageIndex, marker, source = "/mo
   return <primitive object={scene} ref={group} rotation={[0, initialPose.rotation, 0]} scale={initialPose.scale} position={initialPose.position} />;
 }
 
+const consultationSteps = [
+  { title: "01. Консультация", text: "Врач оценивает пропорции тела, зоны коррекции и ожидаемый результат" },
+  { title: "02. Липосакция", text: "Убираются локальные жировые отложения там, где они скрывают рельеф" },
+  { title: "03. Липофилинг", text: "Собственные ткани используются для дополнительного объёма и акцента в нужных зонах" },
+  { title: "04. Реабилитация", text: "Восстановление после операции занимает всего несколько дней" },
+] as const;
+
 function StageCopy({ index, leaving = false }: { index: number; leaving?: boolean }) {
   const stage = stages[index];
   return (
     <div
       aria-hidden={leaving || undefined}
-      className={`ultrakor-model-section__copy ultrakor-model-section__copy--${stage.side} ${leaving ? "is-leaving" : "is-entering"}`}
+      className={`ultrakor-model-section__copy ultrakor-model-section__copy--${stage.side}${index > 0 ? " ultrakor-model-section__copy--compact" : ""}${index === stages.length - 1 ? " ultrakor-model-section__copy--steps" : ""} ${leaving ? "is-leaving" : "is-entering"}`}
       key={`${leaving ? "leaving" : "active"}-${index}`}
     >
       <h2 className="ultrakor__heading" id={leaving ? undefined : "ultrakor-model-title"}>{stage.title}</h2>
-      <p>{stage.text}</p>
+      {index === stages.length - 1 ? <ol className="ultrakor-model-section__steps">{consultationSteps.map(step => <li key={step.title}><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol> : <p>{stage.text}</p>}
       {index > 0 && stage.price ? <p className="ultrakor-model-section__price">{stage.price}</p> : null}
       {index >= 1 && index <= ultrakorZones.length ? <Link className="ultrakor-model-section__details" href={`/ultrakor/${ultrakorZones[index - 1].slug}`} tabIndex={leaving ? -1 : undefined}>Подробнее <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14"><path d="M10.8101 1.96222L0.726954 12.0453L1.66171 12.9801L11.7448 2.89698L11.9344 9.4447L13.208 9.07311L13.0134 2.35278C12.9877 1.46249 12.2434 0.718185 11.3531 0.692412L4.80762 0.502924L4.43487 1.77539L10.8101 1.96222Z" fill="currentColor" stroke="currentColor" strokeWidth="0.542084" /></svg><span className="sr-only">: {stage.title}</span></Link> : null}
       {index === stages.length - 1 ? <ConsultationTrigger className="ultrakor__button ultrakor__button--solid ultrakor-model-section__cta">Записаться на консультацию</ConsultationTrigger> : null}
@@ -394,11 +401,13 @@ export function UltrakorModelSection() {
     transitionTimeout.current = setTimeout(() => setLeavingStageIndex(null), reducedMotion ? 0 : TEXT_TRANSITION_MS);
     if (scroll && sectionRef.current) {
       const sectionTop = window.scrollY + sectionRef.current.getBoundingClientRect().top;
-      window.scrollTo({ top: sectionTop + clampedStage * window.innerHeight, behavior: reducedMotion ? "auto" : "smooth" });
+      const stageDistance = (sectionRef.current.offsetHeight - window.innerHeight) / (stages.length - 1);
+      window.scrollTo({ top: sectionTop + clampedStage * stageDistance, behavior: reducedMotion ? "auto" : "smooth" });
     }
   }, [reducedMotion]);
 
   useEffect(() => {
+    if (!viewportReady) return;
     let pendingFrame = 0;
     const syncFromScroll = () => {
       pendingFrame = 0;
@@ -427,7 +436,7 @@ export function UltrakorModelSection() {
       window.cancelAnimationFrame(pendingFrame);
       if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
     };
-  }, [activateStage, mobile]);
+  }, [activateStage, mobile, viewportReady]);
 
   useEffect(() => {
     if (!mobile || !viewportReady) return;
@@ -440,9 +449,6 @@ export function UltrakorModelSection() {
     const lockGesture = () => {
       gestureLocked.current = true;
       if (gestureTimeout.current) clearTimeout(gestureTimeout.current);
-      gestureLocked.current = false;
-      gestureDelta.current = 0;
-      touchStart.current = null;
       gestureTimeout.current = setTimeout(() => {
         gestureLocked.current = false;
         gestureDelta.current = 0;
@@ -496,6 +502,9 @@ export function UltrakorModelSection() {
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
       if (gestureTimeout.current) clearTimeout(gestureTimeout.current);
+      gestureLocked.current = false;
+      gestureDelta.current = 0;
+      touchStart.current = null;
     };
   }, [activateStage, reducedMotion, mobile, viewportReady]);
 
