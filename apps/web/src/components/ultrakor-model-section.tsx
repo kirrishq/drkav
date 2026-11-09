@@ -128,14 +128,14 @@ const desktopPoses: readonly Pose[] = [
 ];
 
 const mobilePoses: readonly Pose[] = [
-  { rotation: 0, position: [0.3, -1.7, 0], scale: 2.35, camera: [0, 0.2, 9.2], target: [0, -1.1, 0], fov: 34 },
-  { rotation: 0, position: [0.15, -1.8, 0], scale: 2.45, camera: [0, 0.2, 8.9], target: [0, -0.9, 0], fov: 34 },
-  { rotation: 0, position: [0.05, -1.7, 0], scale: 2.35, camera: [0, 0.15, 9.1], target: [0, -1.15, 0], fov: 34 },
-  { rotation: -Math.PI * 0.28, position: [-0.1, -1.75, 0], scale: 2.35, camera: [0, 0.2, 9], target: [0, -1, 0], fov: 34 },
-  { rotation: -Math.PI, position: [0.05, -1.65, 0], scale: 2.25, camera: [0, 0.2, 9.2], target: [0, -1.1, 0], fov: 34 },
-  { rotation: -Math.PI / 2, position: [0.2, -1.15, 0], scale: 2.2, camera: [0, 0.15, 9.3], target: [0, -1.35, 0], fov: 34 },
-  { rotation: 0, position: [0.1, -1.6, 0], scale: 2.15, camera: [0, 0.2, 9.5], target: [0, -1.25, 0], fov: 34 },
-  { rotation: 0.12, position: [0.15, -1.5, 0], scale: 2.3, camera: [0, 4.6, 10], target: [0, -1.7, 0], fov: 36 },
+  { rotation: 0, position: [0.07, -1.7, 0], scale: 2.35, camera: [0, 0.2, 9.2], target: [0, -1.1, 0], fov: 34 },
+  { rotation: 0, position: [0, -2.05, 0], scale: 3.2, camera: [0, 0.2, 8.9], target: [0, -0.9, 0], fov: 34 },
+  { rotation: 0, position: [0, -2, 0], scale: 3.2, camera: [0, 0.15, 9.1], target: [0, -1.15, 0], fov: 34 },
+  { rotation: -Math.PI * 0.28, position: [0, -2.05, 0], scale: 3.15, camera: [0, 0.2, 9], target: [0, -1, 0], fov: 34 },
+  { rotation: -Math.PI, position: [0, -1.95, 0], scale: 3.1, camera: [0, 0.2, 9.2], target: [0, -1.1, 0], fov: 34 },
+  { rotation: -Math.PI / 2, position: [0, -1.55, 0], scale: 3.05, camera: [0, 0.15, 9.3], target: [0, -1.35, 0], fov: 34 },
+  { rotation: 0, position: [0, -1.6, 0], scale: 2.15, camera: [0, 0.2, 9.5], target: [0, -1.25, 0], fov: 34 },
+  { rotation: 0.12, position: [0, -1.5, 0], scale: 2.3, camera: [0, 4.6, 10], target: [0, -1.7, 0], fov: 36 },
 ];
 
 const MODEL_TRANSITION_SECONDS = 1.6;
