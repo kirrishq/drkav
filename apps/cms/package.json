@@ -9,6 +9,7 @@
     "dev": "strapi develop",
     "develop": "strapi develop",
     "seed": "node scripts/seed.js",
+    "seed:ultrakor": "node scripts/seed-ultrakor.js",
     "seed:blog": "node scripts/seed-blog.js",
     "cleanup:placeholder-results": "node scripts/remove-placeholder-results.js",
     "seed:reviews": "node scripts/seed-reviews.js",

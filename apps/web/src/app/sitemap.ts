@@ -47,16 +47,18 @@ async function getCmsEntries(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const repository = createContentRepository();
-    const [blog, conditions, portfolio, operations, mediaPublications] = await Promise.all([
+    const [blog, conditions, portfolio, operations, ultrakorOperations, mediaPublications] = await Promise.all([
       repository.getBlogIndex(),
       repository.getConditionIndex(),
       repository.getPortfolioIndex(),
       repository.getOperationPaths(),
+      repository.getUltrakorOperationCatalog(),
       repository.getMediaPublicationIndex(),
     ]);
 
     return [
       ...operations.map((canonicalPath) => ({ canonicalPath })),
+      ...ultrakorOperations.map((operation) => ({ canonicalPath: operation.canonicalPath })),
       ...blog.articles,
       ...conditions.articles,
       ...portfolio.cases,

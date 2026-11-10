@@ -70,6 +70,14 @@ export function getOperationPathsCacheTag(): string {
   return "operation-paths";
 }
 
+export function getUltrakorOperationCacheTag(zoneSlug: string): string {
+  return `ultrakor-operation:${encodeURIComponent(zoneSlug)}`;
+}
+
+export function getUltrakorOperationCatalogCacheTag(): string {
+  return "ultrakor-operation-catalog";
+}
+
 export function getPriceCatalogCacheTag(): string {
   return "price-catalog";
 }

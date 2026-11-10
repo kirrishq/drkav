@@ -27,6 +27,8 @@ import type {
   OperationContentSection,
   OperationStep,
   OperationTextItem,
+  UltrakorOperationContent,
+  UltrakorOperationSummary,
   PortfolioCase,
   PortfolioCaseSummary,
   PortfolioContentSection,
@@ -70,6 +72,8 @@ import {
   getOperationCatalogCacheTag,
   getOperationCacheTag,
   getOperationPathsCacheTag,
+  getUltrakorOperationCacheTag,
+  getUltrakorOperationCatalogCacheTag,
   getPriceCatalogCacheTag,
   getPromotionsCacheTag,
   getAboutPageCacheTag,
@@ -150,16 +154,6 @@ function optionalHttpUrl(value: unknown, label: string): string | undefined {
   } catch {
     throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be an absolute HTTP(S) URL.`);
   }
-}
-
-function requireHttpUrl(value: unknown, label: string): string {
-  const url = optionalHttpUrl(value, label);
-
-  if (!url) {
-    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} must be an absolute HTTP(S) URL.`);
-  }
-
-  return url;
 }
 
 function requireBoolean(value: unknown, label: string): boolean {
@@ -920,6 +914,96 @@ function mapPrice(value: unknown, index: number): PriceItem | null {
     unitLabel: optionalString(price.unitLabel, `${label}.unitLabel`),
     description: optionalString(price.description, `${label}.description`),
     note: optionalString(price.note, `${label}.note`),
+  };
+}
+
+function mapUltrakorPrice(
+  operation: Record<string, unknown>,
+  label: string,
+): PriceItem {
+  const price = mapPrice(
+    {
+      key: `${requireString(operation.zoneSlug, `${label}.zoneSlug`)}-price`,
+      publicName: requireString(operation.priceName, `${label}.priceName`),
+      priceType: requireString(operation.priceType, `${label}.priceType`),
+      priceLabel: operation.priceLabel,
+      amount: operation.priceAmount,
+      minAmount: operation.priceMinAmount,
+      maxAmount: operation.priceMaxAmount,
+      currency: requireString(operation.priceCurrency, `${label}.priceCurrency`),
+      unitLabel: operation.priceUnitLabel,
+      description: operation.priceDescription,
+      note: operation.priceNote,
+      isActive: true,
+      publishedAt: "published",
+    },
+    0,
+  );
+
+  if (!price) {
+    throw new CmsInvalidResponseError(`Invalid Strapi response: ${label} is inactive.`);
+  }
+
+  return price;
+}
+
+function mapUltrakorOperationSummary(
+  value: unknown,
+  index: number,
+): UltrakorOperationSummary {
+  const label = `ultrakorOperations[${index}]`;
+  const operation = requireRecord(value, label);
+
+  return {
+    zoneSlug: requireString(operation.zoneSlug, `${label}.zoneSlug`),
+    canonicalPath: requireCanonicalPath(
+      operation.canonicalPath,
+      `${label}.canonicalPath`,
+    ),
+    heading: requireString(operation.heading, `${label}.heading`),
+    heroDescription: optionalString(
+      operation.heroDescription,
+      `${label}.heroDescription`,
+    ),
+    sortOrder: optionalInteger(operation.sortOrder, `${label}.sortOrder`),
+  };
+}
+
+function mapUltrakorOperationContent(
+  value: unknown,
+  baseUrl: string,
+): UltrakorOperationContent {
+  const operation = requireRecord(value, "ultrakorOperation");
+  const contentSections = requireArray(
+    operation.contentSections,
+    "ultrakorOperation.contentSections",
+  ).map((section, index) => mapContentSection(section, index, baseUrl));
+  validateUniqueSectionIdentifiers(contentSections);
+
+  return {
+    slug: requireString(operation.slug, "ultrakorOperation.slug"),
+    zoneSlug: requireString(operation.zoneSlug, "ultrakorOperation.zoneSlug"),
+    canonicalPath: requireCanonicalPath(
+      operation.canonicalPath,
+      "ultrakorOperation.canonicalPath",
+    ),
+    heading: requireString(operation.heading, "ultrakorOperation.heading"),
+    breadcrumbLabel: optionalString(
+      operation.breadcrumbLabel,
+      "ultrakorOperation.breadcrumbLabel",
+    ),
+    heroDescription: optionalString(
+      operation.heroDescription,
+      "ultrakorOperation.heroDescription",
+    ),
+    heroImage: mapImage(
+      operation.heroImage,
+      baseUrl,
+      "ultrakorOperation.heroImage",
+    ),
+    seo: mapSeo(operation.seo, baseUrl, "ultrakorOperation.seo"),
+    prices: [mapUltrakorPrice(operation, "ultrakorOperation.price")],
+    contentSections,
   };
 }
 
@@ -1912,6 +1996,64 @@ export class StrapiContentRepository implements ContentRepository {
     );
   }
 
+  async getUltrakorOperationCatalog(): Promise<readonly UltrakorOperationSummary[]> {
+    const params = this.createPublishedParams([
+      "zoneSlug",
+      "canonicalPath",
+      "heading",
+      "heroDescription",
+      "sortOrder",
+    ]);
+    params.set("pagination[pageSize]", "100");
+    params.set("sort[0]", "sortOrder:asc");
+
+    const operations = await this.getMany(
+      "/api/ultrakor-operations",
+      params,
+      getUltrakorOperationCatalogCacheTag(),
+    );
+
+    return operations.map((operation, index) =>
+      mapUltrakorOperationSummary(operation, index),
+    );
+  }
+
+  async getUltrakorOperationByZone(
+    zoneSlug: string,
+  ): Promise<UltrakorOperationContent | null> {
+    const params = this.createPublishedParams([
+      "slug",
+      "zoneSlug",
+      "canonicalPath",
+      "heading",
+      "breadcrumbLabel",
+      "heroDescription",
+      "priceName",
+      "priceType",
+      "priceLabel",
+      "priceAmount",
+      "priceMinAmount",
+      "priceMaxAmount",
+      "priceCurrency",
+      "priceUnitLabel",
+      "priceDescription",
+      "priceNote",
+    ]);
+    params.set("filters[zoneSlug][$eq]", zoneSlug);
+    this.populateUltrakorOperationPageFields(params);
+    this.populateOperationContent(params, { includePrices: false });
+
+    const operation = await this.getFirst(
+      "/api/ultrakor-operations",
+      params,
+      getUltrakorOperationCacheTag(zoneSlug),
+    );
+
+    return operation
+      ? mapUltrakorOperationContent(operation, this.baseUrl)
+      : null;
+  }
+
   async getPriceCatalog(): Promise<PriceCatalogContent | null> {
     const params = this.createPublishedParams([
       "sectionKey",
@@ -2629,6 +2771,26 @@ export class StrapiContentRepository implements ContentRepository {
     params.set("populate[secondaryAction]", "true");
   }
 
+  private populateUltrakorOperationPageFields(params: URLSearchParams): void {
+    params.set("populate[seo][populate][shareImage][fields][0]", "url");
+    params.set(
+      "populate[seo][populate][shareImage][fields][1]",
+      "alternativeText",
+    );
+    params.set(
+      "populate[seo][populate][shareImage][fields][2]",
+      "width",
+    );
+    params.set(
+      "populate[seo][populate][shareImage][fields][3]",
+      "height",
+    );
+    params.set("populate[heroImage][fields][0]", "url");
+    params.set("populate[heroImage][fields][1]", "alternativeText");
+    params.set("populate[heroImage][fields][2]", "width");
+    params.set("populate[heroImage][fields][3]", "height");
+  }
+
   private populateStaticPageContent(params: URLSearchParams): void {
     const sectionComponents = [
       "static-page.rich-text-section",
@@ -2771,7 +2933,10 @@ export class StrapiContentRepository implements ContentRepository {
     );
   }
 
-  private populateOperationContent(params: URLSearchParams): void {
+  private populateOperationContent(
+    params: URLSearchParams,
+    options: { includePrices?: boolean } = {},
+  ): void {
     const sectionFields = [
       "sectionKey",
       "heading",
@@ -2855,6 +3020,10 @@ export class StrapiContentRepository implements ContentRepository {
       ["url", "alternativeText", "width", "height", "mime"].forEach((field, index) => {
         params.set(`populate[contentSections][on][operation.video][populate][${relation}][fields][${index}]`, field);
       });
+    }
+
+    if (options.includePrices === false) {
+      return;
     }
 
     const priceFields = [

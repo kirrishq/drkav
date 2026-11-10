@@ -39,8 +39,8 @@ export function UltrakorResults() {
                 onPointerEnter={event => { if (event.pointerType === "mouse" && window.matchMedia("(hover: hover) and (pointer: fine)").matches) setActiveIndex(index); }}
                 onPointerLeave={event => { if (event.pointerType === "mouse") setActiveIndex(current => current === index ? null : current); }}
                 onClick={event => { if (event.detail > 0 && window.matchMedia("(hover: hover) and (pointer: fine)").matches) setActiveIndex(index); else setActiveIndex(current => current === index ? null : index); }}>
-                <span className="ultrakor-results__video-label">Смотреть видео&nbsp;&nbsp;•&nbsp;&nbsp; Смотреть видео&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-                <span className="ultrakor-results__play" aria-hidden="true">▶</span>
+                <Image alt="" aria-hidden="true" className="ultrakor-results__video-label" height={300} src="/icons/ultrakor/watch-video.svg" width={300} />
+                <Image alt="" aria-hidden="true" className="ultrakor-results__play" height={300} src="/icons/ultrakor/youtube.svg" width={300} />
               </button>
             </article>
           ))}

@@ -293,6 +293,14 @@ export interface OperationCatalogGroup {
   operations: readonly OperationCatalogLink[];
 }
 
+export interface UltrakorOperationSummary {
+  zoneSlug: string;
+  canonicalPath: string;
+  heading: string;
+  heroDescription?: string;
+  sortOrder?: number;
+}
+
 export interface BeforeAfterCase {
   slug: string;
   title: string;
@@ -582,6 +590,19 @@ export interface OperationContent {
   contentSections: readonly OperationContentSection[];
 }
 
+export interface UltrakorOperationContent {
+  slug: string;
+  zoneSlug: string;
+  canonicalPath: string;
+  heading: string;
+  breadcrumbLabel?: string;
+  heroDescription?: string;
+  heroImage?: ImageAsset;
+  seo: SeoData;
+  prices: readonly PriceItem[];
+  contentSections: readonly OperationContentSection[];
+}
+
 export interface BlogCategorySummary {
   key: string;
   name: string;
@@ -787,6 +808,8 @@ export interface ContentRepository {
   getOperationPaths(): Promise<readonly string[]>;
   getOperationByPath(path: string): Promise<OperationContent | null>;
   getOperationCatalog(): Promise<readonly OperationCatalogGroup[]>;
+  getUltrakorOperationCatalog(): Promise<readonly UltrakorOperationSummary[]>;
+  getUltrakorOperationByZone(zoneSlug: string): Promise<UltrakorOperationContent | null>;
   getBeforeAfterCases(): Promise<readonly BeforeAfterCase[]>;
   getBeforeAfterCaseBySlug(slug: string): Promise<BeforeAfterCase | null>;
   getReviews(): Promise<readonly Review[]>;

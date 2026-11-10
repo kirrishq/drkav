@@ -9,6 +9,7 @@ const OPERATION_CATEGORY_UID = "api::operation-category.operation-category";
 const OPERATION_UID = "api::operation.operation";
 const PRICE_ITEM_UID = "api::price-item.price-item";
 const PRICE_SECTION_UID = "api::price-section.price-section";
+const ULTRAKOR_OPERATION_UID = "api::ultrakor-operation.ultrakor-operation";
 const PROMOTION_UID = "api::promotion.promotion";
 const ABOUT_PAGE_UID = "api::about-page.about-page";
 
@@ -59,6 +60,7 @@ async function run() {
     staticPages,
   } = await import("../seed/v1/data.mjs");
   const { priceItems, priceSections } = await import("../seed/v1/price-catalog.mjs");
+  const { ultrakorOperations } = await import("../seed/v1/ultrakor-operations.mjs");
   const { promotions } = await import("../seed/v1/promotions.mjs");
   const { aboutPage } = await import("../seed/v1/about-page.mjs");
   const appContext = await compileStrapi();
@@ -177,8 +179,17 @@ async function run() {
       );
     }
 
+    for (const operation of ultrakorOperations) {
+      await upsertCollection(
+        strapi,
+        ULTRAKOR_OPERATION_UID,
+        "canonicalPath",
+        operation,
+      );
+    }
+
     strapi.log.info(
-      `Seed v${seedVersion} complete: ${staticPages.length} static pages, ${operations.length} operations, ${operationCategories.length} categories, ${priceSections.length} price sections, ${priceItems.length} price items, ${promotions.length} promotions.`,
+      `Seed v${seedVersion} complete: ${staticPages.length} static pages, ${operations.length} operations, ${ultrakorOperations.length} Ultrakor operations, ${operationCategories.length} categories, ${priceSections.length} price sections, ${priceItems.length} price items, ${promotions.length} promotions.`,
     );
     strapi.log.info(`Seed sources: ${seedSources.join("; ")}`);
   } finally {
