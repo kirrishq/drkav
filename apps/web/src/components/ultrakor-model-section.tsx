@@ -402,9 +402,9 @@ export function UltrakorModelSection() {
     if (scroll && sectionRef.current) {
       const sectionTop = window.scrollY + sectionRef.current.getBoundingClientRect().top;
       const stageDistance = (sectionRef.current.offsetHeight - window.innerHeight) / (stages.length - 1);
-      window.scrollTo({ top: sectionTop + clampedStage * stageDistance, behavior: reducedMotion ? "auto" : "smooth" });
+      window.scrollTo({ top: sectionTop + clampedStage * stageDistance, behavior: mobile || reducedMotion ? "auto" : "smooth" });
     }
-  }, [reducedMotion]);
+  }, [mobile, reducedMotion]);
 
   useEffect(() => {
     if (!viewportReady) return;
@@ -417,7 +417,15 @@ export function UltrakorModelSection() {
       const bounds = section.getBoundingClientRect();
       const distance = Math.max(1, section.offsetHeight - window.innerHeight);
       const progress = Math.min(stages.length - 1, Math.max(0, -bounds.top / distance * (stages.length - 1)));
-      if (mobile && gestureLocked.current) return;
+      if (mobile && gestureLocked.current) {
+        const stageDistance = (section.offsetHeight - window.innerHeight) / (stages.length - 1);
+        const targetScroll = window.scrollY + bounds.top + stageRef.current * stageDistance;
+        if (Math.abs(window.scrollY - targetScroll) > 1) {
+          window.scrollTo({ top: targetScroll, behavior: "auto" });
+        }
+        return;
+      }
+      if (mobile) return;
       if (!mobile && scrollTarget.current !== progress) {
         scrollTarget.current = progress;
         wakeScene.current?.();
