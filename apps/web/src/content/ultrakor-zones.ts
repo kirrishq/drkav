@@ -5,3 +5,5 @@ export const ultrakorZones = [
   { slug: "spina", title: "Спина", amount: 60000, description: "Спина задаёт ширину, V-форму и ощущение мощного корпуса. Мы работаем с зонами, которые скрывают рельеф, и подчёркиваем линию широчайших мышц и поясницы." },
   { slug: "yagodicy", title: "Ягодицы", amount: 60000, description: "Ягодичная зона влияет на баланс пропорций и общий спортивный вид тела. При необходимости мы добавляем объём и формируем более гармоничный, подтянутый и естественный контур." },
 ] as const;
+
+export const formatUltrakorPrice = (amount: number) => `от ${amount.toLocaleString("ru-RU")} ₽`;

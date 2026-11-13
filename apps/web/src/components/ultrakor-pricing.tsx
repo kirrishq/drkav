@@ -1,18 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { UltrakorSkipArrow } from "@/components/ultrakor-arrow";
+import { formatUltrakorPrice, ultrakorZones } from "@/content/ultrakor-zones";
 
 export type UltrakorPrice = {
+  slug?: string;
   title: string;
   price: string;
   description: string;
 };
 
-const defaultPrices: UltrakorPrice[] = [
-  { title: "Прорисовка пресса", price: "от 80 000 ₽", description: "Скульптура кубиков и косых мышц пресса (стоимость актуальна при комплексной липоскульптуре)" },
-  { title: "Прорисовка грудных мышц", price: "от 40 000 ₽", description: "Придание точёности мышцам, как после серьёзных тренировок в спортзале, 2 стороны (стоимость актуальна при комплексной липоскульптуре)" },
-  { title: "Атлетизация плеч и рук", price: "от 60 000 ₽", description: "Придание точёности мышцам, как после серьёзных тренировок в спортзале, 2 стороны (стоимость актуальна при комплексной липоскульптуре)" },
-];
+const defaultPrices: UltrakorPrice[] = ultrakorZones.map(zone => ({
+  slug: zone.slug,
+  title: zone.title,
+  price: formatUltrakorPrice(zone.amount),
+  description: zone.description,
+}));
 
 const included = [
   "Сама операция",
@@ -56,7 +60,7 @@ export function UltrakorPricing({ prices = defaultPrices }: { prices?: UltrakorP
         <p>Не является публичной офертой. Цены, указанные на сайте являются ориентировочными. Стоимость операции рассчитывается доктором в индивидуальном порядке после консультации любого формата. Операция на всех этапах проходит лично Артём Владимирович Коробов.</p>
       </div>
       <div className="ultrakor-pricing__prices">
-        {prices.map(({ title, price, description }) => <article key={title}><h3>{title}<span>|</span>{price}</h3><p>{description}</p></article>)}
+        {prices.map(({ slug, title, price, description }) => <article key={title}><h3>{title}<span>|</span>{price}</h3><p>{description}</p>{slug ? <a className="ultrakor-pricing__details" href={`/ultrakor/${slug}`}>Подробнее <UltrakorSkipArrow /><span className="sr-only">: {title}</span></a> : null}</article>)}
       </div>
       <div className="ultrakor-pricing__offer-note ultrakor-pricing__offer-note--after-prices">
         <p>Внимание! Доктор Коробов также может помочь в коррекции неудовлетворительных результатов операций, которые были выполнены другими хирургами в других клиниках. Стоимость в таких случаях рассчитывается индивидуально и, как правило, составляет +30%.</p>

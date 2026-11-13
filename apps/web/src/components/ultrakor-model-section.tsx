@@ -5,7 +5,8 @@ import { ConsultationTrigger } from "@drkav/ui";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentProps } from "react";
-import { ultrakorZones } from "@/content/ultrakor-zones";
+import { formatUltrakorPrice, ultrakorZones } from "@/content/ultrakor-zones";
+import { UltrakorSkipArrow } from "@/components/ultrakor-arrow";
 import { useGLTF } from "@react-three/drei";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Box3, Vector3 } from "three";
@@ -55,9 +56,9 @@ const stages: readonly Stage[] = [
     side: "left",
   },
   {
-    title: "Грудь",
-    text: "Коррекция грудной зоны помогает сделать верх корпуса более собранным, выразительным и мужественным. Мы подчёркиваем форму, убираем лишний объём и при необходимости добавляем нужный контур через липофилинг.",
-    price: "от 40 000 ₽",
+    title: ultrakorZones[0].title,
+    text: ultrakorZones[0].description,
+    price: formatUltrakorPrice(ultrakorZones[0].amount),
     side: "left",
     hotspot: {
       desktop: { left: "72%", top: "48%", size: "13vw" },
@@ -65,9 +66,9 @@ const stages: readonly Stage[] = [
     },
   },
   {
-    title: "Живот",
-    text: "Плоский и рельефный живот — основа атлетичного силуэта. В этой зоне мы убираем лишние жировые отложения и подчёркиваем линии пресса, чтобы тело выглядело более подтянутым и структурным.",
-    price: "от 80 000 ₽",
+    title: ultrakorZones[1].title,
+    text: ultrakorZones[1].description,
+    price: formatUltrakorPrice(ultrakorZones[1].amount),
     side: "left",
     hotspot: {
       desktop: { left: "70%", top: "68%", size: "16vw" },
@@ -75,9 +76,9 @@ const stages: readonly Stage[] = [
     },
   },
   {
-    title: "Руки и плечи",
-    text: "Линия плеча и рук сильно влияет на ощущение силы всего силуэта. Мы подчёркиваем дельтовидную зону и визуальную форму бицепса и трицепса, чтобы верхняя часть тела выглядела плотнее и спортивнее.",
-    price: "от 60 000 ₽",
+    title: ultrakorZones[2].title,
+    text: ultrakorZones[2].description,
+    price: formatUltrakorPrice(ultrakorZones[2].amount),
     side: "right",
     hotspot: {
       desktop: { left: "36%", top: "64%", size: "14vw" },
@@ -85,9 +86,9 @@ const stages: readonly Stage[] = [
     },
   },
   {
-    title: "Спина",
-    text: "Спина задаёт ширину, V-форму и ощущение мощного корпуса. Мы работаем с зонами, которые скрывают рельеф, и подчёркиваем линию широчайших мышц и поясницы.",
-    price: "от 60 000 ₽",
+    title: ultrakorZones[3].title,
+    text: ultrakorZones[3].description,
+    price: formatUltrakorPrice(ultrakorZones[3].amount),
     side: "left",
     hotspot: {
       desktop: { left: "72%", top: "48%", size: "18vw" },
@@ -95,9 +96,9 @@ const stages: readonly Stage[] = [
     },
   },
   {
-    title: "Ягодицы",
-    text: "Ягодичная зона влияет на баланс пропорций и общий спортивный вид тела. При необходимости мы добавляем объём и формируем более гармоничный, подтянутый и естественный контур.",
-    price: "от 60 000 ₽",
+    title: ultrakorZones[4].title,
+    text: ultrakorZones[4].description,
+    price: formatUltrakorPrice(ultrakorZones[4].amount),
     side: "left",
     hotspot: {
       desktop: { left: "73%", top: "62%", size: "17vw" },
@@ -268,7 +269,7 @@ function AthleteModel({ mobile, reducedMotion, stageIndex, marker, source = "/mo
     group.current.scale.x = interpolate(fromScale.current, pose.scale, amount);
     group.current.scale.y = group.current.scale.x;
     group.current.scale.z = group.current.scale.x;
-    const zones = [null, [-0.05, 0.717, 0.10, 0.055], [0, 0.625, 0.10, 0.085], [0.14, 0.70, 0.01, 0.075], [0, 0.65, -0.10, 0.14], [0.06, 0.465, -0.09, 0.065]] as const;
+    const zones = [null, [-0.05, 0.717, 0.10, 0.055], [0, 0.625, 0.10, 0.085], [0.14, 0.70, 0.01, 0.075], [0, 0.65, -0.10, 0.14], [0.06, 0.465, -0.09, 0.10]] as const;
     const zone = zones[stageIndex];
     if (zone && bounds.current && marker.current) {
       const box = bounds.current;
@@ -314,7 +315,7 @@ function StageCopy({ index, leaving = false }: { index: number; leaving?: boolea
       <h2 className="ultrakor__heading" id={leaving ? undefined : "ultrakor-model-title"}>{stage.title}</h2>
       {index === stages.length - 1 ? <ol className="ultrakor-model-section__steps">{consultationSteps.map(step => <li key={step.title}><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol> : <p>{stage.text}</p>}
       {index > 0 && stage.price ? <p className="ultrakor-model-section__price">{stage.price}</p> : null}
-      {index >= 1 && index <= ultrakorZones.length ? <Link className="ultrakor-model-section__details" href={`/ultrakor/${ultrakorZones[index - 1].slug}`} tabIndex={leaving ? -1 : undefined}>Подробнее <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14"><path d="M10.8101 1.96222L0.726954 12.0453L1.66171 12.9801L11.7448 2.89698L11.9344 9.4447L13.208 9.07311L13.0134 2.35278C12.9877 1.46249 12.2434 0.718185 11.3531 0.692412L4.80762 0.502924L4.43487 1.77539L10.8101 1.96222Z" fill="currentColor" stroke="currentColor" strokeWidth="0.542084" /></svg><span className="sr-only">: {stage.title}</span></Link> : null}
+      {index >= 1 && index <= ultrakorZones.length ? <Link className="ultrakor-model-section__details" href={`/ultrakor/${ultrakorZones[index - 1].slug}`} tabIndex={leaving ? -1 : undefined}>Подробнее <UltrakorSkipArrow /><span className="sr-only">: {stage.title}</span></Link> : null}
       {index === stages.length - 1 ? <ConsultationTrigger className="ultrakor__button ultrakor__button--solid ultrakor-model-section__cta">Записаться на консультацию</ConsultationTrigger> : null}
     </div>
   );
@@ -539,7 +540,7 @@ export function UltrakorModelSection() {
           const section = sectionRef.current;
           if (!section) return;
           window.scrollTo({ top: window.scrollY + section.getBoundingClientRect().top + section.offsetHeight - window.innerHeight, behavior: reducedMotion ? "auto" : "smooth" });
-        }}>Пропустить анимацию <svg className="ultrakor-model-section__skip-arrow" aria-hidden="true" width="10" height="10" viewBox="0 0 14 14"><path d="M10.8101 1.96222L0.726954 12.0453L1.66171 12.9801L11.7448 2.89698L11.9344 9.4447L13.208 9.07311L13.0134 2.35278C12.9877 1.46249 12.2434 0.718185 11.3531 0.692412L4.80762 0.502924L4.43487 1.77539L10.8101 1.96222Z" fill="currentColor" stroke="currentColor" strokeWidth="0.542084" /></svg></button> : null}
+        }}>Пропустить анимацию <UltrakorSkipArrow className="ultrakor-model-section__skip-arrow" /></button> : null}
         {hotspot ? (
           <svg
             ref={markerRef}

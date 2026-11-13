@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { UltrakorSkipArrow } from "@/components/ultrakor-arrow";
 
 export function UltrakorBackToTop() {
   const [visible, setVisible] = useState(false);
@@ -41,9 +42,7 @@ export function UltrakorBackToTop() {
       onClick={() => window.scrollTo({ top: 0, left: 0, behavior: reducedMotion ? "auto" : "smooth" })}
       type="button"
     >
-      <svg aria-hidden="true" fill="none" viewBox="0 0 16 16">
-        <path d="M3 9.5 8 4.5l5 5M8 5v6.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-      </svg>
+      <UltrakorSkipArrow className="ultrakor-back-to-top__arrow" />
     </button>
   );
 }
