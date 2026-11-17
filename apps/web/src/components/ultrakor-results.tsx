@@ -29,7 +29,7 @@ export function UltrakorResults() {
         </div>
         <div className="ultrakor-results__grid">
           {results.map((result, index) => (
-            <article className={`ultrakor-results__card${activeIndex === index ? " is-active" : ""}`} key={`${result.label}-${index}`}>
+            <article className="ultrakor-results__card" key={`${result.label}-${index}`}>
               <button className="ultrakor-results__photo" type="button" aria-label={`Открыть фото: кейс ${result.caseId}, ${result.label}`} onClick={() => { setActiveIndex(null); setPhotoIndex(index); }}>
                 <Image alt={`Результат мужской атлетизации, кейс ${result.caseId}: ${result.label}`} fill sizes="(max-width: 700px) 50vw, (max-width: 1100px) 33vw, 16vw" src={result.imageSrc} />
                 {activeIndex === index ? <video aria-label={`Кейс ${result.caseId}: ${result.label}`} autoPlay muted loop playsInline preload="none" poster={result.imageSrc} src={result.videoSrc} /> : null}

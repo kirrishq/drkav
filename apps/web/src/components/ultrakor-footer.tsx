@@ -13,7 +13,7 @@ const sectionLinks = [
   { href: "#ultrakor-model-title", label: "Процесс" },
   { href: "#ultrakor-safety-title", label: "Безопасность" },
   { href: "#ultrakor-pricing-title", label: "Стоимость" },
-  { href: "#ultrakor-doctor-title", label: "О хирурге" },
+  { href: "/ultrakor/o-doktore", label: "О докторе" },
   { href: "#contact", label: "Консультация" },
   { href: "#ultrakor-questions-title", label: "Отзывы" },
 ] as const;
@@ -55,7 +55,7 @@ export function UltrakorFooter() {
 
         <nav aria-label="Навигация в подвале" className="ultrakor-footer__navigation">
           {sectionLinks.map((link) => (
-            <a href={`/ultrakor${link.href}`} key={link.label}>{link.label}</a>
+            <a href={link.href.startsWith("#") ? `/ultrakor${link.href}` : link.href} key={link.label}>{link.label}</a>
           ))}
         </nav>
 
@@ -68,7 +68,8 @@ export function UltrakorFooter() {
         </div>
 
         <div className="ultrakor-footer__secondary">
-          <a href="#certificates">Сертификаты и дипломы</a>
+          <a href="/ultrakor#certificates">Сертификаты и дипломы</a>
+          <a href="/operaczii/muzhskaya-plastika">Все направления мужской пластики на DrKAV</a>
         </div>
 
         <div aria-hidden="true" className="ultrakor-footer__rule ultrakor-footer__rule--lower" />

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "@/styles/ultrakor.css";
 import { UltrakorAtmosphere } from "@/components/ultrakor-atmosphere";
 import { UltrakorBackToTop } from "@/components/ultrakor-back-to-top";
+import { UltrakorHeader } from "@/components/ultrakor-header";
 import { UltrakorFooter } from "@/components/ultrakor-footer";
 
 export const metadata: Metadata = {
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function UltrakorLayout({ children, detail }: Readonly<{ children: React.ReactNode; detail: React.ReactNode }>) {
-  return <div className="ultrakor"><UltrakorAtmosphere />{children}<UltrakorFooter />{detail}<UltrakorBackToTop /></div>;
+  return <div className="ultrakor"><UltrakorAtmosphere /><UltrakorHeader />{children}<UltrakorFooter />{detail}<UltrakorBackToTop /></div>;
 }

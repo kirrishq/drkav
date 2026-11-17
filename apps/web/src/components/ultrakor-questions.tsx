@@ -136,7 +136,7 @@ export function UltrakorQuestions() {
           })}
         </div>
 
-        <div className="ultrakor-questions__cta">
+        <div className="ultrakor-questions__cta" id="ultrakor-assistant">
           <h3 className="ultrakor__heading">Остались вопросы?</h3>
           <p>Вы можете связаться с ассистентом и получить ответ на любой вопрос по процедуре</p>
           <div className="ultrakor-questions__cta-actions">

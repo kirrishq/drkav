@@ -56,7 +56,7 @@ export function UltrakorDoctor() {
             <span className="ultrakor-doctor__rule" aria-hidden="true" />
             <p><strong>Артём Коробов — КМН, пластический хирург,</strong><br />разработчик методики УЛЬТРАКОР. Специализируется<br className="ultrakor-doctor__desktop-break" /> на липоскульптуре и анатомическом моделировании тела.</p>
             <p><strong>Более 16 лет работы, сотни операций,</strong> системный<br className="ultrakor-doctor__desktop-break" /> подход, инженерное мышление.</p>
-            <a className="ultrakor-doctor__more" href="#certificates">Подробнее</a>
+            <a className="ultrakor-doctor__more" href="/ultrakor/o-doktore">Подробнее о докторе</a>
             <a className="ultrakor-doctor__rating" href="https://prodoctorov.ru/moskva/vrach/158087-korobov/" target="_blank" rel="noreferrer" aria-label="Открыть профиль Артёма Коробова на ПроДокторов">
               <div className="ultrakor-doctor__rating-copy">
                 <Image className="ultrakor-doctor__rating-logo" src="/images/branding/prodoctorov-widget.svg" alt="ПроДокторов" width={112} height={17} />

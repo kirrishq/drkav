@@ -18,8 +18,8 @@ export default function UltrakorPage() {
           <p className="ultrakor__hero-eyebrow">Мужская липоскульптура<br />от хирурга Коробова А.В.</p>
           <h1 className="ultrakor__display" id="ultrakor-title"><span className="ultrakor__word-ultra">Ультра</span><span className="ultrakor__word-kor">кор</span></h1>
           <div className="ultrakor__hero-description">
-            <p className="ultrakor__hero-lead">Собранное и атлетичное тело<br /><span className="ultrakor__accent">с естественным эффектом</span></p>
-            <p>Индивидуальная методика для мужчин,<br />которым <span className="ultrakor__accent">важно скорректировать</span><br />пропорции тела, <span className="ultrakor__accent">подчеркнуть рельеф</span><br />и получить <span className="ultrakor__accent">прогнозируемый результат</span><br />с медицинским сопровождением.</p>
+            <p className="ultrakor__hero-lead">Собранное и атлетичное тело<br />{" "}<span className="ultrakor__accent">с естественным эффектом</span></p>
+            <p>Индивидуальная методика для мужчин,<br />{" "}которым <span className="ultrakor__accent">важно скорректировать</span><br />{" "}пропорции тела, <span className="ultrakor__accent">подчеркнуть рельеф</span><br />{" "}и получить <span className="ultrakor__accent">прогнозируемый результат</span><br />{" "}с медицинским сопровождением.</p>
             <a className="ultrakor__button ultrakor__button--solid" href="#contact">Записаться на консультацию</a>
           </div>
         </div>

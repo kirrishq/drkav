@@ -2,9 +2,7 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ConsultationTrigger } from "@drkav/ui";
-import NextLink from "next/link";
 import { usePathname } from "next/navigation";
-import type { ComponentProps } from "react";
 import { formatUltrakorPrice, ultrakorZones } from "@/content/ultrakor-zones";
 import { UltrakorSkipArrow } from "@/components/ultrakor-arrow";
 import { useGLTF } from "@react-three/drei";
@@ -15,16 +13,6 @@ import type { Group, PerspectiveCamera } from "three";
 
 type StageSide = "left" | "right";
 let preservedStage = 0;
-
-function Link(props: ComponentProps<typeof NextLink>) {
-  return <NextLink {...props} scroll={false} onClick={event => {
-    props.onClick?.(event);
-    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    sessionStorage.setItem("ultrakor-model-return", String(window.scrollY));
-    preservedStage = Math.max(0, stages.findIndex(stage => stage.title.toUpperCase() === document.querySelector("#ultrakor-model-title")?.textContent?.toUpperCase()));
-    document.body.dataset.ultrakorDetail = "true";
-  }} />;
-}
 
 type Hotspot = {
   desktop: { left: string; top: string; size: string };
@@ -315,7 +303,7 @@ function StageCopy({ index, leaving = false }: { index: number; leaving?: boolea
       <h2 className="ultrakor__heading" id={leaving ? undefined : "ultrakor-model-title"}>{stage.title}</h2>
       {index === stages.length - 1 ? <ol className="ultrakor-model-section__steps">{consultationSteps.map(step => <li key={step.title}><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol> : <p>{stage.text}</p>}
       {index > 0 && stage.price ? <p className="ultrakor-model-section__price">{stage.price}</p> : null}
-      {index >= 1 && index <= ultrakorZones.length ? <Link className="ultrakor-model-section__details" href={`/ultrakor/${ultrakorZones[index - 1].slug}`} tabIndex={leaving ? -1 : undefined}>Подробнее <UltrakorSkipArrow /><span className="sr-only">: {stage.title}</span></Link> : null}
+      {index >= 1 && index <= ultrakorZones.length ? <a className="ultrakor-model-section__details" href={`/ultrakor/${ultrakorZones[index - 1].slug}`} tabIndex={leaving ? -1 : undefined}>Подробнее <UltrakorSkipArrow /><span className="sr-only">: {stage.title}</span></a> : null}
       {index === stages.length - 1 ? <ConsultationTrigger className="ultrakor__button ultrakor__button--solid ultrakor-model-section__cta">Записаться на консультацию</ConsultationTrigger> : null}
     </div>
   );
@@ -523,6 +511,7 @@ export function UltrakorModelSection() {
     <section
       className={`ultrakor-model-section${stageIndex === stages.length - 1 ? " is-light" : ""}`}
       aria-labelledby="ultrakor-model-title"
+      id="ultrakor-process"
       ref={sectionRef}
     >
       <div className="ultrakor-model-section__sticky">

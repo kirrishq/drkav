@@ -1,22 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { UltrakorSkipArrow } from "@/components/ultrakor-arrow";
 import { formatUltrakorPrice, ultrakorZones } from "@/content/ultrakor-zones";
-
-export type UltrakorPrice = {
-  slug?: string;
-  title: string;
-  price: string;
-  description: string;
-};
-
-const defaultPrices: UltrakorPrice[] = ultrakorZones.map(zone => ({
-  slug: zone.slug,
-  title: zone.title,
-  price: formatUltrakorPrice(zone.amount),
-  description: zone.description,
-}));
 
 const included = [
   "Сама операция",
@@ -52,7 +39,7 @@ function OfferRow({ title, items }: { title: string; items: readonly string[] })
   </section>;
 }
 
-export function UltrakorPricing({ prices = defaultPrices }: { prices?: UltrakorPrice[] }) {
+export function UltrakorPricing() {
   return <section className="ultrakor__section ultrakor-pricing" aria-labelledby="ultrakor-pricing-title">
     <div className="ultrakor__inner">
       <h2 className="ultrakor__heading" id="ultrakor-pricing-title">Стоимость</h2>
@@ -60,7 +47,23 @@ export function UltrakorPricing({ prices = defaultPrices }: { prices?: UltrakorP
         <p>Не является публичной офертой. Цены, указанные на сайте являются ориентировочными. Стоимость операции рассчитывается доктором в индивидуальном порядке после консультации любого формата. Операция на всех этапах проходит лично Артём Владимирович Коробов.</p>
       </div>
       <div className="ultrakor-pricing__prices">
-        {prices.map(({ slug, title, price, description }) => <article key={title}><h3>{title}<span>|</span>{price}</h3><p>{description}</p>{slug ? <a className="ultrakor-pricing__details" href={`/ultrakor/${slug}`}>Подробнее <UltrakorSkipArrow /><span className="sr-only">: {title}</span></a> : null}</article>)}
+        {ultrakorZones.map(({ slug, title, amount, imageSrc }) => (
+          <article className="ultrakor-pricing__card" key={slug}>
+            <Image
+              alt=""
+              fill
+              sizes="(min-width: 1024px) 33vw, (min-width: 701px) 50vw, 100vw"
+              src={imageSrc}
+            />
+            <div className="ultrakor-pricing__card-content">
+              <h3>{title}</h3>
+              <p>{formatUltrakorPrice(amount)}</p>
+              <a className="ultrakor__button ultrakor__button--outline" href={`/ultrakor/${slug}`}>
+                Подробнее <UltrakorSkipArrow /><span className="sr-only">: {title}</span>
+              </a>
+            </div>
+          </article>
+        ))}
       </div>
       <div className="ultrakor-pricing__offer-note ultrakor-pricing__offer-note--after-prices">
         <p>Внимание! Доктор Коробов также может помочь в коррекции неудовлетворительных результатов операций, которые были выполнены другими хирургами в других клиниках. Стоимость в таких случаях рассчитывается индивидуально и, как правило, составляет +30%.</p>

@@ -14,6 +14,7 @@ export type OperationHeroLink = {
 export type OperationHeroProps = {
   backgroundSrc: string;
   breadcrumbs?: readonly BreadcrumbItem[];
+  ctaHref?: string;
   ctaLabel?: string;
   description?: ReactNode;
   links: readonly OperationHeroLink[];
@@ -24,12 +25,14 @@ export type OperationHeroProps = {
 export function OperationHero({
   backgroundSrc,
   breadcrumbs,
+  ctaHref,
   ctaLabel = "Индивидуальный расчёт стоимости",
   description,
   links,
   title,
 }: OperationHeroProps) {
   const titleId = useId();
+  const actionClassName = cn(buttonVariants({ size: "lg", variant: "primary" }), "operation-hero__action");
 
   return (
     <section aria-labelledby={titleId} className="operation-hero">
@@ -53,9 +56,11 @@ export function OperationHero({
             ))}
           </nav>
         ) : null}
-        <ConsultationTrigger className={cn(buttonVariants({ size: "lg", variant: "primary" }), "operation-hero__action")}>
-          {ctaLabel}
-        </ConsultationTrigger>
+        {ctaHref ? (
+          <a className={actionClassName} href={ctaHref}>{ctaLabel}</a>
+        ) : (
+          <ConsultationTrigger className={actionClassName}>{ctaLabel}</ConsultationTrigger>
+        )}
       </div>
     </section>
   );
