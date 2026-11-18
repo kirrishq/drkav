@@ -2,8 +2,8 @@
 
 import { useRef } from "react";
 
+import { SocialIcon } from "@/components/social-icon";
 import { socialLinks } from "@/components/site-header/header-config";
-import { UltrakorSocialIcon } from "@/components/ultrakor-social-icon";
 
 const sectionLinks = [
   { href: "/ultrakor#ultrakor-title", label: "О процедуре" },
@@ -31,7 +31,7 @@ function HeaderSocials() {
         const link = socialLinks.find((item) => item.kind === kind);
         return link && (
           <a aria-label={link.label} data-social={kind} href={link.href} key={kind} rel="noreferrer" target="_blank">
-            <UltrakorSocialIcon kind={kind} />
+            <SocialIcon kind={kind} />
           </a>
         );
       })}

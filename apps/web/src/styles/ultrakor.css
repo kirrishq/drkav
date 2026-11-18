@@ -908,8 +908,20 @@ body:has(.ultrakor-zone-overlay[open]) .ultrakor-back-to-top { display: none; }
 .ultrakor-header__socials a {
   display: grid;
   place-items: center;
-  width: var(--space-6);
-  min-height: var(--space-11);
+  width: var(--space-10);
+  height: var(--space-10);
+  border: var(--border-width-default) solid rgb(255 255 255 / .35);
+  border-radius: var(--radius-full);
+  color: var(--ultrakor-white);
+  text-decoration: none;
+  transition: border-color var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+}
+
+.ultrakor-header__socials a:hover,
+.ultrakor-header__socials a:focus-visible {
+  border-color: #ab0000;
+  background: #ab0000;
+  color: var(--ultrakor-white);
 }
 
 .ultrakor-header__socials svg {
@@ -1025,10 +1037,16 @@ body:has(.ultrakor-header__menu[open]) {
   .ultrakor :is(#ultrakor-process, #ultrakor-assistant, #contact, h2[id]) { scroll-margin-top: 4rem; }
 }
 
-.ultrakor-header__socials [data-social="instagram"] svg {
+.ultrakor-header__socials svg rect,
+.ultrakor-header__socials svg circle {
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.7;
+  stroke-width: 1.8;
+}
+
+.ultrakor-header__socials svg circle:last-child {
+  fill: currentColor;
+  stroke: none;
 }
 
 .ultrakor .ultrakor-zone--photo .operation-hero__background {
