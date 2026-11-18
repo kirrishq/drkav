@@ -1,5 +1,6 @@
 "use client";
 
+import { ConsultationTrigger } from "@drkav/ui";
 import { useRef } from "react";
 
 import { SocialIcon } from "@/components/social-icon";
@@ -18,8 +19,8 @@ const sectionLinks = [
 ] as const;
 
 const actionLinks = [
-  { href: "/ultrakor#contact", label: "Записаться на консультацию" },
-  { href: "/ultrakor#ultrakor-assistant", label: "Задать вопрос" },
+  "Записаться на консультацию",
+  "Задать вопрос",
 ] as const;
 
 const socialKinds = ["vk", "instagram", "telegram", "youtube"] as const;
@@ -45,10 +46,6 @@ export function UltrakorHeader() {
 
   return (
     <header className="ultrakor-header">
-      <HeaderSocials />
-      <div className="ultrakor-header__actions">
-        {actionLinks.map(({ href, label }) => <a href={href} key={href}>{label}</a>)}
-      </div>
       <button
         aria-controls="ultrakor-menu"
         aria-haspopup="dialog"
@@ -70,7 +67,11 @@ export function UltrakorHeader() {
           </nav>
           <HeaderSocials />
           <div className="ultrakor-header__menu-actions">
-            {actionLinks.map(({ href, label }) => <a href={href} key={href} onClick={closeMenu}>{label}</a>)}
+            {actionLinks.map((label) => (
+              <ConsultationTrigger className="ultrakor-header__menu-action" key={label} onClick={closeMenu}>
+                {label}
+              </ConsultationTrigger>
+            ))}
           </div>
         </div>
       </dialog>
