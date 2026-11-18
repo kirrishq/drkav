@@ -46,7 +46,6 @@ export async function UltrakorZoneContent({ params, inOverlay = false }: { param
             <section className="ultrakor-zone__context">
               <h2 className="ultrakor__heading">Как зона влияет на общий силуэт</h2>
               <p>{context.combination}</p>
-              <a className="ultrakor__button ultrakor__button--outline" href="/ultrakor#ultrakor-results-title">Смотреть результаты Ультракора</a>
             </section>
           )}
 
@@ -63,13 +62,6 @@ export async function UltrakorZoneContent({ params, inOverlay = false }: { param
             <a href="/ultrakor" className="ultrakor__button ultrakor__button--outline">О методике Ультракор</a>
           </nav>
 
-          {context && (
-            <aside className="ultrakor-zone__context" aria-label="Подробнее на основном сайте DrKAV">
-              <h2 className="ultrakor__heading">Связанная операция на DrKAV</h2>
-              <p>{context.relatedDescription}</p>
-              <a className="ultrakor__button ultrakor__button--outline" href={context.related.href}>{context.related.label}</a>
-            </aside>
-          )}
         </div>
       </div>
 
